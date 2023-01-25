@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Options on Manual</title>
+    <title>Options on vB5 Manual and API Documentation</title>
     <link>http://vb5manual.test/administration/AdminCP/settings/Options/</link>
-    <description>Recent content in Options on Manual</description>
+    <description>Recent content in Options on vB5 Manual and API Documentation</description>
     <generator>Hugo -- gohugo.io</generator><atom:link href="http://vb5manual.test/administration/AdminCP/settings/Options/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Turn Your vBulletin On and Off</title>

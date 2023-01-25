@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Style Manager on Manual</title>
+    <title>Style Manager on vB5 Manual and API Documentation</title>
     <link>http://vb5manual.test/administration/AdminCP/styles/style_manager/</link>
-    <description>Recent content in Style Manager on Manual</description>
+    <description>Recent content in Style Manager on vB5 Manual and API Documentation</description>
     <generator>Hugo -- gohugo.io</generator><atom:link href="http://vb5manual.test/administration/AdminCP/styles/style_manager/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>New Style</title>
