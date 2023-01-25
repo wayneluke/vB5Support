@@ -1,0 +1,1643 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Home on Manual</title>
+    <link>http://vb5manual.test/</link>
+    <description>Recent content in Home on Manual</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <lastBuildDate>Fri, 17 Sep 2021 00:00:00 +0000</lastBuildDate><atom:link href="http://vb5manual.test/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Content Manager</title>
+      <link>http://vb5manual.test/administration/AdminCP/articles/content_manager/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://vb5manual.test/administration/AdminCP/articles/content_manager/</guid>
+      <description>Within the Content Manager you can perform bulk actions on your articles and other content types within the CMS. There are more options to manage individual articles in the publicly viewable front-end of the CMS. Edit the article to view them.
+The checkbox to the left of each article name is used to select an article. You can use this to apply a single action to multiple articles at the same time.</description>
+    </item>
+    
+    <item>
+      <title>Creating a New Share Button</title>
+      <link>http://vb5manual.test/tutorials/adding_share_button/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://vb5manual.test/tutorials/adding_share_button/</guid>
+      <description>Creating a new Share button If you want to add a new share button within posts, knowing where to start can be intimidating.
+Creating a custom template. To start the process, you need to create a new template to hold your custom HTML code.
+In the AdminCP go to Styles → Style Manager. Select your style row and go to the Choose Action drop down. Note: If you are creating a product (see below), you should choose the MASTER STYLE which will be in the list while the site is in Debug Mode.</description>
+    </item>
+    
+    <item>
+      <title>Creating Forum Topics</title>
+      <link>http://vb5manual.test/end_user_guide/creating_content/creating-forum-topics/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://vb5manual.test/end_user_guide/creating_content/creating-forum-topics/</guid>
+      <description>A new topic is the evolution of what previously were called new threads in earlier versions. A topic in a forum or group can hold one or more posts of various content types such traditional text based posts, shared pictures, links or videos, or polls. To create a new topic click on the +New Topic button when browsing a forum or group.You will be presented with a screen where you must give a title (or subject) of the topic and optionally choose a topic prefix if available.</description>
+    </item>
+    
+    <item>
+      <title>Downloading the vBulletin Package</title>
+      <link>http://vb5manual.test/installing/downloading_vbulletin/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://vb5manual.test/installing/downloading_vbulletin/</guid>
+      <description>The first thing you will need to do when installing vBulletin is to download the latest version from the Members&amp;rsquo; Area.
+You will need to log-in to the Members&amp;rsquo; Area using the Customer Number or Email Address along with the Customer Password that was emailed to you when you purchased your license.
+Once logged in, you will see a list of Current Licenses. For each active license that you own, there will be a Download vBulletin 5 Connect link on the right side of the table.</description>
+    </item>
+    
+    <item>
+      <title>Forums, Topics and Posts</title>
+      <link>http://vb5manual.test/end_user_guide/general_help/forums-topics-and-posts/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://vb5manual.test/end_user_guide/general_help/forums-topics-and-posts/</guid>
+      <description>What is a community bulletin board?A community bulletin board is an online discussion site. It&#39;s sometimes also called a &#39;board&#39; or &#39;forums&#39;. It may contain several categories, consisting of forums, topics and individual posts. The content on a community bulletin board is often created by the users or members of the site. They are used for support, to share ideas and for a variety of different topics.
+How is all this structured?</description>
+    </item>
+    
+    <item>
+      <title>How do I change my settings?</title>
+      <link>http://vb5manual.test/end_user_guide/managing_account/how-do-i-change-my-settings/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://vb5manual.test/end_user_guide/managing_account/how-do-i-change-my-settings/</guid>
+      <description>You can change your account settings by clicking on your username in the top right corner of the vBulletin site. This will provide a dropdown menu. From here select &#34;User Settings&#34;.
+On the settings page, you will see up to five tabs. Profile, Settings, Privacy, Notifications and Subscriptions. These are:
+Profile - This is the public information that is shown to everyone. You can control who sees your information on the Privacy tab.</description>
+    </item>
+    
+    <item>
+      <title>How do I create a new Album?</title>
+      <link>http://vb5manual.test/end_user_guide/managing_albums/how-do-i-create-a-new-album/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://vb5manual.test/end_user_guide/managing_albums/how-do-i-create-a-new-album/</guid>
+      <description>You may create a new photo album in one of two ways:
+You may create a new topic on a channel you have permission to do so and share photos to create an album.
+You may go to your profile and click on the MEDIA tab. There you will be given the option to add photos (or videos.) Choose the Add Photos link and you will be presented with the familiar editor and you can share photos as in other site posts.</description>
+    </item>
+    
+    <item>
+      <title>How do I create a new blog?</title>
+      <link>http://vb5manual.test/end_user_guide/managing_blogs/how-do-i-create-a-new-blog/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://vb5manual.test/end_user_guide/managing_blogs/how-do-i-create-a-new-blog/</guid>
+      <description>To create a new blog, just go to the Blogs tab and right underneath the Blogs tab in the main navigation is the option to Create a New Blog. Once you click that link, you will be on the General Settings page and be able to set some options for your new Blog:
+Title - your Blog title. Create as fancy of a title that you want.Description - a short description of your Blog.</description>
+    </item>
+    
+    <item>
+      <title>How do I create a new group?</title>
+      <link>http://vb5manual.test/end_user_guide/managing_groups/how-do-i-create-a-new-group/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://vb5manual.test/end_user_guide/managing_groups/how-do-i-create-a-new-group/</guid>
+      <description>As a registered member, you can create your own Group (providing the administrator allows this). Go to the Groups page and on the module that is displayed, click the &#39;+ Create Group&#39; button. On the page that follows, you have a variety of options to tailor your group to the way you need it. If the administrator has added Group Categories, you will be able to specify which category your group is part of.</description>
+    </item>
+    
+    <item>
+      <title>Navigating the AdminCP</title>
+      <link>http://vb5manual.test/administration/AdminCP/navigating_admincp/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://vb5manual.test/administration/AdminCP/navigating_admincp/</guid>
+      <description>Logging into the AdminCP The vBulletin Admin Control Panel can be accessed by pointing your browser at http://www.example.com/forums/admincp/.
+The first thing you will see when you access the Control Panel is a prompt to log in. You may be presented with this login prompt even if you are already logged into the frontend of your vBulletin site.
+To log in, simply enter the username and password of a user account with administrator privileges, such as the one you created towards the end of the installation script process.</description>
+    </item>
+    
+    <item>
+      <title>Quick Setup</title>
+      <link>http://vb5manual.test/administration/site_builder/quick_setup/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://vb5manual.test/administration/site_builder/quick_setup/</guid>
+      <description>This option is always available to the primary administrator, even when the main Site Builder menu is off. The Quick Setup tool allows you to get your site online quickly and invite people to join. It includes options from several of the tools above as well.
+Upload Logo Add New Forums Invite Members Select a Style </description>
+    </item>
+    
+    <item>
+      <title>Upgrading from Legacy Versions</title>
+      <link>http://vb5manual.test/maintaining/upgrading_from_legacy_versions/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://vb5manual.test/maintaining/upgrading_from_legacy_versions/</guid>
+      <description>What to know before you upgrade from vB3 or vB4 Upgrading any major software platform should be carefully thought through beforehand; for many of you, vBulletin is the heart of your site. Here are some things to consider when upgrading:
+Some functionality may have been deprecated and not will not be carried forward. Data structures are completely different. The vBulletin 5 Connect upgrade script will upgrade your existing data to the new format.</description>
+    </item>
+    
+    <item>
+      <title>Why BBCode?</title>
+      <link>http://vb5manual.test/end_user_guide/bbcode_reference/why-bbcode/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://vb5manual.test/end_user_guide/bbcode_reference/why-bbcode/</guid>
+      <description>Users often want to create rich and featured documents on the web. Unfortunately there are limitations to this due to how the Web works. In order to protect the users of this site, vBulletin implements BB Code. These codes allows you to create exciting content without worrying about the people who may not be working in your best interest. BBCode doesn&amp;rsquo;t allow others to embed tools to steal cookies, implant viruses on your machine and prevents other security issues from happening.</description>
+    </item>
+    
+    <item>
+      <title>Basic BBCode</title>
+      <link>http://vb5manual.test/end_user_guide/bbcode_reference/basic-bbcode/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://vb5manual.test/end_user_guide/bbcode_reference/basic-bbcode/</guid>
+      <description>Basic BBCode allows the basics of document formatting. The BBCode included here are font, color, size, bold, italic, underline, and alignment.
+FontThis tag allows you to change the font or type style of your text.
+Available Fonts: Arial, Comic Sans MS, Courier New, Georgia, Lucida Sans Unicode, Tahoma, Times New Roman, Trebuchet MS, Verdana.
+Usage:[font=option]value[/font]Example Usage:[font=Georgia]This text is in the Georgia type style.[/font]Example Output:This text is in the Georgia type style.</description>
+    </item>
+    
+    <item>
+      <title>Category List</title>
+      <link>http://vb5manual.test/administration/AdminCP/articles/category_list/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://vb5manual.test/administration/AdminCP/articles/category_list/</guid>
+      <description>The Category List allows you to manage your Article Channels. You can publish, edit and change the display order quite easily.
+If you want to apply an action such as publishing or unpublishing a Category, check its box on the left and choose the action from the drop down at the top of the page. You can apply actions to multiple Categories at a time.
+To edit the Display Order of the Categories, edit the display order values on the screen and click the Save Display Order button.</description>
+    </item>
+    
+    <item>
+      <title>How do I add additional owners to my blog?</title>
+      <link>http://vb5manual.test/end_user_guide/managing_blogs/how-do-i-add-additional-owners-to-my-blog/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://vb5manual.test/end_user_guide/managing_blogs/how-do-i-add-additional-owners-to-my-blog/</guid>
+      <description>If you wish to share ownership of your Blog, you would go to the main Blog page and on the right side under Blog Summary there is anAdministrative dropdown menu. Go to that menu and select Manage Contributors. On the right side of that page is a text area next tothe heading &#34;Add Moderator&#34;. You may enter the other user&#39;s username, hit tag to get it accepted and then click Add.</description>
+    </item>
+    
+    <item>
+      <title>How do I add moderators to my group?</title>
+      <link>http://vb5manual.test/end_user_guide/managing_groups/how-do-i-add-moderators-to-my-group/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://vb5manual.test/end_user_guide/managing_groups/how-do-i-add-moderators-to-my-group/</guid>
+      <description>Additional owners can be assigned to a group and will allow them to review pending joined group requests, subscriber requests and posts. To add additional owners, navigate to the group you&#39;d like to add these users too and then hover over the &#39;Administrative&#39; click. From the dropdown that appears, click &#39;Manage Group Managers&#39;.
+A new page will appear showing a text field where additional owners can be added to the group in question.</description>
+    </item>
+    
+    <item>
+      <title>How do I add photos to an album?</title>
+      <link>http://vb5manual.test/end_user_guide/managing_albums/how-do-i-add-photos-to-an-album/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://vb5manual.test/end_user_guide/managing_albums/how-do-i-add-photos-to-an-album/</guid>
+      <description>If you have previously created a photo album you may add additional photos by going to your profile and clicking on the MEDIA tab. You will see all existing albums. Click on the thumbnail or title of the album you wish to add photos to.
+The album will open. Press the Add Photos button. On the new window press the Upload More button to get the file selection dialog box. Choose one or more files as usual to upload.</description>
+    </item>
+    
+    <item>
+      <title>How do I change my Avatar?</title>
+      <link>http://vb5manual.test/end_user_guide/managing_account/how-do-i-change-my-avatar/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://vb5manual.test/end_user_guide/managing_account/how-do-i-change-my-avatar/</guid>
+      <description>To add an avatar to your account, please visit your user profile. You can visit your User Profile by clicking on your name in the upper right corner and selecting &#34;User Profile&#34; from the drop down menu.
+Once on your user profile, hover your mouse over the default avatar presented. You will be shown a link to upload your avatar. Click on it and follow the instructions on the screen. If you&#39;re avatar is too large, you will be provide with an opportunity to clip the image to fit.</description>
+    </item>
+    
+    <item>
+      <title>How do I share photos?</title>
+      <link>http://vb5manual.test/end_user_guide/creating_content/how-do-i-share-photos/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://vb5manual.test/end_user_guide/creating_content/how-do-i-share-photos/</guid>
+      <description>You may share photos in any forum, group, or blog for which you have permission to do so. If you see the &#34;Share Photos&#34; button, represented by the camera icon, in the editor you may click on it either when creating a new topic or posting a reply. You may attach photos (or any image) to a post either by uploading new files or attaching images you previously uploaded. To upload new photos press the Upload button and browse to the images you wish to upload.</description>
+    </item>
+    
+    <item>
+      <title>New Style</title>
+      <link>http://vb5manual.test/administration/AdminCP/styles/style_manager/new_style/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://vb5manual.test/administration/AdminCP/styles/style_manager/new_style/</guid>
+      <description>You can create a new style with no parents by clicking Add New Style at the bottom of the Style Manager.
+You must click Save for changes to take effect. After you have saved your new style, you are returned to the front page of the Style Manager, where the name of your new style is shown. Parent Style: Choose the existing style that will provide the set of attributes that your new style will inherit.</description>
+    </item>
+    
+    <item>
+      <title>Preparing the Files for your server</title>
+      <link>http://vb5manual.test/installing/preparing_files/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://vb5manual.test/installing/preparing_files/</guid>
+      <description>To extract the files from the package, open the folder on your computer where you saved the vBulletin package and double click the vBulletin package. The system should automatically extract the package for you into its own folder.
+[screen shot of OS X after the extraction is complete with the original zip and the new folder]
+When the extraction complete, you will find that inside of the new folder there are two other folders called upload and another called do_not_upload.</description>
+    </item>
+    
+    <item>
+      <title>Registration</title>
+      <link>http://vb5manual.test/end_user_guide/general_help/registration/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://vb5manual.test/end_user_guide/general_help/registration/</guid>
+      <description>The administrator will probably require you to register to make full use of the features of this site. Being registered gives you a unique username and identity on the board.Registration is free unless otherwise specified and offers some or all of the following features depending how the administrator has configured the site:
+Posting new topicsReplying to other peoples&#39; topicsEditing your contentSending private messages to other membersSubscribing to contentCreate a unique signature to use in postsUpload a custom AvatarHow do I register?</description>
+    </item>
+    
+    <item>
+      <title>Search In Templates</title>
+      <link>http://vb5manual.test/administration/AdminCP/styles/search_templates/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://vb5manual.test/administration/AdminCP/styles/search_templates/</guid>
+      <description>lets you search for strings in templates from the style(s). Additionally you can run a &amp;ldquo;find and replace&amp;rdquo; search which allows you to replace all instances of a certain string with another string.
+This page needs to be created&amp;hellip; </description>
+    </item>
+    
+    <item>
+      <title>Style</title>
+      <link>http://vb5manual.test/administration/site_builder/style/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://vb5manual.test/administration/site_builder/style/</guid>
+      <description>Themes The Theme Selection tool will show all Styles installed in your vBulletin Site. Selecting one of the themes shown will provide a preview image and select it. If you decide that you do not like it, simply select a new theme. Your selection is saved when you click the Save Changes.
+CSS Editor Using the CSS Editor, you can alter how your site look and feel, hide elements, and create a unique experience.</description>
+    </item>
+    
+    <item>
+      <title>Upgrading vBulletin</title>
+      <link>http://vb5manual.test/maintaining/upgrading-vbulletin/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://vb5manual.test/maintaining/upgrading-vbulletin/</guid>
+      <description>Preparing the vBulletin Files for Upload After you have successfully downloaded the vBulletin package to your computer you will need to prepare the scripts to be uploaded to your web server. We’ve included the instructions for both Windows and MacOS below.
+The first thing to do is to decompress the package into its constituent files. If you’ve downloaded the .zip package and your computer is running a recent operating system, you should have all the tools you need to do this.</description>
+    </item>
+    
+    <item>
+      <title>Channels</title>
+      <link>http://vb5manual.test/administration/site_builder/channels/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://vb5manual.test/administration/site_builder/channels/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Common Issues while Upgrading</title>
+      <link>http://vb5manual.test/maintaining/common_upgrade_issues/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://vb5manual.test/maintaining/common_upgrade_issues/</guid>
+      <description>I tried to run the upgrade wizard from the command line and got an error that MySQLi is not installed.
+Your CLI version of PHP may not have been compiled with the same modules as your web version. If you are missing mysqli and have set your config.php to use mysqli, you will receive an immediate error. Either add mysqli support to your CLI php or switch to mysql in config.</description>
+    </item>
+    
+    <item>
+      <title>Creating Links</title>
+      <link>http://vb5manual.test/end_user_guide/bbcode_reference/creating-links/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://vb5manual.test/end_user_guide/bbcode_reference/creating-links/</guid>
+      <description>These BBCodes allow you to link to web pages and emails both within and outside the the current site. They make it easy to share information.
+Note: Most links to webpages will be converted automatically by the site. However some protocols may still need the link tag.
+URL Hyperlinks Allows you to link to other pages or even other sites. This should not be confused with the Link content type described under Creating Content.</description>
+    </item>
+    
+    <item>
+      <title>How do I customize my profile?</title>
+      <link>http://vb5manual.test/end_user_guide/managing_account/how-do-i-customize-my-profile/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://vb5manual.test/end_user_guide/managing_account/how-do-i-customize-my-profile/</guid>
+      <description>The site administrator may have given you the ability to customize your profile. This allows you to change the fonts, colors and backgrounds on different elements of your user profile. To get started click on your name in the top right corner and select My Profile from the drop down. Once viewing your User Profile, click the &#34;Customize My Style&#34; button in the left column.
+This will open up the customization interface above your user profile.</description>
+    </item>
+    
+    <item>
+      <title>How do I manage Blog Members?</title>
+      <link>http://vb5manual.test/end_user_guide/managing_blogs/how-do-i-manage-blog-members/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://vb5manual.test/end_user_guide/managing_blogs/how-do-i-manage-blog-members/</guid>
+      <description>If you wish to invite members to subscribe to your Blog, you would go to the main Blog page and on the right side under Blog Summary is an Administrative dropdown menu. Go to that menu and select Invite Members. On the right side of that page is a text area next to theheading &#34;Enter User Names&#34;. You may enter other user&#39;s usernames separated by a comma and then hit the Save and Publish button on thebottom.</description>
+    </item>
+    
+    <item>
+      <title>How do I share links and videos?</title>
+      <link>http://vb5manual.test/end_user_guide/creating_content/how-do-i-share-links-and-videos/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://vb5manual.test/end_user_guide/creating_content/how-do-i-share-links-and-videos/</guid>
+      <description>You may post links or videos in any forum, group, or blog for which you have permission to do so. If you see the &#34;Post Link&#34; button, represented by a paperclip icon, in the editor toolbar you may click on it either when creating a new topic or posting a reply. After clicking on Post Link button in the editor you will have the standard message box as well as an additional URL field that begins with http://.</description>
+    </item>
+    
+    <item>
+      <title>Login / Logoff</title>
+      <link>http://vb5manual.test/end_user_guide/general_help/login-logoff/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://vb5manual.test/end_user_guide/general_help/login-logoff/</guid>
+      <description>Login to the site by locating the &#34;Login or Sign Up&#34; link located in the top right corner of the page.
+Click the link to activate the login box.
+Enter in your username and password with the option to &#34;Remember me&#34; then click &#34;Log in&#34;.
+Remember me allows a user to stay logged instead of their session with the site timing out after a default of 15 minutes without activity.</description>
+    </item>
+    
+    <item>
+      <title>Replacement Variable Manager</title>
+      <link>http://vb5manual.test/administration/AdminCP/styles/replacement_variables/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://vb5manual.test/administration/AdminCP/styles/replacement_variables/</guid>
+      <description>Replacement variables are useful in representing commonly used values in styles and user content. They allow you to easily replace content items from users and in page text in a finished page output. Use the Styles &amp;amp; Templates &amp;gt; Replacement Variable Manager group to add / modify / delete replacement variables. Note: To learn more about Replacement Variables, please read the Replacement Variables Introduction The Replacement Variable Manager lists all of your styles, together with any replacement variables defined within them.</description>
+    </item>
+    
+    <item>
+      <title>Tag List</title>
+      <link>http://vb5manual.test/administration/AdminCP/articles/tag_list/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://vb5manual.test/administration/AdminCP/articles/tag_list/</guid>
+      <description>The Tag List provides a very simple interface. It will list the tags used in your articles and a link to view the articles that use each tag within the Content List. From the Content List you can edit articles as needed.</description>
+    </item>
+    
+    <item>
+      <title>Uploading vBulletin to your server</title>
+      <link>http://vb5manual.test/installing/uploading_vbulletin/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://vb5manual.test/installing/uploading_vbulletin/</guid>
+      <description>Preparing the Files for your server To extract the files from the package, open the folder on your computer where you saved the vBulletin package and double click the vBulletin package. The system should automatically extract the package for you into its own folder.
+When the extraction complete, you will find that inside of the new folder there are two other folders called upload and another called do_not_upload.
+upload - This folder contains the vBulletin files that need to be uploaded to your web server.</description>
+    </item>
+    
+    <item>
+      <title>Why can&#39;t I create new video albums?</title>
+      <link>http://vb5manual.test/end_user_guide/managing_albums/why-can-t-i-create-new-video-albums/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://vb5manual.test/end_user_guide/managing_albums/why-can-t-i-create-new-video-albums/</guid>
+      <description>Video albums are not supported at this time. However if you go to your profile and click the MEDIA tab there will be a Videos album. If you click on the Videos album you will see a list of all videos you previously attached to posts on the site. This allows for a quick way for you or others to see the videos that you have shared in the past.</description>
+    </item>
+    
+    <item>
+      <title>Download/Upload Styles</title>
+      <link>http://vb5manual.test/administration/AdminCP/styles/download_upload_styles/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://vb5manual.test/administration/AdminCP/styles/download_upload_styles/</guid>
+      <description>This section covers how to download and upload styles.
+Downloading styles is handy when you want to make a backup of your templates and options, or share your work with other forum administrators.
+Uploading styles is handy to revert to a backup or applying the same style to several boards. You can use this option to import a style that someone has given you.
+Make sure you read and understand all the options to avoid incomplete style downloads / uploads.</description>
+    </item>
+    
+    <item>
+      <title>How do I create a Poll?</title>
+      <link>http://vb5manual.test/end_user_guide/creating_content/how-do-i-create-a-poll/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://vb5manual.test/end_user_guide/creating_content/how-do-i-create-a-poll/</guid>
+      <description>If you are creating a new topic you may be able to post a poll if the Administrator has given you permission to do so.
+Polls allow you to pose questions to other users of the site. Other users will be able to vote for one (or more, if you allow) choices and a summary of theresults will be displayed at the start of the topic after you or they vote.</description>
+    </item>
+    
+    <item>
+      <title>How do I manage group members?</title>
+      <link>http://vb5manual.test/end_user_guide/managing_groups/how-do-i-manage-group-members/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://vb5manual.test/end_user_guide/managing_groups/how-do-i-manage-group-members/</guid>
+      <description>If you wish to invite members to join your Group, you would need to go to the main Group page and on the right side is an Administrative dropdown menu. From there, select &#39;Invite Members&#39; and on the right, there will be a text area with the heading &#39;Enter User Names&#39;. You may enter the usernames here separated by commas and then click &#39;Save Changes&#39;. Once these members accept your invitation, they will show up on the &#39;Manage Joined Members&#39; list.</description>
+    </item>
+    
+    <item>
+      <title>How do I reset my user profile to the default?</title>
+      <link>http://vb5manual.test/end_user_guide/managing_account/how-do-i-reset-my-user-profile-to-the-default/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://vb5manual.test/end_user_guide/managing_account/how-do-i-reset-my-user-profile-to-the-default/</guid>
+      <description>To revert your customized Profile Style to the default site style, click on your user name in the top right corner of the page. Select My Profile off the dropdown menu.
+On your profile screen click &#34;Customize My Style&#34;. This will open the Customization Tools above your profile.
+Click the &#34;Default&#34; button and your style should show the default site style again.
+To save your changes click the &#34;Save&#34; Button and exit the customization tools.</description>
+    </item>
+    
+    <item>
+      <title>Installing vBulletin</title>
+      <link>http://vb5manual.test/installing/installing_vbulletin/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://vb5manual.test/installing/installing_vbulletin/</guid>
+      <description>The installation wizard provides as seamless an experience as possible with as little intervention from the operator as is possible.
+Once all the vBulletin files have been successfully uploaded to your web server, you will need to run the vBulletin Installation Script in order to populate your database.
+The Installer runs as a PHP script using your web browser. To start the installation process, open your browser and type the HTTP address of your forums directory, followed by [i]/core/install/install.</description>
+    </item>
+    
+    <item>
+      <title>Managing Permissions and Privacy for your Blog</title>
+      <link>http://vb5manual.test/end_user_guide/managing_blogs/managing-permissions-and-privacy-for-your-blog/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://vb5manual.test/end_user_guide/managing_blogs/managing-permissions-and-privacy-for-your-blog/</guid>
+      <description>To decide who may view and comment on your Blog, you would go to the main Blog page and on the right side under Blog Summary is anAdministrative dropdown menu. Go to that menu and select Permissions&amp; Privacy. On this page, you may set the following:
+Default Entry Options - you may set whether Comments are allowed by default (you may change this per each entry when it is created) and whether you wish to Moderate the CommentsSubscriber requests - set whether to auto-accept subscribers or require approval.</description>
+    </item>
+    
+    <item>
+      <title>Pages</title>
+      <link>http://vb5manual.test/administration/site_builder/pages/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://vb5manual.test/administration/site_builder/pages/</guid>
+      <description>There are two types of pages in vBulletin. System Pages and Custom Pages. System pages cannot be removed and may contain modules (content blocks) that are required for that page. However, System Pages can be edited and have optional modules added or removed to customize the page. You can also create Custom Pages. These can be added and deleted and may contain any number of modules. You can access your custom pages by clicking on the Pages link.</description>
+    </item>
+    
+    <item>
+      <title>Style Variables</title>
+      <link>http://vb5manual.test/administration/AdminCP/styles/style_manager/style_variables/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://vb5manual.test/administration/AdminCP/styles/style_manager/style_variables/</guid>
+      <description>StyleVars (short for Style Variables) are PHP variables that contain a single value used to control the appearance of some aspect of a vBulletin style. Stylevars are used in conjunction with CSS and Templates to control the look and feel of your vBulletin site.
+How Style Variables Interact with CSS vBulletin uses Style Variables to dynamically build the CSS it uses for rendering during page load or when the files are written to the server, if you have enabled that option.</description>
+    </item>
+    
+    <item>
+      <title>Using Quotes</title>
+      <link>http://vb5manual.test/end_user_guide/bbcode_reference/using-quotes/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://vb5manual.test/end_user_guide/bbcode_reference/using-quotes/</guid>
+      <description>Quotes are a great way to maintain continuity in long conversations. They can be used to provide context and reference posts for replies to posts made hours or days earlier.
+QuoteThe [quote] tag allows you to attribute text to someone else.Usage:[quote]Quote[/quote]
+[quote=User Name]value[/quote]
+[quote=User Name,Node]value[/quote]Example Usage:[quote]Lorem ipsum dolor sit amet[/quote]
+[quote=John Doe]Lorem ipsum dolor sit amet[/quote]
+[quote=John Doe;1]Lorem ipsum dolor sit amet[/quote]Example Output:Lorem ipsum dolor sit ametOriginally posted by John DoeLorem ipsum dolor sit ametOriginally posted by John DoeView PostLorem ipsum dolor sit ametupdated: 2021-10-06 01:30pm | Version: 5.</description>
+    </item>
+    
+    <item>
+      <title>What is the Posted Photos album for?</title>
+      <link>http://vb5manual.test/end_user_guide/managing_albums/what-is-the-posted-photos-album-for/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://vb5manual.test/end_user_guide/managing_albums/what-is-the-posted-photos-album-for/</guid>
+      <description>In your list of photo albums you may see an album titled Posted Photos. This is a system generated container that includes all images posted in topics or other content and are not part of your specific albums.
+The Posted Photos album is a good way to find old posted images and reshare them in new topics.
+updated: 2021-10-06 01:30pm | Version: 5.6.5 Alpha 11 </description>
+    </item>
+    
+    <item>
+      <title>Creating a Test Installation</title>
+      <link>http://vb5manual.test/maintaining/creating-test-installation/</link>
+      <pubDate>Tue, 07 Sep 2021 20:48:18 +0000</pubDate>
+      
+      <guid>http://vb5manual.test/maintaining/creating-test-installation/</guid>
+      <description>Creating a Test/Development Installation When a new version of vBulletin comes out, there&amp;rsquo;s always a clamour for people to be one of the first up and running with the latest version. While in the case of bug fixes, the need to upgrade quickly is understandable, too often people don’t consider what effect an upgrade will have on their site. The following is aimed at providing enough knowledge to be able to create a test &amp;lsquo;mirror&amp;rsquo; of a site so that a test of an upgrade (or any change for that matter!</description>
+    </item>
+    
+    <item>
+      <title>Advanced Editing (using BBCode)</title>
+      <link>http://vb5manual.test/end_user_guide/creating_content/advanced-editing-using-bbcode/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://vb5manual.test/end_user_guide/creating_content/advanced-editing-using-bbcode/</guid>
+      <description>When posting messages you may wish to include some formatting such as bold text, italic text or underline text.
+Adding formatting to a post can be done in either of two ways:
+Using clickable buttons in the Advanced editor similar to those found in word processorsTyping in BB Codes around text manuallyClickable buttons are available in the Advanced editor. Click on the A icon in the editor to toggle the Advanced editor controls.</description>
+    </item>
+    
+    <item>
+      <title>Find Updated Templates</title>
+      <link>http://vb5manual.test/administration/AdminCP/styles/find_updated_templates/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://vb5manual.test/administration/AdminCP/styles/find_updated_templates/</guid>
+      <description>vBulletin&amp;rsquo;s default templates are often updated during upgrades. During this process the system will automatically try to merge any customizations into the new defaults. Should this merge fail, the template will be listed here. As the administrator, you will be able to compare your old version with the new version to make any necessary changes. You can choose to modify or revert a template if it is listed. If you select revert, your customizatized template will be deleted from the system and the default will be used.</description>
+    </item>
+    
+    <item>
+      <title>Finishing the Install</title>
+      <link>http://vb5manual.test/installing/after_installation/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://vb5manual.test/installing/after_installation/</guid>
+      <description>When you are finished with the Install Wizard, you will need to delete the %vbulletin_dir%/core/install directory and all of its contents.</description>
+    </item>
+    
+    <item>
+      <title>How do I delete an Album?</title>
+      <link>http://vb5manual.test/end_user_guide/managing_albums/how-do-i-delete-an-album/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://vb5manual.test/end_user_guide/managing_albums/how-do-i-delete-an-album/</guid>
+      <description>You may delete an existing album by going to your profile and clicking on the MEDIA tab.
+Click on the photo album you wish to delete and it will open. In the top corner there will be a small pencil con and Edit link. Click on this to open the Album edit page.
+On the edit page you can change the Album title, description, upload more photos, or delete the album.</description>
+    </item>
+    
+    <item>
+      <title>How do I edit my signature?</title>
+      <link>http://vb5manual.test/end_user_guide/managing_account/how-do-i-edit-my-signature/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://vb5manual.test/end_user_guide/managing_account/how-do-i-edit-my-signature/</guid>
+      <description>You can set and change your signature by going to your username in the upper right corner &gt; click to get the drop down &gt; select User Settings. On that page, select the Account tab and then go down to the area that says &#34;Conversation Detail Options&#34;. On the right side, you will see the option &#34;Edit Post Signature&#34;. If you click that link, you will get a popup editor that will allow you to enter/edit your signature.</description>
+    </item>
+    
+    <item>
+      <title>How do I recover my lost password?</title>
+      <link>http://vb5manual.test/end_user_guide/general_help/how-do-i-recover-my-lost-password/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://vb5manual.test/end_user_guide/general_help/how-do-i-recover-my-lost-password/</guid>
+      <description>I forgot my password, what can I do?If you&#39;ve forgotten you password you can click on the &#34;Forgot password or user name?&#34; link. It will appear in the &#34;Sign In&#34; box and anytime you enter an incorrect password. You will be taken to a new page where you can enter your registered email address and may need to also answer a human verification challenge to prevent exploitation by automated bots.</description>
+    </item>
+    
+    <item>
+      <title>How do I reuse a photo?</title>
+      <link>http://vb5manual.test/end_user_guide/managing_albums/how-do-i-reuse-a-photo/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://vb5manual.test/end_user_guide/managing_albums/how-do-i-reuse-a-photo/</guid>
+      <description>If you have previously uploaded a photo you may reuse it in a photo post or photo album without uploading it again.
+Whether you are adding photos to a new album, an existing album, or to a new topic besides the Upload option you will also see a Select from Photo Album option. Click this button and you will be presented with a list of your photo albums on one side and the thumbnail images of photos from that album on the other side.</description>
+    </item>
+    
+    <item>
+      <title>Inline Media (Photos and Videos)</title>
+      <link>http://vb5manual.test/end_user_guide/bbcode_reference/inline-media-photos-and-videos/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://vb5manual.test/end_user_guide/bbcode_reference/inline-media-photos-and-videos/</guid>
+      <description>Media allows your content to come alive. vBulletin allows you to embed media including images and videos within your content. These BB Codes explain how to do this manually.
+ImagesThe [img] tag allows you to embed images within your posts. You can also combine this tag with the [url] tag to make images become links.Usage:[img]value[/img]Example Usage:[img]http://www.example.com/img/misc/vbulletin5_logo.png[/img] (Not linked)
+[url=http://www.example.com] [img]http://www.example.com/img/misc/vbulletin5_logo.png[/img][/url] (Linked)Example Output:(Not linked)</description>
+    </item>
+    
+    <item>
+      <title>Managing Permissions and Privacy for your Group</title>
+      <link>http://vb5manual.test/end_user_guide/managing_groups/managing-permissions-and-privacy-for-your-group/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://vb5manual.test/end_user_guide/managing_groups/managing-permissions-and-privacy-for-your-group/</guid>
+      <description>When creating your new Group, you can set the Permissions and Privacy for the Group. These are presented in three options.Group Type - This controls how people join. You can set it so anyone can join, that join requests are moderated by you, or require that you invite them before they can join.Permissions &amp; Privacy - set who may view your Group and leave comments - Everyone, Group Members Only, or Group Members &amp; Registered UsersCan Post - This controls who can post to the group.</description>
+    </item>
+    
+    <item>
+      <title>New Page</title>
+      <link>http://vb5manual.test/administration/site_builder/new_page/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://vb5manual.test/administration/site_builder/new_page/</guid>
+      <description>In order to create a page, you need to turn on Site Builder. You do that by clicking [button=&amp;ldquo;sb-editsite&amp;rdquo;]Edit Site[button] to the right of your username. This will reveal a menu along the top of your webpage. From here, you want to click on the “New Page” link. This opens the Page Editor with four tabs. These are: Add Module, Layouts, Template, and Color Style.
+Modules Layouts Templates Color Style </description>
+    </item>
+    
+    <item>
+      <title>Applying Security Patches</title>
+      <link>http://vb5manual.test/maintaining/6_patching_vbulletin/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://vb5manual.test/maintaining/6_patching_vbulletin/</guid>
+      <description>From time to time, it&amp;rsquo;s necessary to issue a Security Patch (or Patch Level) release for vBulletin software. This differs from the normal upgrade routine so this short article will clarify exactly what needs to be done when we announce a Patch Level (PL) release.
+A patch level release contains fixes for only the most critical issues in the previous release. In most cases, these are released to address a security issue.</description>
+    </item>
+    
+    <item>
+      <title>Can I use images in my signature?</title>
+      <link>http://vb5manual.test/end_user_guide/managing_account/can-i-use-images-in-my-signature/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://vb5manual.test/end_user_guide/managing_account/can-i-use-images-in-my-signature/</guid>
+      <description>It is up to the Administrator whether you may use images in your signature. If you are allowed to attach them, then an Upload Attachments button will be available on the signature editor popup.
+updated: 2021-10-06 01:30pm | Version: 5.6.5 Alpha 11 </description>
+    </item>
+    
+    <item>
+      <title>Common Issues</title>
+      <link>http://vb5manual.test/installing/common_issues/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://vb5manual.test/installing/common_issues/</guid>
+      <description>A list of common issues that people have while installing the software.
+I get an error saying that my PHP version is too low You will need to upgrade your PHP to the minimum required version or higher. If you do not manage your own server, you can ask your server administrator or hosting provider to do this for you. Sometimes, the hosting provider will support multiple versions of PHP. We recommend using the latest version available.</description>
+    </item>
+    
+    <item>
+      <title>Edit Page</title>
+      <link>http://vb5manual.test/administration/site_builder/edit_page/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://vb5manual.test/administration/site_builder/edit_page/</guid>
+      <description>Needs to be added.</description>
+    </item>
+    
+    <item>
+      <title>Facebook Connect</title>
+      <link>http://vb5manual.test/end_user_guide/general_help/facebook-connect/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://vb5manual.test/end_user_guide/general_help/facebook-connect/</guid>
+      <description>Facebook Connect is an optional vBulletin feature that, if enabled, allows for quicker registrations by automatically using information from your existing Facebook account on this site. If you have previously registered you may use Facebook Connect to link your site account with your Facebook profile.
+You may add or sever the Facebook link at any time by going to your username at the top of the page, and choosing &#34;User Settings.</description>
+    </item>
+    
+    <item>
+      <title>Sending Messages to Other Users</title>
+      <link>http://vb5manual.test/end_user_guide/creating_content/sending-messages-to-other-users/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://vb5manual.test/end_user_guide/creating_content/sending-messages-to-other-users/</guid>
+      <description>If the administrator has enabled the Private Messaging system, registered members may send each other private messages.
+How do I send a message to another user?This site uses a Private Message (or PM) system to allow users to send messages to each other if the Administrator has given you permission to do so. Private messages work a little like email, but are limited to registered members of this site. You may be able to include BB code, smilies and images in private messages that you send.</description>
+    </item>
+    
+    <item>
+      <title>Using Smilies</title>
+      <link>http://vb5manual.test/end_user_guide/bbcode_reference/using-smilies/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://vb5manual.test/end_user_guide/bbcode_reference/using-smilies/</guid>
+      <description>What are smilies?
+Smilies are icons that can be used in your posts to express emotions or feelings. You might wish to use these to show that you are happy, sad, joking, or embarrassed. For example, if you are telling a joke or being sarcastic you may wish to add a wink instead of writing &#39;this is a joke&#39;.
+The basic smilies are the same as what you would find on any instant messenger system.</description>
+    </item>
+    
+    <item>
+      <title>Creating Lists</title>
+      <link>http://vb5manual.test/end_user_guide/bbcode_reference/creating-lists/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://vb5manual.test/end_user_guide/bbcode_reference/creating-lists/</guid>
+      <description>Lists allow you to create bulleted points for your topic.
+Bulleted ListsThe [list] tag allows you to create simple, bulleted lists without specifying an option. Within the value portion, each bullet is denoted by the [*] tag.Usage:[list][*]item,[*]item, ...[/list]Example Usage:[list]
+[*]list item 1[*]list item 2[/list]Example Output:list item 1list item 2Advanced ListsThe [list] tag allows you to create advanced lists by specifying an option.</description>
+    </item>
+    
+    <item>
+      <title>Database Backup</title>
+      <link>http://vb5manual.test/maintaining/database-backup/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://vb5manual.test/maintaining/database-backup/</guid>
+      <description>Backing up your database is an important task that you should undertake on a regular basis. Chances are that your host makes regular backups but these tend to be difficult for partial restores. They may also provide tools to create database backups on demand. Discuss database backups with your host. If this is not available, then you will want to use the instructions below to make regular backups. Store these on your local workstation or in a Cloud Storage system.</description>
+    </item>
+    
+    <item>
+      <title>Header</title>
+      <link>http://vb5manual.test/administration/site_builder/header/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://vb5manual.test/administration/site_builder/header/</guid>
+      <description>The Header appears on every page just above the Navigation Bar. This displays your Site Logo and optional advertisements or ads.
+Accessing the Header Controls. To add a navigation item to your site, make sure that Site Builder is turned on by clicking the [button=&amp;ldquo;sb-editsite&amp;rdquo;]Edit Site[/button] button in the user menu at the top of the page. Once the Site Builder menu appears, click on the Header link.
+How to Change the Site Logo Alright, so now that you have your first page set up, you might want to change the site logo.</description>
+    </item>
+    
+    <item>
+      <title>How do I manage attachments?</title>
+      <link>http://vb5manual.test/end_user_guide/creating_content/how-do-i-manage-attachments/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://vb5manual.test/end_user_guide/creating_content/how-do-i-manage-attachments/</guid>
+      <description>You may have permission to attach files and images to your posts on this site. If you have permission you will see a paper with paperclip icon on the editor- pressing this button will bring up the Upload Attachment option.
+File attachments may be data files such as .zip, .txt, .doc, or any other file types the Administrator has allowed. You may also attach images (.jpg, .png. and .gif.)
+To upload a file press the Upload Attachment button after you have clicked on the paper-clip icon at the top to show the button.</description>
+    </item>
+    
+    <item>
+      <title>How do I manage my privacy?</title>
+      <link>http://vb5manual.test/end_user_guide/managing_account/how-do-i-manage-my-privacy/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://vb5manual.test/end_user_guide/managing_account/how-do-i-manage-my-privacy/</guid>
+      <description>You may manage your privacy settings by going to your username in the upper right corner &gt; click to get the drop down &gt; select User Settings. On that page, select the Privacy tab. On that page you may customize who can see and comment on things you started, replied, followed and following under your profile. You may select to show these things to Everyone (default), your Subscribers, or all Members.</description>
+    </item>
+    
+    <item>
+      <title>Using vBulletin with NGINX</title>
+      <link>http://vb5manual.test/installing/using_vbulletin_with_nginx/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://vb5manual.test/installing/using_vbulletin_with_nginx/</guid>
+      <description>Using vBulletin with NGINX</description>
+    </item>
+    
+    <item>
+      <title>Creating Tables</title>
+      <link>http://vb5manual.test/end_user_guide/bbcode_reference/creating-tables/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://vb5manual.test/end_user_guide/bbcode_reference/creating-tables/</guid>
+      <description>Tables are used to format and control tabular data. Like a spreadsheet. The software supports basic table functionality to allow this.
+TableThis is the container tag. It contains multiple rows and multiple cells per row.Usage:[table][tr][td][/td][/tr][/table]Example Usage:[table]
+[tr]
+[td]value[/td]
+[td]value[/td]
+[/tr]
+[/table]Table RowRows setup the basis for your indivdiual cells and provide additional structure to the table.Usage:[tr]
+[td]value[/td]
+[td]value[/td]
+[/tr]Table CellTable cells actually hold the content of your table.</description>
+    </item>
+    
+    <item>
+      <title>File Storage</title>
+      <link>http://vb5manual.test/maintaining/file_storage/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://vb5manual.test/maintaining/file_storage/</guid>
+      <description>By default, vBulletin stores all data in the database. This default is for convenience instead of performance. To allow vBulletin to perform better, you can move the storage of attachments, avatars, CSS and templates to the file system.
+These settings are configured on vBulletin Cloud sites by default. Cloud Site owners will not be able to make these changes. CSS As Files With a default installation, vBulletin will build and serve the CSS along with standard templates.</description>
+    </item>
+    
+    <item>
+      <title>Flagging Inappropriate Content</title>
+      <link>http://vb5manual.test/end_user_guide/creating_content/flagging-inappropriate-content/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://vb5manual.test/end_user_guide/creating_content/flagging-inappropriate-content/</guid>
+      <description>If you find inappropriate content on the site, you can flag it for review by the staff. To do this, look at the content or discussion container and you will see a Flag link. Click on this link and an overlay will open up to flag or report the content. You can enter in a reason why you think the content is inappropriate. All flagged items will be reviewed by site staff according to the posted guidelines and if deemed necessary, they will take action on it.</description>
+    </item>
+    
+    <item>
+      <title>How do I manage my notifications?</title>
+      <link>http://vb5manual.test/end_user_guide/managing_account/how-do-i-manage-my-notifications/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://vb5manual.test/end_user_guide/managing_account/how-do-i-manage-my-notifications/</guid>
+      <description>You may manage your notification settings by going to your username in the upper right corner &gt; click to get the drop down &gt; select User Settings. On that page, select the Notifications tab. One this page, you may select your Email Notifications (turn it on, make it daily or weekly, or choose to get it through the message center only). You may also set what type of Notifications you would like to receive.</description>
+    </item>
+    
+    <item>
+      <title>Navigation Bar</title>
+      <link>http://vb5manual.test/administration/site_builder/navigation_bar/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://vb5manual.test/administration/site_builder/navigation_bar/</guid>
+      <description>What is the Navigation Bar? The Navigation Bar makes up the primary menu in vBulletin. End-users will use this navigation to reach the sections of your site. It is displayed directly below the Header. The Navigation Bar is made up of two parts. First is the Main Navigation Bar. When using the Styles provided by the software, the Navigation Bar appears as a series of horizontal tabs under the Header.</description>
+    </item>
+    
+    <item>
+      <title>Searching this Site</title>
+      <link>http://vb5manual.test/end_user_guide/general_help/searching-this-site/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://vb5manual.test/end_user_guide/general_help/searching-this-site/</guid>
+      <description>Basic SearchYou can perform a basic global search by entering your keywords into the search form located at the top right corner of the page. This will return any results matching your keywords up to the maximum value allowed by the site administrator.
+Advanced SearchThe site also has an Advanced Search. You can access the Advanced Search by clicking on the down arrow in the search box and selecting it off the resulting menu.</description>
+    </item>
+    
+    <item>
+      <title>Finding New Content</title>
+      <link>http://vb5manual.test/end_user_guide/general_help/finding-new-content/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://vb5manual.test/end_user_guide/general_help/finding-new-content/</guid>
+      <description>Today&#39;s Posts / New TopicsToday&#39;s Posts and New Topics are a means by which members can discover the latest content on a site, regardless of the channel (forum, group, blog etc) or content type (posts, photos, links etc). For many people this can be the most convenient way of exploring the site, as it aggregates all recent activity in one place.
+TODAY&#39;S POSTS is usually shown only to guests (unregistered users browsing the site), and provides a simple but comprehensive list of all content that has been updated in the past 24 hours.</description>
+    </item>
+    
+    <item>
+      <title>Footer</title>
+      <link>http://vb5manual.test/administration/site_builder/footer/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://vb5manual.test/administration/site_builder/footer/</guid>
+      <description>What is the Footer? The footer is a list of navigation links that appear at the bottom of the site. With Site Builder, you’re able to add links to the footer that can take your users anywhere you want them to go. These items behave similarly to Navigation Links in the Navigation Bar. Unlike the Navigation Bar, the footer doesn&amp;rsquo;t allow for sub-navigation menus. Any changes to the Footer are global and apply to all pages.</description>
+    </item>
+    
+    <item>
+      <title>How do I follow an important discussion?</title>
+      <link>http://vb5manual.test/end_user_guide/creating_content/how-do-i-follow-an-important-discussion/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://vb5manual.test/end_user_guide/creating_content/how-do-i-follow-an-important-discussion/</guid>
+      <description>Above each discussion or topic, there is a Subscribe toggle. Clicking on this will enable you to follow the discussion easier. Each time someone replies to the discussion, you will get a notification that will show on your Messages page. You can follow these notifications to the new content or delete them from the Notifications area on your Messages Page.
+If you wish to no longer follow a discussion or topic, then clicking on the button again will turn off your subscription.</description>
+    </item>
+    
+    <item>
+      <title>Using Code Snippets</title>
+      <link>http://vb5manual.test/end_user_guide/bbcode_reference/using-code-snippets/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://vb5manual.test/end_user_guide/bbcode_reference/using-code-snippets/</guid>
+      <description>Displaying Code within a topic often requires special handling to preserve formatting and prevent it from being parsed by the end-user&amp;rsquo;s client.
+CodeThe [code] tag switches to a fixed-width (monospace) font and preserves all spacing. Note: If you have permission to post HTML, it will be parsed. If you do not wish HTML to be parsed, you should surround it with [noparse] tags.Usage:[code]value[/code]Example Usage:[code]&amp;lt;script type=&#34;text/javascript&#34;&amp;gt;</description>
+    </item>
+    
+    <item>
+      <title>What are Subscribers?</title>
+      <link>http://vb5manual.test/end_user_guide/managing_account/what-are-subscribers/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://vb5manual.test/end_user_guide/managing_account/what-are-subscribers/</guid>
+      <description>Subscribers are users that have subscribed to your profile. You will receive a Notification if someone subscribes to you (user settings -&gt; notifications) and you may choose to Accept or Ignore their request to subscribe to your profile. You may also set it up so that you will automatically accept any subscriber&#39;s request in User Settings &gt; Privacy &gt; Subscriber Request &gt; enter a checkmark next to Auto-accept subscriber requests.</description>
+    </item>
+    
+    <item>
+      <title>Inline Moderation</title>
+      <link>http://vb5manual.test/moderators/inline-moderation/</link>
+      <pubDate>Fri, 17 Sep 2021 00:00:00 +0000</pubDate>
+      
+      <guid>http://vb5manual.test/moderators/inline-moderation/</guid>
+      <description>Inline thread moderation allows moderators and administrators to edit topics and replies easily from the Forum or Topic that they are currently viewing.
+Channel Topic Moderation To access the inline moderation for topics open a forum page, and click on the Topics tab, if not already selected. A list of topics is displayed. Each topic has a checkbox at the end of the row. Selecting the checkbox adds the topic to the list of topics to be moderated.</description>
+    </item>
+    
+    <item>
+      <title>Cookies (and how they are used.)</title>
+      <link>http://vb5manual.test/end_user_guide/general_help/cookies-and-how-they-are-used/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://vb5manual.test/end_user_guide/general_help/cookies-and-how-they-are-used/</guid>
+      <description>Cookies are very small text files that are stored on your computer when you visit some websites. We use cookies to help identify your computer so we can tailor your user experience, track shopping basket contents and remember where you are in the order process. You can disable any cookies already stored on your computer, but these may stop our website from functioning properly.
+The following is strictly necessary in the operation of our website.</description>
+    </item>
+    
+    <item>
+      <title>How do I ignore another member?</title>
+      <link>http://vb5manual.test/end_user_guide/managing_account/how-do-i-ignore-another-member/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://vb5manual.test/end_user_guide/managing_account/how-do-i-ignore-another-member/</guid>
+      <description>If there are particular members that are bothering you and you do not wish to see their posts or receive Private Messages from them, then you can add these members to your &#39;Ignore List&#39;.
+In the top right of the forum, click your Username. A dropdown menu will appear and from here you need to select &#39;User Settings&#39;. On the page that appears, click &#39;Account&#39; and scroll to the bottom. In the text area next to &#39;Ignore List&#39;, enter the Usernames of users that you want to Ignore.</description>
+    </item>
+    
+    <item>
+      <title>Initializing the API</title>
+      <link>http://vb5manual.test/developers/vbapi/initializing_api/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://vb5manual.test/developers/vbapi/initializing_api/</guid>
+      <description>(For API Version 5)
+This documentation describes vBulletin 5 API. With the API, mobiles or other clients can communicate with vBulletin and do most tasks that vB&amp;rsquo;s web frontend can do.
+Conventions In this documentation, you will find a number of styles of text that distinguish between different kind of information. Here are some examples of these styles and an explaination of their meaning.
+API method names and parameters in text are shown as follows: &amp;ldquo;You can call [[VB5_API:user.</description>
+    </item>
+    
+    <item>
+      <title>Interfaces</title>
+      <link>http://vb5manual.test/developers/interfaces/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://vb5manual.test/developers/interfaces/</guid>
+      <description>vBulletin offers the following access interfaces:
+Web MAPI Local </description>
+    </item>
+    
+    <item>
+      <title>System Requirements</title>
+      <link>http://vb5manual.test/getting_started/system_requirements/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://vb5manual.test/getting_started/system_requirements/</guid>
+      <description>Your server must meet the following requirements before vBulletin can be installed on the machine. Most shared-environment hosting providers meet these qualifications already. If you&amp;rsquo;re unsure, you can always use vBulletin Cloud to host your vBulletin website.
+Minimum Requirements vBulletin is a web-based application and as such has a few minimum requirements. To run vBulletin, you need a web hosting provider that includes the following on their systems:
+PHP version: 7.</description>
+    </item>
+    
+    <item>
+      <title>Turn Your vBulletin On and Off</title>
+      <link>http://vb5manual.test/administration/AdminCP/settings/Options/turn-your-vbulletin-on-and-off/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://vb5manual.test/administration/AdminCP/settings/Options/turn-your-vbulletin-on-and-off/</guid>
+      <description>Site Active From time to time, you may want to turn your site off to the public while you perform maintenance, update versions, etc. When you turn your site off, visitors will receive a message that states that the site is temporarily unavailable. Administrators will still be able to see the site.
+Variable Name: bbactive Data Type: boolean Default Value: 1 Reason For Turning Site Off The text that is presented when the BB is closed.</description>
+    </item>
+    
+    <item>
+      <title>How do I clear my cookies or cache?</title>
+      <link>http://vb5manual.test/end_user_guide/general_help/how-do-i-clear-my-cookies-or-cache/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://vb5manual.test/end_user_guide/general_help/how-do-i-clear-my-cookies-or-cache/</guid>
+      <description>You can clear all your cookies set by the forum by clicking the &#39;logout&#39; link at the top of the page. In some cases, if you return to the main index page via the link provided and you are still logged in, you may have to remove your cookies manually.
+To clear cookies and cache in Internet Explorer 9Press Ctrl+Shift+Delete to open the Delete Browsing History window.Select Temporary Internet Files and cookies.</description>
+    </item>
+    
+    <item>
+      <title>Using Private Messages</title>
+      <link>http://vb5manual.test/end_user_guide/managing_account/using-private-messages/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://vb5manual.test/end_user_guide/managing_account/using-private-messages/</guid>
+      <description>If the administrator has enabled the Private Messaging system, registered members may send each other private messages to communicate outside of the general forum discussions.
+How do I send Private Messages?Private messages work a little like email, but are limited to registered members of this forum. You may be able to include BB code, smilies, images and other attachments in private messages that you send.
+You may send a private message to a member of this forum by clicking the &#39;Compose New&#39; button in the top left section of your Message Center, or by clicking the &#39;Private Message&#39; button that is visible on the User Profile of a member.</description>
+    </item>
+    
+    <item>
+      <title>Terms of Service</title>
+      <link>http://vb5manual.test/end_user_guide/general_help/terms-of-service/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://vb5manual.test/end_user_guide/general_help/terms-of-service/</guid>
+      <description>Although the administrators and moderators of this site will attempt to keep all objectionable messages off this site, it is impossible for us to review all messages. All messages express the views of the author, and neither the owners of this site, nor MH Sub I, LLC (developers of vBulletin) will be held responsible for the content of any message.
+By agreeing to these rules, you warrant that you will not post any messages that are obscene, vulgar, sexually-oriented, hateful, threatening, or otherwise violative of any laws.</description>
+    </item>
+    
+    <item>
+      <title>Using Visitor Messages</title>
+      <link>http://vb5manual.test/end_user_guide/managing_account/using-visitor-messages/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://vb5manual.test/end_user_guide/managing_account/using-visitor-messages/</guid>
+      <description>Visitor messages are publicly viewed messages posted on member profile pages. To post a message, navigate to a member&#39;s profile and enter your content using the form at the top of the section. The message you post will be viewable to all visitors of this profile, including but not limited to, guest users and search engine robots if the administrator has allowed this. To communicate privately with a member, send a Private Message instead using the option just above the Visitor Message form.</description>
+    </item>
+    
+    <item>
+      <title>What is Reputation?</title>
+      <link>http://vb5manual.test/end_user_guide/managing_account/what-is-reputation/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://vb5manual.test/end_user_guide/managing_account/what-is-reputation/</guid>
+      <description>Reputation is a way of rating users depending on the quality of their posts. If the administrators have enabled reputation, then the like icon will be visible in posts.
+You can build your reputation on the site by posting informative and constructive content. This in turn will encourage people to follow your posts, press the like button on different posts and they could even subscribe to your content.
+How do I give reputation?</description>
+    </item>
+    
+    <item>
+      <title>Basic Terminology</title>
+      <link>http://vb5manual.test/getting_started/basic_terminology/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://vb5manual.test/getting_started/basic_terminology/</guid>
+      <description>Terms vBulletin 5 Connect introduces some new concepts on how content is contained in the system. In previous versions, each content type was separate with its own programming, database tables and functionality. In vBulletin 5 Connect, we&amp;rsquo;ve eliminated the redundancy this caused and that has required some new terms to be introduced.
+vBulletin Site This refers to your vBulletin 5 Connect installation including all of its content, pages and users.</description>
+    </item>
+    
+    <item>
+      <title>Language Quick Reference</title>
+      <link>http://vb5manual.test/administration/AdminCP/languages/managing_languages/quick_reference/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://vb5manual.test/administration/AdminCP/languages/managing_languages/quick_reference/</guid>
+      <description>Path to Language Quick Reference:Languages &amp;amp; Phrases &amp;gt; Language Manager, then click [View QuickRef].
+On the left of the Language QuickRef popup window is a list of phrase variable names. Once you click a name, the code to use in a template appears on the right, along with the current phrase text string value.
+Using the pulldown lists at the bottom of the screen you can change the language and phrase group being viewed in the window.</description>
+    </item>
+    
+    <item>
+      <title>Login/Logout Process</title>
+      <link>http://vb5manual.test/developers/vbapi/api_login_logout/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://vb5manual.test/developers/vbapi/api_login_logout/</guid>
+      <description>This article explains the process of user login and logout with API.
+Login Process The client is able to login user with user.login2 method.
+If login successfully, It will return a new sessionhash, the userid. Here&amp;rsquo;s an example:
+{&amp;quot;sessionhash&amp;quot;:&amp;quot;9ffe471fa6dcd814a4590de87ff6cad7&amp;quot;,&amp;quot;userid&amp;quot;:&amp;quot;1&amp;quot;,&amp;quot;password&amp;quot;:&amp;quot;6967db2172df02e461c5129b01b460c6&amp;quot;,&amp;quot;lastvisit&amp;quot;:&amp;quot;0&amp;quot;,&amp;quot;lastactivity&amp;quot;:&amp;quot;1331222482&amp;quot;}
+Otherwise it will throw &amp;lsquo;badlogin&amp;rsquo; error.
+Note that after user login, the sessionhash and apiaccesstoken will be regenerated. So the Authorization header won&amp;rsquo;t be returned to the client in this method.</description>
+    </item>
+    
+    <item>
+      <title>Search Type</title>
+      <link>http://vb5manual.test/administration/AdminCP/settings/search_type/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://vb5manual.test/administration/AdminCP/settings/search_type/</guid>
+      <description>This section will show the different search engines installed in vBulletin and allow you to switch between them.
+In a new installation of vBulletin 5.0.4 and higher, there two search engines installed. The default is called &amp;ldquo;DB Search&amp;rdquo; and is an indexed implementation stored in a number of tables within your database. This will allow you to search all content types marked as &amp;ldquo;Searchable&amp;rdquo; when they are created/installed in your system.</description>
+    </item>
+    
+    <item>
+      <title>Site Name / Contact Details</title>
+      <link>http://vb5manual.test/administration/AdminCP/settings/Options/site-name-contact-details/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://vb5manual.test/administration/AdminCP/settings/Options/site-name-contact-details/</guid>
+      <description>Forum Name Name of your forum. This appears in the title of every forum page.
+Variable Name: bbtitle Data Type: free Default Value: vBulletin Forums Header Logo URL Enter a custom URL to use for the logo image and the home breadcrumb icon.
+If you wish to use the root vBulletin page you should leave this option blank.
+Variable Name: titleimageurl Data Type: free Default Value: Allow Unregistered Users to use &amp;lsquo;Contact Us&amp;rsquo; If set to yes, you may require guests to pass Human Verification in order to use this form by enabling the option found in the Human Verification Options.</description>
+    </item>
+    
+    <item>
+      <title>General Settings</title>
+      <link>http://vb5manual.test/administration/AdminCP/settings/Options/general-settings/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://vb5manual.test/administration/AdminCP/settings/Options/general-settings/</guid>
+      <description>Login Credential Type This option lets users log in using only their email, only their username, or both.
+Variable Name: logintype Data Type: number Default Value: 1 Use Login &amp;ldquo;Strikes&amp;rdquo; System Setting this to no will disable the system that prevents a user (with a specific IP address) from logging into an account after entering an incorrect password 5 times.
+Variable Name: usestrikesystem Data Type: boolean Default Value: 1 Post Referrer Whitelist For security purposes, vBulletin only allows data to be submitted via post from within the domain the board is installed on.</description>
+    </item>
+    
+    <item>
+      <title>Packages</title>
+      <link>http://vb5manual.test/developers/packages/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://vb5manual.test/developers/packages/</guid>
+      <description>Packages are used to add custom PHP code to the vBulletin engine.</description>
+    </item>
+    
+    <item>
+      <title>Rebuilding All Languages</title>
+      <link>http://vb5manual.test/administration/AdminCP/languages/managing_languages/rebuild_languages/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://vb5manual.test/administration/AdminCP/languages/managing_languages/rebuild_languages/</guid>
+      <description>Path to Rebuilding All Languages:Languages &amp;amp; Phrases &amp;gt; Language Manager, then click [Rebuild All Languages].
+This process regenerates all cached language data from the database. Generally this is not necessary. However, if you have edited the language information in the database directly, you need to run this process for your changes to take effect.
+Note: Running this process, even when unnecessary, will not harm your site.</description>
+    </item>
+    
+    <item>
+      <title>Recommended Software</title>
+      <link>http://vb5manual.test/getting_started/recommended_software/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://vb5manual.test/getting_started/recommended_software/</guid>
+      <description>This manual makes reference to and shows screenshots of various programs that we use outside of the vBulletin software. This section covers software we recommend for use that is tried and tested in working with vBulletin.
+Text Editors There may be times in vBulletin where you’ll be required to edit or make changes to PHP, html or JS files. Most operating systems come with one or more text editors. However, you may need more functionality than those basic applications.</description>
+    </item>
+    
+    <item>
+      <title>Spam Settings</title>
+      <link>http://vb5manual.test/administration/AdminCP/settings/spam-settings/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://vb5manual.test/administration/AdminCP/settings/spam-settings/</guid>
+      <description>Anti-Spam Akismet Service Enables the Akismet service for scanning content posted to the forum. The corresponding API key for the service has to be entered.
+Variable Name: vb_antispam_type Data Type: number Default Value: 0 Anti-Spam Akismet Content Key Enter an Akismet service key to enable scanning of user data where supported.
+Variable Name: vb_antispam_key Data Type: free Default Value: Stop Forum Spam API Key A Stop Forum Spam API key is required in order to submit spammers to their database.</description>
+    </item>
+    
+    <item>
+      <title>Template Hooks</title>
+      <link>http://vb5manual.test/developers/template_hooks/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://vb5manual.test/developers/template_hooks/</guid>
+      <description>Template Hooks are not rendered in output created by the vBulletin Mobile Suite clients. Template Hooks are a quick and easy way to add custom content into the rendering engine of vBulletin. Using template hooks, you can add custom information into pages without knowing PHP code. Templates are a variety of CSS, HTML, and vBulletin Markup. Using these tags, you can retrieve information, format, and display it on the user&amp;rsquo;s web client.</description>
+    </item>
+    
+    <item>
+      <title>vBulletin API</title>
+      <link>http://vb5manual.test/administration/AdminCP/vbulletin_api/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://vb5manual.test/administration/AdminCP/vbulletin_api/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Third Party Login Options</title>
+      <link>http://vb5manual.test/administration/AdminCP/settings/Options/third-party-login-options/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://vb5manual.test/administration/AdminCP/settings/Options/third-party-login-options/</guid>
+      <description>Enable Sign-in with Twitter Enabling this option will allow users to connect their vBulletin account with their Twitter account, and use their Twitter credentials to log-in to the forum.
+Variable Name: twitterlogin_enabled Data Type: boolean Default Value: 1 Enable Registration with Twitter Enabling this option will allow users to connect their Twitter account while creating their vB user account. It will also automatically fill the username &amp;amp; email fields with those fetched from their Twitter account, if available.</description>
+    </item>
+    
+    <item>
+      <title>How to Get Support</title>
+      <link>http://vb5manual.test/getting_started/how_to_get_support/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://vb5manual.test/getting_started/how_to_get_support/</guid>
+      <description>As a vBulletin user there are going to be times where you run into problems that you don’t know how to fix. Knowing where to locate helpful guides, get support from the community and support staff is vital to the operation of your forum.
+Depending on your license type or extra support contracts will enable you to get help in different ways. There are a few ways to receive support and they are as follows:</description>
+    </item>
+    
+    <item>
+      <title>Human Verification Manager</title>
+      <link>http://vb5manual.test/administration/AdminCP/settings/human_verification_manager/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://vb5manual.test/administration/AdminCP/settings/human_verification_manager/</guid>
+      <description>Image Image verification presents a series of distorted numbers and letters that the user is required to enter. Either GD2 or ImageMagick support is required from your PHP server in order to use this option. This is the classic option that most users are accustomed to encountering. Disabled users will be blocked with this option.
+Question and Answer Question &amp;amp; Answer verification employs a random question challenge with a predefined set of appropriate answers.</description>
+    </item>
+    
+    <item>
+      <title>Site URLs and Routing</title>
+      <link>http://vb5manual.test/administration/AdminCP/settings/Options/site-urls-and-routing/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://vb5manual.test/administration/AdminCP/settings/Options/site-urls-and-routing/</guid>
+      <description>vBulletin URL This is the URL, or web address, that users will use in their bookmarks or address bar to access your site.
+Note: do not add a trailing slash. (&amp;rsquo;/&#39;)
+Variable Name: frontendurl Data Type: free Default Value: Core URL The location of your core directory. This directory contains the vBulletin engine and is not public. Do not update unless directed to by vBulletin Support.
+Variable Name: bburl Data Type: free Default Value: http://www.</description>
+    </item>
+    
+    <item>
+      <title>Privacy Options</title>
+      <link>http://vb5manual.test/administration/AdminCP/settings/Options/privacy-options/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://vb5manual.test/administration/AdminCP/settings/Options/privacy-options/</guid>
+      <description>Enable Privacy Consent for Guests This will require all users in the selected locations to consent to information tracking in order to use the site. It will log the time the consent was given and the IP address the consent was obtained from. You can edit the available locations here.
+If this is enabled, you must specify a Privacy Policy Page in the Privacy Statement URL setting.
+Variable Name: enable_privacy_guest Data Type: free Default Value: Enable Privacy Consent for Registered Users This will collect consent for users in the selected locations when they register or the first time they log in (if they are already registered).</description>
+    </item>
+    
+    <item>
+      <title>Facebook Options</title>
+      <link>http://vb5manual.test/administration/AdminCP/settings/Options/facebook-options/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://vb5manual.test/administration/AdminCP/settings/Options/facebook-options/</guid>
+      <description>Enable Facebook Platform Enabling this option will allow users to connect their vBulletin account with their Facebook account. This will also populate your site with Open Graph meta data. Note: users must have Javascript enabled and your server must support TLS/SSL communication for this feature to work.
+Variable Name: enablefacebookconnect Data Type: boolean Default Value: 0 Facebook Application ID Enter the Application ID for your Application (see the Facebook Developer page for more information).</description>
+    </item>
+    
+    <item>
+      <title>Image Settings</title>
+      <link>http://vb5manual.test/administration/AdminCP/settings/Options/image-settings/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://vb5manual.test/administration/AdminCP/settings/Options/image-settings/</guid>
+      <description>Image Processing Library Choose the image processing library that vBulletin will use for processing thumbnails and avatars. GD is more widely available but ImageMagick is more robust, supporting more image types. ImageMagick must have a valid path chosen below.
+Variable Name: imagetype Data Type: free Default Value: GD ImageMagick Binary Path Path to the ImageMagick 6 binaries (convert and identify). Example:
+Unix: /usr/local/bin/
+Windows: C:\imagemagick
+This option is only used if &amp;ldquo;Image Processing Library&amp;rdquo; is set to &amp;ldquo;ImageMagick 6&amp;rdquo;.</description>
+    </item>
+    
+    <item>
+      <title>Admin Help Manager</title>
+      <link>http://vb5manual.test/administration/AdminCP/settings/admin_help_manager/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://vb5manual.test/administration/AdminCP/settings/admin_help_manager/</guid>
+      <description> Debug Available only in debug mode </description>
+    </item>
+    
+    <item>
+      <title>Date and Time Options</title>
+      <link>http://vb5manual.test/administration/AdminCP/settings/Options/date-and-time-options/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://vb5manual.test/administration/AdminCP/settings/Options/date-and-time-options/</guid>
+      <description>Datestamp Display Option This option controls the display of dates throughout your forum
+&amp;lsquo;Normal&amp;rsquo; uses the date and time formats below this option.
+&amp;lsquo;Yesterday / Today&amp;rsquo; will show &amp;lsquo;Yesterday&amp;rsquo; and &amp;lsquo;Today&amp;rsquo; for dates that fall in those periods.
+&amp;lsquo;Detailed&amp;rsquo; will show times such as &amp;lsquo;1 Minute Ago&amp;rsquo;, &amp;lsquo;1 Hour Ago&amp;rsquo;, &amp;lsquo;1 Day Ago&amp;rsquo;, and &amp;lsquo;1 Week Ago&amp;rsquo;.
+Variable Name: yestoday Data Type: number Default Value: 1 Default Time Zone Offset Time zone offset for guests and new users.</description>
+    </item>
+    
+    <item>
+      <title>Cookies and HTTP Header Options</title>
+      <link>http://vb5manual.test/administration/AdminCP/settings/Options/cookies-and-http-header-options/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://vb5manual.test/administration/AdminCP/settings/Options/cookies-and-http-header-options/</guid>
+      <description>Session Timeout This is the time in seconds that a user must remain inactive before their login session expires. This setting also controls how long a user will remain on Who&amp;rsquo;s Online after their last activity.
+Variable Name: cookietimeout Data Type: integer Default Value: 900 GZIP HTML Output Selecting yes will enable vBulletin to GZIP compress the HTML output of pages, thus reducing bandwidth requirements. This will be only used on clients that support it, and are HTTP 1.</description>
+    </item>
+    
+    <item>
+      <title>Server Settings and Optimization Options</title>
+      <link>http://vb5manual.test/administration/AdminCP/settings/Options/server-settings-and-optimization-options/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://vb5manual.test/administration/AdminCP/settings/Options/server-settings-and-optimization-options/</guid>
+      <description>Cached Posts Lifespan Number of days to maintain a cached copy of a post. This makes topics faster to display, but means that each post takes approximately twice the storage space.
+Variable Name: cachemaxage Data Type: number Default Value: 7 *NIX Server Load Limit vBulletin can read the overall load of the server on certain *NIX setups (including Linux).
+This allows vBulletin to determine the load on the server and processor, and to turn away further users if the load becomes too high.</description>
+    </item>
+    
+    <item>
+      <title>Style and Language Settings</title>
+      <link>http://vb5manual.test/administration/AdminCP/settings/Options/style-language-settings/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://vb5manual.test/administration/AdminCP/settings/Options/style-language-settings/</guid>
+      <description>Default Language Select the default language for your forums. This language will be used for all guests, and any members who have not expressed a language preference in their options.
+Variable Name: languageid Data Type: number Default Value: 1 Default Style Select the default style for your forums. This style will be used for all guests, and any members who have not expressed a style preference in their options, or are attempting to use a style that does not exist or is forbidden.</description>
+    </item>
+    
+    <item>
+      <title>Censorship Options</title>
+      <link>http://vb5manual.test/administration/AdminCP/settings/Options/censorship-options/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://vb5manual.test/administration/AdminCP/settings/Options/censorship-options/</guid>
+      <description>Censorship Enabled You may have certain words censored on your forum. Words you choose to censor will be replaced by the character you specify below. All message titles and messages will be affected.
+Variable Name: enablecensor Data Type: boolean Default Value: 1 Character to Replace Censored Words This character (or characters) will be used to replace censored words. For example, if you have censored the word &amp;lsquo;dog&amp;rsquo; and you set the censor character here to an asterisk () then any occurrences of &amp;lsquo;dog&amp;rsquo; in messages will appear as &amp;lsquo;**&amp;rsquo;.</description>
+    </item>
+    
+    <item>
+      <title>Email Options</title>
+      <link>http://vb5manual.test/administration/AdminCP/settings/Options/email-options/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://vb5manual.test/administration/AdminCP/settings/Options/email-options/</guid>
+      <description>Enable Email features? Enable the following email-sending features:
+Report Bad Post
+&amp;lsquo;Contact Us&amp;rsquo; Link
+New Post Notifications to Members
+Variable Name: enableemail Data Type: boolean Default Value: 1 Email Flood Check Specify in seconds how much time must elapse before a user may send consecutive emails.
+Set to 0 to disable this flood check. Admins are always exempt from this floodcheck.
+Variable Name: emailfloodtime Data Type: integer Default Value: 60 Use Cron Based Sending If enabled, vBulletin will send queued e-mails in batches using the scheduled task.</description>
+    </item>
+    
+    <item>
+      <title>User Registration Options</title>
+      <link>http://vb5manual.test/administration/AdminCP/settings/Options/user-registration-options/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://vb5manual.test/administration/AdminCP/settings/Options/user-registration-options/</guid>
+      <description>Allow New User Registrations Set this option to NO if you would like to temporarily (or permanently) prevent anyone new from registering. Anyone attempting to register will be told that you are not accepting new registrations at this time.
+Variable Name: allowregistration Data Type: boolean Default Value: 1 Paid Subscription during Registration Allow you to set the paid subscription as a required field during registration that new members need to select a paid subscription and pay before becoming a member.</description>
+    </item>
+    
+    <item>
+      <title>User Infractions &amp;amp; Post Reporting Options</title>
+      <link>http://vb5manual.test/administration/AdminCP/settings/Options/user-infractions-amp-post-reporting-options/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://vb5manual.test/administration/AdminCP/settings/Options/user-infractions-amp-post-reporting-options/</guid>
+      <description>Require Infraction Message This option requires that the user sending an infraction include a PM or Email, depending on your forum settings.
+Variable Name: uimessage Data Type: number Default Value: 1 Post Reporting Email This option sends an email to the specified users when a post is reported. Users with an active device token will also receive push notifications about the report if Firebase Cloud Messaging is enabled.
+Variable Name: rpemail Data Type: number Default Value: 1 updated: 2022-08-29 09:50am | Version: 5.</description>
+    </item>
+    
+    <item>
+      <title>User Profile Options</title>
+      <link>http://vb5manual.test/administration/AdminCP/settings/Options/user-profile-options/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://vb5manual.test/administration/AdminCP/settings/Options/user-profile-options/</guid>
+      <description>Require Date of Birth Require users to provide a valid date of birth (1902 to current year).
+Variable Name: reqbirthday Data Type: boolean Default Value: User Title Maximum Characters This is the maximum number of characters allowed for a user&amp;rsquo;s custom title.
+Variable Name: ctMaxChars Data Type: integer Default Value: 25 Censored Words for Usertitle Type all words you want censored in the Usertitle in the field below. Do not use commas to separate words, just use spaces.</description>
+    </item>
+    
+    <item>
+      <title>User Profile: Album Options</title>
+      <link>http://vb5manual.test/administration/AdminCP/settings/Options/user-profile-album-options/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://vb5manual.test/administration/AdminCP/settings/Options/user-profile-album-options/</guid>
+      <description>Albums Per Page When listing multiple albums on one page, this controls how many will be displayed before pagination occurs.
+Note: This number must be at least 1.
+Variable Name: albums_perpage Data Type: posint Default Value: 10 Pictures Per Page When viewing an album, this controls how many pictures are displayed before pagination occurs.
+Note: This number must be at least 1.
+Variable Name: album_pictures_perpage Data Type: posint Default Value: 25 Number of Albums to display in the Users Profile The Maximum Number of Albums to Display on the Users&amp;rsquo; Profile Pages</description>
+    </item>
+    
+    <item>
+      <title>User Profile: Style Customization Options</title>
+      <link>http://vb5manual.test/administration/AdminCP/settings/Options/user-profile-style-customization-options/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://vb5manual.test/administration/AdminCP/settings/Options/user-profile-style-customization-options/</guid>
+      <description>Allowed Fonts The list of allowed fonts for profile style customizations. Put each font on its own line.
+Variable Name: usercss_allowed_fonts Data Type: free Default Value: arial|Arial, Helvetica, sans-serif times_new_roman|&#39;Times New Roman&#39;, Times, serif courier_new|&#39;Courier New&#39;, Courier, monospace georgia|Georgia, &#39;Times New Roman&#39;, Times, serif verdana|Verdana, Arial, Helvetica, sans-serif tahoma|Tahoma, Verdana, Arial, Helvetica, sans-serif geneva|Geneva, Arial, Helvetica, sans-serif trebuchet_ms|&#39;Trebuchet MS&#39;, Arial, Helvetica, sans-serif comic_sans_ms|&#39;Comic Sans MS&#39;, Arial, Helvetica, sans-serif Allowed Font Sizes The list of allowed fonts size for profile style customizations.</description>
+    </item>
+    
+    <item>
+      <title>User Reputation Options</title>
+      <link>http://vb5manual.test/administration/AdminCP/settings/Options/user-reputation-options/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://vb5manual.test/administration/AdminCP/settings/Options/user-reputation-options/</guid>
+      <description>Default Reputation What reputation level shall new users receive upon registration? Make sure that you have a reputation level that is at least equal to or less than this value.
+Variable Name: reputationdefault Data Type: number Default Value: 10 Reputation Undefined If you have any user gain a reputation that exceeds your lowest negative level, then this phrase will be used for them. If you do not wish to use this phrase, make sure you set a negative reputation that is larger than the largest score (negative) that a user on your forum has.</description>
+    </item>
+    
+    <item>
+      <title>User Banning Options</title>
+      <link>http://vb5manual.test/administration/AdminCP/settings/Options/user-banning-options/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://vb5manual.test/administration/AdminCP/settings/Options/user-banning-options/</guid>
+      <description>Enable Banning Options Banning allows you to stop certain IP addresses and email addresses from registering and posting to the forum.
+Variable Name: enablebanning Data Type: boolean Default Value: 1 Banned IP Addresses Use this option to prevent certain IP addresses from accessing any part of your board.
+If you enter a complete IP address (242.21.11.7), only that IP will be banned.
+If you enter a partial IP (243.21.11. or 243.</description>
+    </item>
+    
+    <item>
+      <title>BB Code Settings</title>
+      <link>http://vb5manual.test/administration/AdminCP/settings/Options/bb-code-settings/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://vb5manual.test/administration/AdminCP/settings/Options/bb-code-settings/</guid>
+      <description>Enabled Built-in BB Code Tags This setting allows you to enable and disable various built-in BB code tags in vBulletin.
+Disabling a BB code tag will prevent it from working anywhere on the forum, including signatures, private messages, user notes etc. Disabling Video &amp;amp; Image BB codes will also disable the video &amp;amp; image ckeditor buttons, respectively. Disabling Image BB Code will also disable inline image attachment rendering.
+Variable Name: allowedbbcodes Data Type: bitfield Default Value: 59391 Maximum [CODE] Lines When a user posts a block of [CODE], [PHP] or [HTML] in one of their messages, the system will place it in a box, which expands to contain their message.</description>
+    </item>
+    
+    <item>
+      <title>Message Posting and Editing Options</title>
+      <link>http://vb5manual.test/administration/AdminCP/settings/Options/message-posting-and-editing-options/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://vb5manual.test/administration/AdminCP/settings/Options/message-posting-and-editing-options/</guid>
+      <description>Multi-Quote Enabled If this option is enabled, an additional button will appear on posts. A user may click as many of these buttons as they wish. Once they click a reply button, the content of each of the selected posts will be quoted and shown in the reply window.
+Variable Name: multiquote Data Type: free Default Value: 1 Multi-Quote Quote Limit Enter a value to limit the number of quotes that can be created with Multi-Quote, once this limit is reached the user will be unable to add any more quotes.</description>
+    </item>
+    
+    <item>
+      <title>Attachment Options</title>
+      <link>http://vb5manual.test/administration/AdminCP/settings/Options/attachment-options/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://vb5manual.test/administration/AdminCP/settings/Options/attachment-options/</guid>
+      <description>Image Processing Library Choose the image processing library that vBulletin will use for processing thumbnails and avatars. GD is more widely available but ImageMagick (Imagick) is more robust, supporting more image types. Imagick requires that both Imagick PHP extension and ImageMagick binaries are installed on the server.
+Variable Name: imagetype Data Type: free Default Value: GD Enable PDF Thumbnails Using the ImageMagick or Imagick processing library, you can enable thumbnails for PDF attachments if GhostScript is installed on your server.</description>
+    </item>
+    
+    <item>
+      <title>Poll and Topic Rating Options</title>
+      <link>http://vb5manual.test/administration/AdminCP/settings/Options/poll-and-topic-rating-options/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://vb5manual.test/administration/AdminCP/settings/Options/poll-and-topic-rating-options/</guid>
+      <description>Maximum Poll Options Maximum number of options a user can select for the poll.
+Set this option to 0 to allow any number of options.
+Variable Name: maxpolloptions Data Type: integer Default Value: 10 Initial Poll Options The number of options displayed by default when a new poll is created. The actual values displayed will not be less than two or greater than Max Poll Options.
+Variable Name: initialpolloptions Data Type: integer Default Value: 3 Poll Option Length Maximum length that a poll option can be.</description>
+    </item>
+    
+    <item>
+      <title>Message Searching Options</title>
+      <link>http://vb5manual.test/administration/AdminCP/settings/Options/message-searching-options/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://vb5manual.test/administration/AdminCP/settings/Options/message-searching-options/</guid>
+      <description>Search Engine Enabled Allow searching for posts and topics within the forums. This is a relatively server-intensive process so you may want to disable it if you have problems.
+To disable searching of all forums, delete the option from the search_forums template.
+Variable Name: enablesearches Data Type: boolean Default Value: 1 Minimum Time Between Searches The minimum time (in seconds) that must expire before the user can perform a new search.</description>
+    </item>
+    
+    <item>
+      <title>Tagging Options</title>
+      <link>http://vb5manual.test/administration/AdminCP/settings/Options/tagging-options/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://vb5manual.test/administration/AdminCP/settings/Options/tagging-options/</guid>
+      <description>Enable Topic Tagging This is a global option to enable or disable the topic tagging system. You may choose which usergroups can apply tags to topics in the usergroup permissions section.
+Variable Name: threadtagging Data Type: boolean Default Value: 1 Tag Minimum Length The minimum number of characters in a tag name. This can be between 1 and 100.
+Variable Name: tagminlen Data Type: integer Default Value: 3 Tag Maximum Length The maximum number of characters in a tag name.</description>
+    </item>
+    
+    <item>
+      <title>Channel Display Options</title>
+      <link>http://vb5manual.test/administration/AdminCP/settings/Options/channel-display-options/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://vb5manual.test/administration/AdminCP/settings/Options/channel-display-options/</guid>
+      <description>Show Private Forums Select &amp;lsquo;No&amp;rsquo; here will hide private forums from users who are not allowed to access them. Users who do have permission to access them will have to log in before they can see these forums too.
+This option applies to any forum listing, including the Quick Navigation menu, and Search Results.
+Variable Name: showprivateforums Data Type: free Default Value: 0 Show Topic Prefix in Last Post Column?</description>
+    </item>
+    
+    <item>
+      <title>Topic Display Options</title>
+      <link>http://vb5manual.test/administration/AdminCP/settings/Options/topic-display-options/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://vb5manual.test/administration/AdminCP/settings/Options/topic-display-options/</guid>
+      <description>User-Settable Maximum Displayed Posts If you would like to allow the user to set their own maximum posts per topic then give the options separated by commas. Example setting: 10,20,30,40
+Variable Name: usermaxposts Data Type: free Default Value: 5,10,20,30,40 Show Default Post Icon If you would like to use a default icon for messages without an icon, enter the path to the image here.
+Variable Name: showdeficon Data Type: free Default Value: Number of Characters Before Wrapping Text If you want posts to automatically insert spaces into long words to make them wrap after a certain number of characters, set the number of characters in the box above.</description>
+    </item>
+    
+    <item>
+      <title>Private Messaging and vB Messenger Options</title>
+      <link>http://vb5manual.test/administration/AdminCP/settings/Options/private-messaging-and-vb-messenger-options/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://vb5manual.test/administration/AdminCP/settings/Options/private-messaging-and-vb-messenger-options/</guid>
+      <description>Private Messaging Enabled Turns the entire private messaging system on and off.
+Variable Name: enablepms Data Type: boolean Default Value: 1 Instant Messaging Support - Check for New Private Messages Selecting &amp;lsquo;Yes&amp;rsquo; for this option will cause the system to check the private message database every time a user loads a page, and will display a visible prompt if a new message has just been saved.
+Variable Name: checknewpm Data Type: boolean Default Value: 1 Maximum Messages Per-Page This setting allows you to limit the number of messages users may display per page on the private messages folder view pages.</description>
+    </item>
+    
+    <item>
+      <title>Notification Options</title>
+      <link>http://vb5manual.test/administration/AdminCP/settings/Options/notification-options/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://vb5manual.test/administration/AdminCP/settings/Options/notification-options/</guid>
+      <description>Dismissed Notification Auto Delete Dismissed notifications will automatically be deleted this many days after they have been dismissed. This does not affect new notifications. Set to (0) to disable this functionality.
+Variable Name: dismissed_notification_ttl_days Data Type: integer Default Value: 180 New Notification Auto Delete New notifications will automatically be deleted this many days after they were created. This does not affect dismissed notifications. Set to (0) to disable this functionality.</description>
+    </item>
+    
+    <item>
+      <title>Admin Control Panel Options</title>
+      <link>http://vb5manual.test/administration/AdminCP/settings/Options/admin-control-panel-options/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://vb5manual.test/administration/AdminCP/settings/Options/admin-control-panel-options/</guid>
+      <description>Control Panel Style Folder This setting allows you to specify an alternative style for the Admin / Moderator Control Panels, based on a folder contained within the &amp;lsquo;cpstyles&amp;rsquo; folder. The style you select here will be displayed to all Moderators, and any Administrators who have not expressed their own preference.
+Folders in the &amp;lsquo;cpstyles&amp;rsquo; folder must contain at least the following:
+controlpanel.css
+cp_logo.gif
+cp_help.gif
+Variable Name: cpstylefolder
+Data Type: free</description>
+    </item>
+    
+    <item>
+      <title>External Data Provider</title>
+      <link>http://vb5manual.test/administration/AdminCP/settings/Options/external-data-provider/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://vb5manual.test/administration/AdminCP/settings/Options/external-data-provider/</guid>
+      <description>Enable External Javascript This setting allows you to enable/disable the Javascript content syndication system that allows you to embed vBulletin data in HTML pages.
+Variable Name: externaljs Data Type: boolean Default Value: Enable RSS Syndication This setting allows you to enable/disable the RSS content syndication system.
+Variable Name: externalrss Data Type: boolean Default Value: Enable XML Syndication This setting allows you to enable/disable the XML content syndication system.
+Variable Name: externalxml Data Type: boolean Default Value: Topic Cutoff This value controls how many days in the past that updated topics will be chosen from.</description>
+    </item>
+    
+    <item>
+      <title>Error Handling &amp;amp; Logging</title>
+      <link>http://vb5manual.test/administration/AdminCP/settings/Options/error-handling-amp-logging/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://vb5manual.test/administration/AdminCP/settings/Options/error-handling-amp-logging/</guid>
+      <description>Log Database Errors to a File If you would like to log all database errors to a file, enter the path to the file here. The file will be saved as {filename}.log.
+Errors connecting to the database server will not be logged.
+Please note that the directory in which this file is to be created must be writable by the web server.
+Variable Name: errorlogdatabase Data Type: free Default Value: Log Failed Admin Control Panel Logins to a File If you would like to log all failed Admin Control Panel login attempts to a file, enter the path to the file here.</description>
+    </item>
+    
+    <item>
+      <title>Products/Hook System</title>
+      <link>http://vb5manual.test/administration/AdminCP/settings/Options/products-hook-system/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://vb5manual.test/administration/AdminCP/settings/Options/products-hook-system/</guid>
+      <description>Enable Hook System This setting allows you to globally enable or disable the hook system.
+By switching the system off, only vBulletin-native code will be run, so it can be used to establish whether errors exist within vBulletin itself or in hook code.
+Variable Name: enablehooks Data Type: boolean Default Value: 1 Add Template Name in HTML Comments Add the template name at the beginning and end of every template rendered.</description>
+    </item>
+    
+    <item>
+      <title>Paid Subscriptions</title>
+      <link>http://vb5manual.test/administration/AdminCP/settings/Options/paid-subscriptions/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://vb5manual.test/administration/AdminCP/settings/Options/paid-subscriptions/</guid>
+      <description>Paid Subscription Email Notification An email will be sent to this email address when a paid subscription is purchased or reversed.
+Variable Name: paymentemail Data Type: free Default Value: Currency Symbols Enter currency symbols for use with paid subscriptions. Each currency should be on its own line with the currency code followed by the currency symbol separated by the pipe (|). For example &amp;ldquo;usd|US$&amp;rdquo;. Html escape codes can be used.</description>
+    </item>
+    
+    <item>
+      <title>Spam Management</title>
+      <link>http://vb5manual.test/administration/AdminCP/settings/Options/spam-management/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://vb5manual.test/administration/AdminCP/settings/Options/spam-management/</guid>
+      <description>Anti-Spam Akismet Service Enables the Akismet service for scanning content posted to the forum. The corresponding API key for the service has to be entered.
+Variable Name: vb_antispam_type Data Type: number Default Value: 0 Anti-Spam Akismet Content Key Enter an Akismet service key to enable scanning of user data where supported.
+Variable Name: vb_antispam_key Data Type: free Default Value: Stop Forum Spam API Key A Stop Forum Spam API key is required in order to submit spammers to their database.</description>
+    </item>
+    
+    <item>
+      <title>XML Sitemap</title>
+      <link>http://vb5manual.test/administration/AdminCP/settings/Options/xml-sitemap/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://vb5manual.test/administration/AdminCP/settings/Options/xml-sitemap/</guid>
+      <description>Enable Automatic Sitemap Generation If you select yes for this option, the XML sitemap will be automatically generated periodically by a scheduled task.
+Even if you select no, you can still manually generate the sitemap.
+Variable Name: sitemap_cron_enable Data Type: boolean Default Value: 0 Automatic Sitemap Generation Frequency (Days) If automatic sitemap generation is enabled, this option controls the number of days between automatic builds.
+Variable Name: sitemap_cron_frequency Data Type: integer Default Value: 14 Default Sitemap Priority The default priority for content in the XML Sitemap.</description>
+    </item>
+    
+    <item>
+      <title>vBulletin API and Mobile Application Options</title>
+      <link>http://vb5manual.test/administration/AdminCP/settings/Options/vbulletin-api-and-mobile-application-options/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://vb5manual.test/administration/AdminCP/settings/Options/vbulletin-api-and-mobile-application-options/</guid>
+      <description>Enable vBulletin API Allow clients to connect to the vBulletin API. Please remember to generate an API key here to allow the API to work.
+Variable Name: enableapi Data Type: boolean Default Value: 0 Enable API Log Enables the API log, allowing administrators to track client behavior (or for debuging purposes). Only enable this option if you really need it. The log is stored in the database and can rapidly become large in size.</description>
+    </item>
+    
+    <item>
+      <title>Activity Stream Options</title>
+      <link>http://vb5manual.test/administration/AdminCP/settings/Options/activity-stream-options/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://vb5manual.test/administration/AdminCP/settings/Options/activity-stream-options/</guid>
+      <description> Oldest Content in Forum This is the oldest post that will be displayed in a forum listing, like the home page.
+Variable Name: max_age_channel Data Type: integer Default Value: 60 Maximum Age for Topic This is the oldest post that will be displayed on a standard topic page.
+Variable Name: max_age_topic Data Type: integer Default Value: 60 updated: 2022-08-29 09:50am | Version: 5.7.0 Alpha 4 </description>
+    </item>
+    
+    <item>
+      <title>Search Engine Tools</title>
+      <link>http://vb5manual.test/administration/AdminCP/settings/Options/search-engine-tools/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://vb5manual.test/administration/AdminCP/settings/Options/search-engine-tools/</guid>
+      <description>Enable Google Analytics Enable Google Analytics TrackingYou need to sign up with Google to get your code, and enter the code below
+Variable Name: ga_enabled Data Type: boolean Default Value: Google Analytics Javascript Enter Google Analytics code After you have signed up with Google you will get, from their website, an ID and some javascript code. Paste that code into this block to enable Google Analytics for this forum.</description>
+    </item>
+    
+    <item>
+      <title>File Scanning</title>
+      <link>http://vb5manual.test/administration/AdminCP/settings/Options/file-scanning/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://vb5manual.test/administration/AdminCP/settings/Options/file-scanning/</guid>
+      <description>Enabled Scanners At least one scanner must be enabled for vBulletin to scan uploaded files. Note that scanning is performed at the time of upload, and previously uploaded files will not be retroactively scanned after enabling a scanner.
+Variable Name: enabled_scanner Data Type: free Default Value: [] Clamd Local Socket Filepath to the unix socket used by the ClamAV Daemon (clamd). Alternatively (if using the TCP socket with clamd) you can use the &amp;ldquo;Clamd TCP Socket IP&amp;rdquo; &amp;amp; &amp;ldquo;Clamd TCP Socket Port&amp;rdquo; options.</description>
+    </item>
+    
+    <item>
+      <title></title>
+      <link>http://vb5manual.test/administration/AdminCP/styles/style_manager/templates/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://vb5manual.test/administration/AdminCP/styles/style_manager/templates/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Adding and Editing Notices</title>
+      <link>http://vb5manual.test/administration/AdminCP/notices/adding_notices/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://vb5manual.test/administration/AdminCP/notices/adding_notices/</guid>
+      <description>Adding and Editing Notices Path to Add a New Announcement: Notices &amp;gt; Notices Manager and then click Add New Notice or Notices &amp;gt; Add New Notice.
+Path to Edit or Delete an Announcement: Announcements &amp;gt; Announcement Manager and then click either Edit or Delete
+The Notices Manager provides controls to create and edit notices for your site, and to set up criteria for when each notice should appear.
+The top part of the page deals primarily with the text and HTML tagging, while the bottom of the page sets up the display criteria.</description>
+    </item>
+    
+    <item>
+      <title>Cloud Backups</title>
+      <link>http://vb5manual.test/vbulletin_cloud/data_backups/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://vb5manual.test/vbulletin_cloud/data_backups/</guid>
+      <description>Automatic Backups The cloud system will automatically back up your database nightly. We retain 30 days of backup. If you need a backup restored, contact vBulletin Support. Restoring a backup will undo any changes made after the backup was created.
+Off-site Backups. You can request a backup of your site data. This includes the database, attachments, avatars, smilies, and other customized data. To request a backup, visit your Member&amp;rsquo;s Area and click the link to the right of your license information.</description>
+    </item>
+    
+    <item>
+      <title>Custom Domain Names.</title>
+      <link>http://vb5manual.test/vbulletin_cloud/custom_domain_names/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://vb5manual.test/vbulletin_cloud/custom_domain_names/</guid>
+      <description>Obtaining a domain name for your site When you create your vBulletin Cloud account, you can register a personal custom domain name to use with your site. When asked, enter your choice of domain name and the system will perform a search of available domain names and similar domain names. Make your choice from the resulting list. Once you make your choice, we cannot change it. Make sure that you are happy with the choice you make.</description>
+    </item>
+    
+    <item>
+      <title>Feature Comparison</title>
+      <link>http://vb5manual.test/vbulletin_cloud/feature_comparison/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://vb5manual.test/vbulletin_cloud/feature_comparison/</guid>
+      <description>FeaturevBulletin ConnectvBulletin Cloud- Available
+- Not Available
+Note – The above is not a comprehensive list of differences, but are the most likely differences you will notice. In general vBCloud has all features of VB5 except those that could pose a danger to overall system security.Forums, Articles, Blogs, GroupsPosts, Photo Albums, Links, PollsUsergroups Based PermissionsResponsive DesignSite BuilderQuick Setup FeatureBuilt In Ad LocationsPaid SubscriptionsSupport for Google AnalyticsMobile Suite CompatibilityCustom SmiliesMultiple Language SupportCustom User Profile FieldsFile AttachmentsHuman Verification SystemLikes SystemStyle Variables AccessMultiple Built-In ThemesCan Import 3rd Party StylesPartialDirect access to TemplatesText Only TemplatesCan Use Template HooksText Only TemplatesCan Use 3rd Party AddonsCustom PHPOutgoing RSS FeedsIncoming RSS FeedsCustom SMTP Email SupportVaries by planAutomatic BackupsAutomatic UpgradesTicket Support30 daysVaries by planForum Support</description>
+    </item>
+    
+    <item>
+      <title>Frequently Asked Questions</title>
+      <link>http://vb5manual.test/vbulletin_cloud/frequent_questions/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://vb5manual.test/vbulletin_cloud/frequent_questions/</guid>
+      <description>Common Q&amp;amp;A Can I migrate my current vBulletin site into your Cloud Platform? Yes, we can import any version of vBulletin from 3.6 and higher into the vBCloud platform. Please contact sales to get started with the migration process. What version does vBulletin cloud run on? vBulletin Cloud runs on vBulletin 5 connect, with a few specialized features for Cloud Users. Cloud customers will always be on the latest version of the vBulletin 5 connect software.</description>
+    </item>
+    
+    <item>
+      <title>Introduction</title>
+      <link>http://vb5manual.test/getting_started/introduction/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://vb5manual.test/getting_started/introduction/</guid>
+      <description>What is vBulletin? vBulletin is a Community Driven Content Management System. vBulletin Connect is a community platform with content that is contributed by your end users. The system allows you to build custom community sites without coding. Community driven content management allows for content that is always fresh and relevent. Using vBulletin allows you to engage your users in content creation, collation and distribution. vBulletin 5 has been designed to bring you modern community building and ease of use.</description>
+    </item>
+    
+    <item>
+      <title>Migrating Existing Site.</title>
+      <link>http://vb5manual.test/vbulletin_cloud/migrate_to_cloud/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://vb5manual.test/vbulletin_cloud/migrate_to_cloud/</guid>
+      <description>We can migrate your existing vBulletin site to vBulletin Cloud. This service is available for vBulletin 3, vBulletin 4, and vBulletin 5. When we migrate your site, we will also update it to the latest version of vBulletin currently available. The migration includes users, all user data, forums/channels, topics and replies. Once migration is completed, you will be able to select one of the provided themes or design your own.</description>
+    </item>
+    
+    <item>
+      <title>Using the Cloud Console</title>
+      <link>http://vb5manual.test/vbulletin_cloud/cloud_console/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://vb5manual.test/vbulletin_cloud/cloud_console/</guid>
+      <description>The Cloud Console is where you control your vBulletin Cloud Account.
+Dashboard The dashboard is the main point of entry into your cloud console. There are two things available on this screen, your domain name control and bandwidth used. The screen also tells you how to enable Google Analytics.
+Domain name This will tell you if your custom domain name is currently active. You can activate or deactivate your custom domain in this area.</description>
+    </item>
+    
+  </channel>
+</rss>

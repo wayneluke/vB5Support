@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>API on Manual</title>
+    <link>http://vb5manual.test/developers/vbapi/</link>
+    <description>Recent content in API on Manual</description>
+    <generator>Hugo -- gohugo.io</generator><atom:link href="http://vb5manual.test/developers/vbapi/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Initializing the API</title>
+      <link>http://vb5manual.test/developers/vbapi/initializing_api/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://vb5manual.test/developers/vbapi/initializing_api/</guid>
+      <description>(For API Version 5)
+This documentation describes vBulletin 5 API. With the API, mobiles or other clients can communicate with vBulletin and do most tasks that vB&amp;rsquo;s web frontend can do.
+Conventions In this documentation, you will find a number of styles of text that distinguish between different kind of information. Here are some examples of these styles and an explaination of their meaning.
+API method names and parameters in text are shown as follows: &amp;ldquo;You can call [[VB5_API:user.</description>
+    </item>
+    
+    <item>
+      <title>Login/Logout Process</title>
+      <link>http://vb5manual.test/developers/vbapi/api_login_logout/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://vb5manual.test/developers/vbapi/api_login_logout/</guid>
+      <description>This article explains the process of user login and logout with API.
+Login Process The client is able to login user with user.login2 method.
+If login successfully, It will return a new sessionhash, the userid. Here&amp;rsquo;s an example:
+{&amp;quot;sessionhash&amp;quot;:&amp;quot;9ffe471fa6dcd814a4590de87ff6cad7&amp;quot;,&amp;quot;userid&amp;quot;:&amp;quot;1&amp;quot;,&amp;quot;password&amp;quot;:&amp;quot;6967db2172df02e461c5129b01b460c6&amp;quot;,&amp;quot;lastvisit&amp;quot;:&amp;quot;0&amp;quot;,&amp;quot;lastactivity&amp;quot;:&amp;quot;1331222482&amp;quot;}
+Otherwise it will throw &amp;lsquo;badlogin&amp;rsquo; error.
+Note that after user login, the sessionhash and apiaccesstoken will be regenerated. So the Authorization header won&amp;rsquo;t be returned to the client in this method.</description>
+    </item>
+    
+  </channel>
+</rss>

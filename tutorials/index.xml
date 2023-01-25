@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Tutorials on Manual</title>
+    <link>http://vb5manual.test/tutorials/</link>
+    <description>Recent content in Tutorials on Manual</description>
+    <generator>Hugo -- gohugo.io</generator><atom:link href="http://vb5manual.test/tutorials/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Creating a New Share Button</title>
+      <link>http://vb5manual.test/tutorials/adding_share_button/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://vb5manual.test/tutorials/adding_share_button/</guid>
+      <description>Creating a new Share button If you want to add a new share button within posts, knowing where to start can be intimidating.
+Creating a custom template. To start the process, you need to create a new template to hold your custom HTML code.
+In the AdminCP go to Styles → Style Manager. Select your style row and go to the Choose Action drop down. Note: If you are creating a product (see below), you should choose the MASTER STYLE which will be in the list while the site is in Debug Mode.</description>
+    </item>
+    
+  </channel>
+</rss>

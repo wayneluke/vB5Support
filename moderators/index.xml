@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Moderators on Manual</title>
+    <link>http://vb5manual.test/moderators/</link>
+    <description>Recent content in Moderators on Manual</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <lastBuildDate>Fri, 17 Sep 2021 00:00:00 +0000</lastBuildDate><atom:link href="http://vb5manual.test/moderators/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Inline Moderation</title>
+      <link>http://vb5manual.test/moderators/inline-moderation/</link>
+      <pubDate>Fri, 17 Sep 2021 00:00:00 +0000</pubDate>
+      
+      <guid>http://vb5manual.test/moderators/inline-moderation/</guid>
+      <description>Inline thread moderation allows moderators and administrators to edit topics and replies easily from the Forum or Topic that they are currently viewing.
+Channel Topic Moderation To access the inline moderation for topics open a forum page, and click on the Topics tab, if not already selected. A list of topics is displayed. Each topic has a checkbox at the end of the row. Selecting the checkbox adds the topic to the list of topics to be moderated.</description>
+    </item>
+    
+  </channel>
+</rss>

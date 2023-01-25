@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Installing vBulletin on Manual</title>
+    <link>http://vb5manual.test/installing/</link>
+    <description>Recent content in Installing vBulletin on Manual</description>
+    <generator>Hugo -- gohugo.io</generator><atom:link href="http://vb5manual.test/installing/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Downloading the vBulletin Package</title>
+      <link>http://vb5manual.test/installing/downloading_vbulletin/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://vb5manual.test/installing/downloading_vbulletin/</guid>
+      <description>The first thing you will need to do when installing vBulletin is to download the latest version from the Members&amp;rsquo; Area.
+You will need to log-in to the Members&amp;rsquo; Area using the Customer Number or Email Address along with the Customer Password that was emailed to you when you purchased your license.
+Once logged in, you will see a list of Current Licenses. For each active license that you own, there will be a Download vBulletin 5 Connect link on the right side of the table.</description>
+    </item>
+    
+    <item>
+      <title>Preparing the Files for your server</title>
+      <link>http://vb5manual.test/installing/preparing_files/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://vb5manual.test/installing/preparing_files/</guid>
+      <description>To extract the files from the package, open the folder on your computer where you saved the vBulletin package and double click the vBulletin package. The system should automatically extract the package for you into its own folder.
+[screen shot of OS X after the extraction is complete with the original zip and the new folder]
+When the extraction complete, you will find that inside of the new folder there are two other folders called upload and another called do_not_upload.</description>
+    </item>
+    
+    <item>
+      <title>Uploading vBulletin to your server</title>
+      <link>http://vb5manual.test/installing/uploading_vbulletin/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://vb5manual.test/installing/uploading_vbulletin/</guid>
+      <description>Preparing the Files for your server To extract the files from the package, open the folder on your computer where you saved the vBulletin package and double click the vBulletin package. The system should automatically extract the package for you into its own folder.
+When the extraction complete, you will find that inside of the new folder there are two other folders called upload and another called do_not_upload.
+upload - This folder contains the vBulletin files that need to be uploaded to your web server.</description>
+    </item>
+    
+    <item>
+      <title>Installing vBulletin</title>
+      <link>http://vb5manual.test/installing/installing_vbulletin/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://vb5manual.test/installing/installing_vbulletin/</guid>
+      <description>The installation wizard provides as seamless an experience as possible with as little intervention from the operator as is possible.
+Once all the vBulletin files have been successfully uploaded to your web server, you will need to run the vBulletin Installation Script in order to populate your database.
+The Installer runs as a PHP script using your web browser. To start the installation process, open your browser and type the HTTP address of your forums directory, followed by [i]/core/install/install.</description>
+    </item>
+    
+    <item>
+      <title>Finishing the Install</title>
+      <link>http://vb5manual.test/installing/after_installation/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://vb5manual.test/installing/after_installation/</guid>
+      <description>When you are finished with the Install Wizard, you will need to delete the %vbulletin_dir%/core/install directory and all of its contents.</description>
+    </item>
+    
+    <item>
+      <title>Common Issues</title>
+      <link>http://vb5manual.test/installing/common_issues/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://vb5manual.test/installing/common_issues/</guid>
+      <description>A list of common issues that people have while installing the software.
+I get an error saying that my PHP version is too low You will need to upgrade your PHP to the minimum required version or higher. If you do not manage your own server, you can ask your server administrator or hosting provider to do this for you. Sometimes, the hosting provider will support multiple versions of PHP. We recommend using the latest version available.</description>
+    </item>
+    
+    <item>
+      <title>Using vBulletin with NGINX</title>
+      <link>http://vb5manual.test/installing/using_vbulletin_with_nginx/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://vb5manual.test/installing/using_vbulletin_with_nginx/</guid>
+      <description>Using vBulletin with NGINX</description>
+    </item>
+    
+  </channel>
+</rss>

@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Creating Content on Manual</title>
+    <link>http://vb5manual.test/end_user_guide/creating_content/</link>
+    <description>Recent content in Creating Content on Manual</description>
+    <generator>Hugo -- gohugo.io</generator><atom:link href="http://vb5manual.test/end_user_guide/creating_content/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Creating Forum Topics</title>
+      <link>http://vb5manual.test/end_user_guide/creating_content/creating-forum-topics/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://vb5manual.test/end_user_guide/creating_content/creating-forum-topics/</guid>
+      <description>A new topic is the evolution of what previously were called new threads in earlier versions. A topic in a forum or group can hold one or more posts of various content types such traditional text based posts, shared pictures, links or videos, or polls. To create a new topic click on the +New Topic button when browsing a forum or group.You will be presented with a screen where you must give a title (or subject) of the topic and optionally choose a topic prefix if available.</description>
+    </item>
+    
+    <item>
+      <title>How do I share photos?</title>
+      <link>http://vb5manual.test/end_user_guide/creating_content/how-do-i-share-photos/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://vb5manual.test/end_user_guide/creating_content/how-do-i-share-photos/</guid>
+      <description>You may share photos in any forum, group, or blog for which you have permission to do so. If you see the &#34;Share Photos&#34; button, represented by the camera icon, in the editor you may click on it either when creating a new topic or posting a reply. You may attach photos (or any image) to a post either by uploading new files or attaching images you previously uploaded. To upload new photos press the Upload button and browse to the images you wish to upload.</description>
+    </item>
+    
+    <item>
+      <title>How do I share links and videos?</title>
+      <link>http://vb5manual.test/end_user_guide/creating_content/how-do-i-share-links-and-videos/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://vb5manual.test/end_user_guide/creating_content/how-do-i-share-links-and-videos/</guid>
+      <description>You may post links or videos in any forum, group, or blog for which you have permission to do so. If you see the &#34;Post Link&#34; button, represented by a paperclip icon, in the editor toolbar you may click on it either when creating a new topic or posting a reply. After clicking on Post Link button in the editor you will have the standard message box as well as an additional URL field that begins with http://.</description>
+    </item>
+    
+    <item>
+      <title>How do I create a Poll?</title>
+      <link>http://vb5manual.test/end_user_guide/creating_content/how-do-i-create-a-poll/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://vb5manual.test/end_user_guide/creating_content/how-do-i-create-a-poll/</guid>
+      <description>If you are creating a new topic you may be able to post a poll if the Administrator has given you permission to do so.
+Polls allow you to pose questions to other users of the site. Other users will be able to vote for one (or more, if you allow) choices and a summary of theresults will be displayed at the start of the topic after you or they vote.</description>
+    </item>
+    
+    <item>
+      <title>Advanced Editing (using BBCode)</title>
+      <link>http://vb5manual.test/end_user_guide/creating_content/advanced-editing-using-bbcode/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://vb5manual.test/end_user_guide/creating_content/advanced-editing-using-bbcode/</guid>
+      <description>When posting messages you may wish to include some formatting such as bold text, italic text or underline text.
+Adding formatting to a post can be done in either of two ways:
+Using clickable buttons in the Advanced editor similar to those found in word processorsTyping in BB Codes around text manuallyClickable buttons are available in the Advanced editor. Click on the A icon in the editor to toggle the Advanced editor controls.</description>
+    </item>
+    
+    <item>
+      <title>Sending Messages to Other Users</title>
+      <link>http://vb5manual.test/end_user_guide/creating_content/sending-messages-to-other-users/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://vb5manual.test/end_user_guide/creating_content/sending-messages-to-other-users/</guid>
+      <description>If the administrator has enabled the Private Messaging system, registered members may send each other private messages.
+How do I send a message to another user?This site uses a Private Message (or PM) system to allow users to send messages to each other if the Administrator has given you permission to do so. Private messages work a little like email, but are limited to registered members of this site. You may be able to include BB code, smilies and images in private messages that you send.</description>
+    </item>
+    
+    <item>
+      <title>How do I manage attachments?</title>
+      <link>http://vb5manual.test/end_user_guide/creating_content/how-do-i-manage-attachments/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://vb5manual.test/end_user_guide/creating_content/how-do-i-manage-attachments/</guid>
+      <description>You may have permission to attach files and images to your posts on this site. If you have permission you will see a paper with paperclip icon on the editor- pressing this button will bring up the Upload Attachment option.
+File attachments may be data files such as .zip, .txt, .doc, or any other file types the Administrator has allowed. You may also attach images (.jpg, .png. and .gif.)
+To upload a file press the Upload Attachment button after you have clicked on the paper-clip icon at the top to show the button.</description>
+    </item>
+    
+    <item>
+      <title>Flagging Inappropriate Content</title>
+      <link>http://vb5manual.test/end_user_guide/creating_content/flagging-inappropriate-content/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://vb5manual.test/end_user_guide/creating_content/flagging-inappropriate-content/</guid>
+      <description>If you find inappropriate content on the site, you can flag it for review by the staff. To do this, look at the content or discussion container and you will see a Flag link. Click on this link and an overlay will open up to flag or report the content. You can enter in a reason why you think the content is inappropriate. All flagged items will be reviewed by site staff according to the posted guidelines and if deemed necessary, they will take action on it.</description>
+    </item>
+    
+    <item>
+      <title>How do I follow an important discussion?</title>
+      <link>http://vb5manual.test/end_user_guide/creating_content/how-do-i-follow-an-important-discussion/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://vb5manual.test/end_user_guide/creating_content/how-do-i-follow-an-important-discussion/</guid>
+      <description>Above each discussion or topic, there is a Subscribe toggle. Clicking on this will enable you to follow the discussion easier. Each time someone replies to the discussion, you will get a notification that will show on your Messages page. You can follow these notifications to the new content or delete them from the Notifications area on your Messages Page.
+If you wish to no longer follow a discussion or topic, then clicking on the button again will turn off your subscription.</description>
+    </item>
+    
+  </channel>
+</rss>

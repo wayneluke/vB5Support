@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Managing Languages on Manual</title>
+    <link>http://vb5manual.test/administration/AdminCP/languages/managing_languages/</link>
+    <description>Recent content in Managing Languages on Manual</description>
+    <generator>Hugo -- gohugo.io</generator><atom:link href="http://vb5manual.test/administration/AdminCP/languages/managing_languages/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Language Quick Reference</title>
+      <link>http://vb5manual.test/administration/AdminCP/languages/managing_languages/quick_reference/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://vb5manual.test/administration/AdminCP/languages/managing_languages/quick_reference/</guid>
+      <description>Path to Language Quick Reference:Languages &amp;amp; Phrases &amp;gt; Language Manager, then click [View QuickRef].
+On the left of the Language QuickRef popup window is a list of phrase variable names. Once you click a name, the code to use in a template appears on the right, along with the current phrase text string value.
+Using the pulldown lists at the bottom of the screen you can change the language and phrase group being viewed in the window.</description>
+    </item>
+    
+    <item>
+      <title>Rebuilding All Languages</title>
+      <link>http://vb5manual.test/administration/AdminCP/languages/managing_languages/rebuild_languages/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://vb5manual.test/administration/AdminCP/languages/managing_languages/rebuild_languages/</guid>
+      <description>Path to Rebuilding All Languages:Languages &amp;amp; Phrases &amp;gt; Language Manager, then click [Rebuild All Languages].
+This process regenerates all cached language data from the database. Generally this is not necessary. However, if you have edited the language information in the database directly, you need to run this process for your changes to take effect.
+Note: Running this process, even when unnecessary, will not harm your site.</description>
+    </item>
+    
+  </channel>
+</rss>
