@@ -2,15 +2,15 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>API on vB5 Manual and API Documentation</title>
-    <link>http://vb5manual.test/developers/vbapi/</link>
+    <link>http://vb5support.com/developers/vbapi/</link>
     <description>Recent content in API on vB5 Manual and API Documentation</description>
-    <generator>Hugo -- gohugo.io</generator><atom:link href="http://vb5manual.test/developers/vbapi/index.xml" rel="self" type="application/rss+xml" />
+    <generator>Hugo -- gohugo.io</generator><atom:link href="http://vb5support.com/developers/vbapi/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Initializing the API</title>
-      <link>http://vb5manual.test/developers/vbapi/initializing_api/</link>
+      <link>http://vb5support.com/developers/vbapi/initializing_api/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>http://vb5manual.test/developers/vbapi/initializing_api/</guid>
+      <guid>http://vb5support.com/developers/vbapi/initializing_api/</guid>
       <description>(For API Version 5)
 This documentation describes vBulletin 5 API. With the API, mobiles or other clients can communicate with vBulletin and do most tasks that vB&amp;rsquo;s web frontend can do.
 Conventions In this documentation, you will find a number of styles of text that distinguish between different kind of information. Here are some examples of these styles and an explaination of their meaning.
@@ -19,10 +19,10 @@ API method names and parameters in text are shown as follows: &amp;ldquo;You can
     
     <item>
       <title>Login/Logout Process</title>
-      <link>http://vb5manual.test/developers/vbapi/api_login_logout/</link>
+      <link>http://vb5support.com/developers/vbapi/api_login_logout/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>http://vb5manual.test/developers/vbapi/api_login_logout/</guid>
+      <guid>http://vb5support.com/developers/vbapi/api_login_logout/</guid>
       <description>This article explains the process of user login and logout with API.
 Login Process The client is able to login user with user.login2 method.
 If login successfully, It will return a new sessionhash, the userid. Here&amp;rsquo;s an example:

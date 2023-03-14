@@ -2,8 +2,8 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Languages &amp; Phrases on vB5 Manual and API Documentation</title>
-    <link>http://vb5manual.test/administration/AdminCP/languages/</link>
+    <link>http://vb5support.com/administration/AdminCP/languages/</link>
     <description>Recent content in Languages &amp; Phrases on vB5 Manual and API Documentation</description>
-    <generator>Hugo -- gohugo.io</generator><atom:link href="http://vb5manual.test/administration/AdminCP/languages/index.xml" rel="self" type="application/rss+xml" />
+    <generator>Hugo -- gohugo.io</generator><atom:link href="http://vb5support.com/administration/AdminCP/languages/index.xml" rel="self" type="application/rss+xml" />
   </channel>
 </rss>

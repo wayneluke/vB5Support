@@ -2,24 +2,24 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>BB Code Reference on vB5 Manual and API Documentation</title>
-    <link>http://vb5manual.test/end_user_guide/bbcode_reference/</link>
+    <link>http://vb5support.com/end_user_guide/bbcode_reference/</link>
     <description>Recent content in BB Code Reference on vB5 Manual and API Documentation</description>
-    <generator>Hugo -- gohugo.io</generator><atom:link href="http://vb5manual.test/end_user_guide/bbcode_reference/index.xml" rel="self" type="application/rss+xml" />
+    <generator>Hugo -- gohugo.io</generator><atom:link href="http://vb5support.com/end_user_guide/bbcode_reference/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Why BBCode?</title>
-      <link>http://vb5manual.test/end_user_guide/bbcode_reference/why-bbcode/</link>
+      <link>http://vb5support.com/end_user_guide/bbcode_reference/why-bbcode/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>http://vb5manual.test/end_user_guide/bbcode_reference/why-bbcode/</guid>
+      <guid>http://vb5support.com/end_user_guide/bbcode_reference/why-bbcode/</guid>
       <description>Users often want to create rich and featured documents on the web. Unfortunately there are limitations to this due to how the Web works. In order to protect the users of this site, vBulletin implements BB Code. These codes allows you to create exciting content without worrying about the people who may not be working in your best interest. BBCode doesn&amp;rsquo;t allow others to embed tools to steal cookies, implant viruses on your machine and prevents other security issues from happening.</description>
     </item>
     
     <item>
       <title>Basic BBCode</title>
-      <link>http://vb5manual.test/end_user_guide/bbcode_reference/basic-bbcode/</link>
+      <link>http://vb5support.com/end_user_guide/bbcode_reference/basic-bbcode/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>http://vb5manual.test/end_user_guide/bbcode_reference/basic-bbcode/</guid>
+      <guid>http://vb5support.com/end_user_guide/bbcode_reference/basic-bbcode/</guid>
       <description>Basic BBCode allows the basics of document formatting. The BBCode included here are font, color, size, bold, italic, underline, and alignment.
 FontThis tag allows you to change the font or type style of your text.
 Available Fonts: Arial, Comic Sans MS, Courier New, Georgia, Lucida Sans Unicode, Tahoma, Times New Roman, Trebuchet MS, Verdana.
@@ -28,10 +28,10 @@ Usage:[font=option]value[/font]Example Usage:[font=Georgia]This text is in th
     
     <item>
       <title>Creating Links</title>
-      <link>http://vb5manual.test/end_user_guide/bbcode_reference/creating-links/</link>
+      <link>http://vb5support.com/end_user_guide/bbcode_reference/creating-links/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>http://vb5manual.test/end_user_guide/bbcode_reference/creating-links/</guid>
+      <guid>http://vb5support.com/end_user_guide/bbcode_reference/creating-links/</guid>
       <description>These BBCodes allow you to link to web pages and emails both within and outside the the current site. They make it easy to share information.
 Note: Most links to webpages will be converted automatically by the site. However some protocols may still need the link tag.
 URL Hyperlinks Allows you to link to other pages or even other sites. This should not be confused with the Link content type described under Creating Content.</description>
@@ -39,10 +39,10 @@ URL Hyperlinks Allows you to link to other pages or even other sites. This shoul
     
     <item>
       <title>Using Quotes</title>
-      <link>http://vb5manual.test/end_user_guide/bbcode_reference/using-quotes/</link>
+      <link>http://vb5support.com/end_user_guide/bbcode_reference/using-quotes/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>http://vb5manual.test/end_user_guide/bbcode_reference/using-quotes/</guid>
+      <guid>http://vb5support.com/end_user_guide/bbcode_reference/using-quotes/</guid>
       <description>Quotes are a great way to maintain continuity in long conversations. They can be used to provide context and reference posts for replies to posts made hours or days earlier.
 QuoteThe [quote] tag allows you to attribute text to someone else.Usage:[quote]Quote[/quote]
 [quote=User Name]value[/quote]
@@ -53,10 +53,10 @@ QuoteThe [quote] tag allows you to attribute text to someone else.Usage:[quot
     
     <item>
       <title>Inline Media (Photos and Videos)</title>
-      <link>http://vb5manual.test/end_user_guide/bbcode_reference/inline-media-photos-and-videos/</link>
+      <link>http://vb5support.com/end_user_guide/bbcode_reference/inline-media-photos-and-videos/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>http://vb5manual.test/end_user_guide/bbcode_reference/inline-media-photos-and-videos/</guid>
+      <guid>http://vb5support.com/end_user_guide/bbcode_reference/inline-media-photos-and-videos/</guid>
       <description>Media allows your content to come alive. vBulletin allows you to embed media including images and videos within your content. These BB Codes explain how to do this manually.
 ImagesThe [img] tag allows you to embed images within your posts. You can also combine this tag with the [url] tag to make images become links.Usage:[img]value[/img]Example Usage:[img]http://www.example.com/img/misc/vbulletin5_logo.png[/img] (Not linked)
 [url=http://www.example.com] [img]http://www.example.com/img/misc/vbulletin5_logo.png[/img][/url] (Linked)Example Output:(Not linked)</description>
@@ -64,10 +64,10 @@ ImagesThe [img] tag allows you to embed images within your posts. You can also 
     
     <item>
       <title>Using Smilies</title>
-      <link>http://vb5manual.test/end_user_guide/bbcode_reference/using-smilies/</link>
+      <link>http://vb5support.com/end_user_guide/bbcode_reference/using-smilies/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>http://vb5manual.test/end_user_guide/bbcode_reference/using-smilies/</guid>
+      <guid>http://vb5support.com/end_user_guide/bbcode_reference/using-smilies/</guid>
       <description>What are smilies?
 Smilies are icons that can be used in your posts to express emotions or feelings. You might wish to use these to show that you are happy, sad, joking, or embarrassed. For example, if you are telling a joke or being sarcastic you may wish to add a wink instead of writing &#39;this is a joke&#39;.
 The basic smilies are the same as what you would find on any instant messenger system.</description>
@@ -75,10 +75,10 @@ The basic smilies are the same as what you would find on any instant messenger s
     
     <item>
       <title>Creating Lists</title>
-      <link>http://vb5manual.test/end_user_guide/bbcode_reference/creating-lists/</link>
+      <link>http://vb5support.com/end_user_guide/bbcode_reference/creating-lists/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>http://vb5manual.test/end_user_guide/bbcode_reference/creating-lists/</guid>
+      <guid>http://vb5support.com/end_user_guide/bbcode_reference/creating-lists/</guid>
       <description>Lists allow you to create bulleted points for your topic.
 Bulleted ListsThe [list] tag allows you to create simple, bulleted lists without specifying an option. Within the value portion, each bullet is denoted by the [*] tag.Usage:[list][*]item,[*]item, ...[/list]Example Usage:[list]
 [*]list item 1[*]list item 2[/list]Example Output:list item 1list item 2Advanced ListsThe [list] tag allows you to create advanced lists by specifying an option.</description>
@@ -86,10 +86,10 @@ Bulleted ListsThe [list] tag allows you to create simple, bulleted lists withou
     
     <item>
       <title>Creating Tables</title>
-      <link>http://vb5manual.test/end_user_guide/bbcode_reference/creating-tables/</link>
+      <link>http://vb5support.com/end_user_guide/bbcode_reference/creating-tables/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>http://vb5manual.test/end_user_guide/bbcode_reference/creating-tables/</guid>
+      <guid>http://vb5support.com/end_user_guide/bbcode_reference/creating-tables/</guid>
       <description>Tables are used to format and control tabular data. Like a spreadsheet. The software supports basic table functionality to allow this.
 TableThis is the container tag. It contains multiple rows and multiple cells per row.Usage:[table][tr][td][/td][/tr][/table]Example Usage:[table]
 [tr]
@@ -104,10 +104,10 @@ TableThis is the container tag. It contains multiple rows and multiple cells pe
     
     <item>
       <title>Using Code Snippets</title>
-      <link>http://vb5manual.test/end_user_guide/bbcode_reference/using-code-snippets/</link>
+      <link>http://vb5support.com/end_user_guide/bbcode_reference/using-code-snippets/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>http://vb5manual.test/end_user_guide/bbcode_reference/using-code-snippets/</guid>
+      <guid>http://vb5support.com/end_user_guide/bbcode_reference/using-code-snippets/</guid>
       <description>Displaying Code within a topic often requires special handling to preserve formatting and prevent it from being parsed by the end-user&amp;rsquo;s client.
 CodeThe [code] tag switches to a fixed-width (monospace) font and preserves all spacing. Note: If you have permission to post HTML, it will be parsed. If you do not wish HTML to be parsed, you should surround it with [noparse] tags.Usage:[code]value[/code]Example Usage:[code]&amp;lt;script type=&#34;text/javascript&#34;&amp;gt;</description>
     </item>

@@ -2,35 +2,35 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>General Help on vB5 Manual and API Documentation</title>
-    <link>http://vb5manual.test/end_user_guide/general_help/</link>
+    <link>http://vb5support.com/end_user_guide/general_help/</link>
     <description>Recent content in General Help on vB5 Manual and API Documentation</description>
-    <generator>Hugo -- gohugo.io</generator><atom:link href="http://vb5manual.test/end_user_guide/general_help/index.xml" rel="self" type="application/rss+xml" />
+    <generator>Hugo -- gohugo.io</generator><atom:link href="http://vb5support.com/end_user_guide/general_help/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Forums, Topics and Posts</title>
-      <link>http://vb5manual.test/end_user_guide/general_help/forums-topics-and-posts/</link>
+      <link>http://vb5support.com/end_user_guide/general_help/forums-topics-and-posts/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>http://vb5manual.test/end_user_guide/general_help/forums-topics-and-posts/</guid>
+      <guid>http://vb5support.com/end_user_guide/general_help/forums-topics-and-posts/</guid>
       <description>What is a community bulletin board?A community bulletin board is an online discussion site. It&#39;s sometimes also called a &#39;board&#39; or &#39;forums&#39;. It may contain several categories, consisting of forums, topics and individual posts. The content on a community bulletin board is often created by the users or members of the site. They are used for support, to share ideas and for a variety of different topics.
 How is all this structured?</description>
     </item>
     
     <item>
       <title>Registration</title>
-      <link>http://vb5manual.test/end_user_guide/general_help/registration/</link>
+      <link>http://vb5support.com/end_user_guide/general_help/registration/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>http://vb5manual.test/end_user_guide/general_help/registration/</guid>
+      <guid>http://vb5support.com/end_user_guide/general_help/registration/</guid>
       <description>The administrator will probably require you to register to make full use of the features of this site. Being registered gives you a unique username and identity on the board.Registration is free unless otherwise specified and offers some or all of the following features depending how the administrator has configured the site:
 Posting new topicsReplying to other peoples&#39; topicsEditing your contentSending private messages to other membersSubscribing to contentCreate a unique signature to use in postsUpload a custom AvatarHow do I register?</description>
     </item>
     
     <item>
       <title>Login / Logoff</title>
-      <link>http://vb5manual.test/end_user_guide/general_help/login-logoff/</link>
+      <link>http://vb5support.com/end_user_guide/general_help/login-logoff/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>http://vb5manual.test/end_user_guide/general_help/login-logoff/</guid>
+      <guid>http://vb5support.com/end_user_guide/general_help/login-logoff/</guid>
       <description>Login to the site by locating the &#34;Login or Sign Up&#34; link located in the top right corner of the page.
 Click the link to activate the login box.
 Enter in your username and password with the option to &#34;Remember me&#34; then click &#34;Log in&#34;.
@@ -39,69 +39,69 @@ Remember me allows a user to stay logged instead of their session with the site 
     
     <item>
       <title>How do I recover my lost password?</title>
-      <link>http://vb5manual.test/end_user_guide/general_help/how-do-i-recover-my-lost-password/</link>
+      <link>http://vb5support.com/end_user_guide/general_help/how-do-i-recover-my-lost-password/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>http://vb5manual.test/end_user_guide/general_help/how-do-i-recover-my-lost-password/</guid>
+      <guid>http://vb5support.com/end_user_guide/general_help/how-do-i-recover-my-lost-password/</guid>
       <description>I forgot my password, what can I do?If you&#39;ve forgotten you password you can click on the &#34;Forgot password or user name?&#34; link. It will appear in the &#34;Sign In&#34; box and anytime you enter an incorrect password. You will be taken to a new page where you can enter your registered email address and may need to also answer a human verification challenge to prevent exploitation by automated bots.</description>
     </item>
     
     <item>
       <title>Facebook Connect</title>
-      <link>http://vb5manual.test/end_user_guide/general_help/facebook-connect/</link>
+      <link>http://vb5support.com/end_user_guide/general_help/facebook-connect/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>http://vb5manual.test/end_user_guide/general_help/facebook-connect/</guid>
+      <guid>http://vb5support.com/end_user_guide/general_help/facebook-connect/</guid>
       <description>Facebook Connect is an optional vBulletin feature that, if enabled, allows for quicker registrations by automatically using information from your existing Facebook account on this site. If you have previously registered you may use Facebook Connect to link your site account with your Facebook profile.
 You may add or sever the Facebook link at any time by going to your username at the top of the page, and choosing &#34;User Settings.</description>
     </item>
     
     <item>
       <title>Searching this Site</title>
-      <link>http://vb5manual.test/end_user_guide/general_help/searching-this-site/</link>
+      <link>http://vb5support.com/end_user_guide/general_help/searching-this-site/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>http://vb5manual.test/end_user_guide/general_help/searching-this-site/</guid>
+      <guid>http://vb5support.com/end_user_guide/general_help/searching-this-site/</guid>
       <description>Basic SearchYou can perform a basic global search by entering your keywords into the search form located at the top right corner of the page. This will return any results matching your keywords up to the maximum value allowed by the site administrator.
 Advanced SearchThe site also has an Advanced Search. You can access the Advanced Search by clicking on the down arrow in the search box and selecting it off the resulting menu.</description>
     </item>
     
     <item>
       <title>Finding New Content</title>
-      <link>http://vb5manual.test/end_user_guide/general_help/finding-new-content/</link>
+      <link>http://vb5support.com/end_user_guide/general_help/finding-new-content/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>http://vb5manual.test/end_user_guide/general_help/finding-new-content/</guid>
+      <guid>http://vb5support.com/end_user_guide/general_help/finding-new-content/</guid>
       <description>Today&#39;s Posts / New TopicsToday&#39;s Posts and New Topics are a means by which members can discover the latest content on a site, regardless of the channel (forum, group, blog etc) or content type (posts, photos, links etc). For many people this can be the most convenient way of exploring the site, as it aggregates all recent activity in one place.
 TODAY&#39;S POSTS is usually shown only to guests (unregistered users browsing the site), and provides a simple but comprehensive list of all content that has been updated in the past 24 hours.</description>
     </item>
     
     <item>
       <title>Cookies (and how they are used.)</title>
-      <link>http://vb5manual.test/end_user_guide/general_help/cookies-and-how-they-are-used/</link>
+      <link>http://vb5support.com/end_user_guide/general_help/cookies-and-how-they-are-used/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>http://vb5manual.test/end_user_guide/general_help/cookies-and-how-they-are-used/</guid>
+      <guid>http://vb5support.com/end_user_guide/general_help/cookies-and-how-they-are-used/</guid>
       <description>Cookies are very small text files that are stored on your computer when you visit some websites. We use cookies to help identify your computer so we can tailor your user experience, track shopping basket contents and remember where you are in the order process. You can disable any cookies already stored on your computer, but these may stop our website from functioning properly.
 The following is strictly necessary in the operation of our website.</description>
     </item>
     
     <item>
       <title>How do I clear my cookies or cache?</title>
-      <link>http://vb5manual.test/end_user_guide/general_help/how-do-i-clear-my-cookies-or-cache/</link>
+      <link>http://vb5support.com/end_user_guide/general_help/how-do-i-clear-my-cookies-or-cache/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>http://vb5manual.test/end_user_guide/general_help/how-do-i-clear-my-cookies-or-cache/</guid>
+      <guid>http://vb5support.com/end_user_guide/general_help/how-do-i-clear-my-cookies-or-cache/</guid>
       <description>You can clear all your cookies set by the forum by clicking the &#39;logout&#39; link at the top of the page. In some cases, if you return to the main index page via the link provided and you are still logged in, you may have to remove your cookies manually.
 To clear cookies and cache in Internet Explorer 9Press Ctrl+Shift+Delete to open the Delete Browsing History window.Select Temporary Internet Files and cookies.</description>
     </item>
     
     <item>
       <title>Terms of Service</title>
-      <link>http://vb5manual.test/end_user_guide/general_help/terms-of-service/</link>
+      <link>http://vb5support.com/end_user_guide/general_help/terms-of-service/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>http://vb5manual.test/end_user_guide/general_help/terms-of-service/</guid>
+      <guid>http://vb5support.com/end_user_guide/general_help/terms-of-service/</guid>
       <description>Although the administrators and moderators of this site will attempt to keep all objectionable messages off this site, it is impossible for us to review all messages. All messages express the views of the author, and neither the owners of this site, nor MH Sub I, LLC (developers of vBulletin) will be held responsible for the content of any message.
 By agreeing to these rules, you warrant that you will not post any messages that are obscene, vulgar, sexually-oriented, hateful, threatening, or otherwise violative of any laws.</description>
     </item>

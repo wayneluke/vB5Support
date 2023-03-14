@@ -2,15 +2,15 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Managing Photo Albums on vB5 Manual and API Documentation</title>
-    <link>http://vb5manual.test/end_user_guide/managing_albums/</link>
+    <link>http://vb5support.com/end_user_guide/managing_albums/</link>
     <description>Recent content in Managing Photo Albums on vB5 Manual and API Documentation</description>
-    <generator>Hugo -- gohugo.io</generator><atom:link href="http://vb5manual.test/end_user_guide/managing_albums/index.xml" rel="self" type="application/rss+xml" />
+    <generator>Hugo -- gohugo.io</generator><atom:link href="http://vb5support.com/end_user_guide/managing_albums/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>How do I create a new Album?</title>
-      <link>http://vb5manual.test/end_user_guide/managing_albums/how-do-i-create-a-new-album/</link>
+      <link>http://vb5support.com/end_user_guide/managing_albums/how-do-i-create-a-new-album/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>http://vb5manual.test/end_user_guide/managing_albums/how-do-i-create-a-new-album/</guid>
+      <guid>http://vb5support.com/end_user_guide/managing_albums/how-do-i-create-a-new-album/</guid>
       <description>You may create a new photo album in one of two ways:
 You may create a new topic on a channel you have permission to do so and share photos to create an album.
 You may go to your profile and click on the MEDIA tab. There you will be given the option to add photos (or videos.) Choose the Add Photos link and you will be presented with the familiar editor and you can share photos as in other site posts.</description>
@@ -18,29 +18,29 @@ You may go to your profile and click on the MEDIA tab. There you will be given t
     
     <item>
       <title>How do I add photos to an album?</title>
-      <link>http://vb5manual.test/end_user_guide/managing_albums/how-do-i-add-photos-to-an-album/</link>
+      <link>http://vb5support.com/end_user_guide/managing_albums/how-do-i-add-photos-to-an-album/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>http://vb5manual.test/end_user_guide/managing_albums/how-do-i-add-photos-to-an-album/</guid>
+      <guid>http://vb5support.com/end_user_guide/managing_albums/how-do-i-add-photos-to-an-album/</guid>
       <description>If you have previously created a photo album you may add additional photos by going to your profile and clicking on the MEDIA tab. You will see all existing albums. Click on the thumbnail or title of the album you wish to add photos to.
 The album will open. Press the Add Photos button. On the new window press the Upload More button to get the file selection dialog box. Choose one or more files as usual to upload.</description>
     </item>
     
     <item>
       <title>Why can&#39;t I create new video albums?</title>
-      <link>http://vb5manual.test/end_user_guide/managing_albums/why-can-t-i-create-new-video-albums/</link>
+      <link>http://vb5support.com/end_user_guide/managing_albums/why-can-t-i-create-new-video-albums/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>http://vb5manual.test/end_user_guide/managing_albums/why-can-t-i-create-new-video-albums/</guid>
+      <guid>http://vb5support.com/end_user_guide/managing_albums/why-can-t-i-create-new-video-albums/</guid>
       <description>Video albums are not supported at this time. However if you go to your profile and click the MEDIA tab there will be a Videos album. If you click on the Videos album you will see a list of all videos you previously attached to posts on the site. This allows for a quick way for you or others to see the videos that you have shared in the past.</description>
     </item>
     
     <item>
       <title>What is the Posted Photos album for?</title>
-      <link>http://vb5manual.test/end_user_guide/managing_albums/what-is-the-posted-photos-album-for/</link>
+      <link>http://vb5support.com/end_user_guide/managing_albums/what-is-the-posted-photos-album-for/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>http://vb5manual.test/end_user_guide/managing_albums/what-is-the-posted-photos-album-for/</guid>
+      <guid>http://vb5support.com/end_user_guide/managing_albums/what-is-the-posted-photos-album-for/</guid>
       <description>In your list of photo albums you may see an album titled Posted Photos. This is a system generated container that includes all images posted in topics or other content and are not part of your specific albums.
 The Posted Photos album is a good way to find old posted images and reshare them in new topics.
 updated: 2021-10-06 01:30pm | Version: 5.6.5 Alpha 11 </description>
@@ -48,10 +48,10 @@ updated: 2021-10-06 01:30pm | Version: 5.6.5 Alpha 11 </description>
     
     <item>
       <title>How do I delete an Album?</title>
-      <link>http://vb5manual.test/end_user_guide/managing_albums/how-do-i-delete-an-album/</link>
+      <link>http://vb5support.com/end_user_guide/managing_albums/how-do-i-delete-an-album/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>http://vb5manual.test/end_user_guide/managing_albums/how-do-i-delete-an-album/</guid>
+      <guid>http://vb5support.com/end_user_guide/managing_albums/how-do-i-delete-an-album/</guid>
       <description>You may delete an existing album by going to your profile and clicking on the MEDIA tab.
 Click on the photo album you wish to delete and it will open. In the top corner there will be a small pencil con and Edit link. Click on this to open the Album edit page.
 On the edit page you can change the Album title, description, upload more photos, or delete the album.</description>
@@ -59,10 +59,10 @@ On the edit page you can change the Album title, description, upload more photos
     
     <item>
       <title>How do I reuse a photo?</title>
-      <link>http://vb5manual.test/end_user_guide/managing_albums/how-do-i-reuse-a-photo/</link>
+      <link>http://vb5support.com/end_user_guide/managing_albums/how-do-i-reuse-a-photo/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>http://vb5manual.test/end_user_guide/managing_albums/how-do-i-reuse-a-photo/</guid>
+      <guid>http://vb5support.com/end_user_guide/managing_albums/how-do-i-reuse-a-photo/</guid>
       <description>If you have previously uploaded a photo you may reuse it in a photo post or photo album without uploading it again.
 Whether you are adding photos to a new album, an existing album, or to a new topic besides the Upload option you will also see a Select from Photo Album option. Click this button and you will be presented with a list of your photo albums on one side and the thumbnail images of photos from that album on the other side.</description>
     </item>

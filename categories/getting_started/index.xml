@@ -2,24 +2,24 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>getting_started on vB5 Manual and API Documentation</title>
-    <link>http://vb5manual.test/categories/getting_started/</link>
+    <link>http://vb5support.com/categories/getting_started/</link>
     <description>Recent content in getting_started on vB5 Manual and API Documentation</description>
-    <generator>Hugo -- gohugo.io</generator><atom:link href="http://vb5manual.test/categories/getting_started/index.xml" rel="self" type="application/rss+xml" />
+    <generator>Hugo -- gohugo.io</generator><atom:link href="http://vb5support.com/categories/getting_started/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Getting Started</title>
-      <link>http://vb5manual.test/getting_started/</link>
+      <link>http://vb5support.com/getting_started/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>http://vb5manual.test/getting_started/</guid>
+      <guid>http://vb5support.com/getting_started/</guid>
       <description></description>
     </item>
     
     <item>
       <title>System Requirements</title>
-      <link>http://vb5manual.test/getting_started/system_requirements/</link>
+      <link>http://vb5support.com/getting_started/system_requirements/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>http://vb5manual.test/getting_started/system_requirements/</guid>
+      <guid>http://vb5support.com/getting_started/system_requirements/</guid>
       <description>Your server must meet the following requirements before vBulletin can be installed on the machine. Most shared-environment hosting providers meet these qualifications already. If you&amp;rsquo;re unsure, you can always use vBulletin Cloud to host your vBulletin website.
 Minimum Requirements vBulletin is a web-based application and as such has a few minimum requirements. To run vBulletin, you need a web hosting provider that includes the following on their systems:
 PHP version: 7.</description>
@@ -27,40 +27,40 @@ PHP version: 7.</description>
     
     <item>
       <title>Basic Terminology</title>
-      <link>http://vb5manual.test/getting_started/basic_terminology/</link>
+      <link>http://vb5support.com/getting_started/basic_terminology/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>http://vb5manual.test/getting_started/basic_terminology/</guid>
+      <guid>http://vb5support.com/getting_started/basic_terminology/</guid>
       <description>Terms vBulletin 5 Connect introduces some new concepts on how content is contained in the system. In previous versions, each content type was separate with its own programming, database tables and functionality. In vBulletin 5 Connect, we&amp;rsquo;ve eliminated the redundancy this caused and that has required some new terms to be introduced.
 vBulletin Site This refers to your vBulletin 5 Connect installation including all of its content, pages and users.</description>
     </item>
     
     <item>
       <title>Recommended Software</title>
-      <link>http://vb5manual.test/getting_started/recommended_software/</link>
+      <link>http://vb5support.com/getting_started/recommended_software/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>http://vb5manual.test/getting_started/recommended_software/</guid>
+      <guid>http://vb5support.com/getting_started/recommended_software/</guid>
       <description>This manual makes reference to and shows screenshots of various programs that we use outside of the vBulletin software. This section covers software we recommend for use that is tried and tested in working with vBulletin.
 Text Editors There may be times in vBulletin where you’ll be required to edit or make changes to PHP, html or JS files. Most operating systems come with one or more text editors. However, you may need more functionality than those basic applications.</description>
     </item>
     
     <item>
       <title>How to Get Support</title>
-      <link>http://vb5manual.test/getting_started/how_to_get_support/</link>
+      <link>http://vb5support.com/getting_started/how_to_get_support/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>http://vb5manual.test/getting_started/how_to_get_support/</guid>
+      <guid>http://vb5support.com/getting_started/how_to_get_support/</guid>
       <description>As a vBulletin user there are going to be times where you run into problems that you don’t know how to fix. Knowing where to locate helpful guides, get support from the community and support staff is vital to the operation of your forum.
 Depending on your license type or extra support contracts will enable you to get help in different ways. There are a few ways to receive support and they are as follows:</description>
     </item>
     
     <item>
       <title>Introduction</title>
-      <link>http://vb5manual.test/getting_started/introduction/</link>
+      <link>http://vb5support.com/getting_started/introduction/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>http://vb5manual.test/getting_started/introduction/</guid>
+      <guid>http://vb5support.com/getting_started/introduction/</guid>
       <description>What is vBulletin? vBulletin is a Community Driven Content Management System. vBulletin Connect is a community platform with content that is contributed by your end users. The system allows you to build custom community sites without coding. Community driven content management allows for content that is always fresh and relevent. Using vBulletin allows you to engage your users in content creation, collation and distribution. vBulletin 5 has been designed to bring you modern community building and ease of use.</description>
     </item>
     

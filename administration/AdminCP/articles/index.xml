@@ -2,25 +2,25 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Articles on vB5 Manual and API Documentation</title>
-    <link>http://vb5manual.test/administration/AdminCP/articles/</link>
+    <link>http://vb5support.com/administration/AdminCP/articles/</link>
     <description>Recent content in Articles on vB5 Manual and API Documentation</description>
-    <generator>Hugo -- gohugo.io</generator><atom:link href="http://vb5manual.test/administration/AdminCP/articles/index.xml" rel="self" type="application/rss+xml" />
+    <generator>Hugo -- gohugo.io</generator><atom:link href="http://vb5support.com/administration/AdminCP/articles/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Content Manager</title>
-      <link>http://vb5manual.test/administration/AdminCP/articles/content_manager/</link>
+      <link>http://vb5support.com/administration/AdminCP/articles/content_manager/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>http://vb5manual.test/administration/AdminCP/articles/content_manager/</guid>
+      <guid>http://vb5support.com/administration/AdminCP/articles/content_manager/</guid>
       <description>Within the Content Manager you can perform bulk actions on your articles and other content types within the CMS. There are more options to manage individual articles in the publicly viewable front-end of the CMS. Edit the article to view them.
 The checkbox to the left of each article name is used to select an article. You can use this to apply a single action to multiple articles at the same time.</description>
     </item>
     
     <item>
       <title>Category List</title>
-      <link>http://vb5manual.test/administration/AdminCP/articles/category_list/</link>
+      <link>http://vb5support.com/administration/AdminCP/articles/category_list/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>http://vb5manual.test/administration/AdminCP/articles/category_list/</guid>
+      <guid>http://vb5support.com/administration/AdminCP/articles/category_list/</guid>
       <description>The Category List allows you to manage your Article Channels. You can publish, edit and change the display order quite easily.
 If you want to apply an action such as publishing or unpublishing a Category, check its box on the left and choose the action from the drop down at the top of the page. You can apply actions to multiple Categories at a time.
 To edit the Display Order of the Categories, edit the display order values on the screen and click the Save Display Order button.</description>
@@ -28,10 +28,10 @@ To edit the Display Order of the Categories, edit the display order values on th
     
     <item>
       <title>Tag List</title>
-      <link>http://vb5manual.test/administration/AdminCP/articles/tag_list/</link>
+      <link>http://vb5support.com/administration/AdminCP/articles/tag_list/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>http://vb5manual.test/administration/AdminCP/articles/tag_list/</guid>
+      <guid>http://vb5support.com/administration/AdminCP/articles/tag_list/</guid>
       <description>The Tag List provides a very simple interface. It will list the tags used in your articles and a link to view the articles that use each tag within the Content List. From the Content List you can edit articles as needed.</description>
     </item>
     

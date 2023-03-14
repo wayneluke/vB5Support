@@ -2,74 +2,74 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Maintaining vBulletin on vB5 Manual and API Documentation</title>
-    <link>http://vb5manual.test/maintaining/</link>
+    <link>http://vb5support.com/maintaining/</link>
     <description>Recent content in Maintaining vBulletin on vB5 Manual and API Documentation</description>
     <generator>Hugo -- gohugo.io</generator>
-    <lastBuildDate>Tue, 07 Sep 2021 20:48:18 +0000</lastBuildDate><atom:link href="http://vb5manual.test/maintaining/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Tue, 07 Sep 2021 20:48:18 +0000</lastBuildDate><atom:link href="http://vb5support.com/maintaining/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Upgrading from Legacy Versions</title>
-      <link>http://vb5manual.test/maintaining/upgrading_from_legacy_versions/</link>
+      <link>http://vb5support.com/maintaining/upgrading_from_legacy_versions/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>http://vb5manual.test/maintaining/upgrading_from_legacy_versions/</guid>
+      <guid>http://vb5support.com/maintaining/upgrading_from_legacy_versions/</guid>
       <description>What to know before you upgrade from vB3 or vB4 Upgrading any major software platform should be carefully thought through beforehand; for many of you, vBulletin is the heart of your site. Here are some things to consider when upgrading:
 Some functionality may have been deprecated and not will not be carried forward. Data structures are completely different. The vBulletin 5 Connect upgrade script will upgrade your existing data to the new format.</description>
     </item>
     
     <item>
       <title>Upgrading vBulletin</title>
-      <link>http://vb5manual.test/maintaining/upgrading-vbulletin/</link>
+      <link>http://vb5support.com/maintaining/upgrading-vbulletin/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>http://vb5manual.test/maintaining/upgrading-vbulletin/</guid>
+      <guid>http://vb5support.com/maintaining/upgrading-vbulletin/</guid>
       <description>Preparing the vBulletin Files for Upload After you have successfully downloaded the vBulletin package to your computer you will need to prepare the scripts to be uploaded to your web server. We’ve included the instructions for both Windows and MacOS below.
 The first thing to do is to decompress the package into its constituent files. If you’ve downloaded the .zip package and your computer is running a recent operating system, you should have all the tools you need to do this.</description>
     </item>
     
     <item>
       <title>Common Issues while Upgrading</title>
-      <link>http://vb5manual.test/maintaining/common_upgrade_issues/</link>
+      <link>http://vb5support.com/maintaining/common_upgrade_issues/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>http://vb5manual.test/maintaining/common_upgrade_issues/</guid>
+      <guid>http://vb5support.com/maintaining/common_upgrade_issues/</guid>
       <description>I tried to run the upgrade wizard from the command line and got an error that MySQLi is not installed.
 Your CLI version of PHP may not have been compiled with the same modules as your web version. If you are missing mysqli and have set your config.php to use mysqli, you will receive an immediate error. Either add mysqli support to your CLI php or switch to mysql in config.</description>
     </item>
     
     <item>
       <title>Creating a Test Installation</title>
-      <link>http://vb5manual.test/maintaining/creating-test-installation/</link>
+      <link>http://vb5support.com/maintaining/creating-test-installation/</link>
       <pubDate>Tue, 07 Sep 2021 20:48:18 +0000</pubDate>
       
-      <guid>http://vb5manual.test/maintaining/creating-test-installation/</guid>
+      <guid>http://vb5support.com/maintaining/creating-test-installation/</guid>
       <description>Creating a Test/Development Installation When a new version of vBulletin comes out, there&amp;rsquo;s always a clamour for people to be one of the first up and running with the latest version. While in the case of bug fixes, the need to upgrade quickly is understandable, too often people don’t consider what effect an upgrade will have on their site. The following is aimed at providing enough knowledge to be able to create a test &amp;lsquo;mirror&amp;rsquo; of a site so that a test of an upgrade (or any change for that matter!</description>
     </item>
     
     <item>
       <title>Applying Security Patches</title>
-      <link>http://vb5manual.test/maintaining/6_patching_vbulletin/</link>
+      <link>http://vb5support.com/maintaining/6_patching_vbulletin/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>http://vb5manual.test/maintaining/6_patching_vbulletin/</guid>
+      <guid>http://vb5support.com/maintaining/6_patching_vbulletin/</guid>
       <description>From time to time, it&amp;rsquo;s necessary to issue a Security Patch (or Patch Level) release for vBulletin software. This differs from the normal upgrade routine so this short article will clarify exactly what needs to be done when we announce a Patch Level (PL) release.
 A patch level release contains fixes for only the most critical issues in the previous release. In most cases, these are released to address a security issue.</description>
     </item>
     
     <item>
       <title>Database Backup</title>
-      <link>http://vb5manual.test/maintaining/database-backup/</link>
+      <link>http://vb5support.com/maintaining/database-backup/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>http://vb5manual.test/maintaining/database-backup/</guid>
+      <guid>http://vb5support.com/maintaining/database-backup/</guid>
       <description>Backing up your database is an important task that you should undertake on a regular basis. Chances are that your host makes regular backups but these tend to be difficult for partial restores. They may also provide tools to create database backups on demand. Discuss database backups with your host. If this is not available, then you will want to use the instructions below to make regular backups. Store these on your local workstation or in a Cloud Storage system.</description>
     </item>
     
     <item>
       <title>File Storage</title>
-      <link>http://vb5manual.test/maintaining/file_storage/</link>
+      <link>http://vb5support.com/maintaining/file_storage/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>http://vb5manual.test/maintaining/file_storage/</guid>
+      <guid>http://vb5support.com/maintaining/file_storage/</guid>
       <description>By default, vBulletin stores all data in the database. This default is for convenience instead of performance. To allow vBulletin to perform better, you can move the storage of attachments, avatars, CSS and templates to the file system.
 These settings are configured on vBulletin Cloud sites by default. Cloud Site owners will not be able to make these changes. CSS As Files With a default installation, vBulletin will build and serve the CSS along with standard templates.</description>
     </item>

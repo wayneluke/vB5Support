@@ -2,72 +2,72 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Site Builder on vB5 Manual and API Documentation</title>
-    <link>http://vb5manual.test/administration/site_builder/</link>
+    <link>http://vb5support.com/administration/site_builder/</link>
     <description>Recent content in Site Builder on vB5 Manual and API Documentation</description>
-    <generator>Hugo -- gohugo.io</generator><atom:link href="http://vb5manual.test/administration/site_builder/index.xml" rel="self" type="application/rss+xml" />
+    <generator>Hugo -- gohugo.io</generator><atom:link href="http://vb5support.com/administration/site_builder/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Quick Setup</title>
-      <link>http://vb5manual.test/administration/site_builder/quick_setup/</link>
+      <link>http://vb5support.com/administration/site_builder/quick_setup/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>http://vb5manual.test/administration/site_builder/quick_setup/</guid>
+      <guid>http://vb5support.com/administration/site_builder/quick_setup/</guid>
       <description>This option is always available to the primary administrator, even when the main Site Builder menu is off. The Quick Setup tool allows you to get your site online quickly and invite people to join. It includes options from several of the tools above as well.
 Upload Logo Add New Forums Invite Members Select a Style </description>
     </item>
     
     <item>
       <title>Style</title>
-      <link>http://vb5manual.test/administration/site_builder/style/</link>
+      <link>http://vb5support.com/administration/site_builder/style/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>http://vb5manual.test/administration/site_builder/style/</guid>
+      <guid>http://vb5support.com/administration/site_builder/style/</guid>
       <description>Themes The Theme Selection tool will show all Styles installed in your vBulletin Site. Selecting one of the themes shown will provide a preview image and select it. If you decide that you do not like it, simply select a new theme. Your selection is saved when you click the Save Changes.
 CSS Editor Using the CSS Editor, you can alter how your site look and feel, hide elements, and create a unique experience.</description>
     </item>
     
     <item>
       <title>Channels</title>
-      <link>http://vb5manual.test/administration/site_builder/channels/</link>
+      <link>http://vb5support.com/administration/site_builder/channels/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>http://vb5manual.test/administration/site_builder/channels/</guid>
+      <guid>http://vb5support.com/administration/site_builder/channels/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Pages</title>
-      <link>http://vb5manual.test/administration/site_builder/pages/</link>
+      <link>http://vb5support.com/administration/site_builder/pages/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>http://vb5manual.test/administration/site_builder/pages/</guid>
+      <guid>http://vb5support.com/administration/site_builder/pages/</guid>
       <description>There are two types of pages in vBulletin. System Pages and Custom Pages. System pages cannot be removed and may contain modules (content blocks) that are required for that page. However, System Pages can be edited and have optional modules added or removed to customize the page. You can also create Custom Pages. These can be added and deleted and may contain any number of modules. You can access your custom pages by clicking on the Pages link.</description>
     </item>
     
     <item>
       <title>New Page</title>
-      <link>http://vb5manual.test/administration/site_builder/new_page/</link>
+      <link>http://vb5support.com/administration/site_builder/new_page/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>http://vb5manual.test/administration/site_builder/new_page/</guid>
+      <guid>http://vb5support.com/administration/site_builder/new_page/</guid>
       <description>In order to create a page, you need to turn on Site Builder. You do that by clicking [button=&amp;ldquo;sb-editsite&amp;rdquo;]Edit Site[button] to the right of your username. This will reveal a menu along the top of your webpage. From here, you want to click on the “New Page” link. This opens the Page Editor with four tabs. These are: Add Module, Layouts, Template, and Color Style.
 Modules Layouts Templates Color Style </description>
     </item>
     
     <item>
       <title>Edit Page</title>
-      <link>http://vb5manual.test/administration/site_builder/edit_page/</link>
+      <link>http://vb5support.com/administration/site_builder/edit_page/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>http://vb5manual.test/administration/site_builder/edit_page/</guid>
+      <guid>http://vb5support.com/administration/site_builder/edit_page/</guid>
       <description>Needs to be added.</description>
     </item>
     
     <item>
       <title>Header</title>
-      <link>http://vb5manual.test/administration/site_builder/header/</link>
+      <link>http://vb5support.com/administration/site_builder/header/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>http://vb5manual.test/administration/site_builder/header/</guid>
+      <guid>http://vb5support.com/administration/site_builder/header/</guid>
       <description>The Header appears on every page just above the Navigation Bar. This displays your Site Logo and optional advertisements or ads.
 Accessing the Header Controls. To add a navigation item to your site, make sure that Site Builder is turned on by clicking the [button=&amp;ldquo;sb-editsite&amp;rdquo;]Edit Site[/button] button in the user menu at the top of the page. Once the Site Builder menu appears, click on the Header link.
 How to Change the Site Logo Alright, so now that you have your first page set up, you might want to change the site logo.</description>
@@ -75,19 +75,19 @@ How to Change the Site Logo Alright, so now that you have your first page set up
     
     <item>
       <title>Navigation Bar</title>
-      <link>http://vb5manual.test/administration/site_builder/navigation_bar/</link>
+      <link>http://vb5support.com/administration/site_builder/navigation_bar/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>http://vb5manual.test/administration/site_builder/navigation_bar/</guid>
+      <guid>http://vb5support.com/administration/site_builder/navigation_bar/</guid>
       <description>What is the Navigation Bar? The Navigation Bar makes up the primary menu in vBulletin. End-users will use this navigation to reach the sections of your site. It is displayed directly below the Header. The Navigation Bar is made up of two parts. First is the Main Navigation Bar. When using the Styles provided by the software, the Navigation Bar appears as a series of horizontal tabs under the Header.</description>
     </item>
     
     <item>
       <title>Footer</title>
-      <link>http://vb5manual.test/administration/site_builder/footer/</link>
+      <link>http://vb5support.com/administration/site_builder/footer/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>http://vb5manual.test/administration/site_builder/footer/</guid>
+      <guid>http://vb5support.com/administration/site_builder/footer/</guid>
       <description>What is the Footer? The footer is a list of navigation links that appear at the bottom of the site. With Site Builder, you’re able to add links to the footer that can take your users anywhere you want them to go. These items behave similarly to Navigation Links in the Navigation Bar. Unlike the Navigation Bar, the footer doesn&amp;rsquo;t allow for sub-navigation menus. Any changes to the Footer are global and apply to all pages.</description>
     </item>
     

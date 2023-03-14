@@ -2,43 +2,43 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Managing Groups on vB5 Manual and API Documentation</title>
-    <link>http://vb5manual.test/end_user_guide/managing_groups/</link>
+    <link>http://vb5support.com/end_user_guide/managing_groups/</link>
     <description>Recent content in Managing Groups on vB5 Manual and API Documentation</description>
-    <generator>Hugo -- gohugo.io</generator><atom:link href="http://vb5manual.test/end_user_guide/managing_groups/index.xml" rel="self" type="application/rss+xml" />
+    <generator>Hugo -- gohugo.io</generator><atom:link href="http://vb5support.com/end_user_guide/managing_groups/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>How do I create a new group?</title>
-      <link>http://vb5manual.test/end_user_guide/managing_groups/how-do-i-create-a-new-group/</link>
+      <link>http://vb5support.com/end_user_guide/managing_groups/how-do-i-create-a-new-group/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>http://vb5manual.test/end_user_guide/managing_groups/how-do-i-create-a-new-group/</guid>
+      <guid>http://vb5support.com/end_user_guide/managing_groups/how-do-i-create-a-new-group/</guid>
       <description>As a registered member, you can create your own Group (providing the administrator allows this). Go to the Groups page and on the module that is displayed, click the &#39;+ Create Group&#39; button. On the page that follows, you have a variety of options to tailor your group to the way you need it. If the administrator has added Group Categories, you will be able to specify which category your group is part of.</description>
     </item>
     
     <item>
       <title>How do I add moderators to my group?</title>
-      <link>http://vb5manual.test/end_user_guide/managing_groups/how-do-i-add-moderators-to-my-group/</link>
+      <link>http://vb5support.com/end_user_guide/managing_groups/how-do-i-add-moderators-to-my-group/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>http://vb5manual.test/end_user_guide/managing_groups/how-do-i-add-moderators-to-my-group/</guid>
+      <guid>http://vb5support.com/end_user_guide/managing_groups/how-do-i-add-moderators-to-my-group/</guid>
       <description>Additional owners can be assigned to a group and will allow them to review pending joined group requests, subscriber requests and posts. To add additional owners, navigate to the group you&#39;d like to add these users too and then hover over the &#39;Administrative&#39; click. From the dropdown that appears, click &#39;Manage Group Managers&#39;.
 A new page will appear showing a text field where additional owners can be added to the group in question.</description>
     </item>
     
     <item>
       <title>How do I manage group members?</title>
-      <link>http://vb5manual.test/end_user_guide/managing_groups/how-do-i-manage-group-members/</link>
+      <link>http://vb5support.com/end_user_guide/managing_groups/how-do-i-manage-group-members/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>http://vb5manual.test/end_user_guide/managing_groups/how-do-i-manage-group-members/</guid>
+      <guid>http://vb5support.com/end_user_guide/managing_groups/how-do-i-manage-group-members/</guid>
       <description>If you wish to invite members to join your Group, you would need to go to the main Group page and on the right side is an Administrative dropdown menu. From there, select &#39;Invite Members&#39; and on the right, there will be a text area with the heading &#39;Enter User Names&#39;. You may enter the usernames here separated by commas and then click &#39;Save Changes&#39;. Once these members accept your invitation, they will show up on the &#39;Manage Joined Members&#39; list.</description>
     </item>
     
     <item>
       <title>Managing Permissions and Privacy for your Group</title>
-      <link>http://vb5manual.test/end_user_guide/managing_groups/managing-permissions-and-privacy-for-your-group/</link>
+      <link>http://vb5support.com/end_user_guide/managing_groups/managing-permissions-and-privacy-for-your-group/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>http://vb5manual.test/end_user_guide/managing_groups/managing-permissions-and-privacy-for-your-group/</guid>
+      <guid>http://vb5support.com/end_user_guide/managing_groups/managing-permissions-and-privacy-for-your-group/</guid>
       <description>When creating your new Group, you can set the Permissions and Privacy for the Group. These are presented in three options.Group Type - This controls how people join. You can set it so anyone can join, that join requests are moderated by you, or require that you invite them before they can join.Permissions &amp; Privacy - set who may view your Group and leave comments - Everyone, Group Members Only, or Group Members &amp; Registered UsersCan Post - This controls who can post to the group.</description>
     </item>
     
