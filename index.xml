@@ -731,16 +731,6 @@ TableThis is the container tag. It contains multiple rows and multiple cells pe
     </item>
     
     <item>
-      <title>File Storage</title>
-      <link>http://vb5support.com/maintaining/file_storage/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      
-      <guid>http://vb5support.com/maintaining/file_storage/</guid>
-      <description>By default, vBulletin stores all data in the database. This default is for convenience instead of performance. To allow vBulletin to perform better, you can move the storage of attachments, avatars, CSS and templates to the file system.
-These settings are configured on vBulletin Cloud sites by default. Cloud Site owners will not be able to make these changes. CSS As Files With a default installation, vBulletin will build and serve the CSS along with standard templates.</description>
-    </item>
-    
-    <item>
       <title>Flagging Inappropriate Content</title>
       <link>http://vb5support.com/end_user_guide/creating_content/flagging-inappropriate-content/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>

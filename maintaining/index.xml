@@ -64,15 +64,5 @@ A patch level release contains fixes for only the most critical issues in the pr
       <description>Backing up your database is an important task that you should undertake on a regular basis. Chances are that your host makes regular backups but these tend to be difficult for partial restores. They may also provide tools to create database backups on demand. Discuss database backups with your host. If this is not available, then you will want to use the instructions below to make regular backups. Store these on your local workstation or in a Cloud Storage system.</description>
     </item>
     
-    <item>
-      <title>File Storage</title>
-      <link>http://vb5support.com/maintaining/file_storage/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      
-      <guid>http://vb5support.com/maintaining/file_storage/</guid>
-      <description>By default, vBulletin stores all data in the database. This default is for convenience instead of performance. To allow vBulletin to perform better, you can move the storage of attachments, avatars, CSS and templates to the file system.
-These settings are configured on vBulletin Cloud sites by default. Cloud Site owners will not be able to make these changes. CSS As Files With a default installation, vBulletin will build and serve the CSS along with standard templates.</description>
-    </item>
-    
   </channel>
 </rss>
