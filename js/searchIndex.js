@@ -66,16 +66,6 @@ Search.appendIndex(
             "summary": "Fetches\u0020display\u0020options",
             "url": "classes/vB-Api-Ad.html#method_fetchDisplayOptions"
         },                {
-            "fqsen": "\\vB_Api_Announcement",
-            "name": "vB_Api_Announcement",
-            "summary": "vB_Api_Announcement",
-            "url": "classes/vB-Api-Announcement.html"
-        },                {
-            "fqsen": "\\vB_Api_Announcement\u003A\u003Afetch\u0028\u0029",
-            "name": "fetch",
-            "summary": "Fetches\u0020announcements\u0020by\u0020channel\u0020ID",
-            "url": "classes/vB-Api-Announcement.html#method_fetch"
-        },                {
             "fqsen": "\\vB_Api_Api",
             "name": "vB_Api_Api",
             "summary": "vB_Api_Api",
@@ -331,11 +321,6 @@ Search.appendIndex(
             "summary": "Gets\u0020the\u0020number\u0020of\u0020members\u0020for\u0020the\u0020given\u0020blog\u0020channel",
             "url": "classes/vB-Api-Blog.html#method_getMembersCount"
         },                {
-            "fqsen": "\\vB_Api_Blog\u003A\u003AfetchMembers\u0028\u0029",
-            "name": "fetchMembers",
-            "summary": "Lists\u0020channel\u0020members",
-            "url": "classes/vB-Api-Blog.html#method_fetchMembers"
-        },                {
             "fqsen": "\\vB_Api_Blog\u003A\u003AcanCreateBlog\u0028\u0029",
             "name": "canCreateBlog",
             "summary": "Checks\u0020if\u0020the\u0020user\u0020can\u0020create\u0020a\u0020new\u0020Blog",
@@ -380,6 +365,11 @@ Search.appendIndex(
             "name": "setLogo",
             "summary": "Sets\u0020the\u0020main\u0020logo\u0020for\u0020a\u0020file",
             "url": "classes/vB-Api-Content-Attach.html#method_setLogo"
+        },                {
+            "fqsen": "\\vB_Api_Content_Attach\u003A\u003AsetFavicon\u0028\u0029",
+            "name": "setFavicon",
+            "summary": "Sets\u0020the\u0020main\u0020logo\u0020for\u0020a\u0020file",
+            "url": "classes/vB-Api-Content-Attach.html#method_setFavicon"
         },                {
             "fqsen": "\\vB_Api_Content_Attach\u003A\u003Aupload\u0028\u0029",
             "name": "upload",
@@ -1401,6 +1391,21 @@ Search.appendIndex(
             "summary": "Run\u0020a\u0020cron",
             "url": "classes/vB-Api-Cron.html#method_runByVarname"
         },                {
+            "fqsen": "\\vB_Api_Cron\u003A\u003ArunCron\u0028\u0029",
+            "name": "runCron",
+            "summary": "",
+            "url": "classes/vB-Api-Cron.html#method_runCron"
+        },                {
+            "fqsen": "\\vB_Api_Cron\u003A\u003ArunEventQueue\u0028\u0029",
+            "name": "runEventQueue",
+            "summary": "",
+            "url": "classes/vB-Api-Cron.html#method_runEventQueue"
+        },                {
+            "fqsen": "\\vB_Api_Cron\u003A\u003AshouldTriggerCron\u0028\u0029",
+            "name": "shouldTriggerCron",
+            "summary": "",
+            "url": "classes/vB-Api-Cron.html#method_shouldTriggerCron"
+        },                {
             "fqsen": "\\vB_Api_Cron\u003A\u003AfetchById\u0028\u0029",
             "name": "fetchById",
             "summary": "Fetch\u0020a\u0020cron\u0020by\u0020its\u0020ID",
@@ -1631,6 +1636,56 @@ Search.appendIndex(
             "summary": "",
             "url": "classes/vB-Api-External.html#constant_TYPE_RSS2"
         },                {
+            "fqsen": "\\vB_Api_ExternalLogin_OAuth2Client",
+            "name": "vB_Api_ExternalLogin_OAuth2Client",
+            "summary": "vB_Api_ExternalLogin",
+            "url": "classes/vB-Api-ExternalLogin-OAuth2Client.html"
+        },                {
+            "fqsen": "\\vB_Api_ExternalLogin_OAuth2Client\u003A\u003AgetTokenRedirect\u0028\u0029",
+            "name": "getTokenRedirect",
+            "summary": "",
+            "url": "classes/vB-Api-ExternalLogin-OAuth2Client.html#method_getTokenRedirect"
+        },                {
+            "fqsen": "\\vB_Api_ExternalLogin_OAuth2Client\u003A\u003AconfirmToken\u0028\u0029",
+            "name": "confirmToken",
+            "summary": "",
+            "url": "classes/vB-Api-ExternalLogin-OAuth2Client.html#method_confirmToken"
+        },                {
+            "fqsen": "\\vB_Api_ExternalLogin_OAuth2Client\u003A\u003AverifyAuthAndLogin\u0028\u0029",
+            "name": "verifyAuthAndLogin",
+            "summary": "",
+            "url": "classes/vB-Api-ExternalLogin-OAuth2Client.html#method_verifyAuthAndLogin"
+        },                {
+            "fqsen": "\\vB_Api_ExternalLogin_OAuth2Client\u003A\u003AcanLinkCurrentUser\u0028\u0029",
+            "name": "canLinkCurrentUser",
+            "summary": "",
+            "url": "classes/vB-Api-ExternalLogin-OAuth2Client.html#method_canLinkCurrentUser"
+        },                {
+            "fqsen": "\\vB_Api_ExternalLogin_OAuth2Client\u003A\u003AlinkCurrentUser\u0028\u0029",
+            "name": "linkCurrentUser",
+            "summary": "",
+            "url": "classes/vB-Api-ExternalLogin-OAuth2Client.html#method_linkCurrentUser"
+        },                {
+            "fqsen": "\\vB_Api_ExternalLogin_OAuth2Client\u003A\u003AunlinkCurrentUser\u0028\u0029",
+            "name": "unlinkCurrentUser",
+            "summary": "",
+            "url": "classes/vB-Api-ExternalLogin-OAuth2Client.html#method_unlinkCurrentUser"
+        },                {
+            "fqsen": "\\vB_Api_ExternalLogin_OAuth2Client\u003A\u003AgetRegistrationData\u0028\u0029",
+            "name": "getRegistrationData",
+            "summary": "",
+            "url": "classes/vB-Api-ExternalLogin-OAuth2Client.html#method_getRegistrationData"
+        },                {
+            "fqsen": "\\vB_Api_ExternalLogin_OAuth2Client\u003A\u003AforgetRegistrationData\u0028\u0029",
+            "name": "forgetRegistrationData",
+            "summary": "",
+            "url": "classes/vB-Api-ExternalLogin-OAuth2Client.html#method_forgetRegistrationData"
+        },                {
+            "fqsen": "\\vB_Api_ExternalLogin_OAuth2Client\u003A\u003AgetState\u0028\u0029",
+            "name": "getState",
+            "summary": "",
+            "url": "classes/vB-Api-ExternalLogin-OAuth2Client.html#method_getState"
+        },                {
             "fqsen": "\\vB_Api_ExternalLogin",
             "name": "vB_Api_ExternalLogin",
             "summary": "vB_Api_ExternalLogin",
@@ -1650,66 +1705,6 @@ Search.appendIndex(
             "name": "showExternalRegistrationBlock",
             "summary": "",
             "url": "classes/vB-Api-ExternalLogin.html#method_showExternalRegistrationBlock"
-        },                {
-            "fqsen": "\\vB_Api_Facebook",
-            "name": "vB_Api_Facebook",
-            "summary": "vB_Api_Facebook",
-            "url": "classes/vB-Api-Facebook.html"
-        },                {
-            "fqsen": "\\vB_Api_Facebook\u003A\u003AisFacebookEnabled\u0028\u0029",
-            "name": "isFacebookEnabled",
-            "summary": "Is\u0020facebook\u0020enabled\u0020on\u0020this\u0020site.",
-            "url": "classes/vB-Api-Facebook.html#method_isFacebookEnabled"
-        },                {
-            "fqsen": "\\vB_Api_Facebook\u003A\u003AuserIsLoggedIn\u0028\u0029",
-            "name": "userIsLoggedIn",
-            "summary": "Checks\u0020if\u0020the\u0020current\u0020user\u0020is\u0020logged\u0020into\u0020facebook",
-            "url": "classes/vB-Api-Facebook.html#method_userIsLoggedIn"
-        },                {
-            "fqsen": "\\vB_Api_Facebook\u003A\u003AgetLoggedInFbUserId\u0028\u0029",
-            "name": "getLoggedInFbUserId",
-            "summary": "Checks\u0020for\u0020a\u0020currrently\u0020logged\u0020in\u0020user\u0020through\u0020facebook\u0020api",
-            "url": "classes/vB-Api-Facebook.html#method_getLoggedInFbUserId"
-        },                {
-            "fqsen": "\\vB_Api_Facebook\u003A\u003AgetVbUseridFromFbUserid\u0028\u0029",
-            "name": "getVbUseridFromFbUserid",
-            "summary": "Checks\u0020if\u0020current\u0020facebook\u0020user\u0020is\u0020associated\u0020with\u0020a\u0020vb\u0020user,\u0020and\u0020returns\u0020vb\u0020userid\u0020if\u0020so",
-            "url": "classes/vB-Api-Facebook.html#method_getVbUseridFromFbUserid"
-        },                {
-            "fqsen": "\\vB_Api_Facebook\u003A\u003AgetFbProfileUrl\u0028\u0029",
-            "name": "getFbProfileUrl",
-            "summary": "Get\u0020the\u0020logged\u0020in\u0020user\u0027s\u0020profile\u0020url.",
-            "url": "classes/vB-Api-Facebook.html#method_getFbProfileUrl"
-        },                {
-            "fqsen": "\\vB_Api_Facebook\u003A\u003AgetFbProfilePicUrl\u0028\u0029",
-            "name": "getFbProfilePicUrl",
-            "summary": "Get\u0020the\u0020logged\u0020in\u0020user\u0027s\u0020profile\u0020picture\u0020url.",
-            "url": "classes/vB-Api-Facebook.html#method_getFbProfilePicUrl"
-        },                {
-            "fqsen": "\\vB_Api_Facebook\u003A\u003AclearSession\u0028\u0029",
-            "name": "clearSession",
-            "summary": "",
-            "url": "classes/vB-Api-Facebook.html#method_clearSession"
-        },                {
-            "fqsen": "\\vB_Api_Facebook\u003A\u003AgetFbUserInfo\u0028\u0029",
-            "name": "getFbUserInfo",
-            "summary": "Grabs\u0020logged\u0020in\u0020user\u0020info\u0020from\u0020faceboook\u0020if\u0020user\u0020is\u0020logged\u0020in",
-            "url": "classes/vB-Api-Facebook.html#method_getFbUserInfo"
-        },                {
-            "fqsen": "\\vB_Api_Facebook\u003A\u003AgetAllUserInfo\u0028\u0029",
-            "name": "getAllUserInfo",
-            "summary": "Get\u0020the\u0020results\u0020from\u0020several\u0020functions\u0020in\u0020one\u0020call.",
-            "url": "classes/vB-Api-Facebook.html#method_getAllUserInfo"
-        },                {
-            "fqsen": "\\vB_Api_Facebook\u003A\u003AdisconnectUser\u0028\u0029",
-            "name": "disconnectUser",
-            "summary": "Disconnects\u0020the\u0020current\u0020user\u0020from\u0020facebook",
-            "url": "classes/vB-Api-Facebook.html#method_disconnectUser"
-        },                {
-            "fqsen": "\\vB_Api_Facebook\u003A\u003AconnectCurrentUser\u0028\u0029",
-            "name": "connectCurrentUser",
-            "summary": "Connects\u0020the\u0020currently\u0020logged\u0020in\u0020user\u0020to\u0020the\u0020currently\u0020logged\u0020in\u0020Facebook\u0020user",
-            "url": "classes/vB-Api-Facebook.html#method_connectCurrentUser"
         },                {
             "fqsen": "\\vB_Api_FCMessaging",
             "name": "vB_Api_FCMessaging",
@@ -2246,756 +2241,6 @@ Search.appendIndex(
             "summary": "sends\u0020a\u0020batch\u0020of\u0020emails",
             "url": "classes/vB-Api-Mail.html#method_send"
         },                {
-            "fqsen": "\\vB_Api_Node",
-            "name": "vB_Api_Node",
-            "summary": "vB_Api_Node",
-            "url": "classes/vB-Api-Node.html"
-        },                {
-            "fqsen": "\\vB_Api_Node\u003A\u003AopenNode\u0028\u0029",
-            "name": "openNode",
-            "summary": "opens\u0020a\u0020node\u0020for\u0020posting",
-            "url": "classes/vB-Api-Node.html#method_openNode"
-        },                {
-            "fqsen": "\\vB_Api_Node\u003A\u003AcloseNode\u0028\u0029",
-            "name": "closeNode",
-            "summary": "Closes\u0020a\u0020node\u0020for\u0020posting.\u0020Closed\u0020nodes\u0020can\u0020still\u0020be\u0020viewed\u0020but\u0020nobody\u0020can\u0020reply\u0020to\u0020one.",
-            "url": "classes/vB-Api-Node.html#method_closeNode"
-        },                {
-            "fqsen": "\\vB_Api_Node\u003A\u003AcanOpenCloseNode\u0028\u0029",
-            "name": "canOpenCloseNode",
-            "summary": "Check\u0020if\u0020current\u0020user\u0020has\u0020perms\u0020to\u0020open\u0020or\u0020close\u0020\u0024nodeid",
-            "url": "classes/vB-Api-Node.html#method_canOpenCloseNode"
-        },                {
-            "fqsen": "\\vB_Api_Node\u003A\u003AdeleteNodes\u0028\u0029",
-            "name": "deleteNodes",
-            "summary": "Permanently\/Temporarily\u0020deletes\u0020a\u0020set\u0020of\u0020nodes",
-            "url": "classes/vB-Api-Node.html#method_deleteNodes"
-        },                {
-            "fqsen": "\\vB_Api_Node\u003A\u003AdeleteNodesAsSpam\u0028\u0029",
-            "name": "deleteNodesAsSpam",
-            "summary": "Delete\u0020nodes\u0020as\u0020spam",
-            "url": "classes/vB-Api-Node.html#method_deleteNodesAsSpam"
-        },                {
-            "fqsen": "\\vB_Api_Node\u003A\u003AundeleteNodes\u0028\u0029",
-            "name": "undeleteNodes",
-            "summary": "undeletes\u0020a\u0020set\u0020of\u0020nodes",
-            "url": "classes/vB-Api-Node.html#method_undeleteNodes"
-        },                {
-            "fqsen": "\\vB_Api_Node\u003A\u003AmoveNodes\u0028\u0029",
-            "name": "moveNodes",
-            "summary": "Moves\u0020nodes\u0020to\u0020a\u0020new\u0020parent",
-            "url": "classes/vB-Api-Node.html#method_moveNodes"
-        },                {
-            "fqsen": "\\vB_Api_Node\u003A\u003AmovePosts\u0028\u0029",
-            "name": "movePosts",
-            "summary": "DEPRECATED\u0020Move\u0020multiple\u0020posts\u0020to\u0020a\u0020new\u0020topic\u0020or\u0020to\u0020a\u0020new\u0020channel.\u0020\u0020Use\u0020moveNodes\u0020function.",
-            "url": "classes/vB-Api-Node.html#method_movePosts"
-        },                {
-            "fqsen": "\\vB_Api_Node\u003A\u003AcloneNodes\u0028\u0029",
-            "name": "cloneNodes",
-            "summary": "Clone\u0020Nodes\u0020and\u0020their\u0020children\u0020deeply\u0020into\u0020a\u0020new\u0020parent\u0020Node.",
-            "url": "classes/vB-Api-Node.html#method_cloneNodes"
-        },                {
-            "fqsen": "\\vB_Api_Node\u003A\u003AmergeTopics\u0028\u0029",
-            "name": "mergeTopics",
-            "summary": "Merge\u0020several\u0020topics\u0020into\u0020a\u0020target\u0020topic",
-            "url": "classes/vB-Api-Node.html#method_mergeTopics"
-        },                {
-            "fqsen": "\\vB_Api_Node\u003A\u003AsetPublishDate\u0028\u0029",
-            "name": "setPublishDate",
-            "summary": "Sets\u0020the\u0020publishdate\u0020and\u0020\u0028optionally\u0029\u0020the\u0020unpublish\u0020date\u0020of\u0020a\u0020node",
-            "url": "classes/vB-Api-Node.html#method_setPublishDate"
-        },                {
-            "fqsen": "\\vB_Api_Node\u003A\u003AsetUnPublishDate\u0028\u0029",
-            "name": "setUnPublishDate",
-            "summary": "Sets\u0020the\u0020unpublish\u0020date",
-            "url": "classes/vB-Api-Node.html#method_setUnPublishDate"
-        },                {
-            "fqsen": "\\vB_Api_Node\u003A\u003AsetUnPublished\u0028\u0029",
-            "name": "setUnPublished",
-            "summary": "sets\u0020a\u0020node\u0020to\u0020not\u0020published",
-            "url": "classes/vB-Api-Node.html#method_setUnPublished"
-        },                {
-            "fqsen": "\\vB_Api_Node\u003A\u003AsetFeatured\u0028\u0029",
-            "name": "setFeatured",
-            "summary": "sets\u0020a\u0020list\u0020of\u0020nodes\u0020to\u0020be\u0020featured",
-            "url": "classes/vB-Api-Node.html#method_setFeatured"
-        },                {
-            "fqsen": "\\vB_Api_Node\u003A\u003AsetUnFeatured\u0028\u0029",
-            "name": "setUnFeatured",
-            "summary": "sets\u0020a\u0020node\u0020list\u0020to\u0020be\u0020not\u0020featured",
-            "url": "classes/vB-Api-Node.html#method_setUnFeatured"
-        },                {
-            "fqsen": "\\vB_Api_Node\u003A\u003AsetAsAnswer\u0028\u0029",
-            "name": "setAsAnswer",
-            "summary": "Sets\u0020\u0028or\u0020unsets\u0029\u0020a\u0020reply\u0020to\u0020be\u0020a\u0020topic\u0027s\u0020Correct\u0020Answer",
-            "url": "classes/vB-Api-Node.html#method_setAsAnswer"
-        },                {
-            "fqsen": "\\vB_Api_Node\u003A\u003AremoveAnswers\u0028\u0029",
-            "name": "removeAnswers",
-            "summary": "Removes\u0020answers\u0020from\u0020selected\u0020topics.",
-            "url": "classes/vB-Api-Node.html#method_removeAnswers"
-        },                {
-            "fqsen": "\\vB_Api_Node\u003A\u003AsetExclusiveAnswer\u0028\u0029",
-            "name": "setExclusiveAnswer",
-            "summary": "",
-            "url": "classes/vB-Api-Node.html#method_setExclusiveAnswer"
-        },                {
-            "fqsen": "\\vB_Api_Node\u003A\u003AgetAnswerNodeids\u0028\u0029",
-            "name": "getAnswerNodeids",
-            "summary": "If\u0020\u0024starterid\u0020has\u0020a\u0020selected\u0020answer\u0028s\u0029\u0020and\u0020current\u0020user\u0020can\u0020view\u0020the\u0020node\u0028s\u0029,\u0020returns\u0020the\u0020answer\u0020nodeid\u0028s\u0029.",
-            "url": "classes/vB-Api-Node.html#method_getAnswerNodeids"
-        },                {
-            "fqsen": "\\vB_Api_Node\u003A\u003AgetPinnedRepliesFullContent\u0028\u0029",
-            "name": "getPinnedRepliesFullContent",
-            "summary": "Return\u0020node\u0020arrays\u0020\u0028with\u0020content\u0020subkeys\u0029\u0020for\u0020any\u0020\u0022pinned\u0022\u0020replies.\u0020Used\u0020by\u0020widget_conversationdisplay\u0020template\nand\u0020frontend\u0020activity\/get\u0020\u0028pagination\u0029\u0020controller.",
-            "url": "classes/vB-Api-Node.html#method_getPinnedRepliesFullContent"
-        },                {
-            "fqsen": "\\vB_Api_Node\u003A\u003AclearUnpublishDate\u0028\u0029",
-            "name": "clearUnpublishDate",
-            "summary": "clears\u0020the\u0020unpublishdate\u0020flag.",
-            "url": "classes/vB-Api-Node.html#method_clearUnpublishDate"
-        },                {
-            "fqsen": "\\vB_Api_Node\u003A\u003AgetNode\u0028\u0029",
-            "name": "getNode",
-            "summary": "gets\u0020one\u0020node.",
-            "url": "classes/vB-Api-Node.html#method_getNode"
-        },                {
-            "fqsen": "\\vB_Api_Node\u003A\u003AgetNodes\u0028\u0029",
-            "name": "getNodes",
-            "summary": "Gets\u0020the\u0020node\u0020info\u0020for\u0020a\u0020list\u0020of\u0020nodes",
-            "url": "classes/vB-Api-Node.html#method_getNodes"
-        },                {
-            "fqsen": "\\vB_Api_Node\u003A\u003AgetNodeAttachments\u0028\u0029",
-            "name": "getNodeAttachments",
-            "summary": "Gets\u0020the\u0020attachment\u0020information\u0020for\u0020a\u0020node.\u0020Which\u0020may\u0020be\u0020empty.",
-            "url": "classes/vB-Api-Node.html#method_getNodeAttachments"
-        },                {
-            "fqsen": "\\vB_Api_Node\u003A\u003AgetNodeAttachmentsPublicInfo\u0028\u0029",
-            "name": "getNodeAttachmentsPublicInfo",
-            "summary": "Gets\u0020the\u0020\u0022public\u0022\u0020attachment\u0020information\u0020for\u0020a\u0020node.\u0020Which\u0020may\u0020be\u0020empty.",
-            "url": "classes/vB-Api-Node.html#method_getNodeAttachmentsPublicInfo"
-        },                {
-            "fqsen": "\\vB_Api_Node\u003A\u003AgetAttachmentPublicInfo\u0028\u0029",
-            "name": "getAttachmentPublicInfo",
-            "summary": "Gets\u0020the\u0020\u0022public\u0022\u0020attachment\u0020information\u0020for\u0020a\u0020single\u0020attachment.\u0020If\u0020the\u0020user\u0020cannot\u0020view\u0020this\u0020attachment,\u0020it\nwill\u0020be\u0020empty.\u0020Depending\u0020on\u0020the\u0020cangetattachment\u0020\u0020or\u0020cangetimgattachment\u0020permissions,\u0020the\u0020returned\u0020data\u0020will\u0020be\nconsumed\u0020to\u0020create\u0020an\u0020anchor,\u0020an\u0020image,\u0020or\u0020unparsed\u0020bbcode.",
-            "url": "classes/vB-Api-Node.html#method_getAttachmentPublicInfo"
-        },                {
-            "fqsen": "\\vB_Api_Node\u003A\u003AlistNodeContent\u0028\u0029",
-            "name": "listNodeContent",
-            "summary": "lists\u0020the\u0020nodes\u0020that\u0020should\u0020be\u0020displayed\u0020on\u0020a\u0020specific\u0020page\u0020including\u0020content\u0020detail.",
-            "url": "classes/vB-Api-Node.html#method_listNodeContent"
-        },                {
-            "fqsen": "\\vB_Api_Node\u003A\u003AlistNodeFullContent\u0028\u0029",
-            "name": "listNodeFullContent",
-            "summary": "lists\u0020the\u0020nodes\u0020that\u0020should\u0020be\u0020displayed\u0020on\u0020a\u0020specific\u0020page\u0020including\u0020content\u0020detail.",
-            "url": "classes/vB-Api-Node.html#method_listNodeFullContent"
-        },                {
-            "fqsen": "\\vB_Api_Node\u003A\u003AlistNodeFullContentCount\u0028\u0029",
-            "name": "listNodeFullContentCount",
-            "summary": "Lists\u0020the\u0020\u0022total\u0020count\u0022\u0020that\u0020can\u0020be\u0020expected\u0020from\u0020a\u0020listNodeFullContent\u0028\u0029\u0020call\u0020with\u0020infinite\u0020\u0024perpage\u0020param.",
-            "url": "classes/vB-Api-Node.html#method_listNodeFullContentCount"
-        },                {
-            "fqsen": "\\vB_Api_Node\u003A\u003AgetContentforNodes\u0028\u0029",
-            "name": "getContentforNodes",
-            "summary": "Gets\u0020the\u0020content\u0020info\u0020for\u0020a\u0020list\u0020of\u0020nodes",
-            "url": "classes/vB-Api-Node.html#method_getContentforNodes"
-        },                {
-            "fqsen": "\\vB_Api_Node\u003A\u003AgetFullContentforNodes\u0028\u0029",
-            "name": "getFullContentforNodes",
-            "summary": "Gets\u0020the\u0020content\u0020info\u0020for\u0020a\u0020list\u0020of\u0020nodes",
-            "url": "classes/vB-Api-Node.html#method_getFullContentforNodes"
-        },                {
-            "fqsen": "\\vB_Api_Node\u003A\u003AgetNodeContent\u0028\u0029",
-            "name": "getNodeContent",
-            "summary": "This\u0020gets\u0020a\u0020content\u0020record\u0020based\u0020on\u0020nodeid.\u0020Useful\u0020from\u0020ajax.",
-            "url": "classes/vB-Api-Node.html#method_getNodeContent"
-        },                {
-            "fqsen": "\\vB_Api_Node\u003A\u003AgetNodeFullContent\u0028\u0029",
-            "name": "getNodeFullContent",
-            "summary": "This\u0020gets\u0020a\u0020content\u0020record\u0020based\u0020on\u0020nodeid\u0020including\u0020channel\u0020and\u0020starter\u0020information.",
-            "url": "classes/vB-Api-Node.html#method_getNodeFullContent"
-        },                {
-            "fqsen": "\\vB_Api_Node\u003A\u003AgetQuoteFullContent\u0028\u0029",
-            "name": "getQuoteFullContent",
-            "summary": "This\u0020gets\u0020a\u0020content\u0020record\u0020based\u0020on\u0020nodeid\u0020including\u0020channel\u0020and\u0020starter\u0020information.",
-            "url": "classes/vB-Api-Node.html#method_getQuoteFullContent"
-        },                {
-            "fqsen": "\\vB_Api_Node\u003A\u003Apublish\u0028\u0029",
-            "name": "publish",
-            "summary": "Validates\u0020permission\u0020and\u0020sets\u0020a\u0020node\u0020to\u0020published\u0020status",
-            "url": "classes/vB-Api-Node.html#method_publish"
-        },                {
-            "fqsen": "\\vB_Api_Node\u003A\u003AunPublish\u0028\u0029",
-            "name": "unPublish",
-            "summary": "Validates\u0020permission\u0020and\u0020sets\u0020a\u0020node\u0020to\u0020unpublished\u0020status",
-            "url": "classes/vB-Api-Node.html#method_unPublish"
-        },                {
-            "fqsen": "\\vB_Api_Node\u003A\u003AaddAttachment\u0028\u0029",
-            "name": "addAttachment",
-            "summary": "Adds\u0020one\u0020or\u0020more\u0020attachments",
-            "url": "classes/vB-Api-Node.html#method_addAttachment"
-        },                {
-            "fqsen": "\\vB_Api_Node\u003A\u003AremoveAttachment\u0028\u0029",
-            "name": "removeAttachment",
-            "summary": "delete\u0020one\u0020or\u0020more\u0020attachments",
-            "url": "classes/vB-Api-Node.html#method_removeAttachment"
-        },                {
-            "fqsen": "\\vB_Api_Node\u003A\u003AfetchAlbumChannel\u0028\u0029",
-            "name": "fetchAlbumChannel",
-            "summary": "returns\u0020id\u0020of\u0020the\u0020Albums\u0020Channel",
-            "url": "classes/vB-Api-Node.html#method_fetchAlbumChannel"
-        },                {
-            "fqsen": "\\vB_Api_Node\u003A\u003AfetchPMChannel\u0028\u0029",
-            "name": "fetchPMChannel",
-            "summary": "returns\u0020id\u0020of\u0020the\u0020Private\u0020Message\u0020Channel",
-            "url": "classes/vB-Api-Node.html#method_fetchPMChannel"
-        },                {
-            "fqsen": "\\vB_Api_Node\u003A\u003AfetchVMChannel\u0028\u0029",
-            "name": "fetchVMChannel",
-            "summary": "returns\u0020id\u0020of\u0020the\u0020Vistor\u0020Message\u0020Channel",
-            "url": "classes/vB-Api-Node.html#method_fetchVMChannel"
-        },                {
-            "fqsen": "\\vB_Api_Node\u003A\u003AfetchReportChannel\u0028\u0029",
-            "name": "fetchReportChannel",
-            "summary": "returns\u0020id\u0020of\u0020the\u0020Report\u0020Channel",
-            "url": "classes/vB-Api-Node.html#method_fetchReportChannel"
-        },                {
-            "fqsen": "\\vB_Api_Node\u003A\u003AfetchForumChannel\u0028\u0029",
-            "name": "fetchForumChannel",
-            "summary": "Returns\u0020the\u0020nodeid\u0020of\u0020the\u0020root\u0020forum\u0020channel",
-            "url": "classes/vB-Api-Node.html#method_fetchForumChannel"
-        },                {
-            "fqsen": "\\vB_Api_Node\u003A\u003AfetchInfractionChannel\u0028\u0029",
-            "name": "fetchInfractionChannel",
-            "summary": "Returns\u0020the\u0020nodeid\u0020of\u0020the\u0020infraction\u0020channel",
-            "url": "classes/vB-Api-Node.html#method_fetchInfractionChannel"
-        },                {
-            "fqsen": "\\vB_Api_Node\u003A\u003AfetchArticleChannel\u0028\u0029",
-            "name": "fetchArticleChannel",
-            "summary": "Returns\u0020the\u0020nodeid\u0020of\u0020the\u0020articles\u0020channel",
-            "url": "classes/vB-Api-Node.html#method_fetchArticleChannel"
-        },                {
-            "fqsen": "\\vB_Api_Node\u003A\u003AfetchActivity\u0028\u0029",
-            "name": "fetchActivity",
-            "summary": "returns\u0020array\u0020of\u0020all\u0020node\u0020content\u0020for\u0020a\u0020user\u0027s\u0020activity",
-            "url": "classes/vB-Api-Node.html#method_fetchActivity"
-        },                {
-            "fqsen": "\\vB_Api_Node\u003A\u003AgetAlbums\u0028\u0029",
-            "name": "getAlbums",
-            "summary": "This\u0020returns\u0020all\u0020the\u0020albums\u0020in\u0020a\u0020channel.\u0020Those\u0020can\u0020be\u0020photogalleries\u0020or\u0020text\u0020with\u0020attachments.",
-            "url": "classes/vB-Api-Node.html#method_getAlbums"
-        },                {
-            "fqsen": "\\vB_Api_Node\u003A\u003AsetSticky\u0028\u0029",
-            "name": "setSticky",
-            "summary": "Sets\u0020or\u0020unsets\u0020the\u0020sticky\u0020field",
-            "url": "classes/vB-Api-Node.html#method_setSticky"
-        },                {
-            "fqsen": "\\vB_Api_Node\u003A\u003AunsetSticky\u0028\u0029",
-            "name": "unsetSticky",
-            "summary": "Unsets\u0020sticky\u0020field",
-            "url": "classes/vB-Api-Node.html#method_unsetSticky"
-        },                {
-            "fqsen": "\\vB_Api_Node\u003A\u003AsetApproved\u0028\u0029",
-            "name": "setApproved",
-            "summary": "Sets\u0020or\u0020unsets\u0020the\u0020approved\u0020field",
-            "url": "classes/vB-Api-Node.html#method_setApproved"
-        },                {
-            "fqsen": "\\vB_Api_Node\u003A\u003AsetApprovedPost\u0028\u0029",
-            "name": "setApprovedPost",
-            "summary": "Approves\u0020a\u0020post.\u0020Since\u0020the\u0020publish\u0020date\u0020might\u0020be\u0020affected\u0020user\u0020will\u0020need\u0020moderate\u0020and\npublish\u0020posts\u0020permissions.",
-            "url": "classes/vB-Api-Node.html#method_setApprovedPost"
-        },                {
-            "fqsen": "\\vB_Api_Node\u003A\u003Aapprove\u0028\u0029",
-            "name": "approve",
-            "summary": "Sets\u0020the\u0020approved\u0020field",
-            "url": "classes/vB-Api-Node.html#method_approve"
-        },                {
-            "fqsen": "\\vB_Api_Node\u003A\u003Aunapprove\u0028\u0029",
-            "name": "unapprove",
-            "summary": "Unsets\u0020the\u0020approved\u0020field",
-            "url": "classes/vB-Api-Node.html#method_unapprove"
-        },                {
-            "fqsen": "\\vB_Api_Node\u003A\u003ArequestChannel\u0028\u0029",
-            "name": "requestChannel",
-            "summary": "This\u0020creates\u0020a\u0020request\u0020for\u0020access\u0020to\u0020a\u0020channel",
-            "url": "classes/vB-Api-Node.html#method_requestChannel"
-        },                {
-            "fqsen": "\\vB_Api_Node\u003A\u003AapproveChannelRequest\u0028\u0029",
-            "name": "approveChannelRequest",
-            "summary": "Approves\u0020a\u0020channel\u0020request.",
-            "url": "classes/vB-Api-Node.html#method_approveChannelRequest"
-        },                {
-            "fqsen": "\\vB_Api_Node\u003A\u003AsetNodeOptions\u0028\u0029",
-            "name": "setNodeOptions",
-            "summary": "Set\u0020the\u0020node\u0020options",
-            "url": "classes/vB-Api-Node.html#method_setNodeOptions"
-        },                {
-            "fqsen": "\\vB_Api_Node\u003A\u003AsetNodePerms\u0028\u0029",
-            "name": "setNodePerms",
-            "summary": "Set\u0020the\u0020node\u0020special\u0020permissions",
-            "url": "classes/vB-Api-Node.html#method_setNodePerms"
-        },                {
-            "fqsen": "\\vB_Api_Node\u003A\u003AgetMergePostsInfo\u0028\u0029",
-            "name": "getMergePostsInfo",
-            "summary": "Validates\u0020whether\u0020nodes\u0020can\u0020be\u0020merged\u0020and\u0020returns\u0020merging\u0020info.",
-            "url": "classes/vB-Api-Node.html#method_getMergePostsInfo"
-        },                {
-            "fqsen": "\\vB_Api_Node\u003A\u003AmergePosts\u0028\u0029",
-            "name": "mergePosts",
-            "summary": "Performs\u0020the\u0020actual\u0020merging,\u0020using\u0020edited\u0020input\u0020from\u0020UI.",
-            "url": "classes/vB-Api-Node.html#method_mergePosts"
-        },                {
-            "fqsen": "\\vB_Api_Node\u003A\u003AgetOptions\u0028\u0029",
-            "name": "getOptions",
-            "summary": "gets\u0020the\u0020node\u0020option\u0020bitfields",
-            "url": "classes/vB-Api-Node.html#method_getOptions"
-        },                {
-            "fqsen": "\\vB_Api_Node\u003A\u003AlistPendingPosts\u0028\u0029",
-            "name": "listPendingPosts",
-            "summary": "Gets\u0020the\u0020list\u0020of\u0020unapproved\u0020posts\u0020for\u0020the\u0020current\u0020user",
-            "url": "classes/vB-Api-Node.html#method_listPendingPosts"
-        },                {
-            "fqsen": "\\vB_Api_Node\u003A\u003AlistPendingPostsForCurrentUser\u0028\u0029",
-            "name": "listPendingPostsForCurrentUser",
-            "summary": "",
-            "url": "classes/vB-Api-Node.html#method_listPendingPostsForCurrentUser"
-        },                {
-            "fqsen": "\\vB_Api_Node\u003A\u003AclearCacheEvents\u0028\u0029",
-            "name": "clearCacheEvents",
-            "summary": "Clears\u0020the\u0020cache\u0020events\u0020from\u0020a\u0020given\u0020list\u0020of\u0020nodes.",
-            "url": "classes/vB-Api-Node.html#method_clearCacheEvents"
-        },                {
-            "fqsen": "\\vB_Api_Node\u003A\u003AmarkRead\u0028\u0029",
-            "name": "markRead",
-            "summary": "Marks\u0020a\u0020node\u0020as\u0020read\u0020using\u0020the\u0020appropriate\u0020method.",
-            "url": "classes/vB-Api-Node.html#method_markRead"
-        },                {
-            "fqsen": "\\vB_Api_Node\u003A\u003AmarkReadMultiple\u0028\u0029",
-            "name": "markReadMultiple",
-            "summary": "Mark\u0020multiple\u0020nodes\u0020read",
-            "url": "classes/vB-Api-Node.html#method_markReadMultiple"
-        },                {
-            "fqsen": "\\vB_Api_Node\u003A\u003AmarkUnreadMultiple\u0028\u0029",
-            "name": "markUnreadMultiple",
-            "summary": "Mark\u0020multiple\u0020nodes\u0020unread",
-            "url": "classes/vB-Api-Node.html#method_markUnreadMultiple"
-        },                {
-            "fqsen": "\\vB_Api_Node\u003A\u003AmarkChannelsRead\u0028\u0029",
-            "name": "markChannelsRead",
-            "summary": "Marks\u0020a\u0020channel,\u0020its\u0020child\u0020channels\u0020and\u0020all\u0020contained\u0020topics\u0020as\u0020read",
-            "url": "classes/vB-Api-Node.html#method_markChannelsRead"
-        },                {
-            "fqsen": "\\vB_Api_Node\u003A\u003AfetchModLogs\u0028\u0029",
-            "name": "fetchModLogs",
-            "summary": "Fetches\u0020the\u0020moderator\u0020logs\u0020for\u0020a\u0020node",
-            "url": "classes/vB-Api-Node.html#method_fetchModLogs"
-        },                {
-            "fqsen": "\\vB_Api_Node\u003A\u003AmanageDeletedNode\u0028\u0029",
-            "name": "manageDeletedNode",
-            "summary": "Manages\u0020a\u0020deleted\u0020node\u0020regarding\u0020options\u0020being\u0020passed.",
-            "url": "classes/vB-Api-Node.html#method_manageDeletedNode"
-        },                {
-            "fqsen": "\\vB_Api_Node\u003A\u003AshowIp\u0028\u0029",
-            "name": "showIp",
-            "summary": "Checks\u0020if\u0020ip\u0020should\u0020be\u0020shown",
-            "url": "classes/vB-Api-Node.html#method_showIp"
-        },                {
-            "fqsen": "\\vB_Api_Node\u003A\u003AgetHostName\u0028\u0029",
-            "name": "getHostName",
-            "summary": "",
-            "url": "classes/vB-Api-Node.html#method_getHostName"
-        },                {
-            "fqsen": "\\vB_Api_Node\u003A\u003AfetchUsersFromNodeids\u0028\u0029",
-            "name": "fetchUsersFromNodeids",
-            "summary": "Fetch\u0020users\u0020from\u0020given\u0020nodeids",
-            "url": "classes/vB-Api-Node.html#method_fetchUsersFromNodeids"
-        },                {
-            "fqsen": "\\vB_Api_Node\u003A\u003AfetchChannelNodeTree\u0028\u0029",
-            "name": "fetchChannelNodeTree",
-            "summary": "Fetch\u0020node\u0020tree\u0020structure\u0020of\u0020the\u0020specified\u0020parent\u0020id\u0020as\u0020the\u0020root.\u0020Root\u0020is\u0020excluded\u0020from\u0020the\u0020tree\u0020structure.",
-            "url": "classes/vB-Api-Node.html#method_fetchChannelNodeTree"
-        },                {
-            "fqsen": "\\vB_Api_Node\u003A\u003AgetGuestChannels\u0028\u0029",
-            "name": "getGuestChannels",
-            "summary": "Fetches\u0020a\u0020list\u0020of\u0020channels\u0020that\u0020guests\u0020can\u0020access.\u0020Basically\u0020a\u0020public\u0020access\u0020for\u0020getUserChannels\u0028\u0029\nbut\u0020only\u0020for\u0020userid\u00200.",
-            "url": "classes/vB-Api-Node.html#method_getGuestChannels"
-        },                {
-            "fqsen": "\\vB_Api_Node\u003A\u003AgetCurrentUserChannels\u0028\u0029",
-            "name": "getCurrentUserChannels",
-            "summary": "Returns\u0020a\u0020list\u0020of\u0020channels\u0020that\u0020the\u0020current\u0020user\u0020can\u0020access.",
-            "url": "classes/vB-Api-Node.html#method_getCurrentUserChannels"
-        },                {
-            "fqsen": "\\vB_Api_Node\u003A\u003AfetchChannelDetails\u0028\u0029",
-            "name": "fetchChannelDetails",
-            "summary": "",
-            "url": "classes/vB-Api-Node.html#method_fetchChannelDetails"
-        },                {
-            "fqsen": "\\vB_Api_Node\u003A\u003AgetNodeReadTime\u0028\u0029",
-            "name": "getNodeReadTime",
-            "summary": "Returns\u0020the\u0020node\u0020read\u0020time\u0020for\u0020the\u0020current\u0020user\u0020and\u0020the\u0020given\u0020nodeid",
-            "url": "classes/vB-Api-Node.html#method_getNodeReadTime"
-        },                {
-            "fqsen": "\\vB_Api_Node\u003A\u003AgetFirstChildAfterTime\u0028\u0029",
-            "name": "getFirstChildAfterTime",
-            "summary": "Returns\u0020the\u0020first\u0020immediate\u0020child\u0020node\u0020of\u0020the\u0020given\u0020node\u0020that\u0020was\u0020created\nafter\u0020the\u0020given\u0020timestamp",
-            "url": "classes/vB-Api-Node.html#method_getFirstChildAfterTime"
-        },                {
-            "fqsen": "\\vB_Api_Node\u003A\u003AincrementNodeview\u0028\u0029",
-            "name": "incrementNodeview",
-            "summary": "Insert\/Update\u0020nodeview\u0020for\u0020nodeid",
-            "url": "classes/vB-Api-Node.html#method_incrementNodeview"
-        },                {
-            "fqsen": "\\vB_Api_Node\u003A\u003AmergeNodeviewsForTopics\u0028\u0029",
-            "name": "mergeNodeviewsForTopics",
-            "summary": "Merges\u0020the\u0020nodeviews\u0020into\u0020the\u0020topics\u0020array,\u0020used\u0020by\u0020the\u0020display_Topics\u0020template",
-            "url": "classes/vB-Api-Node.html#method_mergeNodeviewsForTopics"
-        },                {
-            "fqsen": "\\vB_Api_Node\u003A\u003AmergePostedStatusForTopics\u0028\u0029",
-            "name": "mergePostedStatusForTopics",
-            "summary": "Merges\u0020\u0022posted\u0022\u0020info\u0020into\u0020the\u0020topics\u0020array,\u0020used\u0020by\u0020the\u0020display_Topics\u0020template.",
-            "url": "classes/vB-Api-Node.html#method_mergePostedStatusForTopics"
-        },                {
-            "fqsen": "\\vB_Api_Node\u003A\u003AgetPreviewOnly\u0028\u0029",
-            "name": "getPreviewOnly",
-            "summary": "Return\u0020only\u0020the\u0020safe\u0020data\u0020for\u0020a\u0020node\u0020for\u0020which\u0020previewonly\u0020is\u0020set",
-            "url": "classes/vB-Api-Node.html#method_getPreviewOnly"
-        },                {
-            "fqsen": "\\vB_Api_Node\u003A\u003AgetCreatepermissionsForEdit\u0028\u0029",
-            "name": "getCreatepermissionsForEdit",
-            "summary": "Return\u0020the\u0020specified\u0020node\u0027s\u0020createpermissions\u0020for\u0020editing\u0020for\u0020the\u0020current\u0020user",
-            "url": "classes/vB-Api-Node.html#method_getCreatepermissionsForEdit"
-        },                {
-            "fqsen": "\\vB_Api_Node\u003A\u003AgetCanDeleteForEdit\u0028\u0029",
-            "name": "getCanDeleteForEdit",
-            "summary": "Return\u0020whether\u0020the\u0020user\u0020can\u0020delete\u0020the\u0020node\u0020or\u0020not.\u0020Used\u0020by\u0020createcontent\u0020controller",
-            "url": "classes/vB-Api-Node.html#method_getCanDeleteForEdit"
-        },                {
-            "fqsen": "\\vB_Api_Node\u003A\u003AgetChannelStatistics\u0028\u0029",
-            "name": "getChannelStatistics",
-            "summary": "Returns\u0020channel\u0020statistics\u002D\u002D\u0020number\u0020of\u0020topics\u0020\/\u0020posts.",
-            "url": "classes/vB-Api-Node.html#method_getChannelStatistics"
-        },                {
-            "fqsen": "\\vB_Api_Node\u003A\u003AFILTER_SOURCEALL",
-            "name": "FILTER_SOURCEALL",
-            "summary": "",
-            "url": "classes/vB-Api-Node.html#constant_FILTER_SOURCEALL"
-        },                {
-            "fqsen": "\\vB_Api_Node\u003A\u003AFILTER_SOURCEUSER",
-            "name": "FILTER_SOURCEUSER",
-            "summary": "",
-            "url": "classes/vB-Api-Node.html#constant_FILTER_SOURCEUSER"
-        },                {
-            "fqsen": "\\vB_Api_Node\u003A\u003AFILTER_SOURCEVM",
-            "name": "FILTER_SOURCEVM",
-            "summary": "",
-            "url": "classes/vB-Api-Node.html#constant_FILTER_SOURCEVM"
-        },                {
-            "fqsen": "\\vB_Api_Node\u003A\u003AFILTER_SORTMOSTRECENT",
-            "name": "FILTER_SORTMOSTRECENT",
-            "summary": "",
-            "url": "classes/vB-Api-Node.html#constant_FILTER_SORTMOSTRECENT"
-        },                {
-            "fqsen": "\\vB_Api_Node\u003A\u003AFILTER_SORTPOPULAR",
-            "name": "FILTER_SORTPOPULAR",
-            "summary": "",
-            "url": "classes/vB-Api-Node.html#constant_FILTER_SORTPOPULAR"
-        },                {
-            "fqsen": "\\vB_Api_Node\u003A\u003AFILTER_SORTFEATURED",
-            "name": "FILTER_SORTFEATURED",
-            "summary": "",
-            "url": "classes/vB-Api-Node.html#constant_FILTER_SORTFEATURED"
-        },                {
-            "fqsen": "\\vB_Api_Node\u003A\u003AFILTER_SORTOLDEST",
-            "name": "FILTER_SORTOLDEST",
-            "summary": "",
-            "url": "classes/vB-Api-Node.html#constant_FILTER_SORTOLDEST"
-        },                {
-            "fqsen": "\\vB_Api_Node\u003A\u003AFILTER_SHOWALL",
-            "name": "FILTER_SHOWALL",
-            "summary": "",
-            "url": "classes/vB-Api-Node.html#constant_FILTER_SHOWALL"
-        },                {
-            "fqsen": "\\vB_Api_Node\u003A\u003AFILTER_TIME",
-            "name": "FILTER_TIME",
-            "summary": "",
-            "url": "classes/vB-Api-Node.html#constant_FILTER_TIME"
-        },                {
-            "fqsen": "\\vB_Api_Node\u003A\u003AFILTER_SOURCE",
-            "name": "FILTER_SOURCE",
-            "summary": "",
-            "url": "classes/vB-Api-Node.html#constant_FILTER_SOURCE"
-        },                {
-            "fqsen": "\\vB_Api_Node\u003A\u003AFILTER_SORT",
-            "name": "FILTER_SORT",
-            "summary": "",
-            "url": "classes/vB-Api-Node.html#constant_FILTER_SORT"
-        },                {
-            "fqsen": "\\vB_Api_Node\u003A\u003AFILTER_ORDER",
-            "name": "FILTER_ORDER",
-            "summary": "",
-            "url": "classes/vB-Api-Node.html#constant_FILTER_ORDER"
-        },                {
-            "fqsen": "\\vB_Api_Node\u003A\u003AFILTER_SHOW",
-            "name": "FILTER_SHOW",
-            "summary": "",
-            "url": "classes/vB-Api-Node.html#constant_FILTER_SHOW"
-        },                {
-            "fqsen": "\\vB_Api_Node\u003A\u003AFILTER_FOLLOW",
-            "name": "FILTER_FOLLOW",
-            "summary": "",
-            "url": "classes/vB-Api-Node.html#constant_FILTER_FOLLOW"
-        },                {
-            "fqsen": "\\vB_Api_Node\u003A\u003AFILTER_DEPTH",
-            "name": "FILTER_DEPTH",
-            "summary": "",
-            "url": "classes/vB-Api-Node.html#constant_FILTER_DEPTH"
-        },                {
-            "fqsen": "\\vB_Api_Node\u003A\u003AREQUEST_TAKE_OWNER",
-            "name": "REQUEST_TAKE_OWNER",
-            "summary": "",
-            "url": "classes/vB-Api-Node.html#constant_REQUEST_TAKE_OWNER"
-        },                {
-            "fqsen": "\\vB_Api_Node\u003A\u003AREQUEST_TAKE_MODERATOR",
-            "name": "REQUEST_TAKE_MODERATOR",
-            "summary": "",
-            "url": "classes/vB-Api-Node.html#constant_REQUEST_TAKE_MODERATOR"
-        },                {
-            "fqsen": "\\vB_Api_Node\u003A\u003AREQUEST_TAKE_MEMBER",
-            "name": "REQUEST_TAKE_MEMBER",
-            "summary": "",
-            "url": "classes/vB-Api-Node.html#constant_REQUEST_TAKE_MEMBER"
-        },                {
-            "fqsen": "\\vB_Api_Node\u003A\u003AREQUEST_TAKE_SUBSCRIBER",
-            "name": "REQUEST_TAKE_SUBSCRIBER",
-            "summary": "",
-            "url": "classes/vB-Api-Node.html#constant_REQUEST_TAKE_SUBSCRIBER"
-        },                {
-            "fqsen": "\\vB_Api_Node\u003A\u003AREQUEST_GRANT_OWNER",
-            "name": "REQUEST_GRANT_OWNER",
-            "summary": "",
-            "url": "classes/vB-Api-Node.html#constant_REQUEST_GRANT_OWNER"
-        },                {
-            "fqsen": "\\vB_Api_Node\u003A\u003AREQUEST_GRANT_MODERATOR",
-            "name": "REQUEST_GRANT_MODERATOR",
-            "summary": "",
-            "url": "classes/vB-Api-Node.html#constant_REQUEST_GRANT_MODERATOR"
-        },                {
-            "fqsen": "\\vB_Api_Node\u003A\u003AREQUEST_GRANT_MEMBER",
-            "name": "REQUEST_GRANT_MEMBER",
-            "summary": "",
-            "url": "classes/vB-Api-Node.html#constant_REQUEST_GRANT_MEMBER"
-        },                {
-            "fqsen": "\\vB_Api_Node\u003A\u003AREQUEST_GRANT_SUBSCRIBER",
-            "name": "REQUEST_GRANT_SUBSCRIBER",
-            "summary": "",
-            "url": "classes/vB-Api-Node.html#constant_REQUEST_GRANT_SUBSCRIBER"
-        },                {
-            "fqsen": "\\vB_Api_Node\u003A\u003AREQUEST_SG_TAKE_OWNER",
-            "name": "REQUEST_SG_TAKE_OWNER",
-            "summary": "",
-            "url": "classes/vB-Api-Node.html#constant_REQUEST_SG_TAKE_OWNER"
-        },                {
-            "fqsen": "\\vB_Api_Node\u003A\u003AREQUEST_SG_TAKE_MODERATOR",
-            "name": "REQUEST_SG_TAKE_MODERATOR",
-            "summary": "",
-            "url": "classes/vB-Api-Node.html#constant_REQUEST_SG_TAKE_MODERATOR"
-        },                {
-            "fqsen": "\\vB_Api_Node\u003A\u003AREQUEST_SG_TAKE_MEMBER",
-            "name": "REQUEST_SG_TAKE_MEMBER",
-            "summary": "",
-            "url": "classes/vB-Api-Node.html#constant_REQUEST_SG_TAKE_MEMBER"
-        },                {
-            "fqsen": "\\vB_Api_Node\u003A\u003AREQUEST_SG_TAKE_SUBSCRIBER",
-            "name": "REQUEST_SG_TAKE_SUBSCRIBER",
-            "summary": "",
-            "url": "classes/vB-Api-Node.html#constant_REQUEST_SG_TAKE_SUBSCRIBER"
-        },                {
-            "fqsen": "\\vB_Api_Node\u003A\u003AREQUEST_SG_GRANT_OWNER",
-            "name": "REQUEST_SG_GRANT_OWNER",
-            "summary": "",
-            "url": "classes/vB-Api-Node.html#constant_REQUEST_SG_GRANT_OWNER"
-        },                {
-            "fqsen": "\\vB_Api_Node\u003A\u003AREQUEST_SG_GRANT_MODERATOR",
-            "name": "REQUEST_SG_GRANT_MODERATOR",
-            "summary": "",
-            "url": "classes/vB-Api-Node.html#constant_REQUEST_SG_GRANT_MODERATOR"
-        },                {
-            "fqsen": "\\vB_Api_Node\u003A\u003AREQUEST_SG_GRANT_MEMBER",
-            "name": "REQUEST_SG_GRANT_MEMBER",
-            "summary": "",
-            "url": "classes/vB-Api-Node.html#constant_REQUEST_SG_GRANT_MEMBER"
-        },                {
-            "fqsen": "\\vB_Api_Node\u003A\u003AREQUEST_SG_GRANT_SUBSCRIBER",
-            "name": "REQUEST_SG_GRANT_SUBSCRIBER",
-            "summary": "",
-            "url": "classes/vB-Api-Node.html#constant_REQUEST_SG_GRANT_SUBSCRIBER"
-        },                {
-            "fqsen": "\\vB_Api_Node\u003A\u003AOPTION_ALLOW_POST",
-            "name": "OPTION_ALLOW_POST",
-            "summary": "",
-            "url": "classes/vB-Api-Node.html#constant_OPTION_ALLOW_POST"
-        },                {
-            "fqsen": "\\vB_Api_Node\u003A\u003AOPTION_MODERATE_COMMENTS",
-            "name": "OPTION_MODERATE_COMMENTS",
-            "summary": "",
-            "url": "classes/vB-Api-Node.html#constant_OPTION_MODERATE_COMMENTS"
-        },                {
-            "fqsen": "\\vB_Api_Node\u003A\u003AOPTION_AUTOAPPROVE_MEMBERSHIP",
-            "name": "OPTION_AUTOAPPROVE_MEMBERSHIP",
-            "summary": "",
-            "url": "classes/vB-Api-Node.html#constant_OPTION_AUTOAPPROVE_MEMBERSHIP"
-        },                {
-            "fqsen": "\\vB_Api_Node\u003A\u003AOPTION_NODE_INVITEONLY",
-            "name": "OPTION_NODE_INVITEONLY",
-            "summary": "",
-            "url": "classes/vB-Api-Node.html#constant_OPTION_NODE_INVITEONLY"
-        },                {
-            "fqsen": "\\vB_Api_Node\u003A\u003AOPTION_NODE_PARSELINKS",
-            "name": "OPTION_NODE_PARSELINKS",
-            "summary": "",
-            "url": "classes/vB-Api-Node.html#constant_OPTION_NODE_PARSELINKS"
-        },                {
-            "fqsen": "\\vB_Api_Node\u003A\u003AOPTION_NODE_DISABLE_SMILIES",
-            "name": "OPTION_NODE_DISABLE_SMILIES",
-            "summary": "",
-            "url": "classes/vB-Api-Node.html#constant_OPTION_NODE_DISABLE_SMILIES"
-        },                {
-            "fqsen": "\\vB_Api_Node\u003A\u003AOPTION_AUTOAPPROVE_SUBSCRIPTION",
-            "name": "OPTION_AUTOAPPROVE_SUBSCRIPTION",
-            "summary": "",
-            "url": "classes/vB-Api-Node.html#constant_OPTION_AUTOAPPROVE_SUBSCRIPTION"
-        },                {
-            "fqsen": "\\vB_Api_Node\u003A\u003AOPTION_MODERATE_TOPICS",
-            "name": "OPTION_MODERATE_TOPICS",
-            "summary": "",
-            "url": "classes/vB-Api-Node.html#constant_OPTION_MODERATE_TOPICS"
-        },                {
-            "fqsen": "\\vB_Api_Node\u003A\u003AOPTION_AUTOSUBSCRIBE_ON_JOIN",
-            "name": "OPTION_AUTOSUBSCRIBE_ON_JOIN",
-            "summary": "",
-            "url": "classes/vB-Api-Node.html#constant_OPTION_AUTOSUBSCRIBE_ON_JOIN"
-        },                {
-            "fqsen": "\\vB_Api_Node\u003A\u003AOPTION_NODE_DISABLE_BBCODE",
-            "name": "OPTION_NODE_DISABLE_BBCODE",
-            "summary": "",
-            "url": "classes/vB-Api-Node.html#constant_OPTION_NODE_DISABLE_BBCODE"
-        },                {
-            "fqsen": "\\vB_Api_Node\u003A\u003AOPTION_NODE_HIDE_TITLE",
-            "name": "OPTION_NODE_HIDE_TITLE",
-            "summary": "",
-            "url": "classes/vB-Api-Node.html#constant_OPTION_NODE_HIDE_TITLE"
-        },                {
-            "fqsen": "\\vB_Api_Node\u003A\u003AOPTION_NODE_HIDE_AUTHOR",
-            "name": "OPTION_NODE_HIDE_AUTHOR",
-            "summary": "",
-            "url": "classes/vB-Api-Node.html#constant_OPTION_NODE_HIDE_AUTHOR"
-        },                {
-            "fqsen": "\\vB_Api_Node\u003A\u003AOPTION_NODE_HIDE_PUBLISHDATE",
-            "name": "OPTION_NODE_HIDE_PUBLISHDATE",
-            "summary": "",
-            "url": "classes/vB-Api-Node.html#constant_OPTION_NODE_HIDE_PUBLISHDATE"
-        },                {
-            "fqsen": "\\vB_Api_Node\u003A\u003AOPTION_NODE_DISPLAY_FULL_IN_CATEGORY",
-            "name": "OPTION_NODE_DISPLAY_FULL_IN_CATEGORY",
-            "summary": "",
-            "url": "classes/vB-Api-Node.html#constant_OPTION_NODE_DISPLAY_FULL_IN_CATEGORY"
-        },                {
-            "fqsen": "\\vB_Api_Node\u003A\u003AOPTION_NODE_DISPLAY_PAGEVIEWS",
-            "name": "OPTION_NODE_DISPLAY_PAGEVIEWS",
-            "summary": "",
-            "url": "classes/vB-Api-Node.html#constant_OPTION_NODE_DISPLAY_PAGEVIEWS"
-        },                {
-            "fqsen": "\\vB_Api_Node\u003A\u003AOPTION_NODE_HIDE_COMMENT_COUNT",
-            "name": "OPTION_NODE_HIDE_COMMENT_COUNT",
-            "summary": "",
-            "url": "classes/vB-Api-Node.html#constant_OPTION_NODE_HIDE_COMMENT_COUNT"
-        },                {
-            "fqsen": "\\vB_Api_Node\u003A\u003ADATE_RANGE_DAILY",
-            "name": "DATE_RANGE_DAILY",
-            "summary": "",
-            "url": "classes/vB-Api-Node.html#constant_DATE_RANGE_DAILY"
-        },                {
-            "fqsen": "\\vB_Api_Node\u003A\u003ADATE_RANGE_MONTHLY",
-            "name": "DATE_RANGE_MONTHLY",
-            "summary": "",
-            "url": "classes/vB-Api-Node.html#constant_DATE_RANGE_MONTHLY"
-        },                {
-            "fqsen": "\\vB_Api_NodeField",
-            "name": "vB_Api_NodeField",
-            "summary": "",
-            "url": "classes/vB-Api-NodeField.html"
-        },                {
-            "fqsen": "\\vB_Api_NodeField\u003A\u003AsaveCategory\u0028\u0029",
-            "name": "saveCategory",
-            "summary": "Save\u0020a\u0020category\u0020value.",
-            "url": "classes/vB-Api-NodeField.html#method_saveCategory"
-        },                {
-            "fqsen": "\\vB_Api_NodeField\u003A\u003AgetCategoryList\u0028\u0029",
-            "name": "getCategoryList",
-            "summary": "Get\u0020the\u0020list\u0020of\u0020categories",
-            "url": "classes/vB-Api-NodeField.html#method_getCategoryList"
-        },                {
-            "fqsen": "\\vB_Api_NodeField\u003A\u003AgetCategory\u0028\u0029",
-            "name": "getCategory",
-            "summary": "Get\u0020a\u0020category",
-            "url": "classes/vB-Api-NodeField.html#method_getCategory"
-        },                {
-            "fqsen": "\\vB_Api_NodeField\u003A\u003AdeleteCategory\u0028\u0029",
-            "name": "deleteCategory",
-            "summary": "",
-            "url": "classes/vB-Api-NodeField.html#method_deleteCategory"
-        },                {
-            "fqsen": "\\vB_Api_NodeField\u003A\u003AsaveField\u0028\u0029",
-            "name": "saveField",
-            "summary": "",
-            "url": "classes/vB-Api-NodeField.html#method_saveField"
-        },                {
-            "fqsen": "\\vB_Api_NodeField\u003A\u003AgetFieldList\u0028\u0029",
-            "name": "getFieldList",
-            "summary": "",
-            "url": "classes/vB-Api-NodeField.html#method_getFieldList"
-        },                {
-            "fqsen": "\\vB_Api_NodeField\u003A\u003AgetFieldsForNode\u0028\u0029",
-            "name": "getFieldsForNode",
-            "summary": "",
-            "url": "classes/vB-Api-NodeField.html#method_getFieldsForNode"
-        },                {
-            "fqsen": "\\vB_Api_NodeField\u003A\u003AgetFieldValuesForDisplay\u0028\u0029",
-            "name": "getFieldValuesForDisplay",
-            "summary": "Return\u0020the\u0020values\u0020for\u0020display.",
-            "url": "classes/vB-Api-NodeField.html#method_getFieldValuesForDisplay"
-        },                {
-            "fqsen": "\\vB_Api_NodeField\u003A\u003AgetFieldsForChannel\u0028\u0029",
-            "name": "getFieldsForChannel",
-            "summary": "",
-            "url": "classes/vB-Api-NodeField.html#method_getFieldsForChannel"
-        },                {
-            "fqsen": "\\vB_Api_NodeField\u003A\u003AgetField\u0028\u0029",
-            "name": "getField",
-            "summary": "",
-            "url": "classes/vB-Api-NodeField.html#method_getField"
-        },                {
-            "fqsen": "\\vB_Api_NodeField\u003A\u003AdeleteField\u0028\u0029",
-            "name": "deleteField",
-            "summary": "",
-            "url": "classes/vB-Api-NodeField.html#method_deleteField"
-        },                {
-            "fqsen": "\\vB_Api_Nodevote",
-            "name": "vB_Api_Nodevote",
-            "summary": "vB_Api_Nodevote",
-            "url": "classes/vB-Api-Nodevote.html"
-        },                {
-            "fqsen": "\\vB_Api_Nodevote\u003A\u003AunvoteNode\u0028\u0029",
-            "name": "unvoteNode",
-            "summary": "",
-            "url": "classes/vB-Api-Nodevote.html#method_unvoteNode"
-        },                {
-            "fqsen": "\\vB_Api_Nodevote\u003A\u003AvoteNode\u0028\u0029",
-            "name": "voteNode",
-            "summary": "",
-            "url": "classes/vB-Api-Nodevote.html#method_voteNode"
-        },                {
             "fqsen": "\\vB_Api_Notice",
             "name": "vB_Api_Notice",
             "summary": "vB_Api_Notice",
@@ -3050,6 +2295,16 @@ Search.appendIndex(
             "name": "deleteNotification",
             "summary": "Deletes\u0020specified\u0020notificationds,\u0020but\u0020only\u0020if\u0020it\u0027s\u0020owned\u0020by\u0020the\u0020current\u0020user.",
             "url": "classes/vB-Api-Notification.html#method_deleteNotification"
+        },                {
+            "fqsen": "\\vB_Api_Notification\u003A\u003AunsubscribeFromNotification\u0028\u0029",
+            "name": "unsubscribeFromNotification",
+            "summary": "Unsubscribe\u0020from\u0020notifications\u0020sent\u0020by\u0020\u0024sentbynodeid.\u0020Note,\u0020due\u0020to\u0020the\u0020timing\u0020\u0026\u0020bulking\u0020of\u0020email\nnotifications,\u0020it\u0020is\u0020currently\u0020nontrivial\u0020to\u0020map\u0020which\u0020email\u0020is\u0020for\u0020which\u0020specific\u0020notificationid,\nso\u0020we\u0020have\u0020to\u0020use\u0020sentbynodeid.",
+            "url": "classes/vB-Api-Notification.html#method_unsubscribeFromNotification"
+        },                {
+            "fqsen": "\\vB_Api_Notification\u003A\u003AundoUnsubscribe\u0028\u0029",
+            "name": "undoUnsubscribe",
+            "summary": "",
+            "url": "classes/vB-Api-Notification.html#method_undoUnsubscribe"
         },                {
             "fqsen": "\\vB_Api_Null",
             "name": "vB_Api_Null",
@@ -3213,7 +2468,7 @@ Search.appendIndex(
         },                {
             "fqsen": "\\vB_Api_Page\u003A\u003AgetURLs\u0028\u0029",
             "name": "getURLs",
-            "summary": "",
+            "summary": "Get\u0020URLs\u0020for\u0020use\u0020in\u0020sitebuilder\u0027s\u0020page\u0020manager,\u0020navigation\u0020bar\u0020\u0026\u0020footer.",
             "url": "classes/vB-Api-Page.html#method_getURLs"
         },                {
             "fqsen": "\\vB_Api_Page\u003A\u003AgetOrphanedPagetemplates\u0028\u0029",
@@ -3225,6 +2480,11 @@ Search.appendIndex(
             "name": "deleteOrphanedPagetemplates",
             "summary": "",
             "url": "classes/vB-Api-Page.html#method_deleteOrphanedPagetemplates"
+        },                {
+            "fqsen": "\\vB_Api_Page\u003A\u003AsetAsHomePage\u0028\u0029",
+            "name": "setAsHomePage",
+            "summary": "",
+            "url": "classes/vB-Api-Page.html#method_setAsHomePage"
         },                {
             "fqsen": "\\vB_Api_Page\u003A\u003ApageSave\u0028\u0029",
             "name": "pageSave",
@@ -3265,6 +2525,11 @@ Search.appendIndex(
             "name": "getHomePages",
             "summary": "Returns\u0020a\u0020list\u0020of\u0020pages\u0020to\u0020show\u0020as\u0020the\u0020home\u0020page\u0020options\u0020in\u0020quick\u0020config",
             "url": "classes/vB-Api-Page.html#method_getHomePages"
+        },                {
+            "fqsen": "\\vB_Api_Page\u003A\u003AfetchScreenLayoutList\u0028\u0029",
+            "name": "fetchScreenLayoutList",
+            "summary": "Returns\u0020a\u0020list\u0020of\u0020all\u0020\u0022selectable\u0022\u0020screen\u0020layouts.\u0020Currently\u0020excludes\u0020the\u0020\u0022bare\u0020full\u0022\u0020layout,\u0020which\u0020is\u0020used\u0020specifically\nfor\u0020the\u0020PM\u0020Chat\u0020window.",
+            "url": "classes/vB-Api-Page.html#method_fetchScreenLayoutList"
         },                {
             "fqsen": "\\vB_Api_PageTemplate",
             "name": "vB_Api_PageTemplate",
@@ -3576,16 +2841,6 @@ Search.appendIndex(
             "summary": "Unvote\u0020a\u0020node",
             "url": "classes/vB-Api-Reputation.html#method_unvote"
         },                {
-            "fqsen": "\\vB_Api_Reputation\u003A\u003AfetchWhovoted\u0028\u0029",
-            "name": "fetchWhovoted",
-            "summary": "Fetch\u0020whovoted\u0020a\u0020node",
-            "url": "classes/vB-Api-Reputation.html#method_fetchWhovoted"
-        },                {
-            "fqsen": "\\vB_Api_Reputation\u003A\u003AfetchVotecount\u0028\u0029",
-            "name": "fetchVotecount",
-            "summary": "Fetch\u0020vote\u0020count\u0020for\u0020a\u0020node",
-            "url": "classes/vB-Api-Reputation.html#method_fetchVotecount"
-        },                {
             "fqsen": "\\vB_Api_Reputation\u003A\u003AfetchReputationImageInfo\u0028\u0029",
             "name": "fetchReputationImageInfo",
             "summary": "Fetch\u0020reputation\u0020image\u0020info\u0020for\u0020displaying\u0020it\u0020in\u0020a\u0020node\nPorted\u0020from\u0020vB4\u0027s\u0020fetch_reputation_image\u0028\u0029\u0020function",
@@ -3663,7 +2918,7 @@ Search.appendIndex(
         },                {
             "fqsen": "\\vB_Api_Route\u003A\u003AsetAsHomeRoute\u0028\u0029",
             "name": "setAsHomeRoute",
-            "summary": "Sets\u0020a\u0020route\u0020as\u0020the\u0020home\u0020page\u0020route",
+            "summary": "Sets\u0020a\u0020route\u0020as\u0020the\u0020home\u0020page\u0020route.\u0020Note,\u0020this\u0020is\u0020currently\u0020only\u0020for\u0020use\u0020in\u0020the\u0020\u0022Quick\u0020Setup\u0022\nSitebuilder\u0020Panel\u0027s\u0020home\u0020page\u0020switching\u0020tool\u0020\u0028to\u0020switch\u0020between\u0020the\u00203\u0020default\u0020homepages\u0029.",
             "url": "classes/vB-Api-Route.html#method_setAsHomeRoute"
         },                {
             "fqsen": "\\vB_Api_ScreenLayout",
@@ -3996,6 +3251,11 @@ Search.appendIndex(
             "summary": "returns\u0020the\u0020category\u0020list\u002D\u0020direct\u0020children\u0020of\u0020the\u0020social\u0020group\u0020channel",
             "url": "classes/vB-Api-SocialGroup.html#method_getCategories"
         },                {
+            "fqsen": "\\vB_Api_SocialGroup\u003A\u003AfetchMembers\u0028\u0029",
+            "name": "fetchMembers",
+            "summary": "Lists\u0020channel\u0020members",
+            "url": "classes/vB-Api-SocialGroup.html#method_fetchMembers"
+        },                {
             "fqsen": "\\vB_Api_SocialGroup\u003A\u003AcreateSocialGroup\u0028\u0029",
             "name": "createSocialGroup",
             "summary": "Creates\u0020a\u0020new\u0020social\u0020group",
@@ -4031,90 +3291,35 @@ Search.appendIndex(
             "summary": "",
             "url": "classes/vB-Api-State.html#method_checkCSRF"
         },                {
-            "fqsen": "\\NO_IMPORT_DOTS",
-            "name": "NO_IMPORT_DOTS",
+            "fqsen": "\\vB_Api_Styleschedule",
+            "name": "vB_Api_Styleschedule",
             "summary": "",
-            "url": "namespaces/default.html#constant_NO_IMPORT_DOTS"
+            "url": "classes/vB-Api-Styleschedule.html"
         },                {
-            "fqsen": "\\vB_Api_Style",
-            "name": "vB_Api_Style",
-            "summary": "vB_Api_Style",
-            "url": "classes/vB-Api-Style.html"
-        },                {
-            "fqsen": "\\vB_Api_Style\u003A\u003AgetValidStyleFromPreference\u0028\u0029",
-            "name": "getValidStyleFromPreference",
-            "summary": "Get\u0020the\u0020style\u0020from\u0020the\u0020list\u0020of\u0020preferences\u0020\u002D\u002D\u0020will\u0020check\u0020that\u0020the\ndesired\u0020styles\u0020exist\u0020and\u0020are\u0020available\u0020for\u0020the\u0020user\u0020to",
-            "url": "classes/vB-Api-Style.html#method_getValidStyleFromPreference"
-        },                {
-            "fqsen": "\\vB_Api_Style\u003A\u003AfetchStyleVars\u0028\u0029",
-            "name": "fetchStyleVars",
-            "summary": "Get\u0020Style\u0020Vars",
-            "url": "classes/vB-Api-Style.html#method_fetchStyleVars"
-        },                {
-            "fqsen": "\\vB_Api_Style\u003A\u003AfetchStyles\u0028\u0029",
-            "name": "fetchStyles",
-            "summary": "Fetch\u0020All\u0020styles",
-            "url": "classes/vB-Api-Style.html#method_fetchStyles"
-        },                {
-            "fqsen": "\\vB_Api_Style\u003A\u003AinsertStyle\u0028\u0029",
-            "name": "insertStyle",
-            "summary": "Insert\u0020style",
-            "url": "classes/vB-Api-Style.html#method_insertStyle"
-        },                {
-            "fqsen": "\\vB_Api_Style\u003A\u003AupdateStyle\u0028\u0029",
-            "name": "updateStyle",
-            "summary": "Update\u0020style",
-            "url": "classes/vB-Api-Style.html#method_updateStyle"
-        },                {
-            "fqsen": "\\vB_Api_Style\u003A\u003AcanDeleteStyle\u0028\u0029",
-            "name": "canDeleteStyle",
-            "summary": "Can\u0020this\u0020style\u0020be\u0020deleted",
-            "url": "classes/vB-Api-Style.html#method_canDeleteStyle"
-        },                {
-            "fqsen": "\\vB_Api_Style\u003A\u003AdeleteStyle\u0028\u0029",
-            "name": "deleteStyle",
-            "summary": "Delete\u0020style",
-            "url": "classes/vB-Api-Style.html#method_deleteStyle"
-        },                {
-            "fqsen": "\\vB_Api_Style\u003A\u003AbuildAllStyles\u0028\u0029",
-            "name": "buildAllStyles",
-            "summary": "Builds\u0020all\u0020data\u0020from\u0020the\u0020template\u0020table\u0020into\u0020the\u0020fields\u0020in\u0020the\u0020style\u0020table",
-            "url": "classes/vB-Api-Style.html#method_buildAllStyles"
-        },                {
-            "fqsen": "\\vB_Api_Style\u003A\u003AgenerateStyle\u0028\u0029",
-            "name": "generateStyle",
+            "fqsen": "\\vB_Api_Styleschedule\u003A\u003AgetSchedule\u0028\u0029",
+            "name": "getSchedule",
             "summary": "",
-            "url": "classes/vB-Api-Style.html#method_generateStyle"
+            "url": "classes/vB-Api-Styleschedule.html#method_getSchedule"
         },                {
-            "fqsen": "\\vB_Api_Style\u003A\u003AgetCssStyleDirectory\u0028\u0029",
-            "name": "getCssStyleDirectory",
-            "summary": "Gets\u0020the\u0020directory\u0020for\u0020the\u0020css\u0020on\u0020the\u0020filestystem",
-            "url": "classes/vB-Api-Style.html#method_getCssStyleDirectory"
+            "fqsen": "\\vB_Api_Styleschedule\u003A\u003AgetAllSchedules\u0028\u0029",
+            "name": "getAllSchedules",
+            "summary": "",
+            "url": "classes/vB-Api-Styleschedule.html#method_getAllSchedules"
         },                {
-            "fqsen": "\\vB_Api_Style\u003A\u003AgetCssStyleUrlPath\u0028\u0029",
-            "name": "getCssStyleUrlPath",
-            "summary": "Gets\u0020the\u0020directory\u0020for\u0020the\u0020css\u0020on\u0020the\u0020filestystem\u0020as\u0020a\u0020url\u0020relative\u0020to\u0020the\u0020site\u0020root.",
-            "url": "classes/vB-Api-Style.html#method_getCssStyleUrlPath"
+            "fqsen": "\\vB_Api_Styleschedule\u003A\u003AdeleteSchedule\u0028\u0029",
+            "name": "deleteSchedule",
+            "summary": "",
+            "url": "classes/vB-Api-Styleschedule.html#method_deleteSchedule"
         },                {
-            "fqsen": "\\vB_Api_Style\u003A\u003AgetThemeInfo\u0028\u0029",
-            "name": "getThemeInfo",
-            "summary": "Returns\u0020an\u0020array\u0020of\u0020theme\u0020information\u0020if\u0020the\u0020user\u0020has\u0020permission.",
-            "url": "classes/vB-Api-Style.html#method_getThemeInfo"
+            "fqsen": "\\vB_Api_Styleschedule\u003A\u003AsaveSchedule\u0028\u0029",
+            "name": "saveSchedule",
+            "summary": "Insert\u0020a\u0020new\u0020style\u0020schedule\u0020or\u0020update\u0020an\u0020existing\u0020one.",
+            "url": "classes/vB-Api-Styleschedule.html#method_saveSchedule"
         },                {
-            "fqsen": "\\vB_Api_Style\u003A\u003AsetDefaultStyle\u0028\u0029",
-            "name": "setDefaultStyle",
-            "summary": "Sets\u0020the\u0020site\u0020default\u0020style",
-            "url": "classes/vB-Api-Style.html#method_setDefaultStyle"
-        },                {
-            "fqsen": "\\vB_Api_Style\u003A\u003AcheckCanImportStyleXML\u0028\u0029",
-            "name": "checkCanImportStyleXML",
-            "summary": "This\u0020is\u0020used\u0020mostly\u0020by\u0020the\u0020adminCP\u0020style\u0020importer.\u0020This\u0020checks\u0020if\u0020the\u0020current\u0020user\u0020has\nenough\u0020permissions\u0020to\u0020import\u0020the\u0020specified\u0020XML\u0020data.",
-            "url": "classes/vB-Api-Style.html#method_checkCanImportStyleXML"
-        },                {
-            "fqsen": "\\vB_Api_Style\u003A\u003AuseCssFiles\u0028\u0029",
-            "name": "useCssFiles",
-            "summary": "Determines\u0020if\u0020the\u0020css\u0020for\u0020the\u0020style\u0020should\u0020be\u0020loaded\u0020from\u0020a\u0020static\u0020file\u0020cache\u0020or\u0020from\u0020the\u0020database",
-            "url": "classes/vB-Api-Style.html#method_useCssFiles"
+            "fqsen": "\\vB_Api_Styleschedule\u003A\u003AsaveSchedulesBulk\u0028\u0029",
+            "name": "saveSchedulesBulk",
+            "summary": "Insert\u0020a\u0020new\u0020style\u0020schedule\u0020or\u0020update\u0020an\u0020existing\u0020one.",
+            "url": "classes/vB-Api-Styleschedule.html#method_saveSchedulesBulk"
         },                {
             "fqsen": "\\vB_Api_Stylevar",
             "name": "vB_Api_Stylevar",
@@ -4175,111 +3380,6 @@ Search.appendIndex(
             "name": "fetchCustomizationPermissions",
             "summary": "Returns\u0020all\u0020the\u0020permissions\u0020that\u0020the\u0020currently\u0020logged\u0020user\nhas\u0020for\u0020customizing\u0020profile",
             "url": "classes/vB-Api-Stylevar.html#method_fetchCustomizationPermissions"
-        },                {
-            "fqsen": "\\vB_Api_Tags",
-            "name": "vB_Api_Tags",
-            "summary": "vB_Api_Tags",
-            "url": "classes/vB-Api-Tags.html"
-        },                {
-            "fqsen": "\\vB_Api_Tags\u003A\u003A__construct\u0028\u0029",
-            "name": "__construct",
-            "summary": "",
-            "url": "classes/vB-Api-Tags.html#method___construct"
-        },                {
-            "fqsen": "\\vB_Api_Tags\u003A\u003AupdateUserTags\u0028\u0029",
-            "name": "updateUserTags",
-            "summary": "Adds\u0020new\u0020tags\u0020and\/or\u0020deletes\u0020tags\u0020\u0028added\u0020by\u0020the\u0020current\u0020user\u0029\u0020if\u0020they\u0020have\u0020removed\u0020them\u0020from\u0020the\u0020list",
-            "url": "classes/vB-Api-Tags.html#method_updateUserTags"
-        },                {
-            "fqsen": "\\vB_Api_Tags\u003A\u003AaddTags\u0028\u0029",
-            "name": "addTags",
-            "summary": "Add\u0020tags\u0020to\u0020the\u0020current\u0020item\nimplements\u0020vB_Tag\u003A\u003AaddTagsToContent",
-            "url": "classes/vB-Api-Tags.html#method_addTags"
-        },                {
-            "fqsen": "\\vB_Api_Tags\u003A\u003AvalidTags\u0028\u0029",
-            "name": "validTags",
-            "summary": "Checks\u0020if\u0020the\u0020taglist\u0020contains\u0020invalid\u0020tags",
-            "url": "classes/vB-Api-Tags.html#method_validTags"
-        },                {
-            "fqsen": "\\vB_Api_Tags\u003A\u003AinsertTags\u0028\u0029",
-            "name": "insertTags",
-            "summary": "",
-            "url": "classes/vB-Api-Tags.html#method_insertTags"
-        },                {
-            "fqsen": "\\vB_Api_Tags\u003A\u003AupdateTags\u0028\u0029",
-            "name": "updateTags",
-            "summary": "Sets\u0020the\u0020tag\u0020matching\u0020tag\u0020text\u0020\u0028case\u0020insensitive\u0029\u0020to\u0020the\u0020exact\u0020text\u0020given\nUsed\u0020to\u0020fix\u0020letter\u002Dcase\u0020when\u0020merging\u0020tags\u0020via\u0020adminCP",
-            "url": "classes/vB-Api-Tags.html#method_updateTags"
-        },                {
-            "fqsen": "\\vB_Api_Tags\u003A\u003AcreateSynonyms\u0028\u0029",
-            "name": "createSynonyms",
-            "summary": "",
-            "url": "classes/vB-Api-Tags.html#method_createSynonyms"
-        },                {
-            "fqsen": "\\vB_Api_Tags\u003A\u003ApromoteTags\u0028\u0029",
-            "name": "promoteTags",
-            "summary": "",
-            "url": "classes/vB-Api-Tags.html#method_promoteTags"
-        },                {
-            "fqsen": "\\vB_Api_Tags\u003A\u003AgetTagSynonyms\u0028\u0029",
-            "name": "getTagSynonyms",
-            "summary": "Get\u0020synonyms\u0020of\u0020a\u0020given\u0020tag",
-            "url": "classes/vB-Api-Tags.html#method_getTagSynonyms"
-        },                {
-            "fqsen": "\\vB_Api_Tags\u003A\u003AremoveTags\u0028\u0029",
-            "name": "removeTags",
-            "summary": "Remove\u0020tags\u0020from\u0020an\u0020item\nImplements\u0020vB_Tag\u003A\u003AdeleteTag",
-            "url": "classes/vB-Api-Tags.html#method_removeTags"
-        },                {
-            "fqsen": "\\vB_Api_Tags\u003A\u003AkillTags\u0028\u0029",
-            "name": "killTags",
-            "summary": "Dissociates\u0020nodes\u0020from\u0020the\u0020specified\u0020tags,\u0020reindex\u0020the\naffected\u0020nodes,\u0020then\u0020finally\u0020deletes\u0020the\u0020specified\u0020tags.",
-            "url": "classes/vB-Api-Tags.html#method_killTags"
-        },                {
-            "fqsen": "\\vB_Api_Tags\u003A\u003AgetTagsList\u0028\u0029",
-            "name": "getTagsList",
-            "summary": "Gets\u0020the\u0020tag\u0020list\u0020from\u0020an\u0020specific\u0020node.",
-            "url": "classes/vB-Api-Tags.html#method_getTagsList"
-        },                {
-            "fqsen": "\\vB_Api_Tags\u003A\u003AgetNodeTags\u0028\u0029",
-            "name": "getNodeTags",
-            "summary": "Get\u0020tags\u0020with\u0020full\u0020info\u0020\u0028userid,\u0020tagid,\u0020tagtext\u0029\u0020from\u0020node.",
-            "url": "classes/vB-Api-Tags.html#method_getNodeTags"
-        },                {
-            "fqsen": "\\vB_Api_Tags\u003A\u003AgetAutocomplete\u0028\u0029",
-            "name": "getAutocomplete",
-            "summary": "",
-            "url": "classes/vB-Api-Tags.html#method_getAutocomplete"
-        },                {
-            "fqsen": "\\vB_Api_Tags\u003A\u003AfetchTagsForCloud\u0028\u0029",
-            "name": "fetchTagsForCloud",
-            "summary": "Get\u0020an\u0020array\u0020of\u0020tags\u0020for\u0020building\u0020tag\u0020cloud",
-            "url": "classes/vB-Api-Tags.html#method_fetchTagsForCloud"
-        },                {
-            "fqsen": "\\vB_Api_Tags\u003A\u003AfetchTagsForTagNavigation\u0028\u0029",
-            "name": "fetchTagsForTagNavigation",
-            "summary": "Returns\u0020an\u0020array\u0020of\u0020tags\u0020for\u0020the\u0020tag\u0020navigation\u0020widget",
-            "url": "classes/vB-Api-Tags.html#method_fetchTagsForTagNavigation"
-        },                {
-            "fqsen": "\\vB_Api_Tags\u003A\u003AfetchTagByText\u0028\u0029",
-            "name": "fetchTagByText",
-            "summary": "Fetch\u0020tag\u0020by\u0020label",
-            "url": "classes/vB-Api-Tags.html#method_fetchTagByText"
-        },                {
-            "fqsen": "\\vB_Api_Tags\u003A\u003AgetTags\u0028\u0029",
-            "name": "getTags",
-            "summary": "Get\u0020the\u0020tags",
-            "url": "classes/vB-Api-Tags.html#method_getTags"
-        },                {
-            "fqsen": "\\vB_Api_Tags\u003A\u003AlogSearchTags\u0028\u0029",
-            "name": "logSearchTags",
-            "summary": "Saves\u0020the\u0020seached\u0020for\u0020tags\u0020so\u0020we\u0020can\u0020build\u0020a\u0020search\u0020tag\u0020cloud\u0020based\u0020on\u0020it",
-            "url": "classes/vB-Api-Tags.html#method_logSearchTags"
-        },                {
-            "fqsen": "\\vB_Api_Tags\u003A\u003AdeleteUserTagAssociations\u0028\u0029",
-            "name": "deleteUserTagAssociations",
-            "summary": "Delete\u0020the\u0020associations\u0020between\u0020nodes\u0020and\u0020tags\u0020created\u0020by\u0020a\u0020user",
-            "url": "classes/vB-Api-Tags.html#method_deleteUserTagAssociations"
         },                {
             "fqsen": "\\vB_Api_Template",
             "name": "vB_Api_Template",
@@ -4471,496 +3571,6 @@ Search.appendIndex(
             "summary": "gets\u0020the\u0020current\u0020textonly\u0020array",
             "url": "classes/vB-Api-Template.html#method_getTextonlyDS"
         },                {
-            "fqsen": "\\vB_Api_User",
-            "name": "vB_Api_User",
-            "summary": "vB_Api_User",
-            "url": "classes/vB-Api-User.html"
-        },                {
-            "fqsen": "\\vB_Api_User\u003A\u003AfetchProfileInfo\u0028\u0029",
-            "name": "fetchProfileInfo",
-            "summary": "This\u0020gets\u0020the\u0020information\u0020needed\u0020for\u0020a\u0020user\u0027s\u0020profile.\u0020Only\u0020public\u0020information\u0020unless\u0020this\u0020is\u0020an\u0020admin\u0020or\u0020the\u0020user.",
-            "url": "classes/vB-Api-User.html#method_fetchProfileInfo"
-        },                {
-            "fqsen": "\\vB_Api_User\u003A\u003AfetchUserSettings\u0028\u0029",
-            "name": "fetchUserSettings",
-            "summary": "Fetches\u0020the\u0020needed\u0020info\u0020for\u0020user\u0020settings",
-            "url": "classes/vB-Api-User.html#method_fetchUserSettings"
-        },                {
-            "fqsen": "\\vB_Api_User\u003A\u003AfetchUserinfo\u0028\u0029",
-            "name": "fetchUserinfo",
-            "summary": "Fetches\u0020an\u0020array\u0020containing\u0020info\u0020for\u0020the\u0020specified\u0020user,\u0020or\u0020false\u0020if\u0020user\u0020is\u0020not\u0020found",
-            "url": "classes/vB-Api-User.html#method_fetchUserinfo"
-        },                {
-            "fqsen": "\\vB_Api_User\u003A\u003AfetchCurrentUserinfo\u0028\u0029",
-            "name": "fetchCurrentUserinfo",
-            "summary": "Fetches\u0020an\u0020array\u0020containing\u0020info\u0020for\u0020the\u0020current\u0020user",
-            "url": "classes/vB-Api-User.html#method_fetchCurrentUserinfo"
-        },                {
-            "fqsen": "\\vB_Api_User\u003A\u003AfetchUserName\u0028\u0029",
-            "name": "fetchUserName",
-            "summary": "Fetches\u0020the\u0020username\u0020for\u0020a\u0020userid,\u0020or\u0020false\u0020if\u0020user\u0020is\u0020not\u0020found",
-            "url": "classes/vB-Api-User.html#method_fetchUserName"
-        },                {
-            "fqsen": "\\vB_Api_User\u003A\u003AfetchMusername\u0028\u0029",
-            "name": "fetchMusername",
-            "summary": "fetches\u0020the\u0020proper\u0020username\u0020markup\u0020and\u0020title",
-            "url": "classes/vB-Api-User.html#method_fetchMusername"
-        },                {
-            "fqsen": "\\vB_Api_User\u003A\u003AdoShowDisplaynameAndUsername\u0028\u0029",
-            "name": "doShowDisplaynameAndUsername",
-            "summary": "Returns\u0020true\u0020if\u0020enabledisplayname\u0020is\u0020on\u0020or\u0020if\u0020enabledisplayname\u0020is\u0020off\u0020but\u0020username\u0020\u0026\u0020displayname\nare\u0020not\u0020equivalent.\u0020Used\u0020for\u0020templates\u0020that\u0020cannot\u0020run\u0020certain\u0020functions\u0020required\u0020perform\u0020this\u0020check.",
-            "url": "classes/vB-Api-User.html#method_doShowDisplaynameAndUsername"
-        },                {
-            "fqsen": "\\vB_Api_User\u003A\u003AfetchByUsername\u0028\u0029",
-            "name": "fetchByUsername",
-            "summary": "Fetch\u0020user\u0020by\u0020its\u0020username",
-            "url": "classes/vB-Api-User.html#method_fetchByUsername"
-        },                {
-            "fqsen": "\\vB_Api_User\u003A\u003AfetchByEmail\u0028\u0029",
-            "name": "fetchByEmail",
-            "summary": "Fetch\u0020user\u0020by\u0020its\u0020email",
-            "url": "classes/vB-Api-User.html#method_fetchByEmail"
-        },                {
-            "fqsen": "\\vB_Api_User\u003A\u003AmemberList\u0028\u0029",
-            "name": "memberList",
-            "summary": "Fetch\u0020a\u0020list\u0020of\u0020user\u0020based\u0020on\u0020the\u0020provided\u0020criteria",
-            "url": "classes/vB-Api-User.html#method_memberList"
-        },                {
-            "fqsen": "\\vB_Api_User\u003A\u003Afind\u0028\u0029",
-            "name": "find",
-            "summary": "Find\u0020user",
-            "url": "classes/vB-Api-User.html#method_find"
-        },                {
-            "fqsen": "\\vB_Api_User\u003A\u003AgetGroupInTopic\u0028\u0029",
-            "name": "getGroupInTopic",
-            "summary": "This\u0020returns\u0020a\u0020user\u0027s\u0020additional\u0020permissions\u0020from\u0020the\u0020groupintopic\u0020table",
-            "url": "classes/vB-Api-User.html#method_getGroupInTopic"
-        },                {
-            "fqsen": "\\vB_Api_User\u003A\u003AgetCanCreate\u0028\u0029",
-            "name": "getCanCreate",
-            "summary": "This\u0020is\u0020a\u0020wrapper\u0020for\u0020userContext\u0020getCanCreate\u002D\u0020it\u0020returns\u0020the\u0020content\u0020types\u0020a\u0020user\u0020can\u0020create",
-            "url": "classes/vB-Api-User.html#method_getCanCreate"
-        },                {
-            "fqsen": "\\vB_Api_User\u003A\u003AsetGroupInTopic\u0028\u0029",
-            "name": "setGroupInTopic",
-            "summary": "This\u0020grants\u0020a\u0020user\u0020additional\u0020permissions\u0020in\u0020a\u0020specific\u0020channel,\u0020by\u0020adding\u0020to\u0020the\u0020groupintopic\u0020table",
-            "url": "classes/vB-Api-User.html#method_setGroupInTopic"
-        },                {
-            "fqsen": "\\vB_Api_User\u003A\u003AunsetGroupInTopic\u0028\u0029",
-            "name": "unsetGroupInTopic",
-            "summary": "This\u0020removes\u0020additional\u0020permissions\u0020a\u0020user\u0020was\u0020given\u0020in\u0020a\u0020specific\u0020channel,\u0020by\u0020removing\u0020from\u0020the\u0020groupintopic\u0020table",
-            "url": "classes/vB-Api-User.html#method_unsetGroupInTopic"
-        },                {
-            "fqsen": "\\vB_Api_User\u003A\u003AclearChannelPerms\u0028\u0029",
-            "name": "clearChannelPerms",
-            "summary": "This\u0020method\u0020clears\u0020remembered\u0020channel\u0020permission",
-            "url": "classes/vB-Api-User.html#method_clearChannelPerms"
-        },                {
-            "fqsen": "\\vB_Api_User\u003A\u003AregisterNeedAvatarForUsers\u0028\u0029",
-            "name": "registerNeedAvatarForUsers",
-            "summary": "Registers\u0020userids\u0020that\u0020we\u0020will\u0020later\u0020be\u0020fetching\u0020avatars\u0020for.\u0020If\u0020we\nregister\u0020the\u0020userids\u0020here,\u0020they\u0020can\u0020be\u0020fetched\u0020in\u0020batches.",
-            "url": "classes/vB-Api-User.html#method_registerNeedAvatarForUsers"
-        },                {
-            "fqsen": "\\vB_Api_User\u003A\u003AfetchAvatar\u0028\u0029",
-            "name": "fetchAvatar",
-            "summary": "Fetches\u0020the\u0020URL\u0020for\u0020a\u0020User\u0027s\u0020Avatar",
-            "url": "classes/vB-Api-User.html#method_fetchAvatar"
-        },                {
-            "fqsen": "\\vB_Api_User\u003A\u003AfetchAvatars\u0028\u0029",
-            "name": "fetchAvatars",
-            "summary": "Fetch\u0020the\u0020Avatars\u0020for\u0020a\u0020userid\u0020array",
-            "url": "classes/vB-Api-User.html#method_fetchAvatars"
-        },                {
-            "fqsen": "\\vB_Api_User\u003A\u003AfetchProfileFieldsForRegistration\u0028\u0029",
-            "name": "fetchProfileFieldsForRegistration",
-            "summary": "Fetches\u0020the\u0020Profile\u0020Fields\u0020that\u0020needs\u0020to\u0020be\u0020displayed\u0020in\u0020Registration\u0020From",
-            "url": "classes/vB-Api-User.html#method_fetchProfileFieldsForRegistration"
-        },                {
-            "fqsen": "\\vB_Api_User\u003A\u003Adelete\u0028\u0029",
-            "name": "delete",
-            "summary": "Delete\u0020a\u0020user",
-            "url": "classes/vB-Api-User.html#method_delete"
-        },                {
-            "fqsen": "\\vB_Api_User\u003A\u003Asave\u0028\u0029",
-            "name": "save",
-            "summary": "Insert\u0020or\u0020Update\u0020an\u0020user",
-            "url": "classes/vB-Api-User.html#method_save"
-        },                {
-            "fqsen": "\\vB_Api_User\u003A\u003AsendActivateEmail\u0028\u0029",
-            "name": "sendActivateEmail",
-            "summary": "",
-            "url": "classes/vB-Api-User.html#method_sendActivateEmail"
-        },                {
-            "fqsen": "\\vB_Api_User\u003A\u003AactivateUserByUsername\u0028\u0029",
-            "name": "activateUserByUsername",
-            "summary": "Activate\u0020an\u0020user\u0020with\u0020an\u0020activate\u0020ID\u0020and\u0020Username",
-            "url": "classes/vB-Api-User.html#method_activateUserByUsername"
-        },                {
-            "fqsen": "\\vB_Api_User\u003A\u003AactivateUser\u0028\u0029",
-            "name": "activateUser",
-            "summary": "Activate\u0020an\u0020user\u0020with\u0020an\u0020activate\u0020ID",
-            "url": "classes/vB-Api-User.html#method_activateUser"
-        },                {
-            "fqsen": "\\vB_Api_User\u003A\u003AdeleteActivation\u0028\u0029",
-            "name": "deleteActivation",
-            "summary": "",
-            "url": "classes/vB-Api-User.html#method_deleteActivation"
-        },                {
-            "fqsen": "\\vB_Api_User\u003A\u003AkillActivation\u0028\u0029",
-            "name": "killActivation",
-            "summary": "",
-            "url": "classes/vB-Api-User.html#method_killActivation"
-        },                {
-            "fqsen": "\\vB_Api_User\u003A\u003AsaveSignature\u0028\u0029",
-            "name": "saveSignature",
-            "summary": "Verifies\u0020and\u0020saves\u0020a\u0020signature\u0020for\u0020current\u0020logged\u0020in\u0020user.\u0020Returns\u0020the\u0020signature.",
-            "url": "classes/vB-Api-User.html#method_saveSignature"
-        },                {
-            "fqsen": "\\vB_Api_User\u003A\u003AfetchAwaitingModerate\u0028\u0029",
-            "name": "fetchAwaitingModerate",
-            "summary": "Fetch\u0020a\u0020list\u0020of\u0020users\u0020who\u0020are\u0020awaiting\u0020moderate\u0020or\u0020Coppa",
-            "url": "classes/vB-Api-User.html#method_fetchAwaitingModerate"
-        },                {
-            "fqsen": "\\vB_Api_User\u003A\u003AfetchPruneUsers\u0028\u0029",
-            "name": "fetchPruneUsers",
-            "summary": "Return\u0020a\u0020list\u0020of\u0020users\u0020for\u0020pruning\u0020or\u0020moving",
-            "url": "classes/vB-Api-User.html#method_fetchPruneUsers"
-        },                {
-            "fqsen": "\\vB_Api_User\u003A\u003Aprune\u0028\u0029",
-            "name": "prune",
-            "summary": "Do\u0020prune\/move\u0020users\u0020\u0028step\u00201\u0029",
-            "url": "classes/vB-Api-User.html#method_prune"
-        },                {
-            "fqsen": "\\vB_Api_User\u003A\u003Amerge\u0028\u0029",
-            "name": "merge",
-            "summary": "Merge\u0020two\u0020users",
-            "url": "classes/vB-Api-User.html#method_merge"
-        },                {
-            "fqsen": "\\vB_Api_User\u003A\u003AgetIpLocation\u0028\u0029",
-            "name": "getIpLocation",
-            "summary": "Return\u0020the\u0020location\u0020for\u0020the\u0020current\u0020user\u0027s\u0020IP\u0020address",
-            "url": "classes/vB-Api-User.html#method_getIpLocation"
-        },                {
-            "fqsen": "\\vB_Api_User\u003A\u003AsearchIP\u0028\u0029",
-            "name": "searchIP",
-            "summary": "Search\u0020IP\u0020Addresses",
-            "url": "classes/vB-Api-User.html#method_searchIP"
-        },                {
-            "fqsen": "\\vB_Api_User\u003A\u003AsearchUsersByIP\u0028\u0029",
-            "name": "searchUsersByIP",
-            "summary": "Search\u0020IP\u0020Addresses",
-            "url": "classes/vB-Api-User.html#method_searchUsersByIP"
-        },                {
-            "fqsen": "\\vB_Api_User\u003A\u003AfetchReferrers\u0028\u0029",
-            "name": "fetchReferrers",
-            "summary": "Return\u0020a\u0020report\u0020of\u0020referrers",
-            "url": "classes/vB-Api-User.html#method_fetchReferrers"
-        },                {
-            "fqsen": "\\vB_Api_User\u003A\u003AisBanned\u0028\u0029",
-            "name": "isBanned",
-            "summary": "Check\u0020whether\u0020a\u0020user\u0020is\u0020banned.",
-            "url": "classes/vB-Api-User.html#method_isBanned"
-        },                {
-            "fqsen": "\\vB_Api_User\u003A\u003AisBannedEmail\u0028\u0029",
-            "name": "isBannedEmail",
-            "summary": "Check\u0020whether\u0020an\u0020email\u0020address\u0020is\u0020banned\u0020from\u0020the\u0020forums",
-            "url": "classes/vB-Api-User.html#method_isBannedEmail"
-        },                {
-            "fqsen": "\\vB_Api_User\u003A\u003AresetMfaSecret\u0028\u0029",
-            "name": "resetMfaSecret",
-            "summary": "Reset\u0020the\u0020current\u0020user\u0027s\u0020MFA\u0020secret",
-            "url": "classes/vB-Api-User.html#method_resetMfaSecret"
-        },                {
-            "fqsen": "\\vB_Api_User\u003A\u003AenableMfa\u0028\u0029",
-            "name": "enableMfa",
-            "summary": "Enable\u0020the\u0020user\u0027s\u0020current\u0020MFA\u0020record\u0020after\u0020verify\u0020password\u0020and\u0020authcode",
-            "url": "classes/vB-Api-User.html#method_enableMfa"
-        },                {
-            "fqsen": "\\vB_Api_User\u003A\u003AsetMfaEnabled\u0028\u0029",
-            "name": "setMfaEnabled",
-            "summary": "Sets\u0020the\u0020users\u0020MFA\u0020record\u0020to\u0020enabled\u0020or\u0020disabled",
-            "url": "classes/vB-Api-User.html#method_setMfaEnabled"
-        },                {
-            "fqsen": "\\vB_Api_User\u003A\u003AisMfaEnabled\u0028\u0029",
-            "name": "isMfaEnabled",
-            "summary": "Gets\u0020whether\u0020or\u0020not\u0020the\u0020user\u0020has\u0020an\u0020enabled\u0020MFA\u0020record",
-            "url": "classes/vB-Api-User.html#method_isMfaEnabled"
-        },                {
-            "fqsen": "\\vB_Api_User\u003A\u003AneedMFA\u0028\u0029",
-            "name": "needMFA",
-            "summary": "Indicates\u0020if\u0020the\u0020current\u0020user\u0020needs\u0020to\u0020provide\u0020an\u0020MFA\u0020code\u0020for\u0020login.",
-            "url": "classes/vB-Api-User.html#method_needMFA"
-        },                {
-            "fqsen": "\\vB_Api_User\u003A\u003Alogin\u0028\u0029",
-            "name": "login",
-            "summary": "Login\u0020a\u0020user",
-            "url": "classes/vB-Api-User.html#method_login"
-        },                {
-            "fqsen": "\\vB_Api_User\u003A\u003Alogin2\u0028\u0029",
-            "name": "login2",
-            "summary": "Login\u0020a\u0020user",
-            "url": "classes/vB-Api-User.html#method_login2"
-        },                {
-            "fqsen": "\\vB_Api_User\u003A\u003AloginSpecificUser\u0028\u0029",
-            "name": "loginSpecificUser",
-            "summary": "Login\u0020a\u0020user\u0020for\u0020which\u0020we\u0020have\u0020the\u0020userid",
-            "url": "classes/vB-Api-User.html#method_loginSpecificUser"
-        },                {
-            "fqsen": "\\vB_Api_User\u003A\u003AloginExternal\u0028\u0029",
-            "name": "loginExternal",
-            "summary": "Log\u0020in\u0020via\u0020a\u0020third\u0020party\u0020provider.",
-            "url": "classes/vB-Api-User.html#method_loginExternal"
-        },                {
-            "fqsen": "\\vB_Api_User\u003A\u003Alogout\u0028\u0029",
-            "name": "logout",
-            "summary": "Logout\u0020user",
-            "url": "classes/vB-Api-User.html#method_logout"
-        },                {
-            "fqsen": "\\vB_Api_User\u003A\u003AemailPassword\u0028\u0029",
-            "name": "emailPassword",
-            "summary": "Email\u0020user\u0020a\u0020password\u0020reset\u0020email",
-            "url": "classes/vB-Api-User.html#method_emailPassword"
-        },                {
-            "fqsen": "\\vB_Api_User\u003A\u003AsetNewPassword\u0028\u0029",
-            "name": "setNewPassword",
-            "summary": "Set\u0020a\u0020new\u0020password\u0020for\u0020a\u0020user.\u0020Used\u0020by\u0020\u0022forgot\u0020password\u0022\u0020function.",
-            "url": "classes/vB-Api-User.html#method_setNewPassword"
-        },                {
-            "fqsen": "\\vB_Api_User\u003A\u003AneedsCoppa\u0028\u0029",
-            "name": "needsCoppa",
-            "summary": "This\u0020checks\u0020whether\u0020a\u0020user\u0020needs\u0020COPPA\u0020approval\u0020based\u0020on\u0020birthdate.\u0020Responds\u0020to\u0020Ajax\u0020call",
-            "url": "classes/vB-Api-User.html#method_needsCoppa"
-        },                {
-            "fqsen": "\\vB_Api_User\u003A\u003AuseCoppa\u0028\u0029",
-            "name": "useCoppa",
-            "summary": "This\u0020checks\u0020whether\u0020the\u0020site\u0020uses\u0020COPPA\u0020review",
-            "url": "classes/vB-Api-User.html#method_useCoppa"
-        },                {
-            "fqsen": "\\vB_Api_User\u003A\u003AcheckUsername\u0028\u0029",
-            "name": "checkUsername",
-            "summary": "This\u0020checks\u0020whether\u0020the\u0020a\u0020username\u0020is\u0020available\u0020and\u0020valid",
-            "url": "classes/vB-Api-User.html#method_checkUsername"
-        },                {
-            "fqsen": "\\vB_Api_User\u003A\u003AcurrentUserHasAdminPermission\u0028\u0029",
-            "name": "currentUserHasAdminPermission",
-            "summary": "",
-            "url": "classes/vB-Api-User.html#method_currentUserHasAdminPermission"
-        },                {
-            "fqsen": "\\vB_Api_User\u003A\u003AgetAutocomplete\u0028\u0029",
-            "name": "getAutocomplete",
-            "summary": "Returns\u0020suggested\u0020usernames\u0020for\u0020the\u0020username\u0020autocomplete\u0020popup\u0020menu.",
-            "url": "classes/vB-Api-User.html#method_getAutocomplete"
-        },                {
-            "fqsen": "\\vB_Api_User\u003A\u003AsetDefaultAvatar\u0028\u0029",
-            "name": "setDefaultAvatar",
-            "summary": "This\u0020sets\u0020a\u0020user\u0020to\u0020use\u0020one\u0020of\u0020the\u0020default\u0020avatars.",
-            "url": "classes/vB-Api-User.html#method_setDefaultAvatar"
-        },                {
-            "fqsen": "\\vB_Api_User\u003A\u003AfetchSignature\u0028\u0029",
-            "name": "fetchSignature",
-            "summary": "Get\u0020the\u0020profile\u0020information\u0020so\u0020the\u0020presentation\u0020can\u0020render\u0020it",
-            "url": "classes/vB-Api-User.html#method_fetchSignature"
-        },                {
-            "fqsen": "\\vB_Api_User\u003A\u003AfetchBirthdays\u0028\u0029",
-            "name": "fetchBirthdays",
-            "summary": "Fetch\u0020today\u0027s\u0020birthdays",
-            "url": "classes/vB-Api-User.html#method_fetchBirthdays"
-        },                {
-            "fqsen": "\\vB_Api_User\u003A\u003AfetchUsernames\u0028\u0029",
-            "name": "fetchUsernames",
-            "summary": "Returns\u0020an\u0020array\u0020with\u0020the\u0020usernames\u0020for\u0020the\u0020user\u0020ids\u0020and\u0020optionally\u0020the\u0020profileUrl\u0020for\u0020the\u0020user",
-            "url": "classes/vB-Api-User.html#method_fetchUsernames"
-        },                {
-            "fqsen": "\\vB_Api_User\u003A\u003AupdateStatus\u0028\u0029",
-            "name": "updateStatus",
-            "summary": "Updates\u0020the\u0020user\u0020status",
-            "url": "classes/vB-Api-User.html#method_updateStatus"
-        },                {
-            "fqsen": "\\vB_Api_User\u003A\u003AbanUsers\u0028\u0029",
-            "name": "banUsers",
-            "summary": "Ban\u0020users",
-            "url": "classes/vB-Api-User.html#method_banUsers"
-        },                {
-            "fqsen": "\\vB_Api_User\u003A\u003AhasPermissions\u0028\u0029",
-            "name": "hasPermissions",
-            "summary": "Returns\u0020global\u0020permission\u0020value\u0020or\u0020specific\u0020value\u0020for\u0020a\u0020nodeid\u0020for\u0020current\u0020user.",
-            "url": "classes/vB-Api-User.html#method_hasPermissions"
-        },                {
-            "fqsen": "\\vB_Api_User\u003A\u003AcanRemovePost\u0028\u0029",
-            "name": "canRemovePost",
-            "summary": "Checks\u0020the\u0020various\u0020options\u0020as\u0020to\u0020whether\u0020the\u0020current\u0020user\u0020can\u0020physically\u0020remove\u0020a\u0020post",
-            "url": "classes/vB-Api-User.html#method_canRemovePost"
-        },                {
-            "fqsen": "\\vB_Api_User\u003A\u003AhavePermissions\u0028\u0029",
-            "name": "havePermissions",
-            "summary": "Returns\u0020permission\u0020values\u0020of\u0020a\u0020group\u0020of\u0020nodes\u0020for\u0020current\u0020user.",
-            "url": "classes/vB-Api-User.html#method_havePermissions"
-        },                {
-            "fqsen": "\\vB_Api_User\u003A\u003AinviteMembers\u0028\u0029",
-            "name": "inviteMembers",
-            "summary": "Invites\u0020members\u0020to\u0020a\u0020given\u0020node\u0020channel\u0020passing\u0020either\u0020an\u0020array\u0020of\u0020userids\u0020or\u0020usernames.",
-            "url": "classes/vB-Api-User.html#method_inviteMembers"
-        },                {
-            "fqsen": "\\vB_Api_User\u003A\u003AgenerateMailingList\u0028\u0029",
-            "name": "generateMailingList",
-            "summary": "Generates\u0020users\u0020mailing\u0020list\u0020for\u0020the\u0020given\u0020criteria.",
-            "url": "classes/vB-Api-User.html#method_generateMailingList"
-        },                {
-            "fqsen": "\\vB_Api_User\u003A\u003AgetUsersFromCriteria\u0028\u0029",
-            "name": "getUsersFromCriteria",
-            "summary": "Fetch\u0020users\u0020and\u0020info\u0020from\u0020a\u0020given\u0020user\u0020criteria\nUsed\u0020for\u0020admincp\u0020\u002D\u0020verticalresponse.",
-            "url": "classes/vB-Api-User.html#method_getUsersFromCriteria"
-        },                {
-            "fqsen": "\\vB_Api_User\u003A\u003AfetchUsersPms\u0028\u0029",
-            "name": "fetchUsersPms",
-            "summary": "Fetch\u0020private\u0020messages\u0020statistics\u0020from\u0020all\u0020the\u0020users.",
-            "url": "classes/vB-Api-User.html#method_fetchUsersPms"
-        },                {
-            "fqsen": "\\vB_Api_User\u003A\u003AfetchAdminUser\u0028\u0029",
-            "name": "fetchAdminUser",
-            "summary": "This\u0020implements\u0020vB_PermissionContext\u003A\u003AgetAdminUser\u0028\u0029.",
-            "url": "classes/vB-Api-User.html#method_fetchAdminUser"
-        },                {
-            "fqsen": "\\vB_Api_User\u003A\u003AfetchUserProfileFields\u0028\u0029",
-            "name": "fetchUserProfileFields",
-            "summary": "This\u0020gets\u0020the\u0020current\u0020user\u0020profile\u0020fields\u0020from\u0020the\u0020database.",
-            "url": "classes/vB-Api-User.html#method_fetchUserProfileFields"
-        },                {
-            "fqsen": "\\vB_Api_User\u003A\u003AgetGitCanStart\u0028\u0029",
-            "name": "getGitCanStart",
-            "summary": "This\u0020likes\u0020the\u0020channels\u0020below\u0020a\u0020parent\u0020node\u0020where\u0020a\u0020user\u0020can\u0020create\u0020starters\u0020based\u0020on\u0020groupintopic",
-            "url": "classes/vB-Api-User.html#method_getGitCanStart"
-        },                {
-            "fqsen": "\\vB_Api_User\u003A\u003AcanCreateBlogEntry\u0028\u0029",
-            "name": "canCreateBlogEntry",
-            "summary": "Tells\u0020whether\u0020the\u0020current\u0020user\u0020can\u0020create\u0020a\u0020blog\u0020entry.\u0020That\u0020can\u0020be\u0020their\u0020own\u0020permissions\u0020or\u0020GIT.",
-            "url": "classes/vB-Api-User.html#method_canCreateBlogEntry"
-        },                {
-            "fqsen": "\\vB_Api_User\u003A\u003AfetchTimeOffset\u0028\u0029",
-            "name": "fetchTimeOffset",
-            "summary": "Adjust\u0020GMT\u0020time\u0020back\u0020to\u0020user\u0027s\u0020time\nUse\u0020\u0022gm\u0022\u0020versions\u0020of\u0020date\/time\u0020functions\u0020with\u0020this\u0020offset,\u0020not\u0020ones\u0020that\u0020rely\u0020on\ncurrent\u0020server\u0027s\u0020system\u0020timezone.",
-            "url": "classes/vB-Api-User.html#method_fetchTimeOffset"
-        },                {
-            "fqsen": "\\vB_Api_User\u003A\u003AvBMktime\u0028\u0029",
-            "name": "vBMktime",
-            "summary": "translate\u0020a\u0020year\/month\/day\/hour\/minute\u0020to\u0020a\u0020Unix\u0020timestamp.",
-            "url": "classes/vB-Api-User.html#method_vBMktime"
-        },                {
-            "fqsen": "\\vB_Api_User\u003A\u003AuserTimeStrToUnixtimestamp\u0028\u0029",
-            "name": "userTimeStrToUnixtimestamp",
-            "summary": "",
-            "url": "classes/vB-Api-User.html#method_userTimeStrToUnixtimestamp"
-        },                {
-            "fqsen": "\\vB_Api_User\u003A\u003AunixtimestampToUserDateString\u0028\u0029",
-            "name": "unixtimestampToUserDateString",
-            "summary": "",
-            "url": "classes/vB-Api-User.html#method_unixtimestampToUserDateString"
-        },                {
-            "fqsen": "\\vB_Api_User\u003A\u003AupdateGuestPrivacyConsent\u0028\u0029",
-            "name": "updateGuestPrivacyConsent",
-            "summary": "Updates\u0020guest\u0020privacy\u0020consent",
-            "url": "classes/vB-Api-User.html#method_updateGuestPrivacyConsent"
-        },                {
-            "fqsen": "\\vB_Api_User\u003A\u003AcheckPrivacyOption\u0028\u0029",
-            "name": "checkPrivacyOption",
-            "summary": "",
-            "url": "classes/vB-Api-User.html#method_checkPrivacyOption"
-        },                {
-            "fqsen": "\\vB_Api_User\u003A\u003AsetCurrentUserPrivacyConsent\u0028\u0029",
-            "name": "setCurrentUserPrivacyConsent",
-            "summary": "Set\u0020privacy\u0020consent\u0020and\u0020for\u0020the\u0020current\u0020user\u0020if\u0020needed.",
-            "url": "classes/vB-Api-User.html#method_setCurrentUserPrivacyConsent"
-        },                {
-            "fqsen": "\\vB_Api_User\u003A\u003AgetPersonalData\u0028\u0029",
-            "name": "getPersonalData",
-            "summary": "Returns\u0020a\u0020report\u0020on\u0020\u0022personal\u0020information\u0022\u0020for\u0020a\u0020user",
-            "url": "classes/vB-Api-User.html#method_getPersonalData"
-        },                {
-            "fqsen": "\\vB_Api_User\u003A\u003AverifyFlashMessageSignature\u0028\u0029",
-            "name": "verifyFlashMessageSignature",
-            "summary": "Verifies\u0020that\u0020a\u0020flash\u0020message\u0020passed\u0020through\u0020the\u0020URL\u0020is\u0020signed\u0020and\u0020valid",
-            "url": "classes/vB-Api-User.html#method_verifyFlashMessageSignature"
-        },                {
-            "fqsen": "\\vB_Api_User\u003A\u003AsaveEditorState\u0028\u0029",
-            "name": "saveEditorState",
-            "summary": "Saves\u0020the\u0020content\u0020entry\u0020UI\u0020editor\u0020\u0022state\u0022\u0020where\u0020state\u0020is\u0020the\u0020show\/hide\u0020state\nof\u0020the\u0020following\u00203\u0020content\u0020entry\u0020UIs\u003A\u0020ckeditor\u0020toolbar,\u0020attachements\u0020panel,\nand\u0020smilies\u0020panel.",
-            "url": "classes/vB-Api-User.html#method_saveEditorState"
-        },                {
-            "fqsen": "\\vB_Api_User\u003A\u003AsaveProfileFieldDefinition\u0028\u0029",
-            "name": "saveProfileFieldDefinition",
-            "summary": "",
-            "url": "classes/vB-Api-User.html#method_saveProfileFieldDefinition"
-        },                {
-            "fqsen": "\\vB_Api_User\u003A\u003AgetNamecardInfoBulk\u0028\u0029",
-            "name": "getNamecardInfoBulk",
-            "summary": "",
-            "url": "classes/vB-Api-User.html#method_getNamecardInfoBulk"
-        },                {
-            "fqsen": "\\vB_Api_User\u003A\u003AgetNamecardInfo\u0028\u0029",
-            "name": "getNamecardInfo",
-            "summary": "",
-            "url": "classes/vB-Api-User.html#method_getNamecardInfo"
-        },                {
-            "fqsen": "\\vB_Api_User\u003A\u003AignoreUser\u0028\u0029",
-            "name": "ignoreUser",
-            "summary": "",
-            "url": "classes/vB-Api-User.html#method_ignoreUser"
-        },                {
-            "fqsen": "\\vB_Api_User\u003A\u003AisIgnoringUser\u0028\u0029",
-            "name": "isIgnoringUser",
-            "summary": "",
-            "url": "classes/vB-Api-User.html#method_isIgnoringUser"
-        },                {
-            "fqsen": "\\vB_Api_User\u003A\u003AchangeUserRelation\u0028\u0029",
-            "name": "changeUserRelation",
-            "summary": "",
-            "url": "classes/vB-Api-User.html#method_changeUserRelation"
-        },                {
-            "fqsen": "\\vB_Api_User\u003A\u003AUSERINFO_AVATAR",
-            "name": "USERINFO_AVATAR",
-            "summary": "",
-            "url": "classes/vB-Api-User.html#constant_USERINFO_AVATAR"
-        },                {
-            "fqsen": "\\vB_Api_User\u003A\u003AUSERINFO_AVATAR_INFO",
-            "name": "USERINFO_AVATAR_INFO",
-            "summary": "",
-            "url": "classes/vB-Api-User.html#constant_USERINFO_AVATAR_INFO"
-        },                {
-            "fqsen": "\\vB_Api_User\u003A\u003AUSERINFO_AVATAR_DATA",
-            "name": "USERINFO_AVATAR_DATA",
-            "summary": "",
-            "url": "classes/vB-Api-User.html#constant_USERINFO_AVATAR_DATA"
-        },                {
-            "fqsen": "\\vB_Api_User\u003A\u003AUSERINFO_ADMIN",
-            "name": "USERINFO_ADMIN",
-            "summary": "",
-            "url": "classes/vB-Api-User.html#constant_USERINFO_ADMIN"
-        },                {
-            "fqsen": "\\vB_Api_User\u003A\u003AUSERINFO_SIGNPIC",
-            "name": "USERINFO_SIGNPIC",
-            "summary": "",
-            "url": "classes/vB-Api-User.html#constant_USERINFO_SIGNPIC"
-        },                {
-            "fqsen": "\\vB_Api_User\u003A\u003AUSERINFO_ISFRIEND",
-            "name": "USERINFO_ISFRIEND",
-            "summary": "",
-            "url": "classes/vB-Api-User.html#constant_USERINFO_ISFRIEND"
-        },                {
-            "fqsen": "\\vB_Api_User\u003A\u003ADEFAULT_AVATAR_PATH_REGULAR",
-            "name": "DEFAULT_AVATAR_PATH_REGULAR",
-            "summary": "",
-            "url": "classes/vB-Api-User.html#constant_DEFAULT_AVATAR_PATH_REGULAR"
-        },                {
-            "fqsen": "\\vB_Api_User\u003A\u003ADEFAULT_AVATAR_PATH_THUMB",
-            "name": "DEFAULT_AVATAR_PATH_THUMB",
-            "summary": "",
-            "url": "classes/vB-Api-User.html#constant_DEFAULT_AVATAR_PATH_THUMB"
-        },                {
-            "fqsen": "\\vB_Api_User\u003A\u003ADEFAULT_AVATAR_PATH_LARGE",
-            "name": "DEFAULT_AVATAR_PATH_LARGE",
-            "summary": "",
-            "url": "classes/vB-Api-User.html#constant_DEFAULT_AVATAR_PATH_LARGE"
-        },                {
             "fqsen": "\\vB_Api_UserGroup",
             "name": "vB_Api_UserGroup",
             "summary": "vB_Api_UserGroup",
@@ -5146,66 +3756,6 @@ Search.appendIndex(
             "summary": "Delete\u0020an\u0020user\u0020rank",
             "url": "classes/vB-Api-Userrank.html#method_delete"
         },                {
-            "fqsen": "\\vB_Api_Vb4_activity",
-            "name": "vB_Api_Vb4_activity",
-            "summary": "vB_Api_Vb4_activity",
-            "url": "classes/vB-Api-Vb4-activity.html"
-        },                {
-            "fqsen": "\\vB_Api_Vb4_activity\u003A\u003Acall\u0028\u0029",
-            "name": "call",
-            "summary": "Default\u0020activity\u0020call.",
-            "url": "classes/vB-Api-Vb4-activity.html#method_call"
-        },                {
-            "fqsen": "\\vB_Api_Vb4_activity\u003A\u003AFILTER_SORTBY_RECENT",
-            "name": "FILTER_SORTBY_RECENT",
-            "summary": "",
-            "url": "classes/vB-Api-Vb4-activity.html#constant_FILTER_SORTBY_RECENT"
-        },                {
-            "fqsen": "\\vB_Api_Vb4_activity\u003A\u003AFILTER_SORTBY_POPULAR",
-            "name": "FILTER_SORTBY_POPULAR",
-            "summary": "",
-            "url": "classes/vB-Api-Vb4-activity.html#constant_FILTER_SORTBY_POPULAR"
-        },                {
-            "fqsen": "\\vB_Api_Vb4_activity\u003A\u003AFILTER_LASTDAY",
-            "name": "FILTER_LASTDAY",
-            "summary": "",
-            "url": "classes/vB-Api-Vb4-activity.html#constant_FILTER_LASTDAY"
-        },                {
-            "fqsen": "\\vB_Api_Vb4_activity\u003A\u003AFILTER_LASTWEEK",
-            "name": "FILTER_LASTWEEK",
-            "summary": "",
-            "url": "classes/vB-Api-Vb4-activity.html#constant_FILTER_LASTWEEK"
-        },                {
-            "fqsen": "\\vB_Api_Vb4_activity\u003A\u003AFILTER_LASTMONTH",
-            "name": "FILTER_LASTMONTH",
-            "summary": "",
-            "url": "classes/vB-Api-Vb4-activity.html#constant_FILTER_LASTMONTH"
-        },                {
-            "fqsen": "\\vB_Api_Vb4_activity\u003A\u003AFILTER_SHOW_SOCIALGROUP",
-            "name": "FILTER_SHOW_SOCIALGROUP",
-            "summary": "",
-            "url": "classes/vB-Api-Vb4-activity.html#constant_FILTER_SHOW_SOCIALGROUP"
-        },                {
-            "fqsen": "\\vB_Api_Vb4_activity\u003A\u003AFILTER_SHOW_BLOG",
-            "name": "FILTER_SHOW_BLOG",
-            "summary": "",
-            "url": "classes/vB-Api-Vb4-activity.html#constant_FILTER_SHOW_BLOG"
-        },                {
-            "fqsen": "\\vB_Api_Vb4_activity\u003A\u003AFILTER_SHOW_CMS",
-            "name": "FILTER_SHOW_CMS",
-            "summary": "",
-            "url": "classes/vB-Api-Vb4-activity.html#constant_FILTER_SHOW_CMS"
-        },                {
-            "fqsen": "\\vB_Api_Vb4_activity\u003A\u003AFILTER_SHOW_FORUM",
-            "name": "FILTER_SHOW_FORUM",
-            "summary": "",
-            "url": "classes/vB-Api-Vb4-activity.html#constant_FILTER_SHOW_FORUM"
-        },                {
-            "fqsen": "\\vB_Api_Vb4_activity\u003A\u003AFILTER_SHOW_PHOTOS",
-            "name": "FILTER_SHOW_PHOTOS",
-            "summary": "",
-            "url": "classes/vB-Api-Vb4-activity.html#constant_FILTER_SHOW_PHOTOS"
-        },                {
             "fqsen": "\\vB_Api_Vb4_ajax",
             "name": "vB_Api_Vb4_ajax",
             "summary": "vB_Api_Vb4_ajax",
@@ -5240,36 +3790,6 @@ Search.appendIndex(
             "name": "picture",
             "summary": "",
             "url": "classes/vB-Api-Vb4-album.html#method_picture"
-        },                {
-            "fqsen": "\\vB_Api_Vb4_api",
-            "name": "vB_Api_Vb4_api",
-            "summary": "vB_Api_Vb4_api",
-            "url": "classes/vB-Api-Vb4-api.html"
-        },                {
-            "fqsen": "\\vB_Api_Vb4_api\u003A\u003Agotonewpost\u0028\u0029",
-            "name": "gotonewpost",
-            "summary": "Takes\u0020You\u0020to\u0020the\u0020first\u0020unread\u0020post\u0020of\u0020the\u0020thread\u0020or\nif\u0020there\u0020are\u0020no\u0020unread\u0020posts\u0020it\u0020takes\u0020you\u0020to\u0020the\u0020last\u0020post",
-            "url": "classes/vB-Api-Vb4-api.html#method_gotonewpost"
-        },                {
-            "fqsen": "\\vB_Api_Vb4_api\u003A\u003Amobilepublisher\u0028\u0029",
-            "name": "mobilepublisher",
-            "summary": "",
-            "url": "classes/vB-Api-Vb4-api.html#method_mobilepublisher"
-        },                {
-            "fqsen": "\\vB_Api_Vb4_api\u003A\u003Ablogcategorylist\u0028\u0029",
-            "name": "blogcategorylist",
-            "summary": "",
-            "url": "classes/vB-Api-Vb4-api.html#method_blogcategorylist"
-        },                {
-            "fqsen": "\\vB_Api_Vb4_api\u003A\u003Agetnewtop\u0028\u0029",
-            "name": "getnewtop",
-            "summary": "",
-            "url": "classes/vB-Api-Vb4-api.html#method_getnewtop"
-        },                {
-            "fqsen": "\\vB_Api_Vb4_api\u003A\u003Aforumlist\u0028\u0029",
-            "name": "forumlist",
-            "summary": "",
-            "url": "classes/vB-Api-Vb4-api.html#method_forumlist"
         },                {
             "fqsen": "\\vB_Api_Vb4_blog",
             "name": "vB_Api_Vb4_blog",
@@ -5516,26 +4036,6 @@ Search.appendIndex(
             "summary": "",
             "url": "classes/vB-Api-Vb4-inlinemod.html#method_dodeletespam"
         },                {
-            "fqsen": "\\vB_Api_Vb4_login",
-            "name": "vB_Api_Vb4_login",
-            "summary": "vB_Api_Vb4_register",
-            "url": "classes/vB-Api-Vb4-login.html"
-        },                {
-            "fqsen": "\\vB_Api_Vb4_login\u003A\u003Afacebook\u0028\u0029",
-            "name": "facebook",
-            "summary": "Login\u0020with\u0020facebook\u0020logged\u0020user",
-            "url": "classes/vB-Api-Vb4-login.html#method_facebook"
-        },                {
-            "fqsen": "\\vB_Api_Vb4_login\u003A\u003Alogin\u0028\u0029",
-            "name": "login",
-            "summary": "Login.\u0020Wraps\u0020user.login\u0020\u0028because\u0020we\u0020need\u0020to\u0020do\u0020some\u0020mapi\u0020specific\u0020tasks\u0029",
-            "url": "classes/vB-Api-Vb4-login.html#method_login"
-        },                {
-            "fqsen": "\\vB_Api_Vb4_login\u003A\u003Alogout\u0028\u0029",
-            "name": "logout",
-            "summary": "",
-            "url": "classes/vB-Api-Vb4-login.html#method_logout"
-        },                {
             "fqsen": "\\vB_Api_Vb4_member",
             "name": "vB_Api_Vb4_member",
             "summary": "vB_Api_Vb4_member",
@@ -5595,26 +4095,6 @@ Search.appendIndex(
             "name": "newthread",
             "summary": "",
             "url": "classes/vB-Api-Vb4-newthread.html#method_newthread"
-        },                {
-            "fqsen": "\\vB_Api_Vb4_notification",
-            "name": "vB_Api_Vb4_notification",
-            "summary": "vB_Api_Vb4_notification",
-            "url": "classes/vB-Api-Vb4-notification.html"
-        },                {
-            "fqsen": "\\vB_Api_Vb4_notification\u003A\u003Adismiss\u0028\u0029",
-            "name": "dismiss",
-            "summary": "Dismisses\u0020a\u0020notification\u0020by\u0020triggering\u0020the\u0020\u0022read_topic\u0022\u0020event\u0020on\u0020the\u0020\u0024threadid.",
-            "url": "classes/vB-Api-Vb4-notification.html#method_dismiss"
-        },                {
-            "fqsen": "\\vB_Api_Vb4_notification\u003A\u003AdismissVms\u0028\u0029",
-            "name": "dismissVms",
-            "summary": "Dismisses\u0020visitormessage\u0020notifications\u0020for\u0020the\u0020current\u0020user\u0020by\u0020triggering\u0020the\u0020\u0022read_vms\u0022\u0020event.",
-            "url": "classes/vB-Api-Vb4-notification.html#method_dismissVms"
-        },                {
-            "fqsen": "\\vB_Api_Vb4_notification\u003A\u003Aget\u0028\u0029",
-            "name": "get",
-            "summary": "Fetch\u0020unread\u0020notifications\u0020of\u0020the\u0020specified\u0020type,\u0020descending\u0020by\u0020date",
-            "url": "classes/vB-Api-Vb4-notification.html#method_get"
         },                {
             "fqsen": "\\vB_Api_Vb4_poll",
             "name": "vB_Api_Vb4_poll",
@@ -5701,36 +4181,6 @@ Search.appendIndex(
             "summary": "",
             "url": "classes/vB-Api-Vb4-profile.html#method_updatelist"
         },                {
-            "fqsen": "\\vB_Api_Vb4_register",
-            "name": "vB_Api_Vb4_register",
-            "summary": "vB_Api_Vb4_register",
-            "url": "classes/vB-Api-Vb4-register.html"
-        },                {
-            "fqsen": "\\vB_Api_Vb4_register\u003A\u003Aaddmember\u0028\u0029",
-            "name": "addmember",
-            "summary": "",
-            "url": "classes/vB-Api-Vb4-register.html#method_addmember"
-        },                {
-            "fqsen": "\\vB_Api_Vb4_register\u003A\u003Acall\u0028\u0029",
-            "name": "call",
-            "summary": "",
-            "url": "classes/vB-Api-Vb4-register.html#method_call"
-        },                {
-            "fqsen": "\\vB_Api_Vb4_register\u003A\u003Afbconnect\u0028\u0029",
-            "name": "fbconnect",
-            "summary": "Connect\u0020logged\u0020in\u0020user\u0020to\u0020facebook\u0020account",
-            "url": "classes/vB-Api-Vb4-register.html#method_fbconnect"
-        },                {
-            "fqsen": "\\vB_Api_Vb4_register\u003A\u003Afbdisconnect\u0028\u0029",
-            "name": "fbdisconnect",
-            "summary": "Disconnect\u0020fb\u0020account\u0020from\u0020the\u0020logged\u0020in\u0020user",
-            "url": "classes/vB-Api-Vb4-register.html#method_fbdisconnect"
-        },                {
-            "fqsen": "\\vB_Api_Vb4_register\u003A\u003Acheckdate\u0028\u0029",
-            "name": "checkdate",
-            "summary": "",
-            "url": "classes/vB-Api-Vb4-register.html#method_checkdate"
-        },                {
             "fqsen": "\\vB_Api_Vb4_report",
             "name": "vB_Api_Vb4_report",
             "summary": "vB_Api_Vb4_report",
@@ -5780,31 +4230,6 @@ Search.appendIndex(
             "name": "call",
             "summary": "",
             "url": "classes/vB-Api-Vb4-showthread.html#method_call"
-        },                {
-            "fqsen": "\\vB_Api_Vb4_subscription",
-            "name": "vB_Api_Vb4_subscription",
-            "summary": "vB_Api_Vb4_subscription",
-            "url": "classes/vB-Api-Vb4-subscription.html"
-        },                {
-            "fqsen": "\\vB_Api_Vb4_subscription\u003A\u003Aviewsubscription\u0028\u0029",
-            "name": "viewsubscription",
-            "summary": "",
-            "url": "classes/vB-Api-Vb4-subscription.html#method_viewsubscription"
-        },                {
-            "fqsen": "\\vB_Api_Vb4_subscription\u003A\u003Aremovesubscription\u0028\u0029",
-            "name": "removesubscription",
-            "summary": "",
-            "url": "classes/vB-Api-Vb4-subscription.html#method_removesubscription"
-        },                {
-            "fqsen": "\\vB_Api_Vb4_subscription\u003A\u003Aaddsubscription\u0028\u0029",
-            "name": "addsubscription",
-            "summary": "",
-            "url": "classes/vB-Api-Vb4-subscription.html#method_addsubscription"
-        },                {
-            "fqsen": "\\vB_Api_Vb4_subscription\u003A\u003Adoaddsubscription\u0028\u0029",
-            "name": "doaddsubscription",
-            "summary": "",
-            "url": "classes/vB-Api-Vb4-subscription.html#method_doaddsubscription"
         },                {
             "fqsen": "\\vB_Api_Vb4_visitormessage",
             "name": "vB_Api_Vb4_visitormessage",
@@ -5906,6 +4331,11 @@ Search.appendIndex(
             "summary": "Returns\u0020\u0020multiple\u0020widget\u0020instances",
             "url": "classes/vB-Api-Widget.html#method_fetchWidgetInstances"
         },                {
+            "fqsen": "\\vB_Api_Widget\u003A\u003AdoSkipModule\u0028\u0029",
+            "name": "doSkipModule",
+            "summary": "",
+            "url": "classes/vB-Api-Widget.html#method_doSkipModule"
+        },                {
             "fqsen": "\\vB_Api_Widget\u003A\u003AfetchWidgetInstancesByPageTemplateId\u0028\u0029",
             "name": "fetchWidgetInstancesByPageTemplateId",
             "summary": "Returns\u0020all\u0020module\u0020instances\u0020that\u0020are\u0020associated\u0020with\u0020the\ngiven\u0020page\u0020template\u0020id.\u0020\u0020These\u0020are\u0020the\u0020module\u0020instances\u0020that\u0020should\nshown\u0020on\u0020that\u0020page\u0020template.\u0020This\u0020also\u0020includes\u0020global\u0020module\ninstances\u0020\u0028pagetemplateid\u0020\u003D\u0020\u002D1\u0029.",
@@ -5986,6 +4416,16 @@ Search.appendIndex(
             "summary": "",
             "url": "classes/vB-Api-Widget.html#constant_CLEAR_CACHE_EVENT"
         },                {
+            "fqsen": "\\vB_Api_WidgetData_RSSFeed",
+            "name": "vB_Api_WidgetData_RSSFeed",
+            "summary": "vB_Api_WidgetData_RSSFeed",
+            "url": "classes/vB-Api-WidgetData-RSSFeed.html"
+        },                {
+            "fqsen": "\\vB_Api_WidgetData_RSSFeed\u003A\u003AgetData\u0028\u0029",
+            "name": "getData",
+            "summary": "",
+            "url": "classes/vB-Api-WidgetData-RSSFeed.html#method_getData"
+        },                {
             "fqsen": "\\vB_Api_Wol",
             "name": "vB_Api_Wol",
             "summary": "vB_Api_Wol\nWho\u0020is\u0020online\u0020API",
@@ -5993,7 +4433,7 @@ Search.appendIndex(
         },                {
             "fqsen": "\\vB_Api_Wol\u003A\u003Aregister\u0028\u0029",
             "name": "register",
-            "summary": "Register\u0020an\u0020online\u0020action\nExample\u003A\n\u0020\u0020vB_Api\u003A\u003AinstanceInternal\u0028\u0027Wol\u0027\u0029\u002D\u003Eregister\u0028\u0027viewing_x\u0027,\u0020array\u0028array\u0028\u0027nodeid\u0027,\u0020\u0024nodeid\u0029\u0029\u0029\u003B",
+            "summary": "Register\u0020an\u0020online\u0020action\nExample\u003A\n\u0020\u0020vB_Api\u003A\u003AinstanceInternal\u0028\u0027Wol\u0027\u0029\u002D\u003Eregister\u0028\u0027viewing_x\u0027,\u0020\u005B\u005B\u0027nodeid\u0027,\u0020\u0024nodeid\u005D\u005D\u0029\u003B",
             "url": "classes/vB-Api-Wol.html#method_register"
         },                {
             "fqsen": "\\vB_Api_Wol\u003A\u003AfetchAll\u0028\u0029",
@@ -6101,11 +4541,6 @@ Search.appendIndex(
             "summary": "",
             "url": "classes/vB-BbCode-Url.html"
         },                {
-            "fqsen": "\\vB_BbCode_Url\u003A\u003AprocessBbcodeSave\u0028\u0029",
-            "name": "processBbcodeSave",
-            "summary": "",
-            "url": "classes/vB-BbCode-Url.html#method_processBbcodeSave"
-        },                {
             "fqsen": "\\vB_BbCode_Url\u003A\u003AgenerateFreshFromDataAndOption\u0028\u0029",
             "name": "generateFreshFromDataAndOption",
             "summary": "",
@@ -6118,13 +4553,28 @@ Search.appendIndex(
         },                {
             "fqsen": "\\vB_BbCode_Url\u003A\u003AsetRenderOptionsAndContext\u0028\u0029",
             "name": "setRenderOptionsAndContext",
-            "summary": "",
+            "summary": "Set\u0020render\u0020options\u0020\u0026\u0020context",
             "url": "classes/vB-BbCode-Url.html#method_setRenderOptionsAndContext"
+        },                {
+            "fqsen": "\\vB_BbCode_Url\u003A\u003AcanHandleBbCode\u0028\u0029",
+            "name": "canHandleBbCode",
+            "summary": "",
+            "url": "classes/vB-BbCode-Url.html#method_canHandleBbCode"
         },                {
             "fqsen": "\\vB_BbCode_Url\u003A\u003ArenderBbCode\u0028\u0029",
             "name": "renderBbCode",
             "summary": "",
             "url": "classes/vB-BbCode-Url.html#method_renderBbCode"
+        },                {
+            "fqsen": "\\vB_BbCode_Url\u003A\u003ATYPE",
+            "name": "TYPE",
+            "summary": "",
+            "url": "classes/vB-BbCode-Url.html#constant_TYPE"
+        },                {
+            "fqsen": "\\vB_BbCode_Url\u003A\u003AUSES_DATA_STORAGE",
+            "name": "USES_DATA_STORAGE",
+            "summary": "",
+            "url": "classes/vB-BbCode-Url.html#constant_USES_DATA_STORAGE"
         },                {
             "fqsen": "\\vB_BbCode",
             "name": "vB_BbCode",
@@ -6136,6 +4586,21 @@ Search.appendIndex(
             "summary": "",
             "url": "classes/vB-BbCode.html#method_getInsertData"
         },                {
+            "fqsen": "\\vB_BbCode\u003A\u003AsetRecord\u0028\u0029",
+            "name": "setRecord",
+            "summary": "",
+            "url": "classes/vB-BbCode.html#method_setRecord"
+        },                {
+            "fqsen": "\\vB_BbCode\u003A\u003AsetRenderOptionsAndContext\u0028\u0029",
+            "name": "setRenderOptionsAndContext",
+            "summary": "Set\u0020render\u0020options\u0020\u0026\u0020context",
+            "url": "classes/vB-BbCode.html#method_setRenderOptionsAndContext"
+        },                {
+            "fqsen": "\\vB_BbCode\u003A\u003AsetUserContext\u0028\u0029",
+            "name": "setUserContext",
+            "summary": "",
+            "url": "classes/vB-BbCode.html#method_setUserContext"
+        },                {
             "fqsen": "\\vB_BbCode\u003A\u003AgenerateFreshFromDataAndOption\u0028\u0029",
             "name": "generateFreshFromDataAndOption",
             "summary": "",
@@ -6146,10 +4611,15 @@ Search.appendIndex(
             "summary": "",
             "url": "classes/vB-BbCode.html#method_restoreFromDBRecord"
         },                {
-            "fqsen": "\\vB_BbCode\u003A\u003AgetClassname\u0028\u0029",
-            "name": "getClassname",
+            "fqsen": "\\vB_BbCode\u003A\u003AdetermineClassname\u0028\u0029",
+            "name": "determineClassname",
             "summary": "",
-            "url": "classes/vB-BbCode.html#method_getClassname"
+            "url": "classes/vB-BbCode.html#method_determineClassname"
+        },                {
+            "fqsen": "\\vB_BbCode\u003A\u003AgetCanonicalClassname\u0028\u0029",
+            "name": "getCanonicalClassname",
+            "summary": "",
+            "url": "classes/vB-BbCode.html#method_getCanonicalClassname"
         },                {
             "fqsen": "\\vB_BbCode\u003A\u003AgetType\u0028\u0029",
             "name": "getType",
@@ -6171,20 +4641,30 @@ Search.appendIndex(
             "summary": "",
             "url": "classes/vB-BbCode.html#method___set"
         },                {
-            "fqsen": "\\vB_BbCode\u003A\u003AprocessBbcodeSave\u0028\u0029",
-            "name": "processBbcodeSave",
-            "summary": "",
-            "url": "classes/vB-BbCode.html#method_processBbcodeSave"
-        },                {
             "fqsen": "\\vB_BbCode\u003A\u003AgetHash\u0028\u0029",
             "name": "getHash",
             "summary": "",
             "url": "classes/vB-BbCode.html#method_getHash"
         },                {
+            "fqsen": "\\vB_BbCode\u003A\u003AcanHandleBbCode\u0028\u0029",
+            "name": "canHandleBbCode",
+            "summary": "",
+            "url": "classes/vB-BbCode.html#method_canHandleBbCode"
+        },                {
             "fqsen": "\\vB_BbCode\u003A\u003ArenderBbCode\u0028\u0029",
             "name": "renderBbCode",
             "summary": "",
             "url": "classes/vB-BbCode.html#method_renderBbCode"
+        },                {
+            "fqsen": "\\vB_BbCode\u003A\u003ATYPE",
+            "name": "TYPE",
+            "summary": "",
+            "url": "classes/vB-BbCode.html#constant_TYPE"
+        },                {
+            "fqsen": "\\vB_BbCode\u003A\u003AUSES_DATA_STORAGE",
+            "name": "USES_DATA_STORAGE",
+            "summary": "",
+            "url": "classes/vB-BbCode.html#constant_USES_DATA_STORAGE"
         },                {
             "fqsen": "\\vB_BbCodeDataCache",
             "name": "vB_BbCodeDataCache",
@@ -7166,6 +5646,11 @@ Search.appendIndex(
             "summary": "Returns\u0020the\u0020numerical\u0020value\u0020of\u0020the\u0020error\u0020message\u0020from\u0020previous\u0020database\u0020operation",
             "url": "classes/vB-Database-MySQLi.html#method_errno"
         },                {
+            "fqsen": "\\vB_Database_MySQLi\u003A\u003Awarning\u0028\u0029",
+            "name": "warning",
+            "summary": "",
+            "url": "classes/vB-Database-MySQLi.html#method_warning"
+        },                {
             "fqsen": "\\vB_Database_MySQLi\u003A\u003AgetCriticalErrors\u0028\u0029",
             "name": "getCriticalErrors",
             "summary": "Function\u0020to\u0020return\u0020the\u0020codes\u0020of\u0020critical\u0020errors\u0020when\u0020testing\u0020if\u0020a\u0020database\nis\u0020a\u0020valid\u0020vB5\u0020database\u0020\u002D\u0020normally\u0020database\u0020not\u0020found\u0020and\u0020table\u0020not\u0020found\u0020errors.",
@@ -7561,50 +6046,10 @@ Search.appendIndex(
             "summary": "Array\u0020of\u0020recognised\u0020and\u0020required\u0020fields\u0020for\u0020moderators,\u0020and\u0020their\u0020types",
             "url": "classes/vB-DataManager-Admin.html#property_validfields"
         },                {
-            "fqsen": "\\vB_DataManager_Admin\u003A\u003A\u0024bitfields",
-            "name": "bitfields",
-            "summary": "Array\u0020of\u0020field\u0020names\u0020that\u0020are\u0020bitfields,\u0020together\u0020with\u0020the\u0020name\u0020of\u0020the\u0020variable\u0020in\u0020the\u0020registry\u0020with\u0020the\u0020definitions.",
-            "url": "classes/vB-DataManager-Admin.html#property_bitfields"
-        },                {
-            "fqsen": "\\vB_DataManager_Admin\u003A\u003A\u0024table",
-            "name": "table",
-            "summary": "The\u0020main\u0020table\u0020this\u0020class\u0020deals\u0020with",
-            "url": "classes/vB-DataManager-Admin.html#property_table"
-        },                {
             "fqsen": "\\vB_DataManager_Admin\u003A\u003A\u0024keyField",
             "name": "keyField",
             "summary": "",
             "url": "classes/vB-DataManager-Admin.html#property_keyField"
-        },                {
-            "fqsen": "\\vB_DataManager_Admin\u003A\u003A\u0024administrator",
-            "name": "administrator",
-            "summary": "Arrays\u0020to\u0020store\u0020stuff\u0020to\u0020save\u0020to\u0020admin\u002Drelated\u0020tables",
-            "url": "classes/vB-DataManager-Admin.html#property_administrator"
-        },                {
-            "fqsen": "\\vB_DataManager_Announcement",
-            "name": "vB_DataManager_Announcement",
-            "summary": "Class\u0020to\u0020do\u0020data\u0020save\/delete\u0020operations\u0020for\u0020ANNOUNCEMENTS",
-            "url": "classes/vB-DataManager-Announcement.html"
-        },                {
-            "fqsen": "\\vB_DataManager_Announcement\u003A\u003Apre_save\u0028\u0029",
-            "name": "pre_save",
-            "summary": "Any\u0020checks\u0020to\u0020run\u0020immediately\u0020before\u0020saving.\u0020If\u0020returning\u0020false,\u0020the\u0020save\u0020will\u0020not\u0020take\u0020place.",
-            "url": "classes/vB-DataManager-Announcement.html#method_pre_save"
-        },                {
-            "fqsen": "\\vB_DataManager_Announcement\u003A\u003Apost_save_each\u0028\u0029",
-            "name": "post_save_each",
-            "summary": "Additional\u0020data\u0020to\u0020update\u0020after\u0020a\u0020save\u0020call\u0020\u0028such\u0020as\u0020denormalized\u0020values\u0020in\u0020other\u0020tables\u0029.",
-            "url": "classes/vB-DataManager-Announcement.html#method_post_save_each"
-        },                {
-            "fqsen": "\\vB_DataManager_Announcement\u003A\u003Apost_delete\u0028\u0029",
-            "name": "post_delete",
-            "summary": "Additional\u0020data\u0020to\u0020update\u0020after\u0020a\u0020delete\u0020call\u0020\u0028such\u0020as\u0020denormalized\u0020values\u0020in\u0020other\u0020tables\u0029.",
-            "url": "classes/vB-DataManager-Announcement.html#method_post_delete"
-        },                {
-            "fqsen": "\\vB_DataManager_Announcement\u003A\u003A\u0024table",
-            "name": "table",
-            "summary": "The\u0020main\u0020table\u0020this\u0020class\u0020deals\u0020with",
-            "url": "classes/vB-DataManager-Announcement.html#property_table"
         },                {
             "fqsen": "\\vB_DataManager_Constants",
             "name": "vB_DataManager_Constants",
@@ -7866,30 +6311,10 @@ Search.appendIndex(
             "summary": "Class\u0020to\u0020do\u0020data\u0020save\/delete\u0020operations\u0020for\u0020RSS\u0020Feeds",
             "url": "classes/vB-DataManager-RSSFeed.html"
         },                {
-            "fqsen": "\\vB_DataManager_RSSFeed\u003A\u003Averify_nodeid\u0028\u0029",
-            "name": "verify_nodeid",
-            "summary": "Verifies\u0020that\u0020the\u0020specified\u0020forumid\u0020is\u0020valid",
-            "url": "classes/vB-DataManager-RSSFeed.html#method_verify_nodeid"
-        },                {
             "fqsen": "\\vB_DataManager_RSSFeed\u003A\u003Aset_user_by_name\u0028\u0029",
             "name": "set_user_by_name",
             "summary": "Accepts\u0020a\u0020username\u0020and\u0020converts\u0020it\u0020into\u0020the\u0020appropriate\u0020user\u0020id",
             "url": "classes/vB-DataManager-RSSFeed.html#method_set_user_by_name"
-        },                {
-            "fqsen": "\\vB_DataManager_RSSFeed\u003A\u003Averify_userid\u0028\u0029",
-            "name": "verify_userid",
-            "summary": "Verifies\u0020that\u0020a\u0020user\u0020id\u0020is\u0020valid\u0020and\u0020exists",
-            "url": "classes/vB-DataManager-RSSFeed.html#method_verify_userid"
-        },                {
-            "fqsen": "\\vB_DataManager_RSSFeed\u003A\u003Averify_ttl\u0028\u0029",
-            "name": "verify_ttl",
-            "summary": "Ensures\u0020that\u0020the\u0020given\u0020TTL\u0020\u0028time\u0020to\u0020live\u0029\u0020value\u0020is\u0020sane",
-            "url": "classes/vB-DataManager-RSSFeed.html#method_verify_ttl"
-        },                {
-            "fqsen": "\\vB_DataManager_RSSFeed\u003A\u003Averify_itemtype\u0028\u0029",
-            "name": "verify_itemtype",
-            "summary": "Ensures\u0020that\u0020the\u0020given\u0020itemtype\u0020is\u0020acceptable",
-            "url": "classes/vB-DataManager-RSSFeed.html#method_verify_itemtype"
         },                {
             "fqsen": "\\vB_DataManager_RSSFeed\u003A\u003Apre_save\u0028\u0029",
             "name": "pre_save",
@@ -7906,21 +6331,6 @@ Search.appendIndex(
             "summary": "Additional\u0020data\u0020to\u0020update\u0020after\u0020a\u0020delete\u0020call\u0020\u0028such\u0020as\u0020denormalized\u0020values\u0020in\u0020other\u0020tables\u0029.",
             "url": "classes/vB-DataManager-RSSFeed.html#method_post_delete"
         },                {
-            "fqsen": "\\vB_DataManager_RSSFeed\u003A\u003A\u0024validfields",
-            "name": "validfields",
-            "summary": "Array\u0020of\u0020recognised\u0020and\u0020required\u0020fields\u0020for\u0020RSS\u0020feeds,\u0020and\u0020their\u0020types",
-            "url": "classes/vB-DataManager-RSSFeed.html#property_validfields"
-        },                {
-            "fqsen": "\\vB_DataManager_RSSFeed\u003A\u003A\u0024bitfields",
-            "name": "bitfields",
-            "summary": "Array\u0020of\u0020field\u0020names\u0020that\u0020are\u0020bitfields,\u0020together\u0020with\u0020the\u0020name\u0020of\u0020the\u0020variable\u0020in\u0020the\u0020registry\u0020with\u0020the\u0020definitions.",
-            "url": "classes/vB-DataManager-RSSFeed.html#property_bitfields"
-        },                {
-            "fqsen": "\\vB_DataManager_RSSFeed\u003A\u003A\u0024table",
-            "name": "table",
-            "summary": "The\u0020main\u0020table\u0020this\u0020class\u0020deals\u0020with",
-            "url": "classes/vB-DataManager-RSSFeed.html#property_table"
-        },                {
             "fqsen": "\\vB_DataManager_StyleVar",
             "name": "vB_DataManager_StyleVar",
             "summary": "Abstract\u0020class\u0020to\u0020do\u0020data\u0020save\/delete\u0020operations\u0020for\u0020StyleVar.",
@@ -7930,6 +6340,11 @@ Search.appendIndex(
             "name": "__construct",
             "summary": "Constructor\u0020\u002D\u0020Checks\u0020for\u0020necessity\u0020of\u0020registry\u0020object",
             "url": "classes/vB-DataManager-StyleVar.html#method___construct"
+        },                {
+            "fqsen": "\\vB_DataManager_StyleVar\u003A\u003AsetSkipRebuild\u0028\u0029",
+            "name": "setSkipRebuild",
+            "summary": "For\u0020batch\u0020operations\u0020we\u0027ll\u0020skip\u0020the\u0020style\u0020rebuild\u0020since\u0020it\u0020only\u0020needs\u0020to\u0020happen\u0020once",
+            "url": "classes/vB-DataManager-StyleVar.html#method_setSkipRebuild"
         },                {
             "fqsen": "\\vB_DataManager_StyleVar\u003A\u003Apost_save_once\u0028\u0029",
             "name": "post_save_once",
@@ -8101,11 +6516,6 @@ Search.appendIndex(
             "summary": "",
             "url": "classes/vB-DataManager-StyleVar.html#method_verify_value_inherit_param_color"
         },                {
-            "fqsen": "\\vB_DataManager_StyleVar\u003A\u003A\u0024table",
-            "name": "table",
-            "summary": "The\u0020main\u0020table\u0020this\u0020class\u0020deals\u0020with",
-            "url": "classes/vB-DataManager-StyleVar.html#property_table"
-        },                {
             "fqsen": "\\vB_DataManager_StyleVar\u003A\u003A\u0024validfields",
             "name": "validfields",
             "summary": "Array\u0020of\u0020recognised\u0020and\u0020required\u0020fields\u0020for\u0020stylevar,\u0020and\u0020their\u0020types",
@@ -8121,11 +6531,6 @@ Search.appendIndex(
             "summary": "Abstract\u0020class\u0020to\u0020do\u0020data\u0020save\/delete\u0020operations\u0020for\u0020StyleVar.",
             "url": "classes/vB-DataManager-StyleVarBackground.html"
         },                {
-            "fqsen": "\\vB_DataManager_StyleVarBackground\u003A\u003A\u0024childfields",
-            "name": "childfields",
-            "summary": "",
-            "url": "classes/vB-DataManager-StyleVarBackground.html#property_childfields"
-        },                {
             "fqsen": "\\vB_DataManager_StyleVarBackground\u003A\u003A\u0024datatype",
             "name": "datatype",
             "summary": "Local\u0020value\u0020telling\u0020us\u0020what\u0020datatype\u0020this\u0020is\u003B\u0020saves\u0020the\u0020resources\u0020of\u0020gettype\u0028\u0029",
@@ -8135,11 +6540,6 @@ Search.appendIndex(
             "name": "vB_DataManager_StyleVarBoolean",
             "summary": "Abstract\u0020class\u0020to\u0020do\u0020data\u0020save\/delete\u0020operations\u0020for\u0020StyleVar.",
             "url": "classes/vB-DataManager-StyleVarBoolean.html"
-        },                {
-            "fqsen": "\\vB_DataManager_StyleVarBoolean\u003A\u003A\u0024childfields",
-            "name": "childfields",
-            "summary": "",
-            "url": "classes/vB-DataManager-StyleVarBoolean.html#property_childfields"
         },                {
             "fqsen": "\\vB_DataManager_StyleVarBoolean\u003A\u003A\u0024datatype",
             "name": "datatype",
@@ -8151,11 +6551,6 @@ Search.appendIndex(
             "summary": "Abstract\u0020class\u0020to\u0020do\u0020data\u0020save\/delete\u0020operations\u0020for\u0020StyleVar.",
             "url": "classes/vB-DataManager-StyleVarBorder.html"
         },                {
-            "fqsen": "\\vB_DataManager_StyleVarBorder\u003A\u003A\u0024childfields",
-            "name": "childfields",
-            "summary": "",
-            "url": "classes/vB-DataManager-StyleVarBorder.html#property_childfields"
-        },                {
             "fqsen": "\\vB_DataManager_StyleVarBorder\u003A\u003A\u0024datatype",
             "name": "datatype",
             "summary": "Local\u0020value\u0020telling\u0020us\u0020what\u0020datatype\u0020this\u0020is\u003B\u0020saves\u0020the\u0020resources\u0020of\u0020gettype\u0028\u0029",
@@ -8165,11 +6560,6 @@ Search.appendIndex(
             "name": "vB_DataManager_StyleVarColor",
             "summary": "Abstract\u0020class\u0020to\u0020do\u0020data\u0020save\/delete\u0020operations\u0020for\u0020StyleVar.",
             "url": "classes/vB-DataManager-StyleVarColor.html"
-        },                {
-            "fqsen": "\\vB_DataManager_StyleVarColor\u003A\u003A\u0024childfields",
-            "name": "childfields",
-            "summary": "",
-            "url": "classes/vB-DataManager-StyleVarColor.html#property_childfields"
         },                {
             "fqsen": "\\vB_DataManager_StyleVarColor\u003A\u003A\u0024datatype",
             "name": "datatype",
@@ -8186,11 +6576,6 @@ Search.appendIndex(
             "summary": "Adds\u0020a\u0020child\u0020field\u0020to\u0020the\u0020custom\u0020stylevar",
             "url": "classes/vB-DataManager-StyleVarCustom.html#method_add_child"
         },                {
-            "fqsen": "\\vB_DataManager_StyleVarCustom\u003A\u003A\u0024childfields",
-            "name": "childfields",
-            "summary": "",
-            "url": "classes/vB-DataManager-StyleVarCustom.html#property_childfields"
-        },                {
             "fqsen": "\\vB_DataManager_StyleVarCustom\u003A\u003A\u0024datatype",
             "name": "datatype",
             "summary": "Local\u0020value\u0020telling\u0020us\u0020what\u0020datatype\u0020this\u0020is\u003B\u0020saves\u0020the\u0020resources\u0020of\u0020gettype\u0028\u0029",
@@ -8200,11 +6585,6 @@ Search.appendIndex(
             "name": "vB_DataManager_StyleVarDefn",
             "summary": "Class\u0020to\u0020do\u0020data\u0020save\/delete\u0020operations\u0020for\u0020StyleVarDefinitions.",
             "url": "classes/vB-DataManager-StyleVarDefn.html"
-        },                {
-            "fqsen": "\\vB_DataManager_StyleVarDefn\u003A\u003A__construct\u0028\u0029",
-            "name": "__construct",
-            "summary": "Constructor\u0020\u002D\u0020Checks\u0020for\u0020necessity\u0020of\u0020registry\u0020object",
-            "url": "classes/vB-DataManager-StyleVarDefn.html#method___construct"
         },                {
             "fqsen": "\\vB_DataManager_StyleVarDefn\u003A\u003Averify_parentid\u0028\u0029",
             "name": "verify_parentid",
@@ -8246,30 +6626,10 @@ Search.appendIndex(
             "summary": "Deletes\u0020a\u0020stylevardfn\u0020and\u0020its\u0020associated\u0020data\u0020from\u0020the\u0020database",
             "url": "classes/vB-DataManager-StyleVarDefn.html#method_delete"
         },                {
-            "fqsen": "\\vB_DataManager_StyleVarDefn\u003A\u003A\u0024validfields",
-            "name": "validfields",
-            "summary": "Array\u0020of\u0020recognized\u0020and\u0020required\u0020fields\u0020for\u0020attachment\u0020inserts",
-            "url": "classes/vB-DataManager-StyleVarDefn.html#property_validfields"
-        },                {
-            "fqsen": "\\vB_DataManager_StyleVarDefn\u003A\u003A\u0024bitfields",
-            "name": "bitfields",
-            "summary": "Array\u0020of\u0020field\u0020names\u0020that\u0020are\u0020bitfields,\u0020together\u0020with\u0020the\u0020name\u0020of\u0020the\u0020variable\u0020in\u0020the\u0020registry\u0020with\u0020the\u0020definitions.",
-            "url": "classes/vB-DataManager-StyleVarDefn.html#property_bitfields"
-        },                {
-            "fqsen": "\\vB_DataManager_StyleVarDefn\u003A\u003A\u0024table",
-            "name": "table",
-            "summary": "The\u0020main\u0020table\u0020this\u0020class\u0020deals\u0020with",
-            "url": "classes/vB-DataManager-StyleVarDefn.html#property_table"
-        },                {
             "fqsen": "\\vB_DataManager_StyleVarDimension",
             "name": "vB_DataManager_StyleVarDimension",
             "summary": "Abstract\u0020class\u0020to\u0020do\u0020data\u0020save\/delete\u0020operations\u0020for\u0020StyleVar.",
             "url": "classes/vB-DataManager-StyleVarDimension.html"
-        },                {
-            "fqsen": "\\vB_DataManager_StyleVarDimension\u003A\u003A\u0024childfields",
-            "name": "childfields",
-            "summary": "",
-            "url": "classes/vB-DataManager-StyleVarDimension.html#property_childfields"
         },                {
             "fqsen": "\\vB_DataManager_StyleVarDimension\u003A\u003A\u0024datatype",
             "name": "datatype",
@@ -8281,11 +6641,6 @@ Search.appendIndex(
             "summary": "Abstract\u0020class\u0020to\u0020do\u0020data\u0020save\/delete\u0020operations\u0020for\u0020StyleVar.",
             "url": "classes/vB-DataManager-StyleVarFont.html"
         },                {
-            "fqsen": "\\vB_DataManager_StyleVarFont\u003A\u003A\u0024childfields",
-            "name": "childfields",
-            "summary": "",
-            "url": "classes/vB-DataManager-StyleVarFont.html#property_childfields"
-        },                {
             "fqsen": "\\vB_DataManager_StyleVarFont\u003A\u003A\u0024datatype",
             "name": "datatype",
             "summary": "Local\u0020value\u0020telling\u0020us\u0020what\u0020datatype\u0020this\u0020is\u003B\u0020saves\u0020the\u0020resources\u0020of\u0020gettype\u0028\u0029",
@@ -8295,11 +6650,6 @@ Search.appendIndex(
             "name": "vB_DataManager_StyleVarFontlist",
             "summary": "Abstract\u0020class\u0020to\u0020do\u0020data\u0020save\/delete\u0020operations\u0020for\u0020StyleVar.",
             "url": "classes/vB-DataManager-StyleVarFontlist.html"
-        },                {
-            "fqsen": "\\vB_DataManager_StyleVarFontlist\u003A\u003A\u0024childfields",
-            "name": "childfields",
-            "summary": "",
-            "url": "classes/vB-DataManager-StyleVarFontlist.html#property_childfields"
         },                {
             "fqsen": "\\vB_DataManager_StyleVarFontlist\u003A\u003A\u0024datatype",
             "name": "datatype",
@@ -8311,11 +6661,6 @@ Search.appendIndex(
             "summary": "Abstract\u0020class\u0020to\u0020do\u0020data\u0020save\/delete\u0020operations\u0020for\u0020StyleVar.",
             "url": "classes/vB-DataManager-StyleVarImage.html"
         },                {
-            "fqsen": "\\vB_DataManager_StyleVarImage\u003A\u003A\u0024childfields",
-            "name": "childfields",
-            "summary": "",
-            "url": "classes/vB-DataManager-StyleVarImage.html#property_childfields"
-        },                {
             "fqsen": "\\vB_DataManager_StyleVarImage\u003A\u003A\u0024datatype",
             "name": "datatype",
             "summary": "Local\u0020value\u0020telling\u0020us\u0020what\u0020datatype\u0020this\u0020is\u003B\u0020saves\u0020the\u0020resources\u0020of\u0020gettype\u0028\u0029",
@@ -8325,11 +6670,6 @@ Search.appendIndex(
             "name": "vB_DataManager_StyleVarImageDir",
             "summary": "Abstract\u0020class\u0020to\u0020do\u0020data\u0020save\/delete\u0020operations\u0020for\u0020StyleVar.",
             "url": "classes/vB-DataManager-StyleVarImageDir.html"
-        },                {
-            "fqsen": "\\vB_DataManager_StyleVarImageDir\u003A\u003A\u0024childfields",
-            "name": "childfields",
-            "summary": "",
-            "url": "classes/vB-DataManager-StyleVarImageDir.html#property_childfields"
         },                {
             "fqsen": "\\vB_DataManager_StyleVarImageDir\u003A\u003A\u0024datatype",
             "name": "datatype",
@@ -8341,11 +6681,6 @@ Search.appendIndex(
             "summary": "Abstract\u0020class\u0020to\u0020do\u0020data\u0020save\/delete\u0020operations\u0020for\u0020StyleVar.",
             "url": "classes/vB-DataManager-StyleVarMargin.html"
         },                {
-            "fqsen": "\\vB_DataManager_StyleVarMargin\u003A\u003A\u0024childfields",
-            "name": "childfields",
-            "summary": "",
-            "url": "classes/vB-DataManager-StyleVarMargin.html#property_childfields"
-        },                {
             "fqsen": "\\vB_DataManager_StyleVarMargin\u003A\u003A\u0024datatype",
             "name": "datatype",
             "summary": "Local\u0020value\u0020telling\u0020us\u0020what\u0020datatype\u0020this\u0020is\u003B\u0020saves\u0020the\u0020resources\u0020of\u0020gettype\u0028\u0029",
@@ -8355,11 +6690,6 @@ Search.appendIndex(
             "name": "vB_DataManager_StyleVarNumeric",
             "summary": "Abstract\u0020class\u0020to\u0020do\u0020data\u0020save\/delete\u0020operations\u0020for\u0020StyleVar.",
             "url": "classes/vB-DataManager-StyleVarNumeric.html"
-        },                {
-            "fqsen": "\\vB_DataManager_StyleVarNumeric\u003A\u003A\u0024childfields",
-            "name": "childfields",
-            "summary": "Array\u0020of\u0020recognised\u0020and\u0020required\u0020child\u0020fields\u0020for\u0020stylevar,\u0020and\u0020their\u0020types",
-            "url": "classes/vB-DataManager-StyleVarNumeric.html#property_childfields"
         },                {
             "fqsen": "\\vB_DataManager_StyleVarNumeric\u003A\u003A\u0024datatype",
             "name": "datatype",
@@ -8371,11 +6701,6 @@ Search.appendIndex(
             "summary": "Abstract\u0020class\u0020to\u0020do\u0020data\u0020save\/delete\u0020operations\u0020for\u0020StyleVar.",
             "url": "classes/vB-DataManager-StyleVarPadding.html"
         },                {
-            "fqsen": "\\vB_DataManager_StyleVarPadding\u003A\u003A\u0024childfields",
-            "name": "childfields",
-            "summary": "",
-            "url": "classes/vB-DataManager-StyleVarPadding.html#property_childfields"
-        },                {
             "fqsen": "\\vB_DataManager_StyleVarPadding\u003A\u003A\u0024datatype",
             "name": "datatype",
             "summary": "Local\u0020value\u0020telling\u0020us\u0020what\u0020datatype\u0020this\u0020is\u003B\u0020saves\u0020the\u0020resources\u0020of\u0020gettype\u0028\u0029",
@@ -8385,11 +6710,6 @@ Search.appendIndex(
             "name": "vB_DataManager_StyleVarPath",
             "summary": "Abstract\u0020class\u0020to\u0020do\u0020data\u0020save\/delete\u0020operations\u0020for\u0020StyleVar.",
             "url": "classes/vB-DataManager-StyleVarPath.html"
-        },                {
-            "fqsen": "\\vB_DataManager_StyleVarPath\u003A\u003A\u0024childfields",
-            "name": "childfields",
-            "summary": "",
-            "url": "classes/vB-DataManager-StyleVarPath.html#property_childfields"
         },                {
             "fqsen": "\\vB_DataManager_StyleVarPath\u003A\u003A\u0024datatype",
             "name": "datatype",
@@ -8401,11 +6721,6 @@ Search.appendIndex(
             "summary": "Abstract\u0020class\u0020to\u0020do\u0020data\u0020save\/delete\u0020operations\u0020for\u0020StyleVar.",
             "url": "classes/vB-DataManager-StyleVarSize.html"
         },                {
-            "fqsen": "\\vB_DataManager_StyleVarSize\u003A\u003A\u0024childfields",
-            "name": "childfields",
-            "summary": "",
-            "url": "classes/vB-DataManager-StyleVarSize.html#property_childfields"
-        },                {
             "fqsen": "\\vB_DataManager_StyleVarSize\u003A\u003A\u0024datatype",
             "name": "datatype",
             "summary": "Local\u0020value\u0020telling\u0020us\u0020what\u0020datatype\u0020this\u0020is\u003B\u0020saves\u0020the\u0020resources\u0020of\u0020gettype\u0028\u0029",
@@ -8415,11 +6730,6 @@ Search.appendIndex(
             "name": "vB_DataManager_StyleVarString",
             "summary": "Abstract\u0020class\u0020to\u0020do\u0020data\u0020save\/delete\u0020operations\u0020for\u0020StyleVar.",
             "url": "classes/vB-DataManager-StyleVarString.html"
-        },                {
-            "fqsen": "\\vB_DataManager_StyleVarString\u003A\u003A\u0024childfields",
-            "name": "childfields",
-            "summary": "Array\u0020of\u0020recognised\u0020and\u0020required\u0020child\u0020fields\u0020for\u0020stylevar,\u0020and\u0020their\u0020types",
-            "url": "classes/vB-DataManager-StyleVarString.html#property_childfields"
         },                {
             "fqsen": "\\vB_DataManager_StyleVarString\u003A\u003A\u0024datatype",
             "name": "datatype",
@@ -8431,11 +6741,6 @@ Search.appendIndex(
             "summary": "Abstract\u0020class\u0020to\u0020do\u0020data\u0020save\/delete\u0020operations\u0020for\u0020StyleVar.",
             "url": "classes/vB-DataManager-StyleVarTextAlign.html"
         },                {
-            "fqsen": "\\vB_DataManager_StyleVarTextAlign\u003A\u003A\u0024childfields",
-            "name": "childfields",
-            "summary": "",
-            "url": "classes/vB-DataManager-StyleVarTextAlign.html#property_childfields"
-        },                {
             "fqsen": "\\vB_DataManager_StyleVarTextAlign\u003A\u003A\u0024datatype",
             "name": "datatype",
             "summary": "Local\u0020value\u0020telling\u0020us\u0020what\u0020datatype\u0020this\u0020is\u003B\u0020saves\u0020the\u0020resources\u0020of\u0020gettype\u0028\u0029",
@@ -8445,11 +6750,6 @@ Search.appendIndex(
             "name": "vB_DataManager_StyleVarTextDecoration",
             "summary": "Abstract\u0020class\u0020to\u0020do\u0020data\u0020save\/delete\u0020operations\u0020for\u0020StyleVar.",
             "url": "classes/vB-DataManager-StyleVarTextDecoration.html"
-        },                {
-            "fqsen": "\\vB_DataManager_StyleVarTextDecoration\u003A\u003A\u0024childfields",
-            "name": "childfields",
-            "summary": "",
-            "url": "classes/vB-DataManager-StyleVarTextDecoration.html#property_childfields"
         },                {
             "fqsen": "\\vB_DataManager_StyleVarTextDecoration\u003A\u003A\u0024datatype",
             "name": "datatype",
@@ -8461,11 +6761,6 @@ Search.appendIndex(
             "summary": "Abstract\u0020class\u0020to\u0020do\u0020data\u0020save\/delete\u0020operations\u0020for\u0020StyleVar.",
             "url": "classes/vB-DataManager-StyleVarTextTransform.html"
         },                {
-            "fqsen": "\\vB_DataManager_StyleVarTextTransform\u003A\u003A\u0024childfields",
-            "name": "childfields",
-            "summary": "",
-            "url": "classes/vB-DataManager-StyleVarTextTransform.html#property_childfields"
-        },                {
             "fqsen": "\\vB_DataManager_StyleVarTextTransform\u003A\u003A\u0024datatype",
             "name": "datatype",
             "summary": "Local\u0020value\u0020telling\u0020us\u0020what\u0020datatype\u0020this\u0020is\u003B\u0020saves\u0020the\u0020resources\u0020of\u0020gettype\u0028\u0029",
@@ -8475,11 +6770,6 @@ Search.appendIndex(
             "name": "vB_DataManager_StyleVarURL",
             "summary": "Abstract\u0020class\u0020to\u0020do\u0020data\u0020save\/delete\u0020operations\u0020for\u0020StyleVar.",
             "url": "classes/vB-DataManager-StyleVarURL.html"
-        },                {
-            "fqsen": "\\vB_DataManager_StyleVarURL\u003A\u003A\u0024childfields",
-            "name": "childfields",
-            "summary": "",
-            "url": "classes/vB-DataManager-StyleVarURL.html#property_childfields"
         },                {
             "fqsen": "\\vB_DataManager_StyleVarURL\u003A\u003A\u0024datatype",
             "name": "datatype",
@@ -8548,7 +6838,7 @@ Search.appendIndex(
         },                {
             "fqsen": "\\vB_DataManager_Tag\u003A\u003Apre_delete\u0028\u0029",
             "name": "pre_delete",
-            "summary": "Additional\u0020data\u0020to\u0020update\u0020before\u0020a\u0020delete\u0020call\u0020\u0028such\u0020as\u0020denormalized\u0020values\u0020in\u0020other\u0020tables\u0029.",
+            "summary": "",
             "url": "classes/vB-DataManager-Tag.html#method_pre_delete"
         },                {
             "fqsen": "\\vB_DataManager_Tag\u003A\u003A\u0024validfields",
@@ -8558,7 +6848,7 @@ Search.appendIndex(
         },                {
             "fqsen": "\\vB_DataManager_Tag\u003A\u003A\u0024table",
             "name": "table",
-            "summary": "Default\u0020table\u0020to\u0020be\u0020used\u0020in\u0020queries",
+            "summary": "",
             "url": "classes/vB-DataManager-Tag.html#property_table"
         },                {
             "fqsen": "\\vB_DataManager_Tag\u003A\u003A\u0024keyField",
@@ -8873,7 +7163,7 @@ Search.appendIndex(
         },                {
             "fqsen": "\\vB_DataManager_Userpic\u003A\u003Apost_delete\u0028\u0029",
             "name": "post_delete",
-            "summary": "Additional\u0020data\u0020to\u0020update\u0020after\u0020a\u0020delete\u0020call\u0020\u0028such\u0020as\u0020denormalized\u0020values\u0020in\u0020other\u0020tables\u0029.",
+            "summary": "",
             "url": "classes/vB-DataManager-Userpic.html#method_post_delete"
         },                {
             "fqsen": "\\vB_DataManager_Userpic\u003A\u003Afetch_thumbnail\u0028\u0029",
@@ -8893,7 +7183,7 @@ Search.appendIndex(
         },                {
             "fqsen": "\\vB_DataManager_Userpic\u003A\u003A\u0024table",
             "name": "table",
-            "summary": "Default\u0020table\u0020to\u0020be\u0020used\u0020in\u0020queries",
+            "summary": "",
             "url": "classes/vB-DataManager-Userpic.html#property_table"
         },                {
             "fqsen": "\\vB_DataManager_Userpic\u003A\u003A\u0024revision",
@@ -9041,35 +7331,15 @@ Search.appendIndex(
             "summary": "Deletes\u0020the\u0020specified\u0020data\u0020item\u0020from\u0020the\u0020database",
             "url": "classes/vB-DataManager.html#method_delete"
         },                {
-            "fqsen": "\\vB_DataManager\u003A\u003Apre_delete\u0028\u0029",
-            "name": "pre_delete",
-            "summary": "Additional\u0020data\u0020to\u0020update\u0020before\u0020a\u0020delete\u0020call\u0020\u0028such\u0020as\u0020denormalized\u0020values\u0020in\u0020other\u0020tables\u0029.",
-            "url": "classes/vB-DataManager.html#method_pre_delete"
-        },                {
-            "fqsen": "\\vB_DataManager\u003A\u003Apost_delete\u0028\u0029",
-            "name": "post_delete",
-            "summary": "Additional\u0020data\u0020to\u0020update\u0020after\u0020a\u0020delete\u0020call\u0020\u0028such\u0020as\u0020denormalized\u0020values\u0020in\u0020other\u0020tables\u0029.",
-            "url": "classes/vB-DataManager.html#method_post_delete"
-        },                {
             "fqsen": "\\vB_DataManager\u003A\u003Aerror\u0028\u0029",
             "name": "error",
-            "summary": "Shows\u0020an\u0020error\u0020message\u0020and\u0020halts\u0020execution\u0020\u002D\u0020use\u0020this\u0020in\u0020the\u0020same\u0020way\u0020as\u0020print_stop_message\u0028\u0029\u003B",
+            "summary": "Shows\u0020an\u0020error\u0020message\u0020and\u0020halts\u0020execution",
             "url": "classes/vB-DataManager.html#method_error"
-        },                {
-            "fqsen": "\\vB_DataManager\u003A\u003Averify_userid\u0028\u0029",
-            "name": "verify_userid",
-            "summary": "Verifies\u0020that\u0020the\u0020specified\u0020user\u0020exists",
-            "url": "classes/vB-DataManager.html#method_verify_userid"
         },                {
             "fqsen": "\\vB_DataManager\u003A\u003Averify_username\u0028\u0029",
             "name": "verify_username",
             "summary": "Verifies\u0020that\u0020the\u0020provided\u0020username\u0020is\u0020valid,\u0020and\u0020attempts\u0020to\u0020correct\u0020it\u0020if\u0020it\u0020is\u0020not\u0020valid",
             "url": "classes/vB-DataManager.html#method_verify_username"
-        },                {
-            "fqsen": "\\vB_DataManager\u003A\u003Averify_serialized\u0028\u0029",
-            "name": "verify_serialized",
-            "summary": "Verifies\u0020that\u0020input\u0020is\u0020a\u0020serialized\u0020array\u0020\u0028or\u0020force\u0020an\u0020array\u0020to\u0020serialize\u0029",
-            "url": "classes/vB-DataManager.html#method_verify_serialized"
         },                {
             "fqsen": "\\vB_DataManager\u003A\u003Averify_md5\u0028\u0029",
             "name": "verify_md5",
@@ -9090,11 +7360,6 @@ Search.appendIndex(
             "name": "verify_date_array",
             "summary": "Verifies\u0020a\u0020date\u0020array\u0020as\u0020a\u0020valid\u0020unix\u0020timestamp",
             "url": "classes/vB-DataManager.html#method_verify_date_array"
-        },                {
-            "fqsen": "\\vB_DataManager\u003A\u003A\u0024rawfields",
-            "name": "rawfields",
-            "summary": "Array\u0020to\u0020store\u0020the\u0020names\u0020for\u0020fields\u0020that\u0020will\u0020be\u0020taking\u0020raw\u0020SQL",
-            "url": "classes/vB-DataManager.html#property_rawfields"
         },                {
             "fqsen": "\\vB_DataManager\u003A\u003A\u0024errors",
             "name": "errors",
@@ -9120,11 +7385,6 @@ Search.appendIndex(
             "name": "condition",
             "summary": "Condition\u0020to\u0020be\u0020used.\u0020Can\u0020be\u0020either\u0020\u005B\u0027keyfield\u0027\u0020\u003D\u003E\u0020\u0027value\u0027\u005D\u0020or\u0020a\u0020valid\u0020assertor\u0020vB_dB_Query\u003A\u003ACONDITIONS_KEY\u0020setting.",
             "url": "classes/vB-DataManager.html#property_condition"
-        },                {
-            "fqsen": "\\vB_DataManager\u003A\u003A\u0024table",
-            "name": "table",
-            "summary": "Default\u0020table\u0020to\u0020be\u0020used\u0020in\u0020queries",
-            "url": "classes/vB-DataManager.html#property_table"
         },                {
             "fqsen": "\\vB_Datastore_APC",
             "name": "vB_Datastore_APC",
@@ -9531,6 +7791,71 @@ Search.appendIndex(
             "summary": "",
             "url": "classes/vB-dB-MYSQL-Assertor.html"
         },                {
+            "fqsen": "\\vB_dB_MYSQL_Query_Alter",
+            "name": "vB_dB_MYSQL_Query_Alter",
+            "summary": "This\u0020is\u0020the\u0020MySQL\u002DSpecific\u0020version\u0020of\u0020the\u0020Alter\u0020Table\u0020Query\u0020processor",
+            "url": "classes/vB-dB-MYSQL-Query-Alter.html"
+        },                {
+            "fqsen": "\\vB_dB_MYSQL_Query_Create",
+            "name": "vB_dB_MYSQL_Query_Create",
+            "summary": "This\u0020is\u0020the\u0020MySQL\u002DSpecific\u0020version\u0020of\u0020the\u0020Create\u0020Table\u002Dtype\u0020queries\u0020processor",
+            "url": "classes/vB-dB-MYSQL-Query-Create.html"
+        },                {
+            "fqsen": "\\vB_dB_MYSQL_Query_Delete",
+            "name": "vB_dB_MYSQL_Query_Delete",
+            "summary": "This\u0020is\u0020the\u0020MySQL\u002DSpecific\u0020version\u0020of\u0020the\u0020Delete\u0020processor",
+            "url": "classes/vB-dB-MYSQL-Query-Delete.html"
+        },                {
+            "fqsen": "\\vB_dB_MYSQL_Query_Drop",
+            "name": "vB_dB_MYSQL_Query_Drop",
+            "summary": "This\u0020is\u0020the\u0020MySQL\u002DSpecific\u0020version\u0020of\u0020the\u0020Drop\u0020Table\u0020Query\u0020processor",
+            "url": "classes/vB-dB-MYSQL-Query-Drop.html"
+        },                {
+            "fqsen": "\\vB_dB_MYSQL_Query_Insert",
+            "name": "vB_dB_MYSQL_Query_Insert",
+            "summary": "This\u0020is\u0020the\u0020MySQL\u002DSpecific\u0020version\u0020of\u0020the\u0020Insert\u0020Query\u0020processor",
+            "url": "classes/vB-dB-MYSQL-Query-Insert.html"
+        },                {
+            "fqsen": "\\vB_dB_MYSQL_Query_InsertIgnore",
+            "name": "vB_dB_MYSQL_Query_InsertIgnore",
+            "summary": "This\u0020is\u0020the\u0020MySQL\u002DSpecific\u0020version\u0020of\u0020the\u0020Insert\u0020Query\u0020processor",
+            "url": "classes/vB-dB-MYSQL-Query-InsertIgnore.html"
+        },                {
+            "fqsen": "\\vB_dB_MYSQL_Query_Method",
+            "name": "vB_dB_MYSQL_Query_Method",
+            "summary": "This\u0020is\u0020the\u0020MySQL\u002DSpecific\u0020version\u0020of\u0020the\u0020method\u0020query\u0020processor",
+            "url": "classes/vB-dB-MYSQL-Query-Method.html"
+        },                {
+            "fqsen": "\\vB_dB_MYSQL_Query_MultipleInsert",
+            "name": "vB_dB_MYSQL_Query_MultipleInsert",
+            "summary": "This\u0020is\u0020the\u0020MySQL\u002DSpecific\u0020version\u0020of\u0020the\u0020Multiple\u0020Insert\u0020Query\u0020processor",
+            "url": "classes/vB-dB-MYSQL-Query-MultipleInsert.html"
+        },                {
+            "fqsen": "\\vB_dB_MYSQL_Query_Replace",
+            "name": "vB_dB_MYSQL_Query_Replace",
+            "summary": "This\u0020is\u0020the\u0020MySQL\u002DSpecific\u0020version\u0020of\u0020the\u0020Insert\u0020Query\u0020processor",
+            "url": "classes/vB-dB-MYSQL-Query-Replace.html"
+        },                {
+            "fqsen": "\\vB_dB_MYSQL_Query_Select",
+            "name": "vB_dB_MYSQL_Query_Select",
+            "summary": "This\u0020is\u0020the\u0020MySQL\u002DSpecific\u0020version\u0020of\u0020the\u0020select\u0020query\u0020processor",
+            "url": "classes/vB-dB-MYSQL-Query-Select.html"
+        },                {
+            "fqsen": "\\vB_dB_MYSQL_Query_Stored",
+            "name": "vB_dB_MYSQL_Query_Stored",
+            "summary": "This\u0020is\u0020the\u0020MySQL\u002DSpecific\u0020version\u0020of\u0020the\u0020stored\u0020query\u0020processor",
+            "url": "classes/vB-dB-MYSQL-Query-Stored.html"
+        },                {
+            "fqsen": "\\vB_dB_MYSQL_Query_Summary",
+            "name": "vB_dB_MYSQL_Query_Summary",
+            "summary": "This\u0020is\u0020the\u0020MySQL\u002DSpecific\u0020version\u0020of\u0020the\u0020count\u0020query\u0020processor",
+            "url": "classes/vB-dB-MYSQL-Query-Summary.html"
+        },                {
+            "fqsen": "\\vB_dB_MYSQL_Query_Update",
+            "name": "vB_dB_MYSQL_Query_Update",
+            "summary": "This\u0020is\u0020the\u0020MySQL\u002DSpecific\u0020version\u0020of\u0020the\u0020update\u0020query\u0020processor",
+            "url": "classes/vB-dB-MYSQL-Query-Update.html"
+        },                {
             "fqsen": "\\vB_dB_MYSQL_QueryBuilder",
             "name": "vB_dB_MYSQL_QueryBuilder",
             "summary": "Mysql\u0020specific\u0020query\u0020interface\u0020\u002D\u002D\u0020see\u0020base\u0020class",
@@ -9600,11 +7925,6 @@ Search.appendIndex(
             "name": "userInsertSubscribeevent",
             "summary": "",
             "url": "classes/vB-dB-MYSQL-QueryDefs.html#method_userInsertSubscribeevent"
-        },                {
-            "fqsen": "\\vB_dB_MYSQL_QueryDefs\u003A\u003AuserInsertAnnouncementread\u0028\u0029",
-            "name": "userInsertAnnouncementread",
-            "summary": "",
-            "url": "classes/vB-dB-MYSQL-QueryDefs.html#method_userInsertAnnouncementread"
         },                {
             "fqsen": "\\vB_dB_MYSQL_QueryDefs\u003A\u003AuserSearchRegisterIP\u0028\u0029",
             "name": "userSearchRegisterIP",
@@ -9695,11 +8015,6 @@ Search.appendIndex(
             "name": "fetchWolAllUsers",
             "summary": "",
             "url": "classes/vB-dB-MYSQL-QueryDefs.html#method_fetchWolAllUsers"
-        },                {
-            "fqsen": "\\vB_dB_MYSQL_QueryDefs\u003A\u003AfetchWol\u0028\u0029",
-            "name": "fetchWol",
-            "summary": "",
-            "url": "classes/vB-dB-MYSQL-QueryDefs.html#method_fetchWol"
         },                {
             "fqsen": "\\vB_dB_MYSQL_QueryDefs\u003A\u003AfetchWolCount\u0028\u0029",
             "name": "fetchWolCount",
@@ -9981,11 +8296,6 @@ Search.appendIndex(
             "summary": "",
             "url": "classes/vB-dB-MYSQL-Type-Uint.html#method_escapeFieldValue"
         },                {
-            "fqsen": "\\vB_dB_Query_Alter_MYSQL",
-            "name": "vB_dB_Query_Alter_MYSQL",
-            "summary": "This\u0020is\u0020the\u0020MySQL\u002DSpecific\u0020version\u0020of\u0020the\u0020Alter\u0020Table\u0020Query\u0020processor",
-            "url": "classes/vB-dB-Query-Alter-MYSQL.html"
-        },                {
             "fqsen": "\\vB_dB_Query_Alter",
             "name": "vB_dB_Query_Alter",
             "summary": "This\u0020is\u0020the\u0020query\u0020processor\u0020for\u0020Alter\u0020Table\u002Dtype\u0020queries.\u0020This\u0020includes\u0020index\u0020handling.",
@@ -9993,7 +8303,7 @@ Search.appendIndex(
         },                {
             "fqsen": "\\vB_dB_Query_Alter\u003A\u003A__construct\u0028\u0029",
             "name": "__construct",
-            "summary": "standard\u0020constructor.",
+            "summary": "",
             "url": "classes/vB-dB-Query-Alter.html#method___construct"
         },                {
             "fqsen": "\\vB_dB_Query_Alter\u003A\u003AsetQuery\u0028\u0029",
@@ -10006,26 +8316,6 @@ Search.appendIndex(
             "summary": "This\u0020function\u0020is\u0020the\u0020public\u0020interface\u0020to\u0020actually\u0020execute\u0020the\u0020SQL.",
             "url": "classes/vB-dB-Query-Alter.html#method_execSQL"
         },                {
-            "fqsen": "\\vB_dB_Query_Count_MYSQL",
-            "name": "vB_dB_Query_Count_MYSQL",
-            "summary": "This\u0020is\u0020the\u0020MySQL\u002DSpecific\u0020version\u0020of\u0020the\u0020count\u0020query\u0020processor",
-            "url": "classes/vB-dB-Query-Count-MYSQL.html"
-        },                {
-            "fqsen": "\\vB_dB_Query_Count",
-            "name": "vB_dB_Query_Count",
-            "summary": "This\u0020is\u0020the\u0020query\u0020processor\u0020for\u0020count\u0020queries.",
-            "url": "classes/vB-dB-Query-Count.html"
-        },                {
-            "fqsen": "\\vB_dB_Query_Count\u003A\u003A__construct\u0028\u0029",
-            "name": "__construct",
-            "summary": "standard\u0020constructor.",
-            "url": "classes/vB-dB-Query-Count.html#method___construct"
-        },                {
-            "fqsen": "\\vB_dB_Query_Create_MYSQL",
-            "name": "vB_dB_Query_Create_MYSQL",
-            "summary": "This\u0020is\u0020the\u0020MySQL\u002DSpecific\u0020version\u0020of\u0020the\u0020Create\u0020Table\u002Dtype\u0020queries\u0020processor",
-            "url": "classes/vB-dB-Query-Create-MYSQL.html"
-        },                {
             "fqsen": "\\vB_dB_Query_Create",
             "name": "vB_dB_Query_Create",
             "summary": "This\u0020is\u0020the\u0020query\u0020processor\u0020for\u0020Create\u0020Table\u002Dtype\u0020queries.",
@@ -10033,7 +8323,7 @@ Search.appendIndex(
         },                {
             "fqsen": "\\vB_dB_Query_Create\u003A\u003A__construct\u0028\u0029",
             "name": "__construct",
-            "summary": "standard\u0020constructor.",
+            "summary": "",
             "url": "classes/vB-dB-Query-Create.html#method___construct"
         },                {
             "fqsen": "\\vB_dB_Query_Create\u003A\u003AsetQuery\u0028\u0029",
@@ -10046,11 +8336,6 @@ Search.appendIndex(
             "summary": "This\u0020function\u0020is\u0020the\u0020public\u0020interface\u0020to\u0020actually\u0020execute\u0020the\u0020SQL.",
             "url": "classes/vB-dB-Query-Create.html#method_execSQL"
         },                {
-            "fqsen": "\\vB_dB_Query_Delete_MYSQL",
-            "name": "vB_dB_Query_Delete_MYSQL",
-            "summary": "This\u0020is\u0020the\u0020MySQL\u002DSpecific\u0020version\u0020of\u0020the\u0020Delete\u0020processor",
-            "url": "classes/vB-dB-Query-Delete-MYSQL.html"
-        },                {
             "fqsen": "\\vB_dB_Query_Delete",
             "name": "vB_dB_Query_Delete",
             "summary": "This\u0020is\u0020the\u0020query\u0020processor\u0020for\u0020delete\u0020queries.",
@@ -10058,7 +8343,7 @@ Search.appendIndex(
         },                {
             "fqsen": "\\vB_dB_Query_Delete\u003A\u003A__construct\u0028\u0029",
             "name": "__construct",
-            "summary": "standard\u0020constructor.",
+            "summary": "This\u0020class\u0020is\u0020called\u0020by\u0020the\u0020new\u0020vB_dB_Assertor\u0020database\u0020class\nIt\u0020does\u0020the\u0020actual\u0020execution.\u0020See\u0020the\u0020vB_dB_Assertor\u0020class\u0020for\u0020more\u0020information",
             "url": "classes/vB-dB-Query-Delete.html#method___construct"
         },                {
             "fqsen": "\\vB_dB_Query_Delete\u003A\u003AsetQuery\u0028\u0029",
@@ -10071,11 +8356,6 @@ Search.appendIndex(
             "summary": "This\u0020function\u0020is\u0020the\u0020public\u0020interface\u0020to\u0020actually\u0020execute\u0020the\u0020SQL.",
             "url": "classes/vB-dB-Query-Delete.html#method_execSQL"
         },                {
-            "fqsen": "\\vB_dB_Query_Drop_MYSQL",
-            "name": "vB_dB_Query_Drop_MYSQL",
-            "summary": "This\u0020is\u0020the\u0020MySQL\u002DSpecific\u0020version\u0020of\u0020the\u0020Drop\u0020Table\u0020Query\u0020processor",
-            "url": "classes/vB-dB-Query-Drop-MYSQL.html"
-        },                {
             "fqsen": "\\vB_dB_Query_Drop",
             "name": "vB_dB_Query_Drop",
             "summary": "This\u0020is\u0020the\u0020query\u0020processor\u0020for\u0020Drop\u0020Table\u002Dtype\u0020queries.\u0020This\u0020includes\u0020index\u0020handling.",
@@ -10083,7 +8363,7 @@ Search.appendIndex(
         },                {
             "fqsen": "\\vB_dB_Query_Drop\u003A\u003A__construct\u0028\u0029",
             "name": "__construct",
-            "summary": "standard\u0020constructor.",
+            "summary": "",
             "url": "classes/vB-dB-Query-Drop.html#method___construct"
         },                {
             "fqsen": "\\vB_dB_Query_Drop\u003A\u003AsetQuery\u0028\u0029",
@@ -10096,11 +8376,6 @@ Search.appendIndex(
             "summary": "This\u0020function\u0020is\u0020the\u0020public\u0020interface\u0020to\u0020actually\u0020execute\u0020the\u0020SQL.",
             "url": "classes/vB-dB-Query-Drop.html#method_execSQL"
         },                {
-            "fqsen": "\\vB_dB_Query_Insert_MYSQL",
-            "name": "vB_dB_Query_Insert_MYSQL",
-            "summary": "This\u0020is\u0020the\u0020MySQL\u002DSpecific\u0020version\u0020of\u0020the\u0020Insert\u0020Query\u0020processor",
-            "url": "classes/vB-dB-Query-Insert-MYSQL.html"
-        },                {
             "fqsen": "\\vB_dB_Query_Insert",
             "name": "vB_dB_Query_Insert",
             "summary": "This\u0020is\u0020the\u0020query\u0020processor\u0020for\u0020insert\u0020queries.",
@@ -10108,7 +8383,7 @@ Search.appendIndex(
         },                {
             "fqsen": "\\vB_dB_Query_Insert\u003A\u003A__construct\u0028\u0029",
             "name": "__construct",
-            "summary": "standard\u0020constructor.",
+            "summary": "",
             "url": "classes/vB-dB-Query-Insert.html#method___construct"
         },                {
             "fqsen": "\\vB_dB_Query_Insert\u003A\u003AsetQuery\u0028\u0029",
@@ -10121,11 +8396,6 @@ Search.appendIndex(
             "summary": "This\u0020function\u0020is\u0020the\u0020public\u0020interface\u0020to\u0020actually\u0020execute\u0020the\u0020SQL.",
             "url": "classes/vB-dB-Query-Insert.html#method_execSQL"
         },                {
-            "fqsen": "\\vB_dB_Query_InsertIgnore_MYSQL",
-            "name": "vB_dB_Query_InsertIgnore_MYSQL",
-            "summary": "This\u0020is\u0020the\u0020MySQL\u002DSpecific\u0020version\u0020of\u0020the\u0020Insert\u0020Query\u0020processor",
-            "url": "classes/vB-dB-Query-InsertIgnore-MYSQL.html"
-        },                {
             "fqsen": "\\vB_dB_Query_InsertIgnore",
             "name": "vB_dB_Query_InsertIgnore",
             "summary": "This\u0020is\u0020the\u0020query\u0020processor\u0020for\u0020insert\u0020queries.",
@@ -10133,13 +8403,8 @@ Search.appendIndex(
         },                {
             "fqsen": "\\vB_dB_Query_InsertIgnore\u003A\u003A__construct\u0028\u0029",
             "name": "__construct",
-            "summary": "standard\u0020constructor.",
+            "summary": "",
             "url": "classes/vB-dB-Query-InsertIgnore.html#method___construct"
-        },                {
-            "fqsen": "\\vB_dB_Query_Method_MYSQL",
-            "name": "vB_dB_Query_Method_MYSQL",
-            "summary": "This\u0020is\u0020the\u0020MySQL\u002DSpecific\u0020version\u0020of\u0020the\u0020method\u0020query\u0020processor",
-            "url": "classes/vB-dB-Query-Method-MYSQL.html"
         },                {
             "fqsen": "\\vB_dB_Query_Method",
             "name": "vB_dB_Query_Method",
@@ -10148,7 +8413,7 @@ Search.appendIndex(
         },                {
             "fqsen": "\\vB_dB_Query_Method\u003A\u003A__construct\u0028\u0029",
             "name": "__construct",
-            "summary": "standard\u0020constructor.",
+            "summary": "",
             "url": "classes/vB-dB-Query-Method.html#method___construct"
         },                {
             "fqsen": "\\vB_dB_Query_Method\u003A\u003AsetQuery\u0028\u0029",
@@ -10161,11 +8426,6 @@ Search.appendIndex(
             "summary": "This\u0020function\u0020is\u0020the\u0020public\u0020interface\u0020to\u0020actually\u0020execute\u0020the\u0020SQL.",
             "url": "classes/vB-dB-Query-Method.html#method_execSQL"
         },                {
-            "fqsen": "\\vB_dB_Query_MultipleInsert_MYSQL",
-            "name": "vB_dB_Query_MultipleInsert_MYSQL",
-            "summary": "This\u0020is\u0020the\u0020MySQL\u002DSpecific\u0020version\u0020of\u0020the\u0020Multiple\u0020Insert\u0020Query\u0020processor",
-            "url": "classes/vB-dB-Query-MultipleInsert-MYSQL.html"
-        },                {
             "fqsen": "\\vB_dB_Query_MultipleInsert",
             "name": "vB_dB_Query_MultipleInsert",
             "summary": "This\u0020is\u0020the\u0020query\u0020processor\u0020for\u0020multiple\u0020insert\u0020queries.",
@@ -10173,7 +8433,7 @@ Search.appendIndex(
         },                {
             "fqsen": "\\vB_dB_Query_MultipleInsert\u003A\u003A__construct\u0028\u0029",
             "name": "__construct",
-            "summary": "standard\u0020constructor.",
+            "summary": "",
             "url": "classes/vB-dB-Query-MultipleInsert.html#method___construct"
         },                {
             "fqsen": "\\vB_dB_Query_MultipleInsert\u003A\u003AsetQuery\u0028\u0029",
@@ -10186,11 +8446,6 @@ Search.appendIndex(
             "summary": "This\u0020function\u0020is\u0020the\u0020public\u0020interface\u0020to\u0020actually\u0020execute\u0020the\u0020SQL.",
             "url": "classes/vB-dB-Query-MultipleInsert.html#method_execSQL"
         },                {
-            "fqsen": "\\vB_dB_Query_Replace_MYSQL",
-            "name": "vB_dB_Query_Replace_MYSQL",
-            "summary": "This\u0020is\u0020the\u0020MySQL\u002DSpecific\u0020version\u0020of\u0020the\u0020Insert\u0020Query\u0020processor",
-            "url": "classes/vB-dB-Query-Replace-MYSQL.html"
-        },                {
             "fqsen": "\\vB_dB_Query_Replace",
             "name": "vB_dB_Query_Replace",
             "summary": "This\u0020is\u0020the\u0020query\u0020processor\u0020for\u0020replace\u0020queries.",
@@ -10198,7 +8453,7 @@ Search.appendIndex(
         },                {
             "fqsen": "\\vB_dB_Query_Replace\u003A\u003A__construct\u0028\u0029",
             "name": "__construct",
-            "summary": "standard\u0020constructor.",
+            "summary": "",
             "url": "classes/vB-dB-Query-Replace.html#method___construct"
         },                {
             "fqsen": "\\vB_dB_Query_Replace\u003A\u003AsetQuery\u0028\u0029",
@@ -10211,11 +8466,6 @@ Search.appendIndex(
             "summary": "This\u0020function\u0020is\u0020the\u0020public\u0020interface\u0020to\u0020actually\u0020execute\u0020the\u0020SQL.",
             "url": "classes/vB-dB-Query-Replace.html#method_execSQL"
         },                {
-            "fqsen": "\\vB_dB_Query_Select_MYSQL",
-            "name": "vB_dB_Query_Select_MYSQL",
-            "summary": "This\u0020is\u0020the\u0020MySQL\u002DSpecific\u0020version\u0020of\u0020the\u0020select\u0020query\u0020processor",
-            "url": "classes/vB-dB-Query-Select-MYSQL.html"
-        },                {
             "fqsen": "\\vB_dB_Query_Select",
             "name": "vB_dB_Query_Select",
             "summary": "This\u0020is\u0020the\u0020query\u0020processor\u0020for\u0020select\u0020queries.\u0020This\u0020includes\u0020index\u0020handling.",
@@ -10223,7 +8473,7 @@ Search.appendIndex(
         },                {
             "fqsen": "\\vB_dB_Query_Select\u003A\u003A__construct\u0028\u0029",
             "name": "__construct",
-            "summary": "standard\u0020constructor.",
+            "summary": "",
             "url": "classes/vB-dB-Query-Select.html#method___construct"
         },                {
             "fqsen": "\\vB_dB_Query_Select\u003A\u003AsetQuery\u0028\u0029",
@@ -10236,15 +8486,15 @@ Search.appendIndex(
             "summary": "This\u0020function\u0020is\u0020the\u0020public\u0020interface\u0020to\u0020actually\u0020execute\u0020the\u0020SQL.",
             "url": "classes/vB-dB-Query-Select.html#method_execSQL"
         },                {
-            "fqsen": "\\vB_dB_Query_Stored_MYSQL",
-            "name": "vB_dB_Query_Stored_MYSQL",
-            "summary": "This\u0020is\u0020the\u0020MySQL\u002DSpecific\u0020version\u0020of\u0020the\u0020stored\u0020query\u0020processor",
-            "url": "classes/vB-dB-Query-Stored-MYSQL.html"
-        },                {
             "fqsen": "\\vB_dB_Query_Stored",
             "name": "vB_dB_Query_Stored",
             "summary": "This\u0020is\u0020the\u0020query\u0020processor\u0020for\u0020stored\u0020queries.",
             "url": "classes/vB-dB-Query-Stored.html"
+        },                {
+            "fqsen": "\\vB_dB_Query_Stored\u003A\u003A__construct\u0028\u0029",
+            "name": "__construct",
+            "summary": "",
+            "url": "classes/vB-dB-Query-Stored.html#method___construct"
         },                {
             "fqsen": "\\vB_dB_Query_Stored\u003A\u003AsetQuery\u0028\u0029",
             "name": "setQuery",
@@ -10256,10 +8506,20 @@ Search.appendIndex(
             "summary": "This\u0020function\u0020is\u0020the\u0020public\u0020interface\u0020to\u0020actually\u0020execute\u0020the\u0020SQL.",
             "url": "classes/vB-dB-Query-Stored.html#method_execSQL"
         },                {
-            "fqsen": "\\vB_dB_Query_Update_MYSQL",
-            "name": "vB_dB_Query_Update_MYSQL",
-            "summary": "This\u0020is\u0020the\u0020MySQL\u002DSpecific\u0020version\u0020of\u0020the\u0020update\u0020query\u0020processor",
-            "url": "classes/vB-dB-Query-Update-MYSQL.html"
+            "fqsen": "\\vB_dB_Query_Summary",
+            "name": "vB_dB_Query_Summary",
+            "summary": "This\u0020is\u0020the\u0020query\u0020processor\u0020for\u0020count\u0020queries.",
+            "url": "classes/vB-dB-Query-Summary.html"
+        },                {
+            "fqsen": "\\vB_dB_Query_Summary\u003A\u003A__construct\u0028\u0029",
+            "name": "__construct",
+            "summary": "",
+            "url": "classes/vB-dB-Query-Summary.html#method___construct"
+        },                {
+            "fqsen": "\\vB_dB_Query_Summary\u003A\u003AsetQuery\u0028\u0029",
+            "name": "setQuery",
+            "summary": "This\u0020loads\u0020and\u0020validates\u0020the\u0020data\u002D\u0020ensures\u0020we\u0020have\u0020all\u0020we\u0020need",
+            "url": "classes/vB-dB-Query-Summary.html#method_setQuery"
         },                {
             "fqsen": "\\vB_dB_Query_Update",
             "name": "vB_dB_Query_Update",
@@ -10268,7 +8528,7 @@ Search.appendIndex(
         },                {
             "fqsen": "\\vB_dB_Query_Update\u003A\u003A__construct\u0028\u0029",
             "name": "__construct",
-            "summary": "standard\u0020constructor.",
+            "summary": "",
             "url": "classes/vB-dB-Query-Update.html#method___construct"
         },                {
             "fqsen": "\\vB_dB_Query_Update\u003A\u003AsetQuery\u0028\u0029",
@@ -10451,6 +8711,11 @@ Search.appendIndex(
             "summary": "",
             "url": "classes/vB-dB-Query.html#constant_QUERY_COUNT"
         },                {
+            "fqsen": "\\vB_dB_Query\u003A\u003AQUERY_SUMMARY",
+            "name": "QUERY_SUMMARY",
+            "summary": "",
+            "url": "classes/vB-dB-Query.html#constant_QUERY_SUMMARY"
+        },                {
             "fqsen": "\\vB_dB_Query\u003A\u003AQUERY_STORED",
             "name": "QUERY_STORED",
             "summary": "",
@@ -10551,96 +8816,6 @@ Search.appendIndex(
             "summary": "",
             "url": "classes/vB-dB-Query.html#constant_QUERY_TABLE"
         },                {
-            "fqsen": "\\vB_dB_QueryBuilder",
-            "name": "vB_dB_QueryBuilder",
-            "summary": "This\u0020class\u0020is\u0020a\u0020base\u0020intended\u0020to\u0020contain\u0020the\u0020backend\u0020specific\u0020details\u0020for\u0020converting\nassertor\u0020conditions\u0020to\u0020query\u0020code.\u0020\u0020The\u0020logic\u0020is\u0020contained\u0020in\u0020the\u0020base\u0020class\u0020for\u0020the\ntime\u0020being\u0020to\u0020allow\u0020additional\u0020sql\u0020backends\u0020to\u0020override\u0020specific\u0020functions\u0020as\nmuch\u0020of\u0020it\u0020will\u0020be\u0020applicable.\u0020\u0020We\u0027ll\u0020most\u0020likely\u0020need\u0020to\u0020heavily\u0020refactor\u0020this\nwhen\u0020we\u0020add\u0020a\u0020second\u0020backend,\u0020but\u0020that\u0020will\u0020be\u0020more\u0020efficiently\u0020done\u0020when\u0020we\u0020know\nwhat\u0020the\u0020requirements\u0020of\u0020that\u0020backend\u0020really\u0020are.",
-            "url": "classes/vB-dB-QueryBuilder.html"
-        },                {
-            "fqsen": "\\vB_dB_QueryBuilder\u003A\u003A__construct\u0028\u0029",
-            "name": "__construct",
-            "summary": "Construct\u0020the\u0020query\u0020builder",
-            "url": "classes/vB-dB-QueryBuilder.html#method___construct"
-        },                {
-            "fqsen": "\\vB_dB_QueryBuilder\u003A\u003AmatchValues\u0028\u0029",
-            "name": "matchValues",
-            "summary": "This\u0020matches\u0020a\u0020series\u0020of\u0020values\u0020against\u0020a\u0020query\u0020string",
-            "url": "classes/vB-dB-QueryBuilder.html#method_matchValues"
-        },                {
-            "fqsen": "\\vB_dB_QueryBuilder\u003A\u003AconditionsToFilter\u0028\u0029",
-            "name": "conditionsToFilter",
-            "summary": "This\u0020function\u0020generates\u0020the\u0020query\u0020text\u0020against\u0020a\u0020table.",
-            "url": "classes/vB-dB-QueryBuilder.html#method_conditionsToFilter"
-        },                {
-            "fqsen": "\\vB_dB_QueryBuilder\u003A\u003AprimaryKeyToFilter\u0028\u0029",
-            "name": "primaryKeyToFilter",
-            "summary": "",
-            "url": "classes/vB-dB-QueryBuilder.html#method_primaryKeyToFilter"
-        },                {
-            "fqsen": "\\vB_dB_QueryBuilder\u003A\u003AvalueArrayToFilter\u0028\u0029",
-            "name": "valueArrayToFilter",
-            "summary": "",
-            "url": "classes/vB-dB-QueryBuilder.html#method_valueArrayToFilter"
-        },                {
-            "fqsen": "\\vB_dB_QueryBuilder\u003A\u003AvalueArrayToSetLine\u0028\u0029",
-            "name": "valueArrayToSetLine",
-            "summary": "",
-            "url": "classes/vB-dB-QueryBuilder.html#method_valueArrayToSetLine"
-        },                {
-            "fqsen": "\\vB_dB_QueryBuilder\u003A\u003AmakeSelectQuery\u0028\u0029",
-            "name": "makeSelectQuery",
-            "summary": "",
-            "url": "classes/vB-dB-QueryBuilder.html#method_makeSelectQuery"
-        },                {
-            "fqsen": "\\vB_dB_QueryBuilder\u003A\u003AmakeCountQuery\u0028\u0029",
-            "name": "makeCountQuery",
-            "summary": "",
-            "url": "classes/vB-dB-QueryBuilder.html#method_makeCountQuery"
-        },                {
-            "fqsen": "\\vB_dB_QueryBuilder\u003A\u003AmakeDeleteQuery\u0028\u0029",
-            "name": "makeDeleteQuery",
-            "summary": "",
-            "url": "classes/vB-dB-QueryBuilder.html#method_makeDeleteQuery"
-        },                {
-            "fqsen": "\\vB_dB_QueryBuilder\u003A\u003AmakeUpdateQuery\u0028\u0029",
-            "name": "makeUpdateQuery",
-            "summary": "",
-            "url": "classes/vB-dB-QueryBuilder.html#method_makeUpdateQuery"
-        },                {
-            "fqsen": "\\vB_dB_QueryBuilder\u003A\u003AmakeInsertQuery\u0028\u0029",
-            "name": "makeInsertQuery",
-            "summary": "",
-            "url": "classes/vB-dB-QueryBuilder.html#method_makeInsertQuery"
-        },                {
-            "fqsen": "\\vB_dB_QueryBuilder\u003A\u003AmakeReplaceQuery\u0028\u0029",
-            "name": "makeReplaceQuery",
-            "summary": "",
-            "url": "classes/vB-dB-QueryBuilder.html#method_makeReplaceQuery"
-        },                {
-            "fqsen": "\\vB_dB_QueryBuilder\u003A\u003AmakeInsertMultipleQuery\u0028\u0029",
-            "name": "makeInsertMultipleQuery",
-            "summary": "",
-            "url": "classes/vB-dB-QueryBuilder.html#method_makeInsertMultipleQuery"
-        },                {
-            "fqsen": "\\vB_dB_QueryBuilder\u003A\u003AsetDebugSQL\u0028\u0029",
-            "name": "setDebugSQL",
-            "summary": "",
-            "url": "classes/vB-dB-QueryBuilder.html#method_setDebugSQL"
-        },                {
-            "fqsen": "\\vB_dB_QueryBuilder\u003A\u003AescapeField\u0028\u0029",
-            "name": "escapeField",
-            "summary": "Handle\u0020situations\u0020were\u0020the\u0020field\u0020name\u0020might\u0020be\u0020a\u0020reserved\u0020word.\u0020\u0020Also\u0020allow\u0020for\u0020qualified\u0020names.",
-            "url": "classes/vB-dB-QueryBuilder.html#method_escapeField"
-        },                {
-            "fqsen": "\\vB_dB_QueryBuilder\u003A\u003AescapeTable\u0028\u0029",
-            "name": "escapeTable",
-            "summary": "Escapes\u0020a\u0020table\u0020name\u0020\u002D\u002D\u0020also\u0020qualifies\u0020it\u0020with\u0020the\u0020table\u0020prefix\u0020automatically.",
-            "url": "classes/vB-dB-QueryBuilder.html#method_escapeTable"
-        },                {
-            "fqsen": "\\vB_dB_QueryBuilder\u003A\u003AescapeFields\u0028\u0029",
-            "name": "escapeFields",
-            "summary": "Handle\u0020situations\u0020were\u0020the\u0020field\u0020name\u0020might\u0020be\u0020a\u0020reserved\u0020word.\u0020\u0020Also\u0020allow\u0020for\u0020qualified\u0020names.",
-            "url": "classes/vB-dB-QueryBuilder.html#method_escapeFields"
-        },                {
             "fqsen": "\\vB_dB_QueryDefs",
             "name": "vB_dB_QueryDefs",
             "summary": "",
@@ -10730,6 +8905,201 @@ Search.appendIndex(
             "name": "escapeFieldValue",
             "summary": "",
             "url": "classes/vB-dB-Type.html#method_escapeFieldValue"
+        },                {
+            "fqsen": "\\vB_Entity_Datetime",
+            "name": "vB_Entity_Datetime",
+            "summary": "",
+            "url": "classes/vB-Entity-Datetime.html"
+        },                {
+            "fqsen": "\\vB_Entity_Datetime\u003A\u003A__construct\u0028\u0029",
+            "name": "__construct",
+            "summary": "",
+            "url": "classes/vB-Entity-Datetime.html#method___construct"
+        },                {
+            "fqsen": "\\vB_Entity_Datetime\u003A\u003AgetUnixTimestamp\u0028\u0029",
+            "name": "getUnixTimestamp",
+            "summary": "Calculate\u0020unixtime",
+            "url": "classes/vB-Entity-Datetime.html#method_getUnixTimestamp"
+        },                {
+            "fqsen": "\\vB_Entity_Datetime\u003A\u003AgetUnixTimestampForYear\u0028\u0029",
+            "name": "getUnixTimestampForYear",
+            "summary": "Calculate\u0020unixtime\u0020for\u0020\u0022equivalent\u0022\u0020month\/day\u0020hh\u003Amm\u003Ass\u0020for\u0020a\u0020different\u0020year",
+            "url": "classes/vB-Entity-Datetime.html#method_getUnixTimestampForYear"
+        },                {
+            "fqsen": "\\vB_Entity_Datetime\u003A\u003A__toString\u0028\u0029",
+            "name": "__toString",
+            "summary": "",
+            "url": "classes/vB-Entity-Datetime.html#method___toString"
+        },                {
+            "fqsen": "\\vB_Entity_Datetime\u003A\u003AisLeapDateIgnoreYear\u0028\u0029",
+            "name": "isLeapDateIgnoreYear",
+            "summary": "",
+            "url": "classes/vB-Entity-Datetime.html#method_isLeapDateIgnoreYear"
+        },                {
+            "fqsen": "\\vB_Entity_Datetime\u003A\u003AisLeapYear\u0028\u0029",
+            "name": "isLeapYear",
+            "summary": "",
+            "url": "classes/vB-Entity-Datetime.html#method_isLeapYear"
+        },                {
+            "fqsen": "\\vB_Entity_Datetime\u003A\u003AcalculateNextLeapYear\u0028\u0029",
+            "name": "calculateNextLeapYear",
+            "summary": "",
+            "url": "classes/vB-Entity-Datetime.html#method_calculateNextLeapYear"
+        },                {
+            "fqsen": "\\vB_Entity_Datetime\u003A\u003AcalculatePrevLeapYear\u0028\u0029",
+            "name": "calculatePrevLeapYear",
+            "summary": "",
+            "url": "classes/vB-Entity-Datetime.html#method_calculatePrevLeapYear"
+        },                {
+            "fqsen": "\\vB_Entity_Datetime\u003A\u003AcreateFromArray\u0028\u0029",
+            "name": "createFromArray",
+            "summary": "",
+            "url": "classes/vB-Entity-Datetime.html#method_createFromArray"
+        },                {
+            "fqsen": "\\vB_Entity_Datetime\u003A\u003ADATETIME_MYSQL",
+            "name": "DATETIME_MYSQL",
+            "summary": "",
+            "url": "classes/vB-Entity-Datetime.html#constant_DATETIME_MYSQL"
+        },                {
+            "fqsen": "\\vB_Entity_Datetime\u003A\u003ATIMEZONES",
+            "name": "TIMEZONES",
+            "summary": "",
+            "url": "classes/vB-Entity-Datetime.html#constant_TIMEZONES"
+        },                {
+            "fqsen": "\\vB_Entity_ScheduleItem",
+            "name": "vB_Entity_ScheduleItem",
+            "summary": "",
+            "url": "classes/vB-Entity-ScheduleItem.html"
+        },                {
+            "fqsen": "\\vB_Entity_ScheduleItem\u003A\u003A__construct\u0028\u0029",
+            "name": "__construct",
+            "summary": "",
+            "url": "classes/vB-Entity-ScheduleItem.html#method___construct"
+        },                {
+            "fqsen": "\\vB_Entity_ScheduleItem\u003A\u003AisActiveAt\u0028\u0029",
+            "name": "isActiveAt",
+            "summary": "",
+            "url": "classes/vB-Entity-ScheduleItem.html#method_isActiveAt"
+        },                {
+            "fqsen": "\\vB_Entity_ScheduleItem\u003A\u003AcreateFromArray\u0028\u0029",
+            "name": "createFromArray",
+            "summary": "",
+            "url": "classes/vB-Entity-ScheduleItem.html#method_createFromArray"
+        },                {
+            "fqsen": "\\vB_Entity_Styleschedule",
+            "name": "vB_Entity_Styleschedule",
+            "summary": "",
+            "url": "classes/vB-Entity-Styleschedule.html"
+        },                {
+            "fqsen": "\\vB_Entity_Styleschedule\u003A\u003A__construct\u0028\u0029",
+            "name": "__construct",
+            "summary": "",
+            "url": "classes/vB-Entity-Styleschedule.html#method___construct"
+        },                {
+            "fqsen": "\\vB_Entity_Styleschedule\u003A\u003AcreateFromArray\u0028\u0029",
+            "name": "createFromArray",
+            "summary": "",
+            "url": "classes/vB-Entity-Styleschedule.html#method_createFromArray"
+        },                {
+            "fqsen": "\\vB_Entity_Styleschedule\u003A\u003AgetNearestStartAndEndUnixtimes\u0028\u0029",
+            "name": "getNearestStartAndEndUnixtimes",
+            "summary": "Calculate\u0020the\u0020\u0022active\u0022\u0020range\u0020nearest\u0020to\u0020\u0024attimestamp,\u0020where\u0020the\u0020\u0022nearest\u0020range\u0022\u0020either\u0020includes\nthe\u0020\u0024attimestamp,\u0020or\u0020is\u0020in\u0020the\u0020earliest\u0020future\u0020range\u0020relative\u0020to\u0020\u0024attimestamp.",
+            "url": "classes/vB-Entity-Styleschedule.html#method_getNearestStartAndEndUnixtimes"
+        },                {
+            "fqsen": "\\vB_Entity_Styleschedule\u003A\u003A\u0024startdate",
+            "name": "startdate",
+            "summary": "",
+            "url": "classes/vB-Entity-Styleschedule.html#property_startdate"
+        },                {
+            "fqsen": "\\vB_Entity_Styleschedule\u003A\u003A\u0024startdate_tzoffset",
+            "name": "startdate_tzoffset",
+            "summary": "",
+            "url": "classes/vB-Entity-Styleschedule.html#property_startdate_tzoffset"
+        },                {
+            "fqsen": "\\vB_Entity_Styleschedule\u003A\u003A\u0024enddate",
+            "name": "enddate",
+            "summary": "",
+            "url": "classes/vB-Entity-Styleschedule.html#property_enddate"
+        },                {
+            "fqsen": "\\vB_Entity_Styleschedule\u003A\u003A\u0024enddate_tzoffset",
+            "name": "enddate_tzoffset",
+            "summary": "",
+            "url": "classes/vB-Entity-Styleschedule.html#property_enddate_tzoffset"
+        },                {
+            "fqsen": "\\vB_Entity_Styleschedule\u003A\u003A\u0024styleid",
+            "name": "styleid",
+            "summary": "",
+            "url": "classes/vB-Entity-Styleschedule.html#property_styleid"
+        },                {
+            "fqsen": "\\vB_Entity_Styleschedule\u003A\u003A\u0024enabled",
+            "name": "enabled",
+            "summary": "",
+            "url": "classes/vB-Entity-Styleschedule.html#property_enabled"
+        },                {
+            "fqsen": "\\vB_Entity_Styleschedule\u003A\u003A\u0024useyear",
+            "name": "useyear",
+            "summary": "",
+            "url": "classes/vB-Entity-Styleschedule.html#property_useyear"
+        },                {
+            "fqsen": "\\vB_Entity_Styleschedule\u003A\u003A\u0024priority",
+            "name": "priority",
+            "summary": "",
+            "url": "classes/vB-Entity-Styleschedule.html#property_priority"
+        },                {
+            "fqsen": "\\vB_Entity_Styleschedule\u003A\u003A\u0024overridechannelcustom",
+            "name": "overridechannelcustom",
+            "summary": "",
+            "url": "classes/vB-Entity-Styleschedule.html#property_overridechannelcustom"
+        },                {
+            "fqsen": "\\vB_Entity_Styleschedule\u003A\u003A\u0024overrideusercustom",
+            "name": "overrideusercustom",
+            "summary": "",
+            "url": "classes/vB-Entity-Styleschedule.html#property_overrideusercustom"
+        },                {
+            "fqsen": "\\vB_Entity_Styleschedule\u003A\u003A\u0024title",
+            "name": "title",
+            "summary": "",
+            "url": "classes/vB-Entity-Styleschedule.html#property_title"
+        },                {
+            "fqsen": "\\vB_Entity_Styleschedule\u003A\u003A\u0024scheduleid",
+            "name": "scheduleid",
+            "summary": "",
+            "url": "classes/vB-Entity-Styleschedule.html#property_scheduleid"
+        },                {
+            "fqsen": "\\vB_Entity",
+            "name": "vB_Entity",
+            "summary": "",
+            "url": "classes/vB-Entity.html"
+        },                {
+            "fqsen": "\\vB_Entity\u003A\u003A__get\u0028\u0029",
+            "name": "__get",
+            "summary": "",
+            "url": "classes/vB-Entity.html#method___get"
+        },                {
+            "fqsen": "\\vB_Entity\u003A\u003A__set\u0028\u0029",
+            "name": "__set",
+            "summary": "",
+            "url": "classes/vB-Entity.html#method___set"
+        },                {
+            "fqsen": "\\vB_Entity\u003A\u003AjsonSerialize\u0028\u0029",
+            "name": "jsonSerialize",
+            "summary": "",
+            "url": "classes/vB-Entity.html#method_jsonSerialize"
+        },                {
+            "fqsen": "\\vB_Entity\u003A\u003AtoArray\u0028\u0029",
+            "name": "toArray",
+            "summary": "",
+            "url": "classes/vB-Entity.html#method_toArray"
+        },                {
+            "fqsen": "\\vB_Entity\u003A\u003AjsonDecode\u0028\u0029",
+            "name": "jsonDecode",
+            "summary": "Accept\u0020a\u0020json\u0020string\u0020and\u0020converts\u0020it\u0020back\u0020to\u0020an\u0020object\u0020instance.\u0020The\u0020string\u0020is\u0020intended\u0020to\u0020be\u0020an\u0020output\nfrom\u0020a\u0020json_encode\u0028\u0024originalEntity\u002D\u003EjsonSerialize\u0028\u0029,\u0020true\u0029\u0020call.",
+            "url": "classes/vB-Entity.html#method_jsonDecode"
+        },                {
+            "fqsen": "\\vB_Entity\u003A\u003AcreateFromArray\u0028\u0029",
+            "name": "createFromArray",
+            "summary": "",
+            "url": "classes/vB-Entity.html#method_createFromArray"
         },                {
             "fqsen": "\\vB_Exception_404",
             "name": "vB_Exception_404",
@@ -11431,6 +9801,41 @@ Search.appendIndex(
             "summary": "",
             "url": "classes/vB-Image.html#property_imageinfo"
         },                {
+            "fqsen": "\\vB_Interface_BBCode",
+            "name": "vB_Interface_BBCode",
+            "summary": "",
+            "url": "classes/vB-Interface-BBCode.html"
+        },                {
+            "fqsen": "\\vB_Interface_BBCode\u003A\u003AsetRenderOptionsAndContext\u0028\u0029",
+            "name": "setRenderOptionsAndContext",
+            "summary": "",
+            "url": "classes/vB-Interface-BBCode.html#method_setRenderOptionsAndContext"
+        },                {
+            "fqsen": "\\vB_Interface_BBCode\u003A\u003AsetUserContext\u0028\u0029",
+            "name": "setUserContext",
+            "summary": "",
+            "url": "classes/vB-Interface-BBCode.html#method_setUserContext"
+        },                {
+            "fqsen": "\\vB_Interface_BBCode\u003A\u003AcanHandleBbCode\u0028\u0029",
+            "name": "canHandleBbCode",
+            "summary": "",
+            "url": "classes/vB-Interface-BBCode.html#method_canHandleBbCode"
+        },                {
+            "fqsen": "\\vB_Interface_BBCode\u003A\u003ArenderBbCode\u0028\u0029",
+            "name": "renderBbCode",
+            "summary": "",
+            "url": "classes/vB-Interface-BBCode.html#method_renderBbCode"
+        },                {
+            "fqsen": "\\vB_Interface_Timenow",
+            "name": "vB_Interface_Timenow",
+            "summary": "",
+            "url": "classes/vB-Interface-Timenow.html"
+        },                {
+            "fqsen": "\\vB_Interface_Timenow\u003A\u003AgetTimenow\u0028\u0029",
+            "name": "getTimenow",
+            "summary": "",
+            "url": "classes/vB-Interface-Timenow.html#method_getTimenow"
+        },                {
             "fqsen": "\\vB_Ip",
             "name": "vB_Ip",
             "summary": "",
@@ -11695,11 +10100,6 @@ Search.appendIndex(
             "name": "setStripSpace",
             "summary": "Override\u0020each\u0020tag\u0027s\u0020default\u0020strip_space_after\u0020setting\u0020..\nWe\u0020don\u0027t\u0020want\u0020to\u0020strip\u0020spaces\u0020when\u0020parsing\u0020bbcode\u0020for\u0020the\u0020editor",
             "url": "classes/vB-Library-BbCode.html#method_setStripSpace"
-        },                {
-            "fqsen": "\\vB_Library_BbCode\u003A\u003Ahandle_external\u0028\u0029",
-            "name": "handle_external",
-            "summary": "Allows\u0020extension\u0020of\u0020the\u0020class\u0020functionality\u0020at\u0020run\u0020time\u0020by\u0020calling\u0020an\nexternal\u0020function.\u0020To\u0020use\u0020this,\u0020your\u0020tag\u0020must\u0020have\u0020a\u0020callback\u0020of\n\u0027handle_external\u0027\u0020and\u0020define\u0020an\u0020additional\u0020\u0027external_callback\u0027\u0020entry.",
-            "url": "classes/vB-Library-BbCode.html#method_handle_external"
         },                {
             "fqsen": "\\vB_Library_BbCode\u003A\u003Ahandle_bbcode_quote\u0028\u0029",
             "name": "handle_bbcode_quote",
@@ -11973,7 +10373,7 @@ Search.appendIndex(
         },                {
             "fqsen": "\\vB_Library_Content_Channel\u003A\u003Aupdate\u0028\u0029",
             "name": "update",
-            "summary": "updates\u0020a\u0020record",
+            "summary": "",
             "url": "classes/vB-Library-Content-Channel.html#method_update"
         },                {
             "fqsen": "\\vB_Library_Content_Channel\u003A\u003Adelete\u0028\u0029",
@@ -12826,6 +11226,11 @@ Search.appendIndex(
             "summary": "Get\u0020the\u0020actual\u0020auto\u0020parse\u0020links\u0020values\u0020based\u0020on\u0020the\u0020request\u0020and\u0020context",
             "url": "classes/vB-Library-Content-Text.html#method_getAutoparseLinks"
         },                {
+            "fqsen": "\\vB_Library_Content_Text\u003A\u003AgetNodeDescription\u0028\u0029",
+            "name": "getNodeDescription",
+            "summary": "",
+            "url": "classes/vB-Library-Content-Text.html#method_getNodeDescription"
+        },                {
             "fqsen": "\\vB_Library_Content_Text\u003A\u003AgetQuotes\u0028\u0029",
             "name": "getQuotes",
             "summary": "This\u0020returns\u0020a\u0020string\u0020with\u0020quoted\u0020strings\u0020in\u0020bbcode\u0020format.",
@@ -12915,251 +11320,6 @@ Search.appendIndex(
             "name": "mergeContent",
             "summary": "Performs\u0020the\u0020merge\u0020of\u0020content\u0020and\u0020updates\u0020the\u0020node.",
             "url": "classes/vB-Library-Content-Video.html#method_mergeContent"
-        },                {
-            "fqsen": "\\vB_Library_Content",
-            "name": "vB_Library_Content",
-            "summary": "vB_Library_Content",
-            "url": "classes/vB-Library-Content.html"
-        },                {
-            "fqsen": "\\vB_Library_Content\u003A\u003AreloadOptions\u0028\u0029",
-            "name": "reloadOptions",
-            "summary": "Reload\u0020options\u0020from\u0020datastore.\u0020Currently\u0020only\u0020used\u0020by\u0020unit\u0020tests.",
-            "url": "classes/vB-Library-Content.html#method_reloadOptions"
-        },                {
-            "fqsen": "\\vB_Library_Content\u003A\u003AfetchContentType\u0028\u0029",
-            "name": "fetchContentType",
-            "summary": "",
-            "url": "classes/vB-Library-Content.html#method_fetchContentType"
-        },                {
-            "fqsen": "\\vB_Library_Content\u003A\u003AgetAllCanView\u0028\u0029",
-            "name": "getAllCanView",
-            "summary": "Returns\u0020the\u0020fields\u0020that\u0020all\u0020users\u0020can\u0020see\u0020if\u0020they\u0020don\u0027t\u0020have\u0020canviewthreads",
-            "url": "classes/vB-Library-Content.html#method_getAllCanView"
-        },                {
-            "fqsen": "\\vB_Library_Content\u003A\u003AfetchContentTypeId\u0028\u0029",
-            "name": "fetchContentTypeId",
-            "summary": "",
-            "url": "classes/vB-Library-Content.html#method_fetchContentTypeId"
-        },                {
-            "fqsen": "\\vB_Library_Content\u003A\u003AgetTextCountChange\u0028\u0029",
-            "name": "getTextCountChange",
-            "summary": "Returns\u0020textCountChange\u0020property",
-            "url": "classes/vB-Library-Content.html#method_getTextCountChange"
-        },                {
-            "fqsen": "\\vB_Library_Content\u003A\u003AgetCanBeLastContent\u0028\u0029",
-            "name": "getCanBeLastContent",
-            "summary": "",
-            "url": "classes/vB-Library-Content.html#method_getCanBeLastContent"
-        },                {
-            "fqsen": "\\vB_Library_Content\u003A\u003AgetInlist\u0028\u0029",
-            "name": "getInlist",
-            "summary": "Returns\u0020inlist\u0020property",
-            "url": "classes/vB-Library-Content.html#method_getInlist"
-        },                {
-            "fqsen": "\\vB_Library_Content\u003A\u003Aadd\u0028\u0029",
-            "name": "add",
-            "summary": "Adds\u0020a\u0020new\u0020node.",
-            "url": "classes/vB-Library-Content.html#method_add"
-        },                {
-            "fqsen": "\\vB_Library_Content\u003A\u003AincrementUserPostCount\u0028\u0029",
-            "name": "incrementUserPostCount",
-            "summary": "Increments\u0020the\u0020number\u0020of\u0020posts\u0020for\u0020a\u0020user.\u0020This\u0020function\u0020will\u0020also\u0020update\u0020user\u0027s\u0020\u0022lastpost\u0022\u0020field",
-            "url": "classes/vB-Library-Content.html#method_incrementUserPostCount"
-        },                {
-            "fqsen": "\\vB_Library_Content\u003A\u003AdecrementUserPostCount\u0028\u0029",
-            "name": "decrementUserPostCount",
-            "summary": "Decrements\u0020the\u0020number\u0020of\u0020posts\u0020for\u0020a\u0020user",
-            "url": "classes/vB-Library-Content.html#method_decrementUserPostCount"
-        },                {
-            "fqsen": "\\vB_Library_Content\u003A\u003AresetCountCalled\u0028\u0029",
-            "name": "resetCountCalled",
-            "summary": "Reset\u0020the\u0020called\u0020array\u002D\u0020this\u0020makes\u0020sure\u0020we\u0020only\u0020increment\/decrement\u0020user\u0020post\u0020counts\u0020once\u0020for\u0020a\u0020given\u0020node\nThis\u0020is\u0020only\u0020needed\u0020by\u0020the\u0020unit\u0020tests.",
-            "url": "classes/vB-Library-Content.html#method_resetCountCalled"
-        },                {
-            "fqsen": "\\vB_Library_Content\u003A\u003Adelete\u0028\u0029",
-            "name": "delete",
-            "summary": "Permanently\u0020deletes\u0020a\u0020node",
-            "url": "classes/vB-Library-Content.html#method_delete"
-        },                {
-            "fqsen": "\\vB_Library_Content\u003A\u003AdeleteChildren\u0028\u0029",
-            "name": "deleteChildren",
-            "summary": "Delete\u0020the\u0020records\u0020without\u0020updating\u0020the\u0020parent\u0020info.\u0020It\u0020is\u0020used\u0020when\u0020deleting\u0020a\u0020whole\u0020channel\u0020and\u0020it\u0027s\u0020children\u0020need\u0020to\u0020be\u0020removed",
-            "url": "classes/vB-Library-Content.html#method_deleteChildren"
-        },                {
-            "fqsen": "\\vB_Library_Content\u003A\u003AisPublished\u0028\u0029",
-            "name": "isPublished",
-            "summary": "Is\u0020this\u0020record\u0020in\u0020a\u0020published\u0020state\u0020based\u0020on\u0020the\u0020times\u003F",
-            "url": "classes/vB-Library-Content.html#method_isPublished"
-        },                {
-            "fqsen": "\\vB_Library_Content\u003A\u003Aupdate\u0028\u0029",
-            "name": "update",
-            "summary": "updates\u0020a\u0020record",
-            "url": "classes/vB-Library-Content.html#method_update"
-        },                {
-            "fqsen": "\\vB_Library_Content\u003A\u003AgetContentApi\u0028\u0029",
-            "name": "getContentApi",
-            "summary": "Returns\u0020a\u0020content\u0020api\u0020of\u0020the\u0020appropriate\u0020type",
-            "url": "classes/vB-Library-Content.html#method_getContentApi"
-        },                {
-            "fqsen": "\\vB_Library_Content\u003A\u003AgetContentLib\u0028\u0029",
-            "name": "getContentLib",
-            "summary": "Returns\u0020a\u0020content\u0020api\u0020of\u0020the\u0020appropriate\u0020type",
-            "url": "classes/vB-Library-Content.html#method_getContentLib"
-        },                {
-            "fqsen": "\\vB_Library_Content\u003A\u003AgetContent\u0028\u0029",
-            "name": "getContent",
-            "summary": "Returns\u0020the\u0020node\u0020content\u0020as\u0020an\u0020associative\u0020array",
-            "url": "classes/vB-Library-Content.html#method_getContent"
-        },                {
-            "fqsen": "\\vB_Library_Content\u003A\u003AgetBareContent\u0028\u0029",
-            "name": "getBareContent",
-            "summary": "Returns\u0020the\u0020node\u0020content\u0020plus\u0020the\u0020channel\u0020routeid\u0020and\u0020title,\u0020and\u0020starter\u0020route\u0020and\u0020title\u0020the\u0020as\u0020an\u0020associative\u0020array\nCaller\u0020MUST\u0020ensure\u0020that\u0020\u0024nodeids\u0020are\u0020of\u0020the\u0020correct\u0020content\u0020type.",
-            "url": "classes/vB-Library-Content.html#method_getBareContent"
-        },                {
-            "fqsen": "\\vB_Library_Content\u003A\u003AgetFullContent\u0028\u0029",
-            "name": "getFullContent",
-            "summary": "Returns\u0020the\u0020node\u0020content\u0020plus\u0020the\u0020channel\u0020routeid\u0020and\u0020title,\u0020and\u0020starter\u0020route\u0020and\u0020title\u0020the\u0020as\u0020an\u0020associative\u0020array",
-            "url": "classes/vB-Library-Content.html#method_getFullContent"
-        },                {
-            "fqsen": "\\vB_Library_Content\u003A\u003AgetCanEdit\u0028\u0029",
-            "name": "getCanEdit",
-            "summary": "Determines\u0020whether\u0020the\u0020current\u0020user\u0020can\u0020edit\u0020a\u0020node",
-            "url": "classes/vB-Library-Content.html#method_getCanEdit"
-        },                {
-            "fqsen": "\\vB_Library_Content\u003A\u003AgetCanDelete\u0028\u0029",
-            "name": "getCanDelete",
-            "summary": "Determines\u0020whether\u0020the\u0020current\u0020user\u0020can\u0020soft\u002Ddelete\u0020or\u0020hard\u002Ddelete",
-            "url": "classes/vB-Library-Content.html#method_getCanDelete"
-        },                {
-            "fqsen": "\\vB_Library_Content\u003A\u003AgetCanModerate\u0028\u0029",
-            "name": "getCanModerate",
-            "summary": "Determines\u0020whether\u0020the\u0020current\u0020user\u0020can\u0020moderate",
-            "url": "classes/vB-Library-Content.html#method_getCanModerate"
-        },                {
-            "fqsen": "\\vB_Library_Content\u003A\u003AassembleContent\u0028\u0029",
-            "name": "assembleContent",
-            "summary": "Assembles\u0020the\u0020response\u0020for\u0020detailed\u0020content",
-            "url": "classes/vB-Library-Content.html#method_assembleContent"
-        },                {
-            "fqsen": "\\vB_Library_Content\u003A\u003AgetIndexableFromNode\u0028\u0029",
-            "name": "getIndexableFromNode",
-            "summary": "",
-            "url": "classes/vB-Library-Content.html#method_getIndexableFromNode"
-        },                {
-            "fqsen": "\\vB_Library_Content\u003A\u003AgetIndexableContent\u0028\u0029",
-            "name": "getIndexableContent",
-            "summary": "The\u0020classes\u0020\u0020that\u0020inherit\u0020this\u0020should\u0020implement\u0020this\u0020function\nIt\u0020should\u0020return\u0020the\u0020content\u0020that\u0020should\u0020be\u0020indexed\nIf\u0020there\u0020is\u0020a\u0020title\u0020field,\u0020the\u0020array\u0020key\u0020for\u0020that\u0020field\u0020should\u0020be\u0020\u0027title\u0027,\nthe\u0020rest\u0020of\u0020the\u0020text\u0020can\u0020have\u0020any\u0020key",
-            "url": "classes/vB-Library-Content.html#method_getIndexableContent"
-        },                {
-            "fqsen": "\\vB_Library_Content\u003A\u003AgetStarter\u0028\u0029",
-            "name": "getStarter",
-            "summary": "Gets\u0020the\u0020conversation\u0020starter\u0020for\u0020a\u0020node.\u0020\u0020If\u0020the\u0020node\u0020is\u0020a\nchannel\u0020it\u0020returns\u0020the\u0020channelid.",
-            "url": "classes/vB-Library-Content.html#method_getStarter"
-        },                {
-            "fqsen": "\\vB_Library_Content\u003A\u003AgetConversationParent\u0028\u0029",
-            "name": "getConversationParent",
-            "summary": "Gets\u0020the\u0020conversation\u0020starter\u0020for\u0020a\u0020node.\u0020\u0020If\u0020the\u0020node\u0020is\u0020a\nchannel\u0020it\u0020returns\u0020the\u0020channel\u0020record.",
-            "url": "classes/vB-Library-Content.html#method_getConversationParent"
-        },                {
-            "fqsen": "\\vB_Library_Content\u003A\u003AisVisitorMessage\u0028\u0029",
-            "name": "isVisitorMessage",
-            "summary": "determines\u0020whether\u0020a\u0020specific\u0020node\u0020is\u0020a\u0020visitor\u0020message",
-            "url": "classes/vB-Library-Content.html#method_isVisitorMessage"
-        },                {
-            "fqsen": "\\vB_Library_Content\u003A\u003AisComment\u0028\u0029",
-            "name": "isComment",
-            "summary": "Determines\u0020whether\u0020a\u0020specific\u0020node\u0020is\u0020a\u0020comment\u0020on\u0020a\u0020thread\u0020reply\u0020or\u0020not",
-            "url": "classes/vB-Library-Content.html#method_isComment"
-        },                {
-            "fqsen": "\\vB_Library_Content\u003A\u003AfetchTableName\u0028\u0029",
-            "name": "fetchTableName",
-            "summary": "returns\u0020the\u0020tables\u0020used\u0020by\u0020this\u0020content\u0020type.",
-            "url": "classes/vB-Library-Content.html#method_fetchTableName"
-        },                {
-            "fqsen": "\\vB_Library_Content\u003A\u003AfetchFromCache\u0028\u0029",
-            "name": "fetchFromCache",
-            "summary": "This\u0020attempts\u0020to\u0020get\u0020the\u0020cached\u0020data\u0020for\u0020nodes",
-            "url": "classes/vB-Library-Content.html#method_fetchFromCache"
-        },                {
-            "fqsen": "\\vB_Library_Content\u003A\u003AwriteToCache\u0028\u0029",
-            "name": "writeToCache",
-            "summary": "writes\u0020new\u0020cached\u0020data\u0020for\u0020nodes",
-            "url": "classes/vB-Library-Content.html#method_writeToCache"
-        },                {
-            "fqsen": "\\vB_Library_Content\u003A\u003AremovePrivateDataFromNode\u0028\u0029",
-            "name": "removePrivateDataFromNode",
-            "summary": "Examines\u0020the\u0020node\u0020record\u0020returned\u0020from\u0020the\u0020node\u0020library\u0020and\u0020determines\u0020if\u0020any\u0020information\nneeds\u0020to\u0020be\u0020removed\u0020before\u0020passing\u0020beyond\u0020the\u0020API\u0020layer.",
-            "url": "classes/vB-Library-Content.html#method_removePrivateDataFromNode"
-        },                {
-            "fqsen": "\\vB_Library_Content\u003A\u003AcheckComplete\u0028\u0029",
-            "name": "checkComplete",
-            "summary": "This\u0020function\u0020checks\u0020to\u0020see\u0020if\u0020a\u0020node\u0020is\u0020valid,\u0020and\u0020if\u0020not\u0020it\u0020deletes\u0020or\u0020fixes\u0020it.",
-            "url": "classes/vB-Library-Content.html#method_checkComplete"
-        },                {
-            "fqsen": "\\vB_Library_Content\u003A\u003AgetCannotDelete\u0028\u0029",
-            "name": "getCannotDelete",
-            "summary": "Whether\u0020this\u0020type\u0020can\u0020be\u0020deleted.\u0020Infractions,\u0020for\u0020example,\u0020cannot\u0020be.",
-            "url": "classes/vB-Library-Content.html#method_getCannotDelete"
-        },                {
-            "fqsen": "\\vB_Library_Content\u003A\u003AsetDoIncompleteNodeCleanup\u0028\u0029",
-            "name": "setDoIncompleteNodeCleanup",
-            "summary": "Sets\u0020the\u0020\u0024doIncompleteNodeCleanup\u0020flag",
-            "url": "classes/vB-Library-Content.html#method_setDoIncompleteNodeCleanup"
-        },                {
-            "fqsen": "\\vB_Library_Content\u003A\u003AmergeContentInfo\u0028\u0029",
-            "name": "mergeContentInfo",
-            "summary": "",
-            "url": "classes/vB-Library-Content.html#method_mergeContentInfo"
-        },                {
-            "fqsen": "\\vB_Library_Content\u003A\u003Avalidate\u0028\u0029",
-            "name": "validate",
-            "summary": "Validates\u0020that\u0020the\u0020current\u0020can\u0020create\u0020a\u0020node\u0020with\u0020these\u0020values",
-            "url": "classes/vB-Library-Content.html#method_validate"
-        },                {
-            "fqsen": "\\vB_Library_Content\u003A\u003AACTION_ADD",
-            "name": "ACTION_ADD",
-            "summary": "",
-            "url": "classes/vB-Library-Content.html#constant_ACTION_ADD"
-        },                {
-            "fqsen": "\\vB_Library_Content\u003A\u003AACTION_UPDATE",
-            "name": "ACTION_UPDATE",
-            "summary": "",
-            "url": "classes/vB-Library-Content.html#constant_ACTION_UPDATE"
-        },                {
-            "fqsen": "\\vB_Library_Content\u003A\u003AACTION_VIEW",
-            "name": "ACTION_VIEW",
-            "summary": "",
-            "url": "classes/vB-Library-Content.html#constant_ACTION_VIEW"
-        },                {
-            "fqsen": "\\vB_Library_Content\u003A\u003AACTION_DELETE",
-            "name": "ACTION_DELETE",
-            "summary": "",
-            "url": "classes/vB-Library-Content.html#constant_ACTION_DELETE"
-        },                {
-            "fqsen": "\\vB_Library_Content\u003A\u003AACTION_APPROVE",
-            "name": "ACTION_APPROVE",
-            "summary": "",
-            "url": "classes/vB-Library-Content.html#constant_ACTION_APPROVE"
-        },                {
-            "fqsen": "\\vB_Library_Content\u003A\u003AACTION_PUBLISH",
-            "name": "ACTION_PUBLISH",
-            "summary": "",
-            "url": "classes/vB-Library-Content.html#constant_ACTION_PUBLISH"
-        },                {
-            "fqsen": "\\vB_Library_Content\u003A\u003ACACHELEVEL_NODE",
-            "name": "CACHELEVEL_NODE",
-            "summary": "",
-            "url": "classes/vB-Library-Content.html#constant_CACHELEVEL_NODE"
-        },                {
-            "fqsen": "\\vB_Library_Content\u003A\u003ACACHELEVEL_CONTENT",
-            "name": "CACHELEVEL_CONTENT",
-            "summary": "",
-            "url": "classes/vB-Library-Content.html#constant_CACHELEVEL_CONTENT"
-        },                {
-            "fqsen": "\\vB_Library_Content\u003A\u003ACACHELEVEL_FULLCONTENT",
-            "name": "CACHELEVEL_FULLCONTENT",
-            "summary": "",
-            "url": "classes/vB-Library-Content.html#constant_CACHELEVEL_FULLCONTENT"
         },                {
             "fqsen": "\\vB_Library_Cron",
             "name": "vB_Library_Cron",
@@ -13261,35 +11421,55 @@ Search.appendIndex(
             "summary": "",
             "url": "classes/vB-Library-External.html#constant_ROUTE_PATH"
         },                {
-            "fqsen": "\\vB_Library_ExternalLogin_OAuth",
-            "name": "vB_Library_ExternalLogin_OAuth",
-            "summary": "vB_Library_Auth",
-            "url": "classes/vB-Library-ExternalLogin-OAuth.html"
+            "fqsen": "\\vB_Library_ExternalLogin_OAuth2Client",
+            "name": "vB_Library_ExternalLogin_OAuth2Client",
+            "summary": "Provides\u0020a\u0020basic\u0020implementation\u0020the\u0020external\u0020login\u0020concept\u0020with\u0020the\u0020PHP\u0020League\u0020OAUTH2\u0020client\u0020interface\nwith\u0020the",
+            "url": "classes/vB-Library-ExternalLogin-OAuth2Client.html"
         },                {
-            "fqsen": "\\vB_Library_ExternalLogin_OAuth\u003A\u003A__construct\u0028\u0029",
-            "name": "__construct",
+            "fqsen": "\\vB_Library_ExternalLogin_OAuth2Client\u003A\u003AgetTokenRedirect\u0028\u0029",
+            "name": "getTokenRedirect",
             "summary": "",
-            "url": "classes/vB-Library-ExternalLogin-OAuth.html#method___construct"
+            "url": "classes/vB-Library-ExternalLogin-OAuth2Client.html#method_getTokenRedirect"
         },                {
-            "fqsen": "\\vB_Library_ExternalLogin_OAuth\u003A\u003AlinkCurrentUserWithApp\u0028\u0029",
+            "fqsen": "\\vB_Library_ExternalLogin_OAuth2Client\u003A\u003AconfirmToken\u0028\u0029",
+            "name": "confirmToken",
+            "summary": "",
+            "url": "classes/vB-Library-ExternalLogin-OAuth2Client.html#method_confirmToken"
+        },                {
+            "fqsen": "\\vB_Library_ExternalLogin_OAuth2Client\u003A\u003AgetExternalUseridForLinking\u0028\u0029",
+            "name": "getExternalUseridForLinking",
+            "summary": "",
+            "url": "classes/vB-Library-ExternalLogin-OAuth2Client.html#method_getExternalUseridForLinking"
+        },                {
+            "fqsen": "\\vB_Library_ExternalLogin_OAuth2Client\u003A\u003AlinkCurrentUserWithApp\u0028\u0029",
             "name": "linkCurrentUserWithApp",
-            "summary": "Convert\u0020request\u0020token\u0020to\u0020access\u0020token,\u0020fetch\u0020external\u0020userid\u0020\u0028using\u0020plugin\u0020implemented\n\u0020fetchAndSetExternalUserid\u0028\u0029\u0020function\u0029\u0020and\u0020update\u0020userauth\u0020record\u0020to\u0020link\u0020the\u0020app\u0020with\n\u0020the\u0020current\u0020user.",
-            "url": "classes/vB-Library-ExternalLogin-OAuth.html#method_linkCurrentUserWithApp"
-        },                {
-            "fqsen": "\\vB_Library_ExternalLogin_OAuth\u003A\u003AgetLinkedVBUseridFromRequestTokens\u0028\u0029",
-            "name": "getLinkedVBUseridFromRequestTokens",
             "summary": "",
-            "url": "classes/vB-Library-ExternalLogin-OAuth.html#method_getLinkedVBUseridFromRequestTokens"
+            "url": "classes/vB-Library-ExternalLogin-OAuth2Client.html#method_linkCurrentUserWithApp"
+        },                {
+            "fqsen": "\\vB_Library_ExternalLogin_OAuth2Client\u003A\u003AlinkUserWithApp\u0028\u0029",
+            "name": "linkUserWithApp",
+            "summary": "",
+            "url": "classes/vB-Library-ExternalLogin-OAuth2Client.html#method_linkUserWithApp"
+        },                {
+            "fqsen": "\\vB_Library_ExternalLogin_OAuth2Client\u003A\u003AverifyAuthAndLogin\u0028\u0029",
+            "name": "verifyAuthAndLogin",
+            "summary": "",
+            "url": "classes/vB-Library-ExternalLogin-OAuth2Client.html#method_verifyAuthAndLogin"
+        },                {
+            "fqsen": "\\vB_Library_ExternalLogin_OAuth2Client\u003A\u003AgetEnabled\u0028\u0029",
+            "name": "getEnabled",
+            "summary": "",
+            "url": "classes/vB-Library-ExternalLogin-OAuth2Client.html#method_getEnabled"
+        },                {
+            "fqsen": "\\vB_Library_ExternalLogin_OAuth2Client\u003A\u003AgetRegistrationData\u0028\u0029",
+            "name": "getRegistrationData",
+            "summary": "",
+            "url": "classes/vB-Library-ExternalLogin-OAuth2Client.html#method_getRegistrationData"
         },                {
             "fqsen": "\\vB_Library_ExternalLogin",
             "name": "vB_Library_ExternalLogin",
-            "summary": "vB_Library_Auth",
+            "summary": "vB_Library",
             "url": "classes/vB-Library-ExternalLogin.html"
-        },                {
-            "fqsen": "\\vB_Library_ExternalLogin\u003A\u003A__construct\u0028\u0029",
-            "name": "__construct",
-            "summary": "",
-            "url": "classes/vB-Library-ExternalLogin.html#method___construct"
         },                {
             "fqsen": "\\vB_Library_ExternalLogin\u003A\u003AcreateLoginLibraryId\u0028\u0029",
             "name": "createLoginLibraryId",
@@ -13305,6 +11485,11 @@ Search.appendIndex(
             "name": "getSessionAuthRecord",
             "summary": "",
             "url": "classes/vB-Library-ExternalLogin.html#method_getSessionAuthRecord"
+        },                {
+            "fqsen": "\\vB_Library_ExternalLogin\u003A\u003AdeleteSessionAuthRecord\u0028\u0029",
+            "name": "deleteSessionAuthRecord",
+            "summary": "",
+            "url": "classes/vB-Library-ExternalLogin.html#method_deleteSessionAuthRecord"
         },                {
             "fqsen": "\\vB_Library_ExternalLogin\u003A\u003AlinkCurrentUserWithApp\u0028\u0029",
             "name": "linkCurrentUserWithApp",
@@ -13791,456 +11976,6 @@ Search.appendIndex(
             "summary": "Check\u0020the\u0020Verification\u0020Code\u0020entered\u0020by\u0020the\u0020user.",
             "url": "classes/vB-Library-Login.html#method_verifyMfa"
         },                {
-            "fqsen": "\\vB_Library_Node",
-            "name": "vB_Library_Node",
-            "summary": "vB_Library_Node",
-            "url": "classes/vB-Library-Node.html"
-        },                {
-            "fqsen": "\\vB_Library_Node\u003A\u003AgetNodeFields\u0028\u0029",
-            "name": "getNodeFields",
-            "summary": "Return\u0020the\u0020list\u0020of\u0020fields\u0020in\u0020the\u0020node\u0020table",
-            "url": "classes/vB-Library-Node.html#method_getNodeFields"
-        },                {
-            "fqsen": "\\vB_Library_Node\u003A\u003AgetOptions\u0028\u0029",
-            "name": "getOptions",
-            "summary": "gets\u0020the\u0020node\u0020option\u0020bitfields",
-            "url": "classes/vB-Library-Node.html#method_getOptions"
-        },                {
-            "fqsen": "\\vB_Library_Node\u003A\u003AclearChildCache\u0028\u0029",
-            "name": "clearChildCache",
-            "summary": "This\u0020clear\u0020cache\u0020for\u0020all\u0020children\u0020of\u0020a\u0020node\u0020list",
-            "url": "classes/vB-Library-Node.html#method_clearChildCache"
-        },                {
-            "fqsen": "\\vB_Library_Node\u003A\u003AopenNode\u0028\u0029",
-            "name": "openNode",
-            "summary": "opens\u0020a\u0020node\u0020for\u0020posting",
-            "url": "classes/vB-Library-Node.html#method_openNode"
-        },                {
-            "fqsen": "\\vB_Library_Node\u003A\u003AcloseNode\u0028\u0029",
-            "name": "closeNode",
-            "summary": "Closes\u0020a\u0020node\u0020for\u0020posting.\u0020Closed\u0020nodes\u0020can\u0020still\u0020be\u0020viewed\u0020but\u0020nobody\u0020can\u0020reply\u0020to\u0020one.",
-            "url": "classes/vB-Library-Node.html#method_closeNode"
-        },                {
-            "fqsen": "\\vB_Library_Node\u003A\u003AaddNode\u0028\u0029",
-            "name": "addNode",
-            "summary": "Adds\u0020a\u0020new\u0020node.\u0020The\u0020record\u0020must\u0020already\u0020exist\u0020as\u0020an\u0020individual\u0020content\u0020item.",
-            "url": "classes/vB-Library-Node.html#method_addNode"
-        },                {
-            "fqsen": "\\vB_Library_Node\u003A\u003AresetAncestorCounts\u0028\u0029",
-            "name": "resetAncestorCounts",
-            "summary": "Updates\u0020the\u0020ancestors\u0020counts\u0020and\u0020last\u0020data\u0020from\u0020a\u0020given\u0020node\u0020being\u0020deleted.",
-            "url": "classes/vB-Library-Node.html#method_resetAncestorCounts"
-        },                {
-            "fqsen": "\\vB_Library_Node\u003A\u003AdeleteNodes\u0028\u0029",
-            "name": "deleteNodes",
-            "summary": "Permanently\/Temporarily\u0020deletes\u0020a\u0020set\u0020of\u0020nodes",
-            "url": "classes/vB-Library-Node.html#method_deleteNodes"
-        },                {
-            "fqsen": "\\vB_Library_Node\u003A\u003AlistNodes\u0028\u0029",
-            "name": "listNodes",
-            "summary": "lists\u0020the\u0020nodes\u0020that\u0020should\u0020be\u0020displayed\u0020on\u0020a\u0020specific\u0020page.",
-            "url": "classes/vB-Library-Node.html#method_listNodes"
-        },                {
-            "fqsen": "\\vB_Library_Node\u003A\u003AlistNodesInternal\u0028\u0029",
-            "name": "listNodesInternal",
-            "summary": "",
-            "url": "classes/vB-Library-Node.html#method_listNodesInternal"
-        },                {
-            "fqsen": "\\vB_Library_Node\u003A\u003AgetNodeBare\u0028\u0029",
-            "name": "getNodeBare",
-            "summary": "Gets\u0020one\u0020node.",
-            "url": "classes/vB-Library-Node.html#method_getNodeBare"
-        },                {
-            "fqsen": "\\vB_Library_Node\u003A\u003AcensorNode\u0028\u0029",
-            "name": "censorNode",
-            "summary": "Censors\u0020the\u0020different\u0020text\u0020items\u0020that\u0020need\u0020censoring",
-            "url": "classes/vB-Library-Node.html#method_censorNode"
-        },                {
-            "fqsen": "\\vB_Library_Node\u003A\u003AcensorNodes\u0028\u0029",
-            "name": "censorNodes",
-            "summary": "Censors\u0020the\u0020different\u0020text\u0020items\u0020in\u0020each\u0020node\u0020that\u0020need\u0020censoring",
-            "url": "classes/vB-Library-Node.html#method_censorNodes"
-        },                {
-            "fqsen": "\\vB_Library_Node\u003A\u003AgetNode\u0028\u0029",
-            "name": "getNode",
-            "summary": "Gets\u0020one\u0020node.",
-            "url": "classes/vB-Library-Node.html#method_getNode"
-        },                {
-            "fqsen": "\\vB_Library_Node\u003A\u003AgetNodeParents\u0028\u0029",
-            "name": "getNodeParents",
-            "summary": "get\u0020the\u0020ancestors\u0020of\u0020a\u0020node",
-            "url": "classes/vB-Library-Node.html#method_getNodeParents"
-        },                {
-            "fqsen": "\\vB_Library_Node\u003A\u003AgetNodes\u0028\u0029",
-            "name": "getNodes",
-            "summary": "Gets\u0020the\u0020node\u0020info\u0020for\u0020a\u0020list\u0020of\u0020nodes",
-            "url": "classes/vB-Library-Node.html#method_getNodes"
-        },                {
-            "fqsen": "\\vB_Library_Node\u003A\u003AassertNodeidStr\u0028\u0029",
-            "name": "assertNodeidStr",
-            "summary": "Convert\u0020node\u0020path\u0020or\u0020id\u0020string\u0020to\u0020node\u0020id.",
-            "url": "classes/vB-Library-Node.html#method_assertNodeidStr"
-        },                {
-            "fqsen": "\\vB_Library_Node\u003A\u003AsetPublishDate\u0028\u0029",
-            "name": "setPublishDate",
-            "summary": "Sets\u0020the\u0020publishdate\u0020and\u0020\u0028optionally\u0029\u0020the\u0020unpublish\u0020date\u0020of\u0020a\u0020node",
-            "url": "classes/vB-Library-Node.html#method_setPublishDate"
-        },                {
-            "fqsen": "\\vB_Library_Node\u003A\u003AsetUnPublishDate\u0028\u0029",
-            "name": "setUnPublishDate",
-            "summary": "Sets\u0020the\u0020unpublish\u0020date",
-            "url": "classes/vB-Library-Node.html#method_setUnPublishDate"
-        },                {
-            "fqsen": "\\vB_Library_Node\u003A\u003AsetUnPublished\u0028\u0029",
-            "name": "setUnPublished",
-            "summary": "sets\u0020a\u0020node\u0020to\u0020not\u0020published",
-            "url": "classes/vB-Library-Node.html#method_setUnPublished"
-        },                {
-            "fqsen": "\\vB_Library_Node\u003A\u003AsetFeatured\u0028\u0029",
-            "name": "setFeatured",
-            "summary": "sets\u0020a\u0020list\u0020of\u0020nodes\u0020to\u0020be\u0020featured",
-            "url": "classes/vB-Library-Node.html#method_setFeatured"
-        },                {
-            "fqsen": "\\vB_Library_Node\u003A\u003AtypeCanBeReply\u0028\u0029",
-            "name": "typeCanBeReply",
-            "summary": "",
-            "url": "classes/vB-Library-Node.html#method_typeCanBeReply"
-        },                {
-            "fqsen": "\\vB_Library_Node\u003A\u003AtypeCanBeComment\u0028\u0029",
-            "name": "typeCanBeComment",
-            "summary": "",
-            "url": "classes/vB-Library-Node.html#method_typeCanBeComment"
-        },                {
-            "fqsen": "\\vB_Library_Node\u003A\u003AisReply\u0028\u0029",
-            "name": "isReply",
-            "summary": "",
-            "url": "classes/vB-Library-Node.html#method_isReply"
-        },                {
-            "fqsen": "\\vB_Library_Node\u003A\u003AisComment\u0028\u0029",
-            "name": "isComment",
-            "summary": "",
-            "url": "classes/vB-Library-Node.html#method_isComment"
-        },                {
-            "fqsen": "\\vB_Library_Node\u003A\u003AsetAsAnswer\u0028\u0029",
-            "name": "setAsAnswer",
-            "summary": "",
-            "url": "classes/vB-Library-Node.html#method_setAsAnswer"
-        },                {
-            "fqsen": "\\vB_Library_Node\u003A\u003AgetAnswerNodeids\u0028\u0029",
-            "name": "getAnswerNodeids",
-            "summary": "",
-            "url": "classes/vB-Library-Node.html#method_getAnswerNodeids"
-        },                {
-            "fqsen": "\\vB_Library_Node\u003A\u003AclearUnpublishDate\u0028\u0029",
-            "name": "clearUnpublishDate",
-            "summary": "clears\u0020the\u0020unpublishdate\u0020flag.",
-            "url": "classes/vB-Library-Node.html#method_clearUnpublishDate"
-        },                {
-            "fqsen": "\\vB_Library_Node\u003A\u003AgetContentforNodes\u0028\u0029",
-            "name": "getContentforNodes",
-            "summary": "Gets\u0020the\u0020content\u0020info\u0020for\u0020a\u0020list\u0020of\u0020nodes",
-            "url": "classes/vB-Library-Node.html#method_getContentforNodes"
-        },                {
-            "fqsen": "\\vB_Library_Node\u003A\u003AgetFullContentforNodes\u0028\u0029",
-            "name": "getFullContentforNodes",
-            "summary": "Gets\u0020the\u0020content\u0020info\u0020for\u0020a\u0020list\u0020of\u0020nodes",
-            "url": "classes/vB-Library-Node.html#method_getFullContentforNodes"
-        },                {
-            "fqsen": "\\vB_Library_Node\u003A\u003AgetChannelInfoForNode\u0028\u0029",
-            "name": "getChannelInfoForNode",
-            "summary": "Gets\u0020the\u0020channel\u0020title\u0020and\u0020routeid",
-            "url": "classes/vB-Library-Node.html#method_getChannelInfoForNode"
-        },                {
-            "fqsen": "\\vB_Library_Node\u003A\u003AfetchNodeAttachments\u0028\u0029",
-            "name": "fetchNodeAttachments",
-            "summary": "This\u0020gets\u0020the\u0020attachment\u0020information\u0020for\u0020a\u0020node.\u0020Which\u0020may\u0020be\u0020empty.",
-            "url": "classes/vB-Library-Node.html#method_fetchNodeAttachments"
-        },                {
-            "fqsen": "\\vB_Library_Node\u003A\u003AaddFullContentInfo\u0028\u0029",
-            "name": "addFullContentInfo",
-            "summary": "Takes\u0020an\u0020array\u0020of\u0020node\u0020information\u0020and\u0020adds\u0020contentInfo",
-            "url": "classes/vB-Library-Node.html#method_addFullContentInfo"
-        },                {
-            "fqsen": "\\vB_Library_Node\u003A\u003AremovePrivateDataFromNodeList\u0028\u0029",
-            "name": "removePrivateDataFromNodeList",
-            "summary": "Cleans\u0020the\u0020node\u0020list\u0020according\u0020the\u0020to\u0020permissions\u0020set\u0020in\u0020the\u0020node\u0020record\nfor\u0020the\u0020current\u0020user.\u0020\u0020For\u0020use\u0020by\u0020various\u0020APIs\u0020that\u0020return\u0020node\u0020information\nto\u0020consolidate\u0020the\u0020cleaning\u0020in\u0020one\u0020place.",
-            "url": "classes/vB-Library-Node.html#method_removePrivateDataFromNodeList"
-        },                {
-            "fqsen": "\\vB_Library_Node\u003A\u003AaddContentInfo\u0028\u0029",
-            "name": "addContentInfo",
-            "summary": "Takes\u0020an\u0020array\u0020of\u0020node\u0020information\u0020and\u0020adds\u0020contentInfo",
-            "url": "classes/vB-Library-Node.html#method_addContentInfo"
-        },                {
-            "fqsen": "\\vB_Library_Node\u003A\u003AgetNodeContent\u0028\u0029",
-            "name": "getNodeContent",
-            "summary": "This\u0020gets\u0020a\u0020content\u0020record\u0020based\u0020on\u0020nodeid.\u0020Useful\u0020from\u0020ajax.",
-            "url": "classes/vB-Library-Node.html#method_getNodeContent"
-        },                {
-            "fqsen": "\\vB_Library_Node\u003A\u003AfetchAlbumChannel\u0028\u0029",
-            "name": "fetchAlbumChannel",
-            "summary": "returns\u0020id\u0020of\u0020the\u0020Albums\u0020Channel",
-            "url": "classes/vB-Library-Node.html#method_fetchAlbumChannel"
-        },                {
-            "fqsen": "\\vB_Library_Node\u003A\u003AfetchPMChannel\u0028\u0029",
-            "name": "fetchPMChannel",
-            "summary": "returns\u0020id\u0020of\u0020the\u0020Private\u0020Message\u0020Channel",
-            "url": "classes/vB-Library-Node.html#method_fetchPMChannel"
-        },                {
-            "fqsen": "\\vB_Library_Node\u003A\u003AfetchVMChannel\u0028\u0029",
-            "name": "fetchVMChannel",
-            "summary": "returns\u0020id\u0020of\u0020the\u0020Vistor\u0020Message\u0020Channel",
-            "url": "classes/vB-Library-Node.html#method_fetchVMChannel"
-        },                {
-            "fqsen": "\\vB_Library_Node\u003A\u003AgetSGChannel\u0028\u0029",
-            "name": "getSGChannel",
-            "summary": "",
-            "url": "classes/vB-Library-Node.html#method_getSGChannel"
-        },                {
-            "fqsen": "\\vB_Library_Node\u003A\u003AfetchReportChannel\u0028\u0029",
-            "name": "fetchReportChannel",
-            "summary": "returns\u0020id\u0020of\u0020the\u0020Report\u0020Channel",
-            "url": "classes/vB-Library-Node.html#method_fetchReportChannel"
-        },                {
-            "fqsen": "\\vB_Library_Node\u003A\u003AfetchForumChannel\u0028\u0029",
-            "name": "fetchForumChannel",
-            "summary": "Returns\u0020the\u0020nodeid\u0020of\u0020the\u0020root\u0020forums\u0020channel",
-            "url": "classes/vB-Library-Node.html#method_fetchForumChannel"
-        },                {
-            "fqsen": "\\vB_Library_Node\u003A\u003AfetchInfractionChannel\u0028\u0029",
-            "name": "fetchInfractionChannel",
-            "summary": "Returns\u0020the\u0020nodeid\u0020of\u0020the\u0020infraction\u0020channel",
-            "url": "classes/vB-Library-Node.html#method_fetchInfractionChannel"
-        },                {
-            "fqsen": "\\vB_Library_Node\u003A\u003AfetchArticleChannel\u0028\u0029",
-            "name": "fetchArticleChannel",
-            "summary": "Returns\u0020the\u0020nodeid\u0020of\u0020the\u0020CMS\/Articles\u0020channel",
-            "url": "classes/vB-Library-Node.html#method_fetchArticleChannel"
-        },                {
-            "fqsen": "\\vB_Library_Node\u003A\u003AgetNodeFullContent\u0028\u0029",
-            "name": "getNodeFullContent",
-            "summary": "Returns\u0020a\u0020content\u0020record\u0020based\u0020on\u0020nodeid\u0020including\u0020channel\u0020and\u0020starter\u0020information",
-            "url": "classes/vB-Library-Node.html#method_getNodeFullContent"
-        },                {
-            "fqsen": "\\vB_Library_Node\u003A\u003AgetAlbums\u0028\u0029",
-            "name": "getAlbums",
-            "summary": "This\u0020returns\u0020all\u0020the\u0020albums\u0020in\u0020a\u0020channel.\u0020Those\u0020can\u0020be\u0020photogalleries\u0020or\u0020text\u0020with\u0020attachments.",
-            "url": "classes/vB-Library-Node.html#method_getAlbums"
-        },                {
-            "fqsen": "\\vB_Library_Node\u003A\u003Aapprove\u0028\u0029",
-            "name": "approve",
-            "summary": "Sets\u0020the\u0020approved\u0020field",
-            "url": "classes/vB-Library-Node.html#method_approve"
-        },                {
-            "fqsen": "\\vB_Library_Node\u003A\u003Aunapprove\u0028\u0029",
-            "name": "unapprove",
-            "summary": "Unsets\u0020the\u0020approved\u0020field",
-            "url": "classes/vB-Library-Node.html#method_unapprove"
-        },                {
-            "fqsen": "\\vB_Library_Node\u003A\u003AlistPendingPosts\u0028\u0029",
-            "name": "listPendingPosts",
-            "summary": "Gets\u0020the\u0020list\u0020of\u0020unapproved\u0020posts\u0020for\u0020the\u0020current\u0020user",
-            "url": "classes/vB-Library-Node.html#method_listPendingPosts"
-        },                {
-            "fqsen": "\\vB_Library_Node\u003A\u003AlistPendingPostsForCurrentUser\u0028\u0029",
-            "name": "listPendingPostsForCurrentUser",
-            "summary": "This\u0020was\u0020a\u0020function\u0020wrapper\u0020for\u0020listPendingPosts\u0020but\u0020used\u0020for\u0020current\u0020user.",
-            "url": "classes/vB-Library-Node.html#method_listPendingPostsForCurrentUser"
-        },                {
-            "fqsen": "\\vB_Library_Node\u003A\u003AsetApproved\u0028\u0029",
-            "name": "setApproved",
-            "summary": "Sets\u0020or\u0020unsets\u0020the\u0020approved\u0020field",
-            "url": "classes/vB-Library-Node.html#method_setApproved"
-        },                {
-            "fqsen": "\\vB_Library_Node\u003A\u003AsetApprovedPost\u0028\u0029",
-            "name": "setApprovedPost",
-            "summary": "Approves\u0020a\u0020post.\u0020Since\u0020the\u0020publish\u0020date\u0020might\u0020be\u0020affected\u0020user\u0020will\u0020need\u0020moderate\u0020and\npublish\u0020posts\u0020permissions.",
-            "url": "classes/vB-Library-Node.html#method_setApprovedPost"
-        },                {
-            "fqsen": "\\vB_Library_Node\u003A\u003AclearCacheEvents\u0028\u0029",
-            "name": "clearCacheEvents",
-            "summary": "Clears\u0020the\u0020cache\u0020events\u0020from\u0020a\u0020given\u0020list\u0020of\u0020nodes.",
-            "url": "classes/vB-Library-Node.html#method_clearCacheEvents"
-        },                {
-            "fqsen": "\\vB_Library_Node\u003A\u003AnodesChanged\u0028\u0029",
-            "name": "nodesChanged",
-            "summary": "Fire\u0020the\u0020node\u0020changed\u0020event\u0020for\u0020just\u0020the\u0020nodes\u0020in\u0020the\u0020list",
-            "url": "classes/vB-Library-Node.html#method_nodesChanged"
-        },                {
-            "fqsen": "\\vB_Library_Node\u003A\u003AmarkReadMultiple\u0028\u0029",
-            "name": "markReadMultiple",
-            "summary": "Mark\u0020multiple\u0020nodes\u0020read",
-            "url": "classes/vB-Library-Node.html#method_markReadMultiple"
-        },                {
-            "fqsen": "\\vB_Library_Node\u003A\u003AmarkUnreadMultiple\u0028\u0029",
-            "name": "markUnreadMultiple",
-            "summary": "Mark\u0020multiple\u0020nodes\u0020unread",
-            "url": "classes/vB-Library-Node.html#method_markUnreadMultiple"
-        },                {
-            "fqsen": "\\vB_Library_Node\u003A\u003AmarkRead\u0028\u0029",
-            "name": "markRead",
-            "summary": "Marks\u0020a\u0020node\u0020as\u0020read\u0020using\u0020the\u0020appropriate\u0020method.",
-            "url": "classes/vB-Library-Node.html#method_markRead"
-        },                {
-            "fqsen": "\\vB_Library_Node\u003A\u003AmarkUnread\u0028\u0029",
-            "name": "markUnread",
-            "summary": "Marks\u0020a\u0020node\u0020as\u0020unread\u0020using\u0020the\u0020appropriate\u0020method.",
-            "url": "classes/vB-Library-Node.html#method_markUnread"
-        },                {
-            "fqsen": "\\vB_Library_Node\u003A\u003AmarkChannelsRead\u0028\u0029",
-            "name": "markChannelsRead",
-            "summary": "Marks\u0020a\u0020channel,\u0020its\u0020child\u0020channels\u0020and\u0020all\u0020contained\u0020topics\u0020as\u0020read",
-            "url": "classes/vB-Library-Node.html#method_markChannelsRead"
-        },                {
-            "fqsen": "\\vB_Library_Node\u003A\u003AmarkChannelsUnread\u0028\u0029",
-            "name": "markChannelsUnread",
-            "summary": "Marks\u0020a\u0020channel\u0020as\u0020unread",
-            "url": "classes/vB-Library-Node.html#method_markChannelsUnread"
-        },                {
-            "fqsen": "\\vB_Library_Node\u003A\u003AmarkSubscribed\u0028\u0029",
-            "name": "markSubscribed",
-            "summary": "marks\u0020nodes\u0020with\u0020\u0022subscribed\u0022\u0020true\/false",
-            "url": "classes/vB-Library-Node.html#method_markSubscribed"
-        },                {
-            "fqsen": "\\vB_Library_Node\u003A\u003AfetchClosureParent\u0028\u0029",
-            "name": "fetchClosureParent",
-            "summary": "Returns\u0020closure\u0020table\u0020information\u0020given\u0020a\u0020child\u0020id",
-            "url": "classes/vB-Library-Node.html#method_fetchClosureParent"
-        },                {
-            "fqsen": "\\vB_Library_Node\u003A\u003AfetchClosurechildren\u0028\u0029",
-            "name": "fetchClosurechildren",
-            "summary": "Returns\u0020closure\u0020table\u0020information\u0020given\u0020a\u0020child\u0020id",
-            "url": "classes/vB-Library-Node.html#method_fetchClosurechildren"
-        },                {
-            "fqsen": "\\vB_Library_Node\u003A\u003ArequestChannel\u0028\u0029",
-            "name": "requestChannel",
-            "summary": "This\u0020creates\u0020a\u0020request\u0020for\u0020access\u0020to\u0020a\u0020channel",
-            "url": "classes/vB-Library-Node.html#method_requestChannel"
-        },                {
-            "fqsen": "\\vB_Library_Node\u003A\u003AgetParents\u0028\u0029",
-            "name": "getParents",
-            "summary": "Returns\u0020the\u0020ancestry",
-            "url": "classes/vB-Library-Node.html#method_getParents"
-        },                {
-            "fqsen": "\\vB_Library_Node\u003A\u003AgetChildren\u0028\u0029",
-            "name": "getChildren",
-            "summary": "Returns\u0020node\u0020children",
-            "url": "classes/vB-Library-Node.html#method_getChildren"
-        },                {
-            "fqsen": "\\vB_Library_Node\u003A\u003AcanEditThreadTitle\u0028\u0029",
-            "name": "canEditThreadTitle",
-            "summary": "Check\u0020if\u0020the\u0020user\u0020has\u0020permission\u0020for\u0020edit\u0020the\u0020thread\u0020title\u0020also\u0020check\u0020the\u0020option\u0020editthreadtitlelimit\nif\u0020we\u0020pass\u0020the\u0020time\u0020and\u0020we\u0020are\u0020not\u0020moderators\u0020we\u0020can\u0020edit\u0020the\u0020thread\u0020title",
-            "url": "classes/vB-Library-Node.html#method_canEditThreadTitle"
-        },                {
-            "fqsen": "\\vB_Library_Node\u003A\u003AgetTextChangeTypes\u0028\u0029",
-            "name": "getTextChangeTypes",
-            "summary": "Gets\u0020a\u0020list\u0020of\u0020the\u0020content\u0020types\u0020that\u0020change\u0020text\u0020type",
-            "url": "classes/vB-Library-Node.html#method_getTextChangeTypes"
-        },                {
-            "fqsen": "\\vB_Library_Node\u003A\u003AsetNodeOptions\u0028\u0029",
-            "name": "setNodeOptions",
-            "summary": "Set\u0020the\u0020node\u0020options",
-            "url": "classes/vB-Library-Node.html#method_setNodeOptions"
-        },                {
-            "fqsen": "\\vB_Library_Node\u003A\u003AgetNodeOptions\u0028\u0029",
-            "name": "getNodeOptions",
-            "summary": "gets\u0020the\u0020node\u0020option\u0020as\u0020an\u0020array\u0020of\u0020values",
-            "url": "classes/vB-Library-Node.html#method_getNodeOptions"
-        },                {
-            "fqsen": "\\vB_Library_Node\u003A\u003AgetChannelId\u0028\u0029",
-            "name": "getChannelId",
-            "summary": "Gets\u0020the\u0020starter\u0027s\u0020parent\u0020\u0028channel\u0029\u0020node",
-            "url": "classes/vB-Library-Node.html#method_getChannelId"
-        },                {
-            "fqsen": "\\vB_Library_Node\u003A\u003AundeleteNodes\u0028\u0029",
-            "name": "undeleteNodes",
-            "summary": "Undelete\u0020a\u0020set\u0020of\u0020nodes",
-            "url": "classes/vB-Library-Node.html#method_undeleteNodes"
-        },                {
-            "fqsen": "\\vB_Library_Node\u003A\u003AgetNodeModerators\u0028\u0029",
-            "name": "getNodeModerators",
-            "summary": "Returns\u0020the\u0020userids\u0020of\u0020the\u0020moderators\u0020of\u0020that\u0020node",
-            "url": "classes/vB-Library-Node.html#method_getNodeModerators"
-        },                {
-            "fqsen": "\\vB_Library_Node\u003A\u003AgetForumSupermoderatorsAdmins\u0028\u0029",
-            "name": "getForumSupermoderatorsAdmins",
-            "summary": "Returns\u0020forum\u0020super\u0020moderators\u0020and\u0020admins",
-            "url": "classes/vB-Library-Node.html#method_getForumSupermoderatorsAdmins"
-        },                {
-            "fqsen": "\\vB_Library_Node\u003A\u003AcloneNodes\u0028\u0029",
-            "name": "cloneNodes",
-            "summary": "Clone\u0020Nodes\u0020and\u0020their\u0020children\u0020deeply\u0020into\u0020a\u0020new\u0020parent\u0020Node.",
-            "url": "classes/vB-Library-Node.html#method_cloneNodes"
-        },                {
-            "fqsen": "\\vB_Library_Node\u003A\u003AcloneNodesInternal\u0028\u0029",
-            "name": "cloneNodesInternal",
-            "summary": "",
-            "url": "classes/vB-Library-Node.html#method_cloneNodesInternal"
-        },                {
-            "fqsen": "\\vB_Library_Node\u003A\u003AmoveNodes\u0028\u0029",
-            "name": "moveNodes",
-            "summary": "Moves\u0020nodes\u0020to\u0020a\u0020new\u0020parent",
-            "url": "classes/vB-Library-Node.html#method_moveNodes"
-        },                {
-            "fqsen": "\\vB_Library_Node\u003A\u003AupdateAddRemovedNodeParentCounts\u0028\u0029",
-            "name": "updateAddRemovedNodeParentCounts",
-            "summary": "Add\u0020or\u0020remove\u0020node\u0020counts\u0020for\u0020a\u0020given\u0020node\u0020its\u0020parents",
-            "url": "classes/vB-Library-Node.html#method_updateAddRemovedNodeParentCounts"
-        },                {
-            "fqsen": "\\vB_Library_Node\u003A\u003AtimedCountUpdates\u0028\u0029",
-            "name": "timedCountUpdates",
-            "summary": "Checks\u0020for\u0020any\u0020content\u0020that\u0020needs\u0020to\u0020be\u0020published\u0020or\u0020unpublished.",
-            "url": "classes/vB-Library-Node.html#method_timedCountUpdates"
-        },                {
-            "fqsen": "\\vB_Library_Node\u003A\u003ApublishChildren\u0028\u0029",
-            "name": "publishChildren",
-            "summary": "Updates\u0020the\u0020showpublished\u0020\u0026\u0020count\u0020fields\u0020of\u0020\u0024parentid\u0020\u0026\u0020its\u0020descendents\u0020for\u0020publishing",
-            "url": "classes/vB-Library-Node.html#method_publishChildren"
-        },                {
-            "fqsen": "\\vB_Library_Node\u003A\u003AunpublishChildren\u0028\u0029",
-            "name": "unpublishChildren",
-            "summary": "Updates\u0020the\u0020showpublished\u0020\u0026\u0020count\u0020fields\u0020of\u0020\u0024parentid\u0020\u0026\u0020its\u0020descendents\u0020for\u0020unpublishing\nCaller\u0020MUST\u0020ensure\u0020that\u0020\u0024parentid\u0020is\u0020actually\u0020unpublished\u0020\u0028i.e.\u0020a\u0020valid\u0020unpublishdate\u0020is\u0020set\u0029",
-            "url": "classes/vB-Library-Node.html#method_unpublishChildren"
-        },                {
-            "fqsen": "\\vB_Library_Node\u003A\u003AisPublished\u0028\u0029",
-            "name": "isPublished",
-            "summary": "Determines\u0020if\u0020a\u0020node\u0020record\u0020is\u0020published\u0020or\u0020not.\u0020\u0020Note\u0020that\u0020this\u0020only\u0020checks\u0020if\u0020the\u0020record\u0020is\u0020published,\u0020not\u0020if\nit\u0020should\u0020be\u0020shown\u0020as\u0020published.",
-            "url": "classes/vB-Library-Node.html#method_isPublished"
-        },                {
-            "fqsen": "\\vB_Library_Node\u003A\u003AupdateParentCounts\u0028\u0029",
-            "name": "updateParentCounts",
-            "summary": "Updates\u0020the\u0020parent\u0020counts\u0020and\u0020data\u0020when\u0020saving\u0020a\u0020node.",
-            "url": "classes/vB-Library-Node.html#method_updateParentCounts"
-        },                {
-            "fqsen": "\\vB_Library_Node\u003A\u003AcalculateNodeLastInfo\u0028\u0029",
-            "name": "calculateNodeLastInfo",
-            "summary": "Calculates\u0020the\u0020last\u0020node\u0020info\u0020for\u0020a\u0020given\u0020node",
-            "url": "classes/vB-Library-Node.html#method_calculateNodeLastInfo"
-        },                {
-            "fqsen": "\\vB_Library_Node\u003A\u003AfixNodeLast\u0028\u0029",
-            "name": "fixNodeLast",
-            "summary": "",
-            "url": "classes/vB-Library-Node.html#method_fixNodeLast"
-        },                {
-            "fqsen": "\\vB_Library_Node\u003A\u003AmergePostedStatusForTopics\u0028\u0029",
-            "name": "mergePostedStatusForTopics",
-            "summary": "Merges\u0020\u0022posted\u0022\u0020info\u0020into\u0020the\u0020topics\u0020array,\u0020used\u0020by\u0020the\u0020display_Topics\u0020template.",
-            "url": "classes/vB-Library-Node.html#method_mergePostedStatusForTopics"
-        },                {
-            "fqsen": "\\vB_Library_Node\u003A\u003AgetNodeviews\u0028\u0029",
-            "name": "getNodeviews",
-            "summary": "Fetch\u0020nodeview\u0020count\u0028s\u0029\u0020for\u0020nodeid\u0028s\u0029",
-            "url": "classes/vB-Library-Node.html#method_getNodeviews"
-        },                {
-            "fqsen": "\\vB_Library_Node\u003A\u003AcanOpenCloseNode\u0028\u0029",
-            "name": "canOpenCloseNode",
-            "summary": "Check\u0020if\u0020current\u0020user\u0020has\u0020perms\u0020to\u0020open\u0020or\u0020close\u0020\u0024nodeid",
-            "url": "classes/vB-Library-Node.html#method_canOpenCloseNode"
-        },                {
-            "fqsen": "\\vB_Library_Node\u003A\u003AcanSetAsAnswer\u0028\u0029",
-            "name": "canSetAsAnswer",
-            "summary": "",
-            "url": "classes/vB-Library-Node.html#method_canSetAsAnswer"
-        },                {
             "fqsen": "\\vB_Library_NodeField",
             "name": "vB_Library_NodeField",
             "summary": "vB_Library",
@@ -14350,6 +12085,11 @@ Search.appendIndex(
             "name": "voteNode",
             "summary": "",
             "url": "classes/vB-Library-Nodevote.html#method_voteNode"
+        },                {
+            "fqsen": "\\vB_Library_Nodevote\u003A\u003AupdateVotetypeLabel\u0028\u0029",
+            "name": "updateVotetypeLabel",
+            "summary": "",
+            "url": "classes/vB-Library-Nodevote.html#method_updateVotetypeLabel"
         },                {
             "fqsen": "\\vB_Library_Nodevote\u003A\u003AaddVotetype\u0028\u0029",
             "name": "addVotetype",
@@ -14471,6 +12211,16 @@ Search.appendIndex(
             "summary": "Return\u0020current\u0020user\u0027s\u0020notifications\u0020from\u0020DB.",
             "url": "classes/vB-Library-Notification.html#method_fetchNotificationsForCurrentUser"
         },                {
+            "fqsen": "\\vB_Library_Notification\u003A\u003AtriggerNodeWordNotificationEvent\u0028\u0029",
+            "name": "triggerNodeWordNotificationEvent",
+            "summary": "Conditionally\u0020triggers\u0020a\u0020notification\u0020event\u0020if\u0020the\u0020text\u0020matches\u0020the\u0020monitored\u0020words.",
+            "url": "classes/vB-Library-Notification.html#method_triggerNodeWordNotificationEvent"
+        },                {
+            "fqsen": "\\vB_Library_Notification\u003A\u003AtriggerUserWordNotificationEvent\u0028\u0029",
+            "name": "triggerUserWordNotificationEvent",
+            "summary": "Conditionally\u0020triggers\u0020a\u0020notification\u0020event\u0020if\u0020the\u0020text\u0020matches\u0020the\u0020monitored\u0020words.",
+            "url": "classes/vB-Library-Notification.html#method_triggerUserWordNotificationEvent"
+        },                {
             "fqsen": "\\vB_Library_Notification\u003A\u003AtriggerNotificationEvent\u0028\u0029",
             "name": "triggerNotificationEvent",
             "summary": "",
@@ -14505,6 +12255,11 @@ Search.appendIndex(
             "name": "getNotificationTypes",
             "summary": "",
             "url": "classes/vB-Library-Notification.html#method_getNotificationTypes"
+        },                {
+            "fqsen": "\\vB_Library_Notification\u003A\u003AgenerateUrlForUnsubscribe\u0028\u0029",
+            "name": "generateUrlForUnsubscribe",
+            "summary": "",
+            "url": "classes/vB-Library-Notification.html#method_generateUrlForUnsubscribe"
         },                {
             "fqsen": "\\vB_Library_Notification\u003A\u003ADATASTOREKEY_TRIGGERS",
             "name": "DATASTOREKEY_TRIGGERS",
@@ -14641,6 +12396,11 @@ Search.appendIndex(
             "summary": "Add\u0020a\u0020new\u0020phrase\u0020or\u0020update\u0020an\u0020existing\u0020phrase",
             "url": "classes/vB-Library-Phrase.html#method_save"
         },                {
+            "fqsen": "\\vB_Library_Phrase\u003A\u003AsaveMaster\u0028\u0029",
+            "name": "saveMaster",
+            "summary": "",
+            "url": "classes/vB-Library-Phrase.html#method_saveMaster"
+        },                {
             "fqsen": "\\vB_Library_Phrase\u003A\u003AsaveCustom\u0028\u0029",
             "name": "saveCustom",
             "summary": "",
@@ -14671,11 +12431,6 @@ Search.appendIndex(
             "summary": "Replaces\u0020instances\u0020of\u0020vBulletin\u0020options\u0020and\u0020config\u0020variables\u0020in\u0020a\u0020phrase\u0020with\nthe\u0020value\u0020held\u0020in\u0020the\u0020variable.",
             "url": "classes/vB-Library-Phrase.html#method_replaceOptionsAndConfigValuesInPhrase"
         },                {
-            "fqsen": "\\vB_Library_Phrase\u003A\u003ArenderPhrase\u0028\u0029",
-            "name": "renderPhrase",
-            "summary": "Renders\u0020the\u0020tokens\u0020in\u0020a\u0020string\u0020with\u0020the\u0020given\u0020values.",
-            "url": "classes/vB-Library-Phrase.html#method_renderPhrase"
-        },                {
             "fqsen": "\\vB_Library_Phrase\u003A\u003AgetPhrases\u0028\u0029",
             "name": "getPhrases",
             "summary": "Fetch\u0020raw\u0020phrases",
@@ -14691,10 +12446,35 @@ Search.appendIndex(
             "summary": "Deletes\u0020a\u0020phrase\u0020from\u0020all\u0020languages",
             "url": "classes/vB-Library-Phrase.html#method_deleteByVarname"
         },                {
+            "fqsen": "\\vB_Library_Phrase\u003A\u003ArenderPhrases\u0028\u0029",
+            "name": "renderPhrases",
+            "summary": "Returns\u0020rendered\u0020phrases\u0020from\u0020phrase\u0020strings\u0020and\/or\u0020data",
+            "url": "classes/vB-Library-Phrase.html#method_renderPhrases"
+        },                {
+            "fqsen": "\\vB_Library_Phrase\u003A\u003ArenderPhrasesNoShortcode\u0028\u0029",
+            "name": "renderPhrasesNoShortcode",
+            "summary": "Returns\u0020rendered\u0020phrases\u0020from\u0020phrase\u0020strings\u0020and\/or\u0020data",
+            "url": "classes/vB-Library-Phrase.html#method_renderPhrasesNoShortcode"
+        },                {
+            "fqsen": "\\vB_Library_Phrase\u003A\u003AgetLanguageid\u0028\u0029",
+            "name": "getLanguageid",
+            "summary": "Fetch\u0020the\u0020\u0022best\u0022\u0020languageid\u0020in\u0020the\u0020order\u0020of\u0020current\u0020session\u0027s\u0020languageid,\nthe\u0020default\u0020languageid\u0020from\u0020datastore,\u0020\u0020or\u0020the\u0020master\u0020languageid\u0020\u0028\u002D1\u0029.",
+            "url": "classes/vB-Library-Phrase.html#method_getLanguageid"
+        },                {
+            "fqsen": "\\vB_Library_Phrase\u003A\u003ArenderPhrase\u0028\u0029",
+            "name": "renderPhrase",
+            "summary": "Renders\u0020the\u0020tokens\u0020in\u0020a\u0020string\u0020with\u0020the\u0020given\u0020values.",
+            "url": "classes/vB-Library-Phrase.html#method_renderPhrase"
+        },                {
             "fqsen": "\\vB_Library_Phrase\u003A\u003AparsePhrases\u0028\u0029",
             "name": "parsePhrases",
             "summary": "Handled\u0020output\u0020from\u0020query\u0020from\u0020fetch\u0028\u0029\u0020and\u0020fetchByGroup\u0028\u0029",
             "url": "classes/vB-Library-Phrase.html#method_parsePhrases"
+        },                {
+            "fqsen": "\\vB_Library_Phrase\u003A\u003AdoShortcodeReplacements\u0028\u0029",
+            "name": "doShortcodeReplacements",
+            "summary": "",
+            "url": "classes/vB-Library-Phrase.html#method_doShortcodeReplacements"
         },                {
             "fqsen": "\\vB_Library_Phrase\u003A\u003AVALID_CLASS",
             "name": "VALID_CLASS",
@@ -14766,6 +12546,106 @@ Search.appendIndex(
             "summary": "Saves\u0020the\u0020list\u0020of\u0020currently\u0020installed\u0020products\u0020into\u0020the\u0020datastore.",
             "url": "classes/vB-Library-Product.html#method_buildProductDatastore"
         },                {
+            "fqsen": "\\vB_Library_Reactions",
+            "name": "vB_Library_Reactions",
+            "summary": "vB_Library",
+            "url": "classes/vB-Library-Reactions.html"
+        },                {
+            "fqsen": "\\vB_Library_Reactions\u003A\u003ApurgeReactionCaches\u0028\u0029",
+            "name": "purgeReactionCaches",
+            "summary": "",
+            "url": "classes/vB-Library-Reactions.html#method_purgeReactionCaches"
+        },                {
+            "fqsen": "\\vB_Library_Reactions\u003A\u003AaddReaction\u0028\u0029",
+            "name": "addReaction",
+            "summary": "",
+            "url": "classes/vB-Library-Reactions.html#method_addReaction"
+        },                {
+            "fqsen": "\\vB_Library_Reactions\u003A\u003AsaveReactionOptions\u0028\u0029",
+            "name": "saveReactionOptions",
+            "summary": "Save\u0020reaction\u0020options\u0020\u0028enabled,\u0020reputable,\u0020countable\u0029.",
+            "url": "classes/vB-Library-Reactions.html#method_saveReactionOptions"
+        },                {
+            "fqsen": "\\vB_Library_Reactions\u003A\u003AgetEmojisEnabledStatus\u0028\u0029",
+            "name": "getEmojisEnabledStatus",
+            "summary": "",
+            "url": "classes/vB-Library-Reactions.html#method_getEmojisEnabledStatus"
+        },                {
+            "fqsen": "\\vB_Library_Reactions\u003A\u003AgetReactionsEmojisData\u0028\u0029",
+            "name": "getReactionsEmojisData",
+            "summary": "Return\u0020reactions\u0020nodevote\u0020\u0026\u0020emojis\u0020data.\u0020Array\u0020is\u0020keyed\u0020by\u0020\u0024type.",
+            "url": "classes/vB-Library-Reactions.html#method_getReactionsEmojisData"
+        },                {
+            "fqsen": "\\vB_Library_Reactions\u003A\u003AloadSourceEmojisData\u0028\u0029",
+            "name": "loadSourceEmojisData",
+            "summary": "",
+            "url": "classes/vB-Library-Reactions.html#method_loadSourceEmojisData"
+        },                {
+            "fqsen": "\\vB_Library_Reactions\u003A\u003AgetReactionsNodevotetypes\u0028\u0029",
+            "name": "getReactionsNodevotetypes",
+            "summary": "Return\u0020nodevotetype\u0020data\u0020for\u0020topic\u0020reactions",
+            "url": "classes/vB-Library-Reactions.html#method_getReactionsNodevotetypes"
+        },                {
+            "fqsen": "\\vB_Library_Reactions\u003A\u003AfetchOnlyEnabledReactionsVotetypeid\u0028\u0029",
+            "name": "fetchOnlyEnabledReactionsVotetypeid",
+            "summary": "Fetch\u0020votetypeids\u0020for\u0020only\u0020the\u0020enabled\u0020reactions.",
+            "url": "classes/vB-Library-Reactions.html#method_fetchOnlyEnabledReactionsVotetypeid"
+        },                {
+            "fqsen": "\\vB_Library_Reactions\u003A\u003AfetchEnabledReactionsListByOrder\u0028\u0029",
+            "name": "fetchEnabledReactionsListByOrder",
+            "summary": "Return\u0020nodevotetype\u0020data\u0020and\u0020emoji\u0020html\u0020for\u0020enabled\u0020topic\u0020reactions",
+            "url": "classes/vB-Library-Reactions.html#method_fetchEnabledReactionsListByOrder"
+        },                {
+            "fqsen": "\\vB_Library_Reactions\u003A\u003AgetThumbsUp\u0028\u0029",
+            "name": "getThumbsUp",
+            "summary": "The\u0020thumbs\u0020up\u0020emoji\u0020is\u0020special,\u0020because\u0020it\u0020uniquely\u0020maps\u0020to\u0020the\u0020\u0022Like\u0022\u0020system\u0020from\u0020vB5.",
+            "url": "classes/vB-Library-Reactions.html#method_getThumbsUp"
+        },                {
+            "fqsen": "\\vB_Library_Reactions\u003A\u003AgetReputableTypesAndFactors\u0028\u0029",
+            "name": "getReputableTypesAndFactors",
+            "summary": "Get\u0020the\u0020votetypeid\u0020\u003D\u003E\u0020reputation_factor\u0020array",
+            "url": "classes/vB-Library-Reactions.html#method_getReputableTypesAndFactors"
+        },                {
+            "fqsen": "\\vB_Library_Reactions\u003A\u003AgetUserRepCountableTypes\u0028\u0029",
+            "name": "getUserRepCountableTypes",
+            "summary": "Return\u0020list\u0020of\u0020votetypeids\u0020that\u0020should\u0020count\u0020towards\u0020totalreactions\u0020counts,\u0020e.g.",
+            "url": "classes/vB-Library-Reactions.html#method_getUserRepCountableTypes"
+        },                {
+            "fqsen": "\\vB_Library_Reactions\u003A\u003AgetNotifiableTypes\u0028\u0029",
+            "name": "getNotifiableTypes",
+            "summary": "Return\u0020sparse\u0020list\u0020of\u0020votetypeids\u0020that\u0020should\u0020generate\u0020a\u0020\u0022vB_Notification_LikedNode\u0022\nnotification.",
+            "url": "classes/vB-Library-Reactions.html#method_getNotifiableTypes"
+        },                {
+            "fqsen": "\\vB_Library_Reactions\u003A\u003AVOTE_GROUP",
+            "name": "VOTE_GROUP",
+            "summary": "",
+            "url": "classes/vB-Library-Reactions.html#constant_VOTE_GROUP"
+        },                {
+            "fqsen": "\\vB_Library_Reactions\u003A\u003AREACTIONS_ENABLEDONLY_DS_KEY",
+            "name": "REACTIONS_ENABLEDONLY_DS_KEY",
+            "summary": "",
+            "url": "classes/vB-Library-Reactions.html#constant_REACTIONS_ENABLEDONLY_DS_KEY"
+        },                {
+            "fqsen": "\\vB_Library_Reactions\u003A\u003AREACTIONS_ALL_ORDERED_DS_KEY",
+            "name": "REACTIONS_ALL_ORDERED_DS_KEY",
+            "summary": "",
+            "url": "classes/vB-Library-Reactions.html#constant_REACTIONS_ALL_ORDERED_DS_KEY"
+        },                {
+            "fqsen": "\\vB_Library_Reactions\u003A\u003AREACTIONS_ALL_BY_LABEL_DS_KEY",
+            "name": "REACTIONS_ALL_BY_LABEL_DS_KEY",
+            "summary": "",
+            "url": "classes/vB-Library-Reactions.html#constant_REACTIONS_ALL_BY_LABEL_DS_KEY"
+        },                {
+            "fqsen": "\\vB_Library_Reactions\u003A\u003AEMOJI_ENABLED_LEGACY_DS_KEY",
+            "name": "EMOJI_ENABLED_LEGACY_DS_KEY",
+            "summary": "",
+            "url": "classes/vB-Library-Reactions.html#constant_EMOJI_ENABLED_LEGACY_DS_KEY"
+        },                {
+            "fqsen": "\\vB_Library_Reactions\u003A\u003ATHUMBS_UP_LABEL",
+            "name": "THUMBS_UP_LABEL",
+            "summary": "",
+            "url": "classes/vB-Library-Reactions.html#constant_THUMBS_UP_LABEL"
+        },                {
             "fqsen": "\\vB_Library_ReferUser",
             "name": "vB_Library_ReferUser",
             "summary": "vB_Library_ReferUser",
@@ -14795,31 +12675,6 @@ Search.appendIndex(
             "name": "fetchReferrers",
             "summary": "Return\u0020a\u0020report\u0020of\u0020referrers",
             "url": "classes/vB-Library-ReferUser.html#method_fetchReferrers"
-        },                {
-            "fqsen": "\\vB_Library_Reputation",
-            "name": "vB_Library_Reputation",
-            "summary": "vB_Library_Reputation",
-            "url": "classes/vB-Library-Reputation.html"
-        },                {
-            "fqsen": "\\vB_Library_Reputation\u003A\u003AfetchReputationImageInfo\u0028\u0029",
-            "name": "fetchReputationImageInfo",
-            "summary": "Fetch\u0020reputation\u0020image\u0020info\u0020for\u0020displaying\u0020it\u0020in\u0020a\u0020node\nPorted\u0020from\u0020vB4\u0027s\u0020fetch_reputation_image\u0028\u0029\u0020function",
-            "url": "classes/vB-Library-Reputation.html#method_fetchReputationImageInfo"
-        },                {
-            "fqsen": "\\vB_Library_Reputation\u003A\u003AfetchReppower\u0028\u0029",
-            "name": "fetchReppower",
-            "summary": "Fetch\u0020Reputation\u0020Power\u0020of\u0020an\u0020user",
-            "url": "classes/vB-Library-Reputation.html#method_fetchReppower"
-        },                {
-            "fqsen": "\\vB_Library_Reputation\u003A\u003AcacheNodeVotes\u0028\u0029",
-            "name": "cacheNodeVotes",
-            "summary": "Supplemental\u0020cache\u0020for\u0020node\u0020votes",
-            "url": "classes/vB-Library-Reputation.html#method_cacheNodeVotes"
-        },                {
-            "fqsen": "\\vB_Library_Reputation\u003A\u003AfetchNodeVotes\u0028\u0029",
-            "name": "fetchNodeVotes",
-            "summary": "Check\u0020a\u0020list\u0020of\u0020nodes\u0020and\u0020see\u0020whether\u0020the\u0020user\u0020has\u0020voted\u0020them",
-            "url": "classes/vB-Library-Reputation.html#method_fetchNodeVotes"
         },                {
             "fqsen": "\\vB_Library_RouteFix",
             "name": "vB_Library_RouteFix",
@@ -14936,6 +12791,16 @@ Search.appendIndex(
             "summary": "Stores\u0020the\u0020header\u0020navbar\u0020data.",
             "url": "classes/vB-Library-Site.html#method_saveHeaderNavbar"
         },                {
+            "fqsen": "\\vB_Library_Site\u003A\u003AprocessNavbar\u0028\u0029",
+            "name": "processNavbar",
+            "summary": "",
+            "url": "classes/vB-Library-Site.html#method_processNavbar"
+        },                {
+            "fqsen": "\\vB_Library_Site\u003A\u003AupdateUrlFromRoute\u0028\u0029",
+            "name": "updateUrlFromRoute",
+            "summary": "",
+            "url": "classes/vB-Library-Site.html#method_updateUrlFromRoute"
+        },                {
             "fqsen": "\\vB_Library_Site\u003A\u003AsaveFooterNavbar\u0028\u0029",
             "name": "saveFooterNavbar",
             "summary": "Stores\u0020the\u0020footer\u0020navbar\u0020data.",
@@ -14956,10 +12821,10 @@ Search.appendIndex(
             "summary": "Returns\u0020an\u0020array\u0020of\u0020general\u0020statistics\u0020for\u0020the\u0020site",
             "url": "classes/vB-Library-Site.html#method_getSiteStatistics"
         },                {
-            "fqsen": "\\vB_Library_Site\u003A\u003AclearSiteCache\u0028\u0029",
-            "name": "clearSiteCache",
-            "summary": "Clears\u0020the\u0020internal\u0020site\u0020cache.",
-            "url": "classes/vB-Library-Site.html#method_clearSiteCache"
+            "fqsen": "\\vB_Library_Site\u003A\u003AonRouteUpdate\u0028\u0029",
+            "name": "onRouteUpdate",
+            "summary": "Called\u0020by\u0020vB5_Route\u003A\u003AupdateRoute\u0028\u0029\u0020to\u0020automatically\u0020update\u0020any\u0020header\u0020navbar\u0020items\u0020that\u0020are\u0020linked\nto\u0020routes\/pages.",
+            "url": "classes/vB-Library-Site.html#method_onRouteUpdate"
         },                {
             "fqsen": "\\STYLECOUNT",
             "name": "STYLECOUNT",
@@ -14970,6 +12835,16 @@ Search.appendIndex(
             "name": "vB_Library_Style",
             "summary": "vB_Library_Style",
             "url": "classes/vB-Library-Style.html"
+        },                {
+            "fqsen": "\\vB_Library_Style\u003A\u003AgetRootStylevars\u0028\u0029",
+            "name": "getRootStylevars",
+            "summary": "Return\u0020stylevars\u0020for\u0020styleid\u0020\u003D\u0020\u002D1\u0020WITHOUT\u0020resolving\u0020styleid\u0020to\u0020forum\u0020default\u0020styleid.",
+            "url": "classes/vB-Library-Style.html#method_getRootStylevars"
+        },                {
+            "fqsen": "\\vB_Library_Style\u003A\u003AaddStylevarOverrides\u0028\u0029",
+            "name": "addStylevarOverrides",
+            "summary": "Fetch\u0020any\u0020stylevar\u0020customizations\u0020from\u0020styles\u0020in\u0020\u0024parentlist,\u0020override\u0020root\u0020stylevars\u0020\u0026\u0020return\u0020the\u0020updated\u0020list.",
+            "url": "classes/vB-Library-Style.html#method_addStylevarOverrides"
         },                {
             "fqsen": "\\vB_Library_Style\u003A\u003AgetValidStyleFromPreference\u0028\u0029",
             "name": "getValidStyleFromPreference",
@@ -15021,6 +12896,11 @@ Search.appendIndex(
             "summary": "Update\u0020style",
             "url": "classes/vB-Library-Style.html#method_updateStyle"
         },                {
+            "fqsen": "\\vB_Library_Style\u003A\u003AfetchStyleVars\u0028\u0029",
+            "name": "fetchStyleVars",
+            "summary": "",
+            "url": "classes/vB-Library-Style.html#method_fetchStyleVars"
+        },                {
             "fqsen": "\\vB_Library_Style\u003A\u003AfetchStyles\u0028\u0029",
             "name": "fetchStyles",
             "summary": "Fetch\u0020All\u0020styles",
@@ -15035,6 +12915,21 @@ Search.appendIndex(
             "name": "useCssFiles",
             "summary": "Determine\u0020if\u0020we\u0020should\u0020use\u0020on\u0020disk\u0020files\u0020for\u0020this\u0020style\u0020based\u0020on\u0020the\u0020following\u0020rules",
             "url": "classes/vB-Library-Style.html#method_useCssFiles"
+        },                {
+            "fqsen": "\\vB_Library_Style\u003A\u003AgetCssStyleDirectory\u0028\u0029",
+            "name": "getCssStyleDirectory",
+            "summary": "Gets\u0020the\u0020directory\u0020for\u0020the\u0020css\u0020on\u0020the\u0020filestystem",
+            "url": "classes/vB-Library-Style.html#method_getCssStyleDirectory"
+        },                {
+            "fqsen": "\\vB_Library_Style\u003A\u003AgetCssStyleUrlPath\u0028\u0029",
+            "name": "getCssStyleUrlPath",
+            "summary": "Gets\u0020the\u0020directory\u0020for\u0020the\u0020css\u0020on\u0020the\u0020filestystem\u0020as\u0020a\u0020url\u0020relative\u0020to\u0020the\u0020site\u0020root.",
+            "url": "classes/vB-Library-Style.html#method_getCssStyleUrlPath"
+        },                {
+            "fqsen": "\\vB_Library_Style\u003A\u003AgetSpriteUrl\u0028\u0029",
+            "name": "getSpriteUrl",
+            "summary": "Gets\u0020the\u0020directory\u0020for\u0020the\u0020css\u0020on\u0020the\u0020filestystem\u0020as\u0020a\u0020url\u0020relative\u0020to\u0020the\u0020site\u0020root.",
+            "url": "classes/vB-Library-Style.html#method_getSpriteUrl"
         },                {
             "fqsen": "\\vB_Library_Style\u003A\u003AclearStyleCache\u0028\u0029",
             "name": "clearStyleCache",
@@ -15476,6 +13371,11 @@ Search.appendIndex(
             "summary": "Insert\u0020or\u0020Update\u0020an\u0020user",
             "url": "classes/vB-Library-User.html#method_save"
         },                {
+            "fqsen": "\\vB_Library_User\u003A\u003AinvalidateOldPasswords\u0028\u0029",
+            "name": "invalidateOldPasswords",
+            "summary": "",
+            "url": "classes/vB-Library-User.html#method_invalidateOldPasswords"
+        },                {
             "fqsen": "\\vB_Library_User\u003A\u003AcheckUsernameLibraryInternal\u0028\u0029",
             "name": "checkUsernameLibraryInternal",
             "summary": "This\u0020function\u0020is\u0020NOT\u0020meant\u0020for\u0020general\u0020consumption.\u0020For\u0020general\u0020use,\u0020please",
@@ -15546,6 +13446,11 @@ Search.appendIndex(
             "summary": "Get\u0020the\u0020flags\u0020for\u0020privacy\u0020options\u0020based\u0020on\u0020the\u0020user\u0027s\u0020privacy\u0020setting\u0020and\u0020the\u0020current\u0020user\u0027s\u0020permissions.",
             "url": "classes/vB-Library-User.html#method_getCurrentUserPrivacyFlags"
         },                {
+            "fqsen": "\\vB_Library_User\u003A\u003AfetchTimezonesArray\u0028\u0029",
+            "name": "fetchTimezonesArray",
+            "summary": "",
+            "url": "classes/vB-Library-User.html#method_fetchTimezonesArray"
+        },                {
             "fqsen": "\\vB_Library_User\u003A\u003APASSWORD_RESET_ATTEMPTS",
             "name": "PASSWORD_RESET_ATTEMPTS",
             "summary": "",
@@ -15601,6 +13506,11 @@ Search.appendIndex(
             "summary": "Get\u0020the\u0020usergroup\u0020cache.\u0020\u0020Will\u0020rebuild\u0020the\u0020datastore\u0020if\u0020it\u0020is\u0020missing.",
             "url": "classes/vB-Library-Usergroup.html#method_getCache"
         },                {
+            "fqsen": "\\vB_Library_Usergroup\u003A\u003AgetUsergroupBySystemID\u0028\u0029",
+            "name": "getUsergroupBySystemID",
+            "summary": "Fetch\u0020usergroup\u0020information\u0020by\u0020its\u0020SystemID",
+            "url": "classes/vB-Library-Usergroup.html#method_getUsergroupBySystemID"
+        },                {
             "fqsen": "\\vB_Library_Userrank",
             "name": "vB_Library_Userrank",
             "summary": "vB_Libary_Userrank",
@@ -15640,171 +13550,6 @@ Search.appendIndex(
             "name": "getRankHtml",
             "summary": "Gets\u0020the\u0020current\u0020rank\u0020for\u0020a\u0020user.",
             "url": "classes/vB-Library-Userrank.html#method_getRankHtml"
-        },                {
-            "fqsen": "\\vB_Library_VB4_Functions",
-            "name": "vB_Library_VB4_Functions",
-            "summary": "vB_Library_VB4_Functions",
-            "url": "classes/vB-Library-VB4-Functions.html"
-        },                {
-            "fqsen": "\\vB_Library_VB4_Functions\u003A\u003AgetPreview\u0028\u0029",
-            "name": "getPreview",
-            "summary": "",
-            "url": "classes/vB-Library-VB4-Functions.html#method_getPreview"
-        },                {
-            "fqsen": "\\vB_Library_VB4_Functions\u003A\u003ApageNav\u0028\u0029",
-            "name": "pageNav",
-            "summary": "",
-            "url": "classes/vB-Library-VB4-Functions.html#method_pageNav"
-        },                {
-            "fqsen": "\\vB_Library_VB4_Functions\u003A\u003AgetUsersPostPerPage\u0028\u0029",
-            "name": "getUsersPostPerPage",
-            "summary": "\u005BResolves\u0020\u002D1\u0020and\u00200\u0020as\u0020perpage\u0020values\u0020for\u0020users\u005D",
-            "url": "classes/vB-Library-VB4-Functions.html#method_getUsersPostPerPage"
-        },                {
-            "fqsen": "\\vB_Library_VB4_Functions\u003A\u003AavatarUrl\u0028\u0029",
-            "name": "avatarUrl",
-            "summary": "",
-            "url": "classes/vB-Library-VB4-Functions.html#method_avatarUrl"
-        },                {
-            "fqsen": "\\vB_Library_VB4_Functions\u003A\u003AparseAttachments\u0028\u0029",
-            "name": "parseAttachments",
-            "summary": "",
-            "url": "classes/vB-Library-VB4-Functions.html#method_parseAttachments"
-        },                {
-            "fqsen": "\\vB_Library_VB4_Functions\u003A\u003AparseArticleComment\u0028\u0029",
-            "name": "parseArticleComment",
-            "summary": "",
-            "url": "classes/vB-Library-VB4-Functions.html#method_parseArticleComment"
-        },                {
-            "fqsen": "\\vB_Library_VB4_Functions\u003A\u003AparseArticle\u0028\u0029",
-            "name": "parseArticle",
-            "summary": "",
-            "url": "classes/vB-Library-VB4-Functions.html#method_parseArticle"
-        },                {
-            "fqsen": "\\vB_Library_VB4_Functions\u003A\u003AparsePost\u0028\u0029",
-            "name": "parsePost",
-            "summary": "",
-            "url": "classes/vB-Library-VB4-Functions.html#method_parsePost"
-        },                {
-            "fqsen": "\\vB_Library_VB4_Functions\u003A\u003AgetErrorResponse\u0028\u0029",
-            "name": "getErrorResponse",
-            "summary": "",
-            "url": "classes/vB-Library-VB4-Functions.html#method_getErrorResponse"
-        },                {
-            "fqsen": "\\vB_Library_VB4_Functions\u003A\u003AfilterUserInfo\u0028\u0029",
-            "name": "filterUserInfo",
-            "summary": "",
-            "url": "classes/vB-Library-VB4-Functions.html#method_filterUserInfo"
-        },                {
-            "fqsen": "\\vB_Library_VB4_Functions\u003A\u003AgetNodeUserinfo\u0028\u0029",
-            "name": "getNodeUserinfo",
-            "summary": "",
-            "url": "classes/vB-Library-VB4-Functions.html#method_getNodeUserinfo"
-        },                {
-            "fqsen": "\\vB_Library_VB4_Functions\u003A\u003AgetUseridUserinfo\u0028\u0029",
-            "name": "getUseridUserinfo",
-            "summary": "",
-            "url": "classes/vB-Library-VB4-Functions.html#method_getUseridUserinfo"
-        },                {
-            "fqsen": "\\vB_Library_VB4_Functions\u003A\u003AgetNodeAvatar\u0028\u0029",
-            "name": "getNodeAvatar",
-            "summary": "",
-            "url": "classes/vB-Library-VB4-Functions.html#method_getNodeAvatar"
-        },                {
-            "fqsen": "\\vB_Library_VB4_Functions\u003A\u003AparseThread\u0028\u0029",
-            "name": "parseThread",
-            "summary": "",
-            "url": "classes/vB-Library-VB4-Functions.html#method_parseThread"
-        },                {
-            "fqsen": "\\vB_Library_VB4_Functions\u003A\u003AgetPrefixTitle\u0028\u0029",
-            "name": "getPrefixTitle",
-            "summary": "",
-            "url": "classes/vB-Library-VB4-Functions.html#method_getPrefixTitle"
-        },                {
-            "fqsen": "\\vB_Library_VB4_Functions\u003A\u003AgetPrefixes\u0028\u0029",
-            "name": "getPrefixes",
-            "summary": "",
-            "url": "classes/vB-Library-VB4-Functions.html#method_getPrefixes"
-        },                {
-            "fqsen": "\\vB_Library_VB4_Functions\u003A\u003AgetUsersBlogChannel\u0028\u0029",
-            "name": "getUsersBlogChannel",
-            "summary": "",
-            "url": "classes/vB-Library-VB4-Functions.html#method_getUsersBlogChannel"
-        },                {
-            "fqsen": "\\vB_Library_VB4_Functions\u003A\u003AgetGlobalBlogCategories\u0028\u0029",
-            "name": "getGlobalBlogCategories",
-            "summary": "",
-            "url": "classes/vB-Library-VB4-Functions.html#method_getGlobalBlogCategories"
-        },                {
-            "fqsen": "\\vB_Library_VB4_Functions\u003A\u003AgetLocalBlogCategories\u0028\u0029",
-            "name": "getLocalBlogCategories",
-            "summary": "",
-            "url": "classes/vB-Library-VB4-Functions.html#method_getLocalBlogCategories"
-        },                {
-            "fqsen": "\\vB_Library_VB4_Functions\u003A\u003AparseBlogComment\u0028\u0029",
-            "name": "parseBlogComment",
-            "summary": "",
-            "url": "classes/vB-Library-VB4-Functions.html#method_parseBlogComment"
-        },                {
-            "fqsen": "\\vB_Library_VB4_Functions\u003A\u003AparseBlogHeader\u0028\u0029",
-            "name": "parseBlogHeader",
-            "summary": "",
-            "url": "classes/vB-Library-VB4-Functions.html#method_parseBlogHeader"
-        },                {
-            "fqsen": "\\vB_Library_VB4_Functions\u003A\u003AparseBlogEntrySearch\u0028\u0029",
-            "name": "parseBlogEntrySearch",
-            "summary": "",
-            "url": "classes/vB-Library-VB4-Functions.html#method_parseBlogEntrySearch"
-        },                {
-            "fqsen": "\\vB_Library_VB4_Functions\u003A\u003AparseBlogEntry\u0028\u0029",
-            "name": "parseBlogEntry",
-            "summary": "",
-            "url": "classes/vB-Library-VB4-Functions.html#method_parseBlogEntry"
-        },                {
-            "fqsen": "\\vB_Library_VB4_Functions\u003A\u003AparseArticleSearch\u0028\u0029",
-            "name": "parseArticleSearch",
-            "summary": "",
-            "url": "classes/vB-Library-VB4-Functions.html#method_parseArticleSearch"
-        },                {
-            "fqsen": "\\vB_Library_VB4_Functions\u003A\u003AparseForumInfo\u0028\u0029",
-            "name": "parseForumInfo",
-            "summary": "",
-            "url": "classes/vB-Library-VB4-Functions.html#method_parseForumInfo"
-        },                {
-            "fqsen": "\\vB_Library_VB4_Functions\u003A\u003AparseThreadInfo\u0028\u0029",
-            "name": "parseThreadInfo",
-            "summary": "",
-            "url": "classes/vB-Library-VB4-Functions.html#method_parseThreadInfo"
-        },                {
-            "fqsen": "\\vB_Library_VB4_Functions\u003A\u003AparseForum\u0028\u0029",
-            "name": "parseForum",
-            "summary": "",
-            "url": "classes/vB-Library-VB4-Functions.html#method_parseForum"
-        },                {
-            "fqsen": "\\vB_Library_VB4_Functions\u003A\u003AsafeBuildUrl\u0028\u0029",
-            "name": "safeBuildUrl",
-            "summary": "",
-            "url": "classes/vB-Library-VB4-Functions.html#method_safeBuildUrl"
-        },                {
-            "fqsen": "\\vB_Library_VB4_Functions\u003A\u003AgetBlockedUsers\u0028\u0029",
-            "name": "getBlockedUsers",
-            "summary": "",
-            "url": "classes/vB-Library-VB4-Functions.html#method_getBlockedUsers"
-        },                {
-            "fqsen": "\\vB_Library_VB4_Functions\u003A\u003AgetParsedSignature\u0028\u0029",
-            "name": "getParsedSignature",
-            "summary": "",
-            "url": "classes/vB-Library-VB4-Functions.html#method_getParsedSignature"
-        },                {
-            "fqsen": "\\vB_Library_VB4_Functions\u003A\u003AbulkExtractUsers\u0028\u0029",
-            "name": "bulkExtractUsers",
-            "summary": "",
-            "url": "classes/vB-Library-VB4-Functions.html#method_bulkExtractUsers"
-        },                {
-            "fqsen": "\\vB_Library_VB4_Functions\u003A\u003AbulkFetchUsers\u0028\u0029",
-            "name": "bulkFetchUsers",
-            "summary": "",
-            "url": "classes/vB-Library-VB4-Functions.html#method_bulkFetchUsers"
         },                {
             "fqsen": "\\vB_Library_VB4_Posthash",
             "name": "vB_Library_VB4_Posthash",
@@ -16326,6 +14071,21 @@ Search.appendIndex(
             "summary": "",
             "url": "classes/vB-Notification-Content-UserMention.html#constant_TYPENAME"
         },                {
+            "fqsen": "\\vB_Notification_Content",
+            "name": "vB_Notification_Content",
+            "summary": "",
+            "url": "classes/vB-Notification-Content.html"
+        },                {
+            "fqsen": "\\vB_Notification_Content\u003A\u003AgenerateNotificationQueueKey\u0028\u0029",
+            "name": "generateNotificationQueueKey",
+            "summary": "This\u0020function\u0020allows\u0020\u0022collisions\u0022\u0020to\u0020occur\u0020to\u0020limit\u0020or\u0020allow\u0020multiple\u0020notifications\u0020to\u0020a\u0020recipient.",
+            "url": "classes/vB-Notification-Content.html#method_generateNotificationQueueKey"
+        },                {
+            "fqsen": "\\vB_Notification_Content\u003A\u003ATYPENAME",
+            "name": "TYPENAME",
+            "summary": "",
+            "url": "classes/vB-Notification-Content.html#constant_TYPENAME"
+        },                {
             "fqsen": "\\vB_Notification_LikedNode",
             "name": "vB_Notification_LikedNode",
             "summary": "",
@@ -16333,7 +14093,7 @@ Search.appendIndex(
         },                {
             "fqsen": "\\vB_Notification_LikedNode\u003A\u003AfetchPhraseArray\u0028\u0029",
             "name": "fetchPhraseArray",
-            "summary": "",
+            "summary": "Returns\u0020the\u0020phrase\u0020data\u0020used\u0020by\u0020privatemessage_notificationdetail\u0020template\u0020to\u0020render\nthe\u0020individual\u0020notification.",
             "url": "classes/vB-Notification-LikedNode.html#method_fetchPhraseArray"
         },                {
             "fqsen": "\\vB_Notification_LikedNode\u003A\u003ATYPENAME",
@@ -16448,7 +14208,7 @@ Search.appendIndex(
         },                {
             "fqsen": "\\vB_Notification_PollVote\u003A\u003AfetchPhraseArray\u0028\u0029",
             "name": "fetchPhraseArray",
-            "summary": "",
+            "summary": "Returns\u0020the\u0020phrase\u0020data\u0020used\u0020by\u0020privatemessage_notificationdetail\u0020template\u0020to\u0020render\nthe\u0020individual\u0020notification.",
             "url": "classes/vB-Notification-PollVote.html#method_fetchPhraseArray"
         },                {
             "fqsen": "\\vB_Notification_PollVote\u003A\u003ATYPENAME",
@@ -16513,7 +14273,7 @@ Search.appendIndex(
         },                {
             "fqsen": "\\vB_Notification_VisitorMessage\u003A\u003AfetchPhraseArray\u0028\u0029",
             "name": "fetchPhraseArray",
-            "summary": "",
+            "summary": "Returns\u0020the\u0020phrase\u0020data\u0020used\u0020by\u0020privatemessage_notificationdetail\u0020template\u0020to\u0020render\nthe\u0020individual\u0020notification.",
             "url": "classes/vB-Notification-VisitorMessage.html#method_fetchPhraseArray"
         },                {
             "fqsen": "\\vB_Notification_VisitorMessage\u003A\u003AhandleUpdateEvents\u0028\u0029",
@@ -16535,6 +14295,136 @@ Search.appendIndex(
             "name": "FCM_SUPPORTED",
             "summary": "",
             "url": "classes/vB-Notification-VisitorMessage.html#constant_FCM_SUPPORTED"
+        },                {
+            "fqsen": "\\vB_Notification",
+            "name": "vB_Notification",
+            "summary": "",
+            "url": "classes/vB-Notification.html"
+        },                {
+            "fqsen": "\\vB_Notification\u003A\u003A__construct\u0028\u0029",
+            "name": "__construct",
+            "summary": "",
+            "url": "classes/vB-Notification.html#method___construct"
+        },                {
+            "fqsen": "\\vB_Notification\u003A\u003AgetHashedLookupid\u0028\u0029",
+            "name": "getHashedLookupid",
+            "summary": "Returns\u0020the\u0020md5\u0028\u0029\u0020of\u0020the\u0020\u0024lookupid\u0020or\u0020NULL\u0020if\u0020\u0024lookupid\u0020is\u0020empty.",
+            "url": "classes/vB-Notification.html#method_getHashedLookupid"
+        },                {
+            "fqsen": "\\vB_Notification\u003A\u003AgetNotificationData\u0028\u0029",
+            "name": "getNotificationData",
+            "summary": "Returns\u0020the\u0020notification\u0020data.",
+            "url": "classes/vB-Notification.html#method_getNotificationData"
+        },                {
+            "fqsen": "\\vB_Notification\u003A\u003AgetRecipients\u0028\u0029",
+            "name": "getRecipients",
+            "summary": "Returns\u0020the\u0020array\u0020of\u0020recipients\u0020to\u0020receive\u0020this\u0020notification",
+            "url": "classes/vB-Notification.html#method_getRecipients"
+        },                {
+            "fqsen": "\\vB_Notification\u003A\u003AgetCachedRecipientData\u0028\u0029",
+            "name": "getCachedRecipientData",
+            "summary": "Returns\u0020the\u0020memory\u0020cached\u0020array\u0020of\u0020recipients\u0027\u0020information\u0020like\u0020email,\u0020languageid\u0020etc.",
+            "url": "classes/vB-Notification.html#method_getCachedRecipientData"
+        },                {
+            "fqsen": "\\vB_Notification\u003A\u003AshouldCombine\u0028\u0029",
+            "name": "shouldCombine",
+            "summary": "",
+            "url": "classes/vB-Notification.html#method_shouldCombine"
+        },                {
+            "fqsen": "\\vB_Notification\u003A\u003AcombineNotifications\u0028\u0029",
+            "name": "combineNotifications",
+            "summary": "",
+            "url": "classes/vB-Notification.html#method_combineNotifications"
+        },                {
+            "fqsen": "\\vB_Notification\u003A\u003AhandleUpdateEvents\u0028\u0029",
+            "name": "handleUpdateEvents",
+            "summary": "Handle\u0020update\/dismiss\u0020events.\u0020The\u0020required\u0020data\u0020in\u0020\u0024eventData\u0020depends\u0020on\u0020the\u0020particular\u0020event.",
+            "url": "classes/vB-Notification.html#method_handleUpdateEvents"
+        },                {
+            "fqsen": "\\vB_Notification\u003A\u003AgetTriggers\u0028\u0029",
+            "name": "getTriggers",
+            "summary": "",
+            "url": "classes/vB-Notification.html#method_getTriggers"
+        },                {
+            "fqsen": "\\vB_Notification\u003A\u003AgetUpdateEvents\u0028\u0029",
+            "name": "getUpdateEvents",
+            "summary": "",
+            "url": "classes/vB-Notification.html#method_getUpdateEvents"
+        },                {
+            "fqsen": "\\vB_Notification\u003A\u003AfetchLookupid\u0028\u0029",
+            "name": "fetchLookupid",
+            "summary": "Fetch\u0020the\u0020lookupid\u0020based\u0020on\u0020the\u0020defineUnique\u0028\u0029\u0020function\u0020\u0026\u0020the\u0020class\u0027s\u0020\u0022address\u0022.",
+            "url": "classes/vB-Notification.html#method_fetchLookupid"
+        },                {
+            "fqsen": "\\vB_Notification\u003A\u003AclearMemory\u0028\u0029",
+            "name": "clearMemory",
+            "summary": "",
+            "url": "classes/vB-Notification.html#method_clearMemory"
+        },                {
+            "fqsen": "\\vB_Notification\u003A\u003AfetchPhraseArray\u0028\u0029",
+            "name": "fetchPhraseArray",
+            "summary": "Returns\u0020the\u0020phrase\u0020data\u0020used\u0020by\u0020privatemessage_notificationdetail\u0020template\u0020to\u0020render\nthe\u0020individual\u0020notification.",
+            "url": "classes/vB-Notification.html#method_fetchPhraseArray"
+        },                {
+            "fqsen": "\\vB_Notification\u003A\u003AgenerateNotificationQueueKey\u0028\u0029",
+            "name": "generateNotificationQueueKey",
+            "summary": "This\u0020function\u0020allows\u0020\u0022collisions\u0022\u0020to\u0020occur\u0020to\u0020limit\u0020or\u0020allow\u0020multiple\u0020notifications\u0020to\u0020a\u0020recipient.",
+            "url": "classes/vB-Notification.html#method_generateNotificationQueueKey"
+        },                {
+            "fqsen": "\\vB_Notification\u003A\u003AgetFCMExtraData\u0028\u0029",
+            "name": "getFCMExtraData",
+            "summary": "",
+            "url": "classes/vB-Notification.html#method_getFCMExtraData"
+        },                {
+            "fqsen": "\\vB_Notification\u003A\u003ArenderEmailPhrases\u0028\u0029",
+            "name": "renderEmailPhrases",
+            "summary": "Returns\u0020the\u0020rendered\u0020phrase\u0020used\u0020in\u0020notification\u0020emails\u0020for\u0020this\u0020type.",
+            "url": "classes/vB-Notification.html#method_renderEmailPhrases"
+        },                {
+            "fqsen": "\\vB_Notification\u003A\u003AgetHasEmailNotificationOption\u0028\u0029",
+            "name": "getHasEmailNotificationOption",
+            "summary": "",
+            "url": "classes/vB-Notification.html#method_getHasEmailNotificationOption"
+        },                {
+            "fqsen": "\\vB_Notification\u003A\u003ARECIPIENT_KEY_PREFIX",
+            "name": "RECIPIENT_KEY_PREFIX",
+            "summary": "",
+            "url": "classes/vB-Notification.html#constant_RECIPIENT_KEY_PREFIX"
+        },                {
+            "fqsen": "\\vB_Notification\u003A\u003AGUESTS_CAN_SEND",
+            "name": "GUESTS_CAN_SEND",
+            "summary": "",
+            "url": "classes/vB-Notification.html#constant_GUESTS_CAN_SEND"
+        },                {
+            "fqsen": "\\vB_Notification\u003A\u003AGROUP_CHILDREN",
+            "name": "GROUP_CHILDREN",
+            "summary": "",
+            "url": "classes/vB-Notification.html#constant_GROUP_CHILDREN"
+        },                {
+            "fqsen": "\\vB_Notification\u003A\u003ATYPENAME",
+            "name": "TYPENAME",
+            "summary": "",
+            "url": "classes/vB-Notification.html#constant_TYPENAME"
+        },                {
+            "fqsen": "\\vB_Notification\u003A\u003AREGEX_ALLOWED_TYPENAME",
+            "name": "REGEX_ALLOWED_TYPENAME",
+            "summary": "",
+            "url": "classes/vB-Notification.html#constant_REGEX_ALLOWED_TYPENAME"
+        },                {
+            "fqsen": "\\vB_Notification\u003A\u003ADELIM",
+            "name": "DELIM",
+            "summary": "",
+            "url": "classes/vB-Notification.html#constant_DELIM"
+        },                {
+            "fqsen": "\\vB_Notification\u003A\u003AFCM_SUPPORTED",
+            "name": "FCM_SUPPORTED",
+            "summary": "",
+            "url": "classes/vB-Notification.html#constant_FCM_SUPPORTED"
+        },                {
+            "fqsen": "\\vB_Notification\u003A\u003A\u0024recipientsInfoCache",
+            "name": "recipientsInfoCache",
+            "summary": "",
+            "url": "classes/vB-Notification.html#property_recipientsInfoCache"
         },                {
             "fqsen": "\\vB_Page",
             "name": "vB_Page",
@@ -16565,11 +14455,6 @@ Search.appendIndex(
             "name": "getCategoryChannelPageTemplate",
             "summary": "Gets\u0020the\u0020page\u0020template\u0020for\u0020display\u0020of\u0020blog\u0020channels",
             "url": "classes/vB-Page.html#method_getCategoryChannelPageTemplate"
-        },                {
-            "fqsen": "\\vB_Page\u003A\u003AgetBlogPageTemplates\u0028\u0029",
-            "name": "getBlogPageTemplates",
-            "summary": "",
-            "url": "classes/vB-Page.html#method_getBlogPageTemplates"
         },                {
             "fqsen": "\\vB_Page\u003A\u003AgetBlogChannelPageTemplate\u0028\u0029",
             "name": "getBlogChannelPageTemplate",
@@ -17036,46 +14921,6 @@ Search.appendIndex(
             "summary": "",
             "url": "classes/vB-Request-Cli.html#method_createSessionForUsername"
         },                {
-            "fqsen": "\\vB_Request_Test",
-            "name": "vB_Request_Test",
-            "summary": "",
-            "url": "classes/vB-Request-Test.html"
-        },                {
-            "fqsen": "\\vB_Request_Test\u003A\u003A__construct\u0028\u0029",
-            "name": "__construct",
-            "summary": "",
-            "url": "classes/vB-Request-Test.html#method___construct"
-        },                {
-            "fqsen": "\\vB_Request_Test\u003A\u003AcreateSession\u0028\u0029",
-            "name": "createSession",
-            "summary": "Creates\u0020a\u0020session\u0020based\u0020on\u0020client\u0020input",
-            "url": "classes/vB-Request-Test.html#method_createSession"
-        },                {
-            "fqsen": "\\vB_Request_Test\u003A\u003AsetIpAddress\u0028\u0029",
-            "name": "setIpAddress",
-            "summary": "Allows\u0020setting\u0020the\u0020IP\u0020address\u0020for\u0020test\u0020purposes.",
-            "url": "classes/vB-Request-Test.html#method_setIpAddress"
-        },                {
-            "fqsen": "\\vB_Request_Test\u003A\u003AsetTimeNow\u0028\u0029",
-            "name": "setTimeNow",
-            "summary": "Set\u0020the\u0020request\u0020time\u0020for\u0020test\u0020purposes",
-            "url": "classes/vB-Request-Test.html#method_setTimeNow"
-        },                {
-            "fqsen": "\\vB_Request_Test\u003A\u003AadjustTimeNow\u0028\u0029",
-            "name": "adjustTimeNow",
-            "summary": "Change\u0020the\u0020request\u0020time\u0020for\u0020test\u0020purposes",
-            "url": "classes/vB-Request-Test.html#method_adjustTimeNow"
-        },                {
-            "fqsen": "\\vB_Request_Test\u003A\u003AsetSessionClass\u0028\u0029",
-            "name": "setSessionClass",
-            "summary": "",
-            "url": "classes/vB-Request-Test.html#method_setSessionClass"
-        },                {
-            "fqsen": "\\vB_Request_Test\u003A\u003AgetVbHttpHost\u0028\u0029",
-            "name": "getVbHttpHost",
-            "summary": "",
-            "url": "classes/vB-Request-Test.html#method_getVbHttpHost"
-        },                {
             "fqsen": "\\LOCATION_BYPASS",
             "name": "LOCATION_BYPASS",
             "summary": "",
@@ -17148,7 +14993,7 @@ Search.appendIndex(
         },                {
             "fqsen": "\\vB_Request_Web\u003A\u003AgetVbUrlScheme\u0028\u0029",
             "name": "getVbUrlScheme",
-            "summary": "These\u0020are\u0020mostly\u0020only\u0020meaningful\u0020for\u0020web\u0020requests,\u0020but\u0020we\u0020need\u0020to\nkeep\u0020a\u0020consistant\u0020interface\u0020for\u0020requests\u0020so\u0020provide\u0020a\u0020trivial\ndefault\u0020here.",
+            "summary": "",
             "url": "classes/vB-Request-Web.html#method_getVbUrlScheme"
         },                {
             "fqsen": "\\vB_Request_Web\u003A\u003AgetVbUrlPath\u0028\u0029",
@@ -17215,146 +15060,6 @@ Search.appendIndex(
             "name": "createSessionNew",
             "summary": "Creates\u0020a\u0020session\u0020object\u0020and\u0020attach\u0020it\u0020to\u0020the\u0020request.\u0020\u0020May\u0020reuse\u0020an\u0020existing\u0020session\u0020in\u0020the\u0020database.",
             "url": "classes/vB-Request-WebApi.html#method_createSessionNew"
-        },                {
-            "fqsen": "\\ALT_IP",
-            "name": "ALT_IP",
-            "summary": "",
-            "url": "namespaces/default.html#constant_ALT_IP"
-        },                {
-            "fqsen": "\\IPADDRESS",
-            "name": "IPADDRESS",
-            "summary": "",
-            "url": "namespaces/default.html#constant_IPADDRESS"
-        },                {
-            "fqsen": "\\USER_AGENT",
-            "name": "USER_AGENT",
-            "summary": "",
-            "url": "namespaces/default.html#constant_USER_AGENT"
-        },                {
-            "fqsen": "\\REFERRER",
-            "name": "REFERRER",
-            "summary": "",
-            "url": "namespaces/default.html#constant_REFERRER"
-        },                {
-            "fqsen": "\\vB_Request",
-            "name": "vB_Request",
-            "summary": "",
-            "url": "classes/vB-Request.html"
-        },                {
-            "fqsen": "\\vB_Request\u003A\u003AgetSessionClass\u0028\u0029",
-            "name": "getSessionClass",
-            "summary": "Returns\u0020the\u0020name\u0020of\u0020session\u0020class\u0020associated\u0020to\u0020the\u0020request",
-            "url": "classes/vB-Request.html#method_getSessionClass"
-        },                {
-            "fqsen": "\\vB_Request\u003A\u003AcreateSession\u0028\u0029",
-            "name": "createSession",
-            "summary": "Creates\u0020a\u0020session\u0020based\u0020on\u0020client\u0020input",
-            "url": "classes/vB-Request.html#method_createSession"
-        },                {
-            "fqsen": "\\vB_Request\u003A\u003AcreateSessionForUser\u0028\u0029",
-            "name": "createSessionForUser",
-            "summary": "Creates\u0020a\u0020session\u0020for\u0020a\u0020specific\u0020user",
-            "url": "classes/vB-Request.html#method_createSessionForUser"
-        },                {
-            "fqsen": "\\vB_Request\u003A\u003AgetTimeNow\u0028\u0029",
-            "name": "getTimeNow",
-            "summary": "",
-            "url": "classes/vB-Request.html#method_getTimeNow"
-        },                {
-            "fqsen": "\\vB_Request\u003A\u003AgetIpAddress\u0028\u0029",
-            "name": "getIpAddress",
-            "summary": "",
-            "url": "classes/vB-Request.html#method_getIpAddress"
-        },                {
-            "fqsen": "\\vB_Request\u003A\u003AgetAltIp\u0028\u0029",
-            "name": "getAltIp",
-            "summary": "",
-            "url": "classes/vB-Request.html#method_getAltIp"
-        },                {
-            "fqsen": "\\vB_Request\u003A\u003AgetSessionHost\u0028\u0029",
-            "name": "getSessionHost",
-            "summary": "",
-            "url": "classes/vB-Request.html#method_getSessionHost"
-        },                {
-            "fqsen": "\\vB_Request\u003A\u003AgetUserAgent\u0028\u0029",
-            "name": "getUserAgent",
-            "summary": "",
-            "url": "classes/vB-Request.html#method_getUserAgent"
-        },                {
-            "fqsen": "\\vB_Request\u003A\u003AgetReferrer\u0028\u0029",
-            "name": "getReferrer",
-            "summary": "",
-            "url": "classes/vB-Request.html#method_getReferrer"
-        },                {
-            "fqsen": "\\vB_Request\u003A\u003AisBrowser\u0028\u0029",
-            "name": "isBrowser",
-            "summary": "Browser\u0020detection\u0020system\u0020\u002D\u0020returns\u0020whether\u0020or\u0020not\u0020the\u0020visiting\u0020browser\u0020is\u0020the\u0020one\u0020specified",
-            "url": "classes/vB-Request.html#method_isBrowser"
-        },                {
-            "fqsen": "\\vB_Request\u003A\u003AgetCachePageForGuestTime\u0028\u0029",
-            "name": "getCachePageForGuestTime",
-            "summary": "",
-            "url": "classes/vB-Request.html#method_getCachePageForGuestTime"
-        },                {
-            "fqsen": "\\vB_Request\u003A\u003AgetUseEarlyFlush\u0028\u0029",
-            "name": "getUseEarlyFlush",
-            "summary": "",
-            "url": "classes/vB-Request.html#method_getUseEarlyFlush"
-        },                {
-            "fqsen": "\\vB_Request\u003A\u003AgetVbUrlScheme\u0028\u0029",
-            "name": "getVbUrlScheme",
-            "summary": "These\u0020are\u0020mostly\u0020only\u0020meaningful\u0020for\u0020web\u0020requests,\u0020but\u0020we\u0020need\u0020to\nkeep\u0020a\u0020consistant\u0020interface\u0020for\u0020requests\u0020so\u0020provide\u0020a\u0020trivial\ndefault\u0020here.",
-            "url": "classes/vB-Request.html#method_getVbUrlScheme"
-        },                {
-            "fqsen": "\\vB_Request\u003A\u003AgetVbHttpHost\u0028\u0029",
-            "name": "getVbHttpHost",
-            "summary": "",
-            "url": "classes/vB-Request.html#method_getVbHttpHost"
-        },                {
-            "fqsen": "\\vB_Request\u003A\u003AgetVbUrlPath\u0028\u0029",
-            "name": "getVbUrlPath",
-            "summary": "",
-            "url": "classes/vB-Request.html#method_getVbUrlPath"
-        },                {
-            "fqsen": "\\vB_Request\u003A\u003AgetVbUrlQuery\u0028\u0029",
-            "name": "getVbUrlQuery",
-            "summary": "",
-            "url": "classes/vB-Request.html#method_getVbUrlQuery"
-        },                {
-            "fqsen": "\\vB_Request\u003A\u003AgetVbUrlQueryRaw\u0028\u0029",
-            "name": "getVbUrlQueryRaw",
-            "summary": "",
-            "url": "classes/vB-Request.html#method_getVbUrlQueryRaw"
-        },                {
-            "fqsen": "\\vB_Request\u003A\u003AgetVbUrlClean\u0028\u0029",
-            "name": "getVbUrlClean",
-            "summary": "",
-            "url": "classes/vB-Request.html#method_getVbUrlClean"
-        },                {
-            "fqsen": "\\vB_Request\u003A\u003AgetVbUrlWebroot\u0028\u0029",
-            "name": "getVbUrlWebroot",
-            "summary": "",
-            "url": "classes/vB-Request.html#method_getVbUrlWebroot"
-        },                {
-            "fqsen": "\\vB_Request\u003A\u003AgetVbUrlBasePath\u0028\u0029",
-            "name": "getVbUrlBasePath",
-            "summary": "",
-            "url": "classes/vB-Request.html#method_getVbUrlBasePath"
-        },                {
-            "fqsen": "\\vB_Request\u003A\u003AgetScriptPath\u0028\u0029",
-            "name": "getScriptPath",
-            "summary": "",
-            "url": "classes/vB-Request.html#method_getScriptPath"
-        },                {
-            "fqsen": "\\vB_Request\u003A\u003AsetLanguageid\u0028\u0029",
-            "name": "setLanguageid",
-            "summary": "",
-            "url": "classes/vB-Request.html#method_setLanguageid"
-        },                {
-            "fqsen": "\\vB_Request\u003A\u003AgetLanguageid\u0028\u0029",
-            "name": "getLanguageid",
-            "summary": "",
-            "url": "classes/vB-Request.html#method_getLanguageid"
         },                {
             "fqsen": "\\vB_Search_Core",
             "name": "vB_Search_Core",
@@ -17566,11 +15271,6 @@ Search.appendIndex(
             "summary": "Saves\u0020the\u0020session\u0020into\u0020the\u0020database\u0020by\u0020inserting\u0020it\u0020or\u0020updating\u0020an\u0020existing\u0020one.",
             "url": "classes/vB-Session-Cli.html#method_save"
         },                {
-            "fqsen": "\\vB_Session_Cli\u003A\u003AsaveForTesting\u0028\u0029",
-            "name": "saveForTesting",
-            "summary": "",
-            "url": "classes/vB-Session-Cli.html#method_saveForTesting"
-        },                {
             "fqsen": "\\vB_Session_Skip",
             "name": "vB_Session_Skip",
             "summary": "This\u0020class\u0020replaces\u0020the\u0020use\u0020of\u0020SKIP_SESSIONCREATE.",
@@ -17701,11 +15401,6 @@ Search.appendIndex(
             "summary": "Fetches\u0020a\u0020valid\u0020sessionhash\u0020value,\u0020not\u0020necessarily\u0020the\u0020one\u0020tied\u0020to\u0020this\u0020session.",
             "url": "classes/vB-Session.html#method_fetch_sessionhash"
         },                {
-            "fqsen": "\\vB_Session\u003A\u003AloadPhraseGroups\u0028\u0029",
-            "name": "loadPhraseGroups",
-            "summary": "Called\u0020after\u0020setting\u0020phrasegroups,\u0020adds\u0020new\u0020phrases\u0020to\u0020userinfo",
-            "url": "classes/vB-Session.html#method_loadPhraseGroups"
-        },                {
             "fqsen": "\\vB_Session\u003A\u003AloadLanguage\u0028\u0029",
             "name": "loadLanguage",
             "summary": "Loads\u0020basic\u0020language\u0020information",
@@ -17781,11 +15476,6 @@ Search.appendIndex(
             "summary": "",
             "url": "classes/vB-Shutdown.html#method_shutdown"
         },                {
-            "fqsen": "\\vB_Shutdown\u003A\u003A__wakeup\u0028\u0029",
-            "name": "__wakeup",
-            "summary": "",
-            "url": "classes/vB-Shutdown.html#method___wakeup"
-        },                {
             "fqsen": "\\vB_Shutdown\u003A\u003AsetCalled\u0028\u0029",
             "name": "setCalled",
             "summary": "",
@@ -17860,6 +15550,126 @@ Search.appendIndex(
             "name": "updateInheritance",
             "summary": "Updates\u0020any\u0020stylevars\u0020that\u0020inherit\u0020from\u0020\u0024oldname\u0020to\u0020inherit\u0020from\u0020\u0024newname\u0020instead",
             "url": "classes/vB-Stylevar-Mapper.html#method_updateInheritance"
+        },                {
+            "fqsen": "\\vB_Systemevent_Item_Content_Notification",
+            "name": "vB_Systemevent_Item_Content_Notification",
+            "summary": "",
+            "url": "classes/vB-Systemevent-Item-Content-Notification.html"
+        },                {
+            "fqsen": "\\vB_Systemevent_Item_Content_Notification\u003A\u003Acreate\u0028\u0029",
+            "name": "create",
+            "summary": "",
+            "url": "classes/vB-Systemevent-Item-Content-Notification.html#method_create"
+        },                {
+            "fqsen": "\\vB_Systemevent_Item_Content_Notification\u003A\u003AgetIsNew\u0028\u0029",
+            "name": "getIsNew",
+            "summary": "",
+            "url": "classes/vB-Systemevent-Item-Content-Notification.html#method_getIsNew"
+        },                {
+            "fqsen": "\\vB_Systemevent_Item_Content_Notification\u003A\u003AgetNodeid\u0028\u0029",
+            "name": "getNodeid",
+            "summary": "",
+            "url": "classes/vB-Systemevent-Item-Content-Notification.html#method_getNodeid"
+        },                {
+            "fqsen": "\\vB_Systemevent_Item_Content_Notification\u003A\u003AaddMonitorWords\u0028\u0029",
+            "name": "addMonitorWords",
+            "summary": "",
+            "url": "classes/vB-Systemevent-Item-Content-Notification.html#method_addMonitorWords"
+        },                {
+            "fqsen": "\\vB_Systemevent_Item_Content_Notification\u003A\u003AaddUnapproved\u0028\u0029",
+            "name": "addUnapproved",
+            "summary": "",
+            "url": "classes/vB-Systemevent-Item-Content-Notification.html#method_addUnapproved"
+        },                {
+            "fqsen": "\\vB_Systemevent_Item_Content_Notification\u003A\u003AaddSpam\u0028\u0029",
+            "name": "addSpam",
+            "summary": "",
+            "url": "classes/vB-Systemevent-Item-Content-Notification.html#method_addSpam"
+        },                {
+            "fqsen": "\\vB_Systemevent_Item_Content_Notification\u003A\u003Arun\u0028\u0029",
+            "name": "run",
+            "summary": "",
+            "url": "classes/vB-Systemevent-Item-Content-Notification.html#method_run"
+        },                {
+            "fqsen": "\\vB_Systemevent_Item",
+            "name": "vB_Systemevent_Item",
+            "summary": "",
+            "url": "classes/vB-Systemevent-Item.html"
+        },                {
+            "fqsen": "\\vB_Systemevent_Item\u003A\u003ArestoreFromData\u0028\u0029",
+            "name": "restoreFromData",
+            "summary": "Restore\u0020and\u0020event\u0020from\u0020stored\u0020form.",
+            "url": "classes/vB-Systemevent-Item.html#method_restoreFromData"
+        },                {
+            "fqsen": "\\vB_Systemevent_Item\u003A\u003Ainterrupt\u0028\u0029",
+            "name": "interrupt",
+            "summary": "",
+            "url": "classes/vB-Systemevent-Item.html#method_interrupt"
+        },                {
+            "fqsen": "\\vB_Systemevent_Item\u003A\u003AgetData\u0028\u0029",
+            "name": "getData",
+            "summary": "",
+            "url": "classes/vB-Systemevent-Item.html#method_getData"
+        },                {
+            "fqsen": "\\vB_Systemevent_Item\u003A\u003AjsonSerialize\u0028\u0029",
+            "name": "jsonSerialize",
+            "summary": "",
+            "url": "classes/vB-Systemevent-Item.html#method_jsonSerialize"
+        },                {
+            "fqsen": "\\vB_Systemevent_Item\u003A\u003Arun\u0028\u0029",
+            "name": "run",
+            "summary": "",
+            "url": "classes/vB-Systemevent-Item.html#method_run"
+        },                {
+            "fqsen": "\\vB_Systemevent_Queue",
+            "name": "vB_Systemevent_Queue",
+            "summary": "",
+            "url": "classes/vB-Systemevent-Queue.html"
+        },                {
+            "fqsen": "\\vB_Systemevent_Queue\u003A\u003A__construct\u0028\u0029",
+            "name": "__construct",
+            "summary": "",
+            "url": "classes/vB-Systemevent-Queue.html#method___construct"
+        },                {
+            "fqsen": "\\vB_Systemevent_Queue\u003A\u003Aregister\u0028\u0029",
+            "name": "register",
+            "summary": "",
+            "url": "classes/vB-Systemevent-Queue.html#method_register"
+        },                {
+            "fqsen": "\\vB_Systemevent_Queue\u003A\u003AdeleteErrors\u0028\u0029",
+            "name": "deleteErrors",
+            "summary": "Delete\u0020errors\u0020from\u0020the\u0020queue.",
+            "url": "classes/vB-Systemevent-Queue.html#method_deleteErrors"
+        },                {
+            "fqsen": "\\vB_Systemevent_Queue\u003A\u003AisEmpty\u0028\u0029",
+            "name": "isEmpty",
+            "summary": "",
+            "url": "classes/vB-Systemevent-Queue.html#method_isEmpty"
+        },                {
+            "fqsen": "\\vB_Systemevent_Queue\u003A\u003ArunQueue\u0028\u0029",
+            "name": "runQueue",
+            "summary": "",
+            "url": "classes/vB-Systemevent-Queue.html#method_runQueue"
+        },                {
+            "fqsen": "\\vB_Systemevent_Queue\u003A\u003APRIORITY_HIGH",
+            "name": "PRIORITY_HIGH",
+            "summary": "",
+            "url": "classes/vB-Systemevent-Queue.html#constant_PRIORITY_HIGH"
+        },                {
+            "fqsen": "\\vB_Systemevent_Queue\u003A\u003APRIORITY_NORMAL",
+            "name": "PRIORITY_NORMAL",
+            "summary": "",
+            "url": "classes/vB-Systemevent-Queue.html#constant_PRIORITY_NORMAL"
+        },                {
+            "fqsen": "\\vB_Systemevent_Queue\u003A\u003APRIORITY_LOW",
+            "name": "PRIORITY_LOW",
+            "summary": "",
+            "url": "classes/vB-Systemevent-Queue.html#constant_PRIORITY_LOW"
+        },                {
+            "fqsen": "\\vB_Systemevent_Queue\u003A\u003APRIORITY_MINIUM",
+            "name": "PRIORITY_MINIUM",
+            "summary": "",
+            "url": "classes/vB-Systemevent-Queue.html#constant_PRIORITY_MINIUM"
         },                {
             "fqsen": "\\vB_Timer",
             "name": "vB_Timer",
@@ -18076,6 +15886,91 @@ Search.appendIndex(
             "summary": "This\u0020should\u0020only\u0020be\u0020called\u0020while\u0020in\u0020a",
             "url": "classes/vB-Types.html#method_reloadTypes"
         },                {
+            "fqsen": "\\vB_Undo_Item_Unsubscribe",
+            "name": "vB_Undo_Item_Unsubscribe",
+            "summary": "",
+            "url": "classes/vB-Undo-Item-Unsubscribe.html"
+        },                {
+            "fqsen": "\\vB_Undo_Item_Unsubscribe\u003A\u003Acreate\u0028\u0029",
+            "name": "create",
+            "summary": "",
+            "url": "classes/vB-Undo-Item-Unsubscribe.html#method_create"
+        },                {
+            "fqsen": "\\vB_Undo_Item_Unsubscribe\u003A\u003Arun\u0028\u0029",
+            "name": "run",
+            "summary": "",
+            "url": "classes/vB-Undo-Item-Unsubscribe.html#method_run"
+        },                {
+            "fqsen": "\\vB_Undo_Item",
+            "name": "vB_Undo_Item",
+            "summary": "",
+            "url": "classes/vB-Undo-Item.html"
+        },                {
+            "fqsen": "\\vB_Undo_Item\u003A\u003ArestoreFromData\u0028\u0029",
+            "name": "restoreFromData",
+            "summary": "Restore\u0020and\u0020event\u0020from\u0020stored\u0020form.",
+            "url": "classes/vB-Undo-Item.html#method_restoreFromData"
+        },                {
+            "fqsen": "\\vB_Undo_Item\u003A\u003AgetData\u0028\u0029",
+            "name": "getData",
+            "summary": "",
+            "url": "classes/vB-Undo-Item.html#method_getData"
+        },                {
+            "fqsen": "\\vB_Undo_Item\u003A\u003AgetClass\u0028\u0029",
+            "name": "getClass",
+            "summary": "",
+            "url": "classes/vB-Undo-Item.html#method_getClass"
+        },                {
+            "fqsen": "\\vB_Undo_Item\u003A\u003AgetUserid\u0028\u0029",
+            "name": "getUserid",
+            "summary": "",
+            "url": "classes/vB-Undo-Item.html#method_getUserid"
+        },                {
+            "fqsen": "\\vB_Undo_Item\u003A\u003AgetUndoid\u0028\u0029",
+            "name": "getUndoid",
+            "summary": "",
+            "url": "classes/vB-Undo-Item.html#method_getUndoid"
+        },                {
+            "fqsen": "\\vB_Undo_Item\u003A\u003AjsonSerialize\u0028\u0029",
+            "name": "jsonSerialize",
+            "summary": "",
+            "url": "classes/vB-Undo-Item.html#method_jsonSerialize"
+        },                {
+            "fqsen": "\\vB_Undo_Item\u003A\u003Arun\u0028\u0029",
+            "name": "run",
+            "summary": "",
+            "url": "classes/vB-Undo-Item.html#method_run"
+        },                {
+            "fqsen": "\\vB_Undo_Log",
+            "name": "vB_Undo_Log",
+            "summary": "",
+            "url": "classes/vB-Undo-Log.html"
+        },                {
+            "fqsen": "\\vB_Undo_Log\u003A\u003A__construct\u0028\u0029",
+            "name": "__construct",
+            "summary": "",
+            "url": "classes/vB-Undo-Log.html#method___construct"
+        },                {
+            "fqsen": "\\vB_Undo_Log\u003A\u003Aregister\u0028\u0029",
+            "name": "register",
+            "summary": "",
+            "url": "classes/vB-Undo-Log.html#method_register"
+        },                {
+            "fqsen": "\\vB_Undo_Log\u003A\u003AdeleteExpired\u0028\u0029",
+            "name": "deleteExpired",
+            "summary": "Delete\u0020expired\u0020entries",
+            "url": "classes/vB-Undo-Log.html#method_deleteExpired"
+        },                {
+            "fqsen": "\\vB_Undo_Log\u003A\u003AgetUndoItem\u0028\u0029",
+            "name": "getUndoItem",
+            "summary": "",
+            "url": "classes/vB-Undo-Log.html#method_getUndoItem"
+        },                {
+            "fqsen": "\\vB_Undo_Log\u003A\u003ArunUndoItem\u0028\u0029",
+            "name": "runUndoItem",
+            "summary": "",
+            "url": "classes/vB-Undo-Log.html#method_runUndoItem"
+        },                {
             "fqsen": "\\vB_User",
             "name": "vB_User",
             "summary": "",
@@ -18083,7 +15978,7 @@ Search.appendIndex(
         },                {
             "fqsen": "\\vB_User\u003A\u003AprocessNewLogin\u0028\u0029",
             "name": "processNewLogin",
-            "summary": "Processes\u0020logins\u0020into\u0020CP\nAdapted\u0020from\u0020functions_login.php\u003A\u003Aprocess_new_login\nTHIS\u0020METHOD\u0020DOES\u0020NOT\u0020SET\u0020ANY\u0020COOKIES,\u0020SO\u0020IT\u0020CANNOT\u0020REPLACE\u0020DIRECTLY\u0020THE\u0020LEGACY\u0020FUNCTION",
+            "summary": "Processes\u0020logins\u0020into\u0020CP\nTHIS\u0020METHOD\u0020DOES\u0020NOT\u0020SET\u0020ANY\u0020COOKIES,\u0020SO\u0020IT\u0020CANNOT\u0020REPLACE\u0020DIRECTLY\u0020THE\u0020LEGACY\u0020FUNCTION",
             "url": "classes/vB-User.html#method_processNewLogin"
         },                {
             "fqsen": "\\vB_User\u003A\u003AsetAdminCss\u0028\u0029",
@@ -18541,21 +16436,6 @@ Search.appendIndex(
             "summary": "",
             "url": "classes/vB-Utility-Filescanner.html#method_clearErrors"
         },                {
-            "fqsen": "\\vB_Utility_Functions",
-            "name": "vB_Utility_Functions",
-            "summary": "Miscellanious\u0020functions\u0020that\u0020do\u0020not\u0020depend\u0020on\u0020the\u0020vBulletin\u0020Framework\u0020being\u0020initialized",
-            "url": "classes/vB-Utility-Functions.html"
-        },                {
-            "fqsen": "\\vB_Utility_Functions\u003A\u003AcallSupressError\u0028\u0029",
-            "name": "callSupressError",
-            "summary": "Call\u0020while\u0020supressing\u0020the\u0020error\u0020output",
-            "url": "classes/vB-Utility-Functions.html#method_callSupressError"
-        },                {
-            "fqsen": "\\vB_Utility_Functions\u003A\u003AcallSupressErrorArray\u0028\u0029",
-            "name": "callSupressErrorArray",
-            "summary": "Call\u0020while\u0020supressing\u0020the\u0020error\u0020output",
-            "url": "classes/vB-Utility-Functions.html#method_callSupressErrorArray"
-        },                {
             "fqsen": "\\vB_Utility_Geoip_Ipstack",
             "name": "vB_Utility_Geoip_Ipstack",
             "summary": "vB_Utility_Geoip",
@@ -18811,6 +16691,21 @@ Search.appendIndex(
             "summary": "",
             "url": "classes/vB-Utility-Password-Exception.html"
         },                {
+            "fqsen": "\\vB_Utility_Password_Validator_Haveibeenpwned",
+            "name": "vB_Utility_Password_Validator_Haveibeenpwned",
+            "summary": "",
+            "url": "classes/vB-Utility-Password-Validator-Haveibeenpwned.html"
+        },                {
+            "fqsen": "\\vB_Utility_Password_Validator_Haveibeenpwned\u003A\u003A__construct\u0028\u0029",
+            "name": "__construct",
+            "summary": "",
+            "url": "classes/vB-Utility-Password-Validator-Haveibeenpwned.html#method___construct"
+        },                {
+            "fqsen": "\\vB_Utility_Password_Validator_Haveibeenpwned\u003A\u003AvalidatePassword\u0028\u0029",
+            "name": "validatePassword",
+            "summary": "",
+            "url": "classes/vB-Utility-Password-Validator-Haveibeenpwned.html#method_validatePassword"
+        },                {
             "fqsen": "\\vB_Utility_Random",
             "name": "vB_Utility_Random",
             "summary": "",
@@ -18881,15 +16776,20 @@ Search.appendIndex(
             "summary": "",
             "url": "classes/vB-Utility-String.html#method_unhtmlentities"
         },                {
-            "fqsen": "\\vB_Utility_String\u003A\u003Astrtolower\u0028\u0029",
-            "name": "strtolower",
-            "summary": "Returns\u0020a\u0020lower\u0020case\u0020version\u0020of\u0020the\u0020string",
-            "url": "classes/vB-Utility-String.html#method_strtolower"
-        },                {
             "fqsen": "\\vB_Utility_String\u003A\u003Astrlen\u0028\u0029",
             "name": "strlen",
             "summary": "Return\u0020the\u0020length\u0020position\u0020of\u0020the\u0020given\u0020string\u0020in\u0020characters",
             "url": "classes/vB-Utility-String.html#method_strlen"
+        },                {
+            "fqsen": "\\vB_Utility_String\u003A\u003Astrtoupper\u0028\u0029",
+            "name": "strtoupper",
+            "summary": "Returns\u0020a\u0020upper\u0020case\u0020version\u0020of\u0020the\u0020string",
+            "url": "classes/vB-Utility-String.html#method_strtoupper"
+        },                {
+            "fqsen": "\\vB_Utility_String\u003A\u003Astrtolower\u0028\u0029",
+            "name": "strtolower",
+            "summary": "Returns\u0020a\u0020lower\u0020case\u0020version\u0020of\u0020the\u0020string",
+            "url": "classes/vB-Utility-String.html#method_strtolower"
         },                {
             "fqsen": "\\vB_Utility_String\u003A\u003Astrpos\u0028\u0029",
             "name": "strpos",
@@ -19076,10 +16976,20 @@ Search.appendIndex(
             "summary": "",
             "url": "classes/vB-Utility-Url.html#constant_ENCODING"
         },                {
+            "fqsen": "\\vB_Utility_Url\u003A\u003AUSERAGENT",
+            "name": "USERAGENT",
+            "summary": "",
+            "url": "classes/vB-Utility-Url.html#constant_USERAGENT"
+        },                {
             "fqsen": "\\vB_Utility_Url\u003A\u003AHTTPHEADER",
             "name": "HTTPHEADER",
             "summary": "",
             "url": "classes/vB-Utility-Url.html#constant_HTTPHEADER"
+        },                {
+            "fqsen": "\\vB_Utility_Url\u003A\u003ACOOKIE",
+            "name": "COOKIE",
+            "summary": "",
+            "url": "classes/vB-Utility-Url.html#constant_COOKIE"
         },                {
             "fqsen": "\\vB_Utility_Url\u003A\u003ACLOSECONNECTION",
             "name": "CLOSECONNECTION",
@@ -19126,6 +17036,11 @@ Search.appendIndex(
             "summary": "",
             "url": "classes/vB-Utility-Url.html#constant_TEMPFILENAME"
         },                {
+            "fqsen": "\\vB_Utility_Url\u003A\u003ANOBODY_TYPES",
+            "name": "NOBODY_TYPES",
+            "summary": "",
+            "url": "classes/vB-Utility-Url.html#constant_NOBODY_TYPES"
+        },                {
             "fqsen": "\\vB_Utility_Url\u003A\u003AERROR_MAXSIZE",
             "name": "ERROR_MAXSIZE",
             "summary": "",
@@ -19140,21 +17055,6 @@ Search.appendIndex(
             "name": "ERROR_NOLIB",
             "summary": "",
             "url": "classes/vB-Utility-Url.html#constant_ERROR_NOLIB"
-        },                {
-            "fqsen": "\\vB_Utility_Url\u003A\u003ASTATE_HEADERS",
-            "name": "STATE_HEADERS",
-            "summary": "",
-            "url": "classes/vB-Utility-Url.html#constant_STATE_HEADERS"
-        },                {
-            "fqsen": "\\vB_Utility_Url\u003A\u003ASTATE_LOCATION",
-            "name": "STATE_LOCATION",
-            "summary": "",
-            "url": "classes/vB-Utility-Url.html#constant_STATE_LOCATION"
-        },                {
-            "fqsen": "\\vB_Utility_Url\u003A\u003ASTATE_BODY",
-            "name": "STATE_BODY",
-            "summary": "",
-            "url": "classes/vB-Utility-Url.html#constant_STATE_BODY"
         },                {
             "fqsen": "\\vB_WysiwygHtmlParser",
             "name": "vB_WysiwygHtmlParser",
@@ -19356,6 +17256,11 @@ Search.appendIndex(
             "summary": "",
             "url": "classes/vB-Xml-Import-Theme.html"
         },                {
+            "fqsen": "\\vB_Xml_Import_Theme\u003A\u003AsetSilentMode\u0028\u0029",
+            "name": "setSilentMode",
+            "summary": "",
+            "url": "classes/vB-Xml-Import-Theme.html#method_setSilentMode"
+        },                {
             "fqsen": "\\vB_Xml_Import_Theme\u003A\u003AimportAdminCP\u0028\u0029",
             "name": "importAdminCP",
             "summary": "",
@@ -19376,9 +17281,14 @@ Search.appendIndex(
             "summary": "",
             "url": "classes/vB-Xml-Import-Theme.html#method_getDefaultParentTheme"
         },                {
+            "fqsen": "\\vB_Xml_Import_Theme\u003A\u003AimportTheme\u0028\u0029",
+            "name": "importTheme",
+            "summary": "Import\u0020theme\u0020from\u0020a\u0020file.",
+            "url": "classes/vB-Xml-Import-Theme.html#method_importTheme"
+        },                {
             "fqsen": "\\vB_Xml_Import_Theme\u003A\u003AimportThemes\u0028\u0029",
             "name": "importThemes",
-            "summary": "",
+            "summary": "Automatically\u0020import\u0020the\u0020themes\u0020included\u0020in\u0020the\u0020theme\u0020folder",
             "url": "classes/vB-Xml-Import-Theme.html#method_importThemes"
         },                {
             "fqsen": "\\vB_Xml_Import_Theme\u003A\u003ADEFAULT_GRANDPARENT_GUID",
@@ -19541,11 +17451,6 @@ Search.appendIndex(
             "summary": "Handle\u0020encoding\u0020issues\u0020as\u0020well\u0020as\u0020parsing\u0020the\u0020XML\u0020into\u0020an\u0020array",
             "url": "classes/vB-XML-Parser.html#method_parse_xml"
         },                {
-            "fqsen": "\\vB_XML_Parser\u003A\u003Alegacy_parse_xml\u0028\u0029",
-            "name": "legacy_parse_xml",
-            "summary": "Handle\u0020encoding\u0020issues\u0020as\u0020well\u0020as\u0020parsing\u0020the\u0020XML\u0020into\u0020an\u0020array",
-            "url": "classes/vB-XML-Parser.html#method_legacy_parse_xml"
-        },                {
             "fqsen": "\\vB_XML_Parser\u003A\u003Ahandle_cdata\u0028\u0029",
             "name": "handle_cdata",
             "summary": "XML\u0020parser\u0020callback.\u0020Handles\u0020CDATA\u0020values.",
@@ -19581,16 +17486,6 @@ Search.appendIndex(
             "summary": "Returns\u0020parser\u0020error\u0020number",
             "url": "classes/vB-XML-Parser.html#method_error_no"
         },                {
-            "fqsen": "\\vB_XML_Parser\u003A\u003Aadd_node\u0028\u0029",
-            "name": "add_node",
-            "summary": "Adds\u0020node\u0020with\u0020appropriate\u0020logic,\u0020multiple\u0020values\u0020get\u0020added\u0020to\u0020array\u0020where\u0020unique\u0020are\u0020their\u0020own\u0020entry",
-            "url": "classes/vB-XML-Parser.html#method_add_node"
-        },                {
-            "fqsen": "\\vB_XML_Parser\u003A\u003Aunescape_cdata\u0028\u0029",
-            "name": "unescape_cdata",
-            "summary": "Adds\u0020node\u0020with\u0020appropriate\u0020logic,\u0020multiple\u0020values\u0020get\u0020added\u0020to\u0020array\u0020where\u0020unique\u0020are\u0020their\u0020own\u0020entry",
-            "url": "classes/vB-XML-Parser.html#method_unescape_cdata"
-        },                {
             "fqsen": "\\vB_XML_Parser\u003A\u003Aset_encoding\u0028\u0029",
             "name": "set_encoding",
             "summary": "Overrides\u0020the\u0020character\u0020encoding\u0020for\u0020the\u0020input\u0020XML.",
@@ -19600,11 +17495,6 @@ Search.appendIndex(
             "name": "set_target_encoding",
             "summary": "Sets\u0020the\u0020target\u0020charset\u0020encoding\u0020for\u0020the\u0020parsed\u0020XML.",
             "url": "classes/vB-XML-Parser.html#method_set_target_encoding"
-        },                {
-            "fqsen": "\\vB_XML_Parser\u003A\u003Aresolve_target_encoding\u0028\u0029",
-            "name": "resolve_target_encoding",
-            "summary": "Resolves\u0020the\u0020target\u0020encoding\u0020of\u0020the\u0020output.",
-            "url": "classes/vB-XML-Parser.html#method_resolve_target_encoding"
         },                {
             "fqsen": "\\vB_XML_Parser\u003A\u003Aencode\u0028\u0029",
             "name": "encode",

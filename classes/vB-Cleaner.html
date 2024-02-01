@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-            <title>vBulletin v5.7.2</title>
+            <title>vBulletin v6.0.4</title>
     
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <base href="../">
@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="css/normalize.css">
     <link rel="stylesheet" href="css/base.css">
             <link rel="preconnect" href="https://fonts.gstatic.com">
-        <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@400;600;700&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@100;200;300;400;600;700&display=swap" rel="stylesheet">
         <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@400;600;700&display=swap" rel="stylesheet">
         <link rel="stylesheet" href="css/template.css">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.0/css/all.min.css" integrity="sha256-ybRkN9dBjhcS2qrW1z+hfCxq+1aBdwyQM5wlQoQVt/0=" crossorigin="anonymous" />
@@ -19,12 +19,13 @@
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.23.0/plugins/line-highlight/prism-line-highlight.css">
                 <script src="https://cdn.jsdelivr.net/npm/fuse.js@3.4.6"></script>
         <script src="https://cdn.jsdelivr.net/npm/css-vars-ponyfill@2"></script>
+        <script src="js/template.js"></script>
         <script src="js/search.js"></script>
         <script defer src="js/searchIndex.js"></script>
     </head>
 <body id="top">
     <header class="phpdocumentor-header phpdocumentor-section">
-    <h1 class="phpdocumentor-title"><a href="" class="phpdocumentor-title__link">vBulletin v5.7.2</a></h1>
+    <h1 class="phpdocumentor-title"><a href="" class="phpdocumentor-title__link">vBulletin v6.0.4</a></h1>
     <input class="phpdocumentor-header__menu-button" type="checkbox" id="menu-button" name="menu-button" />
     <label class="phpdocumentor-header__menu-icon" for="menu-button">
         <i class="fas fa-bars"></i>
@@ -52,7 +53,7 @@
 <label class="phpdocumentor-sidebar__menu-icon" for="sidebar-button">
     Menu
 </label>
-<aside class="phpdocumentor-column -four phpdocumentor-sidebar">
+<aside class="phpdocumentor-column -three phpdocumentor-sidebar">
                     <section class="phpdocumentor-sidebar__category">
             <h2 class="phpdocumentor-sidebar__category-header">Packages</h2>
                                     <h4 class="phpdocumentor-sidebar__root-namespace">
@@ -98,8 +99,9 @@
     </section>
 </aside>
 
-            <div class="phpdocumentor-column -eight phpdocumentor-content">
-                    <ul class="phpdocumentor-breadcrumbs">
+            <div class="phpdocumentor-column -nine phpdocumentor-content">
+                                <section>
+                                        <ul class="phpdocumentor-breadcrumbs">
             <li class="phpdocumentor-breadcrumb"><a href="packages/vBulletin.html">vBulletin</a></li>
     </ul>
 
@@ -121,6 +123,11 @@
                             <a href="classes/vB-Trait-NoSerialize.html"><abbr title="\vB_Trait_NoSerialize">vB_Trait_NoSerialize</abbr></a>                    </span>
     </h2>
 
+<div class="phpdocumentor-label-line">
+
+
+</div>
+
         <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/cleaner.php"><a href="files/vb-cleaner.html"><abbr title="vb/cleaner.php">cleaner.php</abbr></a></abbr>
     :
@@ -134,7 +141,8 @@
 
     <h5 class="phpdocumentor-tag-list__heading" id="tags">
         Tags
-        <a href="#tags" class="headerlink"><i class="fas fa-link"></i></a>
+        <a href="classes/vB-Cleaner.html#tags" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h5>
     <dl class="phpdocumentor-tag-list">
                                     <dt class="phpdocumentor-tag-list__entry">
@@ -146,270 +154,253 @@
 </section>
 
                                     </dd>
-                        </dl>
-
-
-
+                                            </dl>
 
 
 
 <h3 id="toc">
     Table of Contents
-    <a href="#toc" class="headerlink"><i class="fas fa-link"></i></a>
+    <a href="classes/vB-Cleaner.html#toc" class="headerlink"><i class="fas fa-link"></i></a>
+
 </h3>
 
+
+
+
+
+
+
+<h4 id="toc-constants">
+    Constants
+    <a href="classes/vB-Cleaner.html#toc-constants" class="headerlink"><i class="fas fa-link"></i></a>
+
+</h4>
 <dl class="phpdocumentor-table-of-contents">
             <dt class="phpdocumentor-table-of-contents__entry -constant -public">
     <a href="classes/vB-Cleaner.html#constant_CONVERT_KEYS">CONVERT_KEYS</a>
     <span>
         &nbsp;= 200                            </span>
 </dt>
-<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -constant -public">
     <a href="classes/vB-Cleaner.html#constant_CONVERT_SINGLE">CONVERT_SINGLE</a>
     <span>
         &nbsp;= 100                            </span>
 </dt>
-<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -constant -public">
     <a href="classes/vB-Cleaner.html#constant_STR_NOHTML">STR_NOHTML</a>
     <span>
         &nbsp;= self::TYPE_NOHTML                            </span>
 </dt>
-<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -constant -public">
     <a href="classes/vB-Cleaner.html#constant_TYPE_ARRAY">TYPE_ARRAY</a>
     <span>
         &nbsp;= 10                            </span>
 </dt>
-<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -constant -public">
     <a href="classes/vB-Cleaner.html#constant_TYPE_ARRAY_ARRAY">TYPE_ARRAY_ARRAY</a>
     <span>
         &nbsp;= 110                            </span>
 </dt>
-<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -constant -public">
     <a href="classes/vB-Cleaner.html#constant_TYPE_ARRAY_BINARY">TYPE_ARRAY_BINARY</a>
     <span>
         &nbsp;= 112                            </span>
 </dt>
-<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -constant -public">
     <a href="classes/vB-Cleaner.html#constant_TYPE_ARRAY_BOOL">TYPE_ARRAY_BOOL</a>
     <span>
         &nbsp;= 101                            </span>
 </dt>
-<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -constant -public">
     <a href="classes/vB-Cleaner.html#constant_TYPE_ARRAY_FILE">TYPE_ARRAY_FILE</a>
     <span>
         &nbsp;= self::TYPE_FILE                            </span>
 </dt>
-<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -constant -public">
     <a href="classes/vB-Cleaner.html#constant_TYPE_ARRAY_INT">TYPE_ARRAY_INT</a>
     <span>
         &nbsp;= 102                            </span>
 </dt>
-<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -constant -public">
     <a href="classes/vB-Cleaner.html#constant_TYPE_ARRAY_KEYS_INT">TYPE_ARRAY_KEYS_INT</a>
     <span>
         &nbsp;= 202                            </span>
 </dt>
-<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -constant -public">
     <a href="classes/vB-Cleaner.html#constant_TYPE_ARRAY_KEYS_STR">TYPE_ARRAY_KEYS_STR</a>
     <span>
         &nbsp;= 207                            </span>
 </dt>
-<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -constant -public">
     <a href="classes/vB-Cleaner.html#constant_TYPE_ARRAY_NOHTML">TYPE_ARRAY_NOHTML</a>
     <span>
         &nbsp;= 109                            </span>
 </dt>
-<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -constant -public">
     <a href="classes/vB-Cleaner.html#constant_TYPE_ARRAY_NOHTMLCOND">TYPE_ARRAY_NOHTMLCOND</a>
     <span>
         &nbsp;= 113                            </span>
 </dt>
-<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -constant -public">
     <a href="classes/vB-Cleaner.html#constant_TYPE_ARRAY_NOTRIM">TYPE_ARRAY_NOTRIM</a>
     <span>
         &nbsp;= 108                            </span>
 </dt>
-<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -constant -public">
     <a href="classes/vB-Cleaner.html#constant_TYPE_ARRAY_NUM">TYPE_ARRAY_NUM</a>
     <span>
         &nbsp;= 104                            </span>
 </dt>
-<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -constant -public">
     <a href="classes/vB-Cleaner.html#constant_TYPE_ARRAY_STR">TYPE_ARRAY_STR</a>
     <span>
         &nbsp;= 107                            </span>
 </dt>
-<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -constant -public">
     <a href="classes/vB-Cleaner.html#constant_TYPE_ARRAY_UINT">TYPE_ARRAY_UINT</a>
     <span>
         &nbsp;= 103                            </span>
 </dt>
-<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -constant -public">
     <a href="classes/vB-Cleaner.html#constant_TYPE_ARRAY_UNIXTIME">TYPE_ARRAY_UNIXTIME</a>
     <span>
         &nbsp;= 106                            </span>
 </dt>
-<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -constant -public">
     <a href="classes/vB-Cleaner.html#constant_TYPE_ARRAY_UNUM">TYPE_ARRAY_UNUM</a>
     <span>
         &nbsp;= 105                            </span>
 </dt>
-<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -constant -public">
     <a href="classes/vB-Cleaner.html#constant_TYPE_BINARY">TYPE_BINARY</a>
     <span>
         &nbsp;= 12                            </span>
 </dt>
-<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -constant -public">
     <a href="classes/vB-Cleaner.html#constant_TYPE_BOOL">TYPE_BOOL</a>
     <span>
         &nbsp;= 1                            </span>
 </dt>
-<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -constant -public">
     <a href="classes/vB-Cleaner.html#constant_TYPE_FILE">TYPE_FILE</a>
     <span>
         &nbsp;= 11                            </span>
 </dt>
-<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -constant -public">
     <a href="classes/vB-Cleaner.html#constant_TYPE_INT">TYPE_INT</a>
     <span>
         &nbsp;= 2                            </span>
 </dt>
-<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -constant -public">
     <a href="classes/vB-Cleaner.html#constant_TYPE_NOCLEAN">TYPE_NOCLEAN</a>
     <span>
         &nbsp;= 0                            </span>
 </dt>
-<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -constant -public">
     <a href="classes/vB-Cleaner.html#constant_TYPE_NOHTML">TYPE_NOHTML</a>
     <span>
         &nbsp;= 9                            </span>
 </dt>
-<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -constant -public">
     <a href="classes/vB-Cleaner.html#constant_TYPE_NOHTMLCOND">TYPE_NOHTMLCOND</a>
     <span>
         &nbsp;= 13                            </span>
 </dt>
-<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -constant -public">
     <a href="classes/vB-Cleaner.html#constant_TYPE_NOTRIM">TYPE_NOTRIM</a>
     <span>
         &nbsp;= 8                            </span>
 </dt>
-<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -constant -public">
     <a href="classes/vB-Cleaner.html#constant_TYPE_NUM">TYPE_NUM</a>
     <span>
         &nbsp;= 4                            </span>
 </dt>
-<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -constant -public">
     <a href="classes/vB-Cleaner.html#constant_TYPE_STR">TYPE_STR</a>
     <span>
         &nbsp;= 7                            </span>
 </dt>
-<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -constant -public">
     <a href="classes/vB-Cleaner.html#constant_TYPE_UINT">TYPE_UINT</a>
     <span>
         &nbsp;= 3                            </span>
 </dt>
-<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -constant -public">
     <a href="classes/vB-Cleaner.html#constant_TYPE_UNIXTIME">TYPE_UNIXTIME</a>
     <span>
         &nbsp;= 6                            </span>
 </dt>
-<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -constant -public">
     <a href="classes/vB-Cleaner.html#constant_TYPE_UNUM">TYPE_UNUM</a>
     <span>
         &nbsp;= 5                            </span>
 </dt>
-<dd></dd>
 
-                        <dt class="phpdocumentor-table-of-contents__entry -method -public">
+    </dl>
+
+
+
+<h4 id="toc-methods">
+    Methods
+    <a href="classes/vB-Cleaner.html#toc-methods" class="headerlink"><i class="fas fa-link"></i></a>
+
+</h4>
+<dl class="phpdocumentor-table-of-contents">
+            <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a href="classes/vB-Trait-NoSerialize.html#method___serialize">__serialize()</a>
     <span>
                                 &nbsp;: array&lt;string|int, mixed&gt;    </span>
 </dt>
-<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a href="classes/vB-Trait-NoSerialize.html#method___sleep">__sleep()</a>
     <span>
                                 &nbsp;: array&lt;string|int, mixed&gt;    </span>
 </dt>
-<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a href="classes/vB-Trait-NoSerialize.html#method___unserialize">__unserialize()</a>
     <span>
                                 &nbsp;: void    </span>
 </dt>
-<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a href="classes/vB-Trait-NoSerialize.html#method___wakeup">__wakeup()</a>
     <span>
                                 &nbsp;: void    </span>
 </dt>
-<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a href="classes/vB-Cleaner.html#method_clean">clean()</a>
@@ -440,7 +431,8 @@
 <dd>Removes HTML characters and potentially unsafe scripting words from a URL
 Note: The query string and the  URL #fragment are preserved.</dd>
 
-        </dl>
+    </dl>
+
 
 
 
@@ -449,11 +441,13 @@ Note: The query string and the  URL #fragment are preserved.</dd>
         <h3 class="phpdocumentor-elements__header" id="constants">
             Constants
             <a href="classes/vB-Cleaner.html#constants" class="headerlink"><i class="fas fa-link"></i></a>
+
         </h3>
                     <article class="phpdocumentor-element -constant -public ">
     <h4 class="phpdocumentor-element__name" id="constant_CONVERT_KEYS">
         CONVERT_KEYS
         <a href="classes/vB-Cleaner.html#constant_CONVERT_KEYS" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
 
     <aside class="phpdocumentor-element-found-in">
@@ -472,10 +466,8 @@ Note: The query string and the  URL #fragment are preserved.</dd>
 </code>
 
 
-        <section class="phpdocumentor-description"></section>
-
-        <section class="phpdocumentor-description"></section>
-
+    
+    
     
 
 </article>
@@ -483,6 +475,7 @@ Note: The query string and the  URL #fragment are preserved.</dd>
     <h4 class="phpdocumentor-element__name" id="constant_CONVERT_SINGLE">
         CONVERT_SINGLE
         <a href="classes/vB-Cleaner.html#constant_CONVERT_SINGLE" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
 
     <aside class="phpdocumentor-element-found-in">
@@ -501,10 +494,8 @@ Note: The query string and the  URL #fragment are preserved.</dd>
 </code>
 
 
-        <section class="phpdocumentor-description"></section>
-
-        <section class="phpdocumentor-description"></section>
-
+    
+    
     
 
 </article>
@@ -512,6 +503,7 @@ Note: The query string and the  URL #fragment are preserved.</dd>
     <h4 class="phpdocumentor-element__name" id="constant_STR_NOHTML">
         STR_NOHTML
         <a href="classes/vB-Cleaner.html#constant_STR_NOHTML" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
 
     <aside class="phpdocumentor-element-found-in">
@@ -530,10 +522,8 @@ Note: The query string and the  URL #fragment are preserved.</dd>
 </code>
 
 
-        <section class="phpdocumentor-description"></section>
-
-        <section class="phpdocumentor-description"></section>
-
+    
+    
     
 
 </article>
@@ -541,6 +531,7 @@ Note: The query string and the  URL #fragment are preserved.</dd>
     <h4 class="phpdocumentor-element__name" id="constant_TYPE_ARRAY">
         TYPE_ARRAY
         <a href="classes/vB-Cleaner.html#constant_TYPE_ARRAY" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
 
     <aside class="phpdocumentor-element-found-in">
@@ -559,10 +550,8 @@ Note: The query string and the  URL #fragment are preserved.</dd>
 </code>
 
 
-        <section class="phpdocumentor-description"></section>
-
-        <section class="phpdocumentor-description"></section>
-
+    
+    
     
 
 </article>
@@ -570,6 +559,7 @@ Note: The query string and the  URL #fragment are preserved.</dd>
     <h4 class="phpdocumentor-element__name" id="constant_TYPE_ARRAY_ARRAY">
         TYPE_ARRAY_ARRAY
         <a href="classes/vB-Cleaner.html#constant_TYPE_ARRAY_ARRAY" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
 
     <aside class="phpdocumentor-element-found-in">
@@ -588,10 +578,8 @@ Note: The query string and the  URL #fragment are preserved.</dd>
 </code>
 
 
-        <section class="phpdocumentor-description"></section>
-
-        <section class="phpdocumentor-description"></section>
-
+    
+    
     
 
 </article>
@@ -599,6 +587,7 @@ Note: The query string and the  URL #fragment are preserved.</dd>
     <h4 class="phpdocumentor-element__name" id="constant_TYPE_ARRAY_BINARY">
         TYPE_ARRAY_BINARY
         <a href="classes/vB-Cleaner.html#constant_TYPE_ARRAY_BINARY" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
 
     <aside class="phpdocumentor-element-found-in">
@@ -617,10 +606,8 @@ Note: The query string and the  URL #fragment are preserved.</dd>
 </code>
 
 
-        <section class="phpdocumentor-description"></section>
-
-        <section class="phpdocumentor-description"></section>
-
+    
+    
     
 
 </article>
@@ -628,6 +615,7 @@ Note: The query string and the  URL #fragment are preserved.</dd>
     <h4 class="phpdocumentor-element__name" id="constant_TYPE_ARRAY_BOOL">
         TYPE_ARRAY_BOOL
         <a href="classes/vB-Cleaner.html#constant_TYPE_ARRAY_BOOL" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
 
     <aside class="phpdocumentor-element-found-in">
@@ -646,10 +634,8 @@ Note: The query string and the  URL #fragment are preserved.</dd>
 </code>
 
 
-        <section class="phpdocumentor-description"></section>
-
-        <section class="phpdocumentor-description"></section>
-
+    
+    
     
 
 </article>
@@ -657,6 +643,7 @@ Note: The query string and the  URL #fragment are preserved.</dd>
     <h4 class="phpdocumentor-element__name" id="constant_TYPE_ARRAY_FILE">
         TYPE_ARRAY_FILE
         <a href="classes/vB-Cleaner.html#constant_TYPE_ARRAY_FILE" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
 
     <aside class="phpdocumentor-element-found-in">
@@ -675,10 +662,8 @@ Note: The query string and the  URL #fragment are preserved.</dd>
 </code>
 
 
-        <section class="phpdocumentor-description"></section>
-
-        <section class="phpdocumentor-description"></section>
-
+    
+    
     
 
 </article>
@@ -686,6 +671,7 @@ Note: The query string and the  URL #fragment are preserved.</dd>
     <h4 class="phpdocumentor-element__name" id="constant_TYPE_ARRAY_INT">
         TYPE_ARRAY_INT
         <a href="classes/vB-Cleaner.html#constant_TYPE_ARRAY_INT" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
 
     <aside class="phpdocumentor-element-found-in">
@@ -704,10 +690,8 @@ Note: The query string and the  URL #fragment are preserved.</dd>
 </code>
 
 
-        <section class="phpdocumentor-description"></section>
-
-        <section class="phpdocumentor-description"></section>
-
+    
+    
     
 
 </article>
@@ -715,6 +699,7 @@ Note: The query string and the  URL #fragment are preserved.</dd>
     <h4 class="phpdocumentor-element__name" id="constant_TYPE_ARRAY_KEYS_INT">
         TYPE_ARRAY_KEYS_INT
         <a href="classes/vB-Cleaner.html#constant_TYPE_ARRAY_KEYS_INT" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
 
     <aside class="phpdocumentor-element-found-in">
@@ -733,10 +718,8 @@ Note: The query string and the  URL #fragment are preserved.</dd>
 </code>
 
 
-        <section class="phpdocumentor-description"></section>
-
-        <section class="phpdocumentor-description"></section>
-
+    
+    
     
 
 </article>
@@ -744,6 +727,7 @@ Note: The query string and the  URL #fragment are preserved.</dd>
     <h4 class="phpdocumentor-element__name" id="constant_TYPE_ARRAY_KEYS_STR">
         TYPE_ARRAY_KEYS_STR
         <a href="classes/vB-Cleaner.html#constant_TYPE_ARRAY_KEYS_STR" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
 
     <aside class="phpdocumentor-element-found-in">
@@ -762,10 +746,8 @@ Note: The query string and the  URL #fragment are preserved.</dd>
 </code>
 
 
-        <section class="phpdocumentor-description"></section>
-
-        <section class="phpdocumentor-description"></section>
-
+    
+    
     
 
 </article>
@@ -773,6 +755,7 @@ Note: The query string and the  URL #fragment are preserved.</dd>
     <h4 class="phpdocumentor-element__name" id="constant_TYPE_ARRAY_NOHTML">
         TYPE_ARRAY_NOHTML
         <a href="classes/vB-Cleaner.html#constant_TYPE_ARRAY_NOHTML" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
 
     <aside class="phpdocumentor-element-found-in">
@@ -791,10 +774,8 @@ Note: The query string and the  URL #fragment are preserved.</dd>
 </code>
 
 
-        <section class="phpdocumentor-description"></section>
-
-        <section class="phpdocumentor-description"></section>
-
+    
+    
     
 
 </article>
@@ -802,6 +783,7 @@ Note: The query string and the  URL #fragment are preserved.</dd>
     <h4 class="phpdocumentor-element__name" id="constant_TYPE_ARRAY_NOHTMLCOND">
         TYPE_ARRAY_NOHTMLCOND
         <a href="classes/vB-Cleaner.html#constant_TYPE_ARRAY_NOHTMLCOND" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
 
     <aside class="phpdocumentor-element-found-in">
@@ -820,10 +802,8 @@ Note: The query string and the  URL #fragment are preserved.</dd>
 </code>
 
 
-        <section class="phpdocumentor-description"></section>
-
-        <section class="phpdocumentor-description"></section>
-
+    
+    
     
 
 </article>
@@ -831,6 +811,7 @@ Note: The query string and the  URL #fragment are preserved.</dd>
     <h4 class="phpdocumentor-element__name" id="constant_TYPE_ARRAY_NOTRIM">
         TYPE_ARRAY_NOTRIM
         <a href="classes/vB-Cleaner.html#constant_TYPE_ARRAY_NOTRIM" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
 
     <aside class="phpdocumentor-element-found-in">
@@ -849,10 +830,8 @@ Note: The query string and the  URL #fragment are preserved.</dd>
 </code>
 
 
-        <section class="phpdocumentor-description"></section>
-
-        <section class="phpdocumentor-description"></section>
-
+    
+    
     
 
 </article>
@@ -860,6 +839,7 @@ Note: The query string and the  URL #fragment are preserved.</dd>
     <h4 class="phpdocumentor-element__name" id="constant_TYPE_ARRAY_NUM">
         TYPE_ARRAY_NUM
         <a href="classes/vB-Cleaner.html#constant_TYPE_ARRAY_NUM" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
 
     <aside class="phpdocumentor-element-found-in">
@@ -878,10 +858,8 @@ Note: The query string and the  URL #fragment are preserved.</dd>
 </code>
 
 
-        <section class="phpdocumentor-description"></section>
-
-        <section class="phpdocumentor-description"></section>
-
+    
+    
     
 
 </article>
@@ -889,6 +867,7 @@ Note: The query string and the  URL #fragment are preserved.</dd>
     <h4 class="phpdocumentor-element__name" id="constant_TYPE_ARRAY_STR">
         TYPE_ARRAY_STR
         <a href="classes/vB-Cleaner.html#constant_TYPE_ARRAY_STR" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
 
     <aside class="phpdocumentor-element-found-in">
@@ -907,10 +886,8 @@ Note: The query string and the  URL #fragment are preserved.</dd>
 </code>
 
 
-        <section class="phpdocumentor-description"></section>
-
-        <section class="phpdocumentor-description"></section>
-
+    
+    
     
 
 </article>
@@ -918,6 +895,7 @@ Note: The query string and the  URL #fragment are preserved.</dd>
     <h4 class="phpdocumentor-element__name" id="constant_TYPE_ARRAY_UINT">
         TYPE_ARRAY_UINT
         <a href="classes/vB-Cleaner.html#constant_TYPE_ARRAY_UINT" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
 
     <aside class="phpdocumentor-element-found-in">
@@ -936,10 +914,8 @@ Note: The query string and the  URL #fragment are preserved.</dd>
 </code>
 
 
-        <section class="phpdocumentor-description"></section>
-
-        <section class="phpdocumentor-description"></section>
-
+    
+    
     
 
 </article>
@@ -947,6 +923,7 @@ Note: The query string and the  URL #fragment are preserved.</dd>
     <h4 class="phpdocumentor-element__name" id="constant_TYPE_ARRAY_UNIXTIME">
         TYPE_ARRAY_UNIXTIME
         <a href="classes/vB-Cleaner.html#constant_TYPE_ARRAY_UNIXTIME" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
 
     <aside class="phpdocumentor-element-found-in">
@@ -965,10 +942,8 @@ Note: The query string and the  URL #fragment are preserved.</dd>
 </code>
 
 
-        <section class="phpdocumentor-description"></section>
-
-        <section class="phpdocumentor-description"></section>
-
+    
+    
     
 
 </article>
@@ -976,6 +951,7 @@ Note: The query string and the  URL #fragment are preserved.</dd>
     <h4 class="phpdocumentor-element__name" id="constant_TYPE_ARRAY_UNUM">
         TYPE_ARRAY_UNUM
         <a href="classes/vB-Cleaner.html#constant_TYPE_ARRAY_UNUM" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
 
     <aside class="phpdocumentor-element-found-in">
@@ -994,10 +970,8 @@ Note: The query string and the  URL #fragment are preserved.</dd>
 </code>
 
 
-        <section class="phpdocumentor-description"></section>
-
-        <section class="phpdocumentor-description"></section>
-
+    
+    
     
 
 </article>
@@ -1005,6 +979,7 @@ Note: The query string and the  URL #fragment are preserved.</dd>
     <h4 class="phpdocumentor-element__name" id="constant_TYPE_BINARY">
         TYPE_BINARY
         <a href="classes/vB-Cleaner.html#constant_TYPE_BINARY" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
 
     <aside class="phpdocumentor-element-found-in">
@@ -1023,10 +998,8 @@ Note: The query string and the  URL #fragment are preserved.</dd>
 </code>
 
 
-        <section class="phpdocumentor-description"></section>
-
-        <section class="phpdocumentor-description"></section>
-
+    
+    
     
 
 </article>
@@ -1034,6 +1007,7 @@ Note: The query string and the  URL #fragment are preserved.</dd>
     <h4 class="phpdocumentor-element__name" id="constant_TYPE_BOOL">
         TYPE_BOOL
         <a href="classes/vB-Cleaner.html#constant_TYPE_BOOL" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
 
     <aside class="phpdocumentor-element-found-in">
@@ -1052,10 +1026,8 @@ Note: The query string and the  URL #fragment are preserved.</dd>
 </code>
 
 
-        <section class="phpdocumentor-description"></section>
-
-        <section class="phpdocumentor-description"></section>
-
+    
+    
     
 
 </article>
@@ -1063,6 +1035,7 @@ Note: The query string and the  URL #fragment are preserved.</dd>
     <h4 class="phpdocumentor-element__name" id="constant_TYPE_FILE">
         TYPE_FILE
         <a href="classes/vB-Cleaner.html#constant_TYPE_FILE" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
 
     <aside class="phpdocumentor-element-found-in">
@@ -1081,10 +1054,8 @@ Note: The query string and the  URL #fragment are preserved.</dd>
 </code>
 
 
-        <section class="phpdocumentor-description"></section>
-
-        <section class="phpdocumentor-description"></section>
-
+    
+    
     
 
 </article>
@@ -1092,6 +1063,7 @@ Note: The query string and the  URL #fragment are preserved.</dd>
     <h4 class="phpdocumentor-element__name" id="constant_TYPE_INT">
         TYPE_INT
         <a href="classes/vB-Cleaner.html#constant_TYPE_INT" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
 
     <aside class="phpdocumentor-element-found-in">
@@ -1110,10 +1082,8 @@ Note: The query string and the  URL #fragment are preserved.</dd>
 </code>
 
 
-        <section class="phpdocumentor-description"></section>
-
-        <section class="phpdocumentor-description"></section>
-
+    
+    
     
 
 </article>
@@ -1121,6 +1091,7 @@ Note: The query string and the  URL #fragment are preserved.</dd>
     <h4 class="phpdocumentor-element__name" id="constant_TYPE_NOCLEAN">
         TYPE_NOCLEAN
         <a href="classes/vB-Cleaner.html#constant_TYPE_NOCLEAN" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
 
     <aside class="phpdocumentor-element-found-in">
@@ -1139,10 +1110,8 @@ Note: The query string and the  URL #fragment are preserved.</dd>
 </code>
 
 
-        <section class="phpdocumentor-description"></section>
-
-        <section class="phpdocumentor-description"></section>
-
+    
+    
     
 
 </article>
@@ -1150,6 +1119,7 @@ Note: The query string and the  URL #fragment are preserved.</dd>
     <h4 class="phpdocumentor-element__name" id="constant_TYPE_NOHTML">
         TYPE_NOHTML
         <a href="classes/vB-Cleaner.html#constant_TYPE_NOHTML" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
 
     <aside class="phpdocumentor-element-found-in">
@@ -1168,10 +1138,8 @@ Note: The query string and the  URL #fragment are preserved.</dd>
 </code>
 
 
-        <section class="phpdocumentor-description"></section>
-
-        <section class="phpdocumentor-description"></section>
-
+    
+    
     
 
 </article>
@@ -1179,6 +1147,7 @@ Note: The query string and the  URL #fragment are preserved.</dd>
     <h4 class="phpdocumentor-element__name" id="constant_TYPE_NOHTMLCOND">
         TYPE_NOHTMLCOND
         <a href="classes/vB-Cleaner.html#constant_TYPE_NOHTMLCOND" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
 
     <aside class="phpdocumentor-element-found-in">
@@ -1197,10 +1166,8 @@ Note: The query string and the  URL #fragment are preserved.</dd>
 </code>
 
 
-        <section class="phpdocumentor-description"></section>
-
-        <section class="phpdocumentor-description"></section>
-
+    
+    
     
 
 </article>
@@ -1208,6 +1175,7 @@ Note: The query string and the  URL #fragment are preserved.</dd>
     <h4 class="phpdocumentor-element__name" id="constant_TYPE_NOTRIM">
         TYPE_NOTRIM
         <a href="classes/vB-Cleaner.html#constant_TYPE_NOTRIM" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
 
     <aside class="phpdocumentor-element-found-in">
@@ -1226,10 +1194,8 @@ Note: The query string and the  URL #fragment are preserved.</dd>
 </code>
 
 
-        <section class="phpdocumentor-description"></section>
-
-        <section class="phpdocumentor-description"></section>
-
+    
+    
     
 
 </article>
@@ -1237,6 +1203,7 @@ Note: The query string and the  URL #fragment are preserved.</dd>
     <h4 class="phpdocumentor-element__name" id="constant_TYPE_NUM">
         TYPE_NUM
         <a href="classes/vB-Cleaner.html#constant_TYPE_NUM" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
 
     <aside class="phpdocumentor-element-found-in">
@@ -1255,10 +1222,8 @@ Note: The query string and the  URL #fragment are preserved.</dd>
 </code>
 
 
-        <section class="phpdocumentor-description"></section>
-
-        <section class="phpdocumentor-description"></section>
-
+    
+    
     
 
 </article>
@@ -1266,6 +1231,7 @@ Note: The query string and the  URL #fragment are preserved.</dd>
     <h4 class="phpdocumentor-element__name" id="constant_TYPE_STR">
         TYPE_STR
         <a href="classes/vB-Cleaner.html#constant_TYPE_STR" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
 
     <aside class="phpdocumentor-element-found-in">
@@ -1284,10 +1250,8 @@ Note: The query string and the  URL #fragment are preserved.</dd>
 </code>
 
 
-        <section class="phpdocumentor-description"></section>
-
-        <section class="phpdocumentor-description"></section>
-
+    
+    
     
 
 </article>
@@ -1295,6 +1259,7 @@ Note: The query string and the  URL #fragment are preserved.</dd>
     <h4 class="phpdocumentor-element__name" id="constant_TYPE_UINT">
         TYPE_UINT
         <a href="classes/vB-Cleaner.html#constant_TYPE_UINT" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
 
     <aside class="phpdocumentor-element-found-in">
@@ -1313,10 +1278,8 @@ Note: The query string and the  URL #fragment are preserved.</dd>
 </code>
 
 
-        <section class="phpdocumentor-description"></section>
-
-        <section class="phpdocumentor-description"></section>
-
+    
+    
     
 
 </article>
@@ -1324,6 +1287,7 @@ Note: The query string and the  URL #fragment are preserved.</dd>
     <h4 class="phpdocumentor-element__name" id="constant_TYPE_UNIXTIME">
         TYPE_UNIXTIME
         <a href="classes/vB-Cleaner.html#constant_TYPE_UNIXTIME" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
 
     <aside class="phpdocumentor-element-found-in">
@@ -1342,10 +1306,8 @@ Note: The query string and the  URL #fragment are preserved.</dd>
 </code>
 
 
-        <section class="phpdocumentor-description"></section>
-
-        <section class="phpdocumentor-description"></section>
-
+    
+    
     
 
 </article>
@@ -1353,6 +1315,7 @@ Note: The query string and the  URL #fragment are preserved.</dd>
     <h4 class="phpdocumentor-element__name" id="constant_TYPE_UNUM">
         TYPE_UNUM
         <a href="classes/vB-Cleaner.html#constant_TYPE_UNUM" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
 
     <aside class="phpdocumentor-element-found-in">
@@ -1371,10 +1334,8 @@ Note: The query string and the  URL #fragment are preserved.</dd>
 </code>
 
 
-        <section class="phpdocumentor-description"></section>
-
-        <section class="phpdocumentor-description"></section>
-
+    
+    
     
 
 </article>
@@ -1386,6 +1347,7 @@ Note: The query string and the  URL #fragment are preserved.</dd>
         <h3 class="phpdocumentor-elements__header" id="methods">
             Methods
             <a href="classes/vB-Cleaner.html#methods" class="headerlink"><i class="fas fa-link"></i></a>
+
         </h3>
                     <article
         class="phpdocumentor-element
@@ -1396,6 +1358,7 @@ Note: The query string and the  URL #fragment are preserved.</dd>
     <h4 class="phpdocumentor-element__name" id="method___serialize">
         __serialize()
         <a href="classes/vB-Trait-NoSerialize.html#method___serialize" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/trait/noserialize.php"><a href="files/vb-trait-noserialize.html"><abbr title="vb/trait/noserialize.php">noserialize.php</abbr></a></abbr>
@@ -1409,16 +1372,17 @@ Note: The query string and the  URL #fragment are preserved.</dd>
     <span class="phpdocumentor-signature__visibility">public</span>
                     <span class="phpdocumentor-signature__name">__serialize</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">array&lt;string|int, mixed&gt;</span></code>
 
-        <section class="phpdocumentor-description"></section>
-
+    <div class="phpdocumentor-label-line">
+        </div>
     
     
+    
 
+            <section>
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">array&lt;string|int, mixed&gt;</span>
-            &mdash;
-        
-    
+        <span class="phpdocumentor-signature__response_type">array&lt;string|int, mixed&gt;</span>
+            </section>
+
 </article>
                     <article
         class="phpdocumentor-element
@@ -1429,6 +1393,7 @@ Note: The query string and the  URL #fragment are preserved.</dd>
     <h4 class="phpdocumentor-element__name" id="method___sleep">
         __sleep()
         <a href="classes/vB-Trait-NoSerialize.html#method___sleep" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/trait/noserialize.php"><a href="files/vb-trait-noserialize.html"><abbr title="vb/trait/noserialize.php">noserialize.php</abbr></a></abbr>
@@ -1442,16 +1407,17 @@ Note: The query string and the  URL #fragment are preserved.</dd>
     <span class="phpdocumentor-signature__visibility">public</span>
                     <span class="phpdocumentor-signature__name">__sleep</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">array&lt;string|int, mixed&gt;</span></code>
 
-        <section class="phpdocumentor-description"></section>
-
+    <div class="phpdocumentor-label-line">
+        </div>
     
     
+    
 
+            <section>
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">array&lt;string|int, mixed&gt;</span>
-            &mdash;
-        
-    
+        <span class="phpdocumentor-signature__response_type">array&lt;string|int, mixed&gt;</span>
+            </section>
+
 </article>
                     <article
         class="phpdocumentor-element
@@ -1462,6 +1428,7 @@ Note: The query string and the  URL #fragment are preserved.</dd>
     <h4 class="phpdocumentor-element__name" id="method___unserialize">
         __unserialize()
         <a href="classes/vB-Trait-NoSerialize.html#method___unserialize" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/trait/noserialize.php"><a href="files/vb-trait-noserialize.html"><abbr title="vb/trait/noserialize.php">noserialize.php</abbr></a></abbr>
@@ -1475,8 +1442,9 @@ Note: The query string and the  URL #fragment are preserved.</dd>
     <span class="phpdocumentor-signature__visibility">public</span>
                     <span class="phpdocumentor-signature__name">__unserialize</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">array&lt;string|int, mixed&gt;&nbsp;</span><span class="phpdocumentor-signature__argument__name">$serialized</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">void</span></code>
 
-        <section class="phpdocumentor-description"></section>
-
+    <div class="phpdocumentor-label-line">
+        </div>
+    
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
     <dl class="phpdocumentor-argument-list">
                     <dt class="phpdocumentor-argument-list__entry">
@@ -1484,17 +1452,12 @@ Note: The query string and the  URL #fragment are preserved.</dd>
                 : <span class="phpdocumentor-signature__argument__return-type">array&lt;string|int, mixed&gt;</span>
                             </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
+                
             </dd>
             </dl>
 
     
 
-        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">void</span>
-            &mdash;
-        
     
 </article>
                     <article
@@ -1506,6 +1469,7 @@ Note: The query string and the  URL #fragment are preserved.</dd>
     <h4 class="phpdocumentor-element__name" id="method___wakeup">
         __wakeup()
         <a href="classes/vB-Trait-NoSerialize.html#method___wakeup" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/trait/noserialize.php"><a href="files/vb-trait-noserialize.html"><abbr title="vb/trait/noserialize.php">noserialize.php</abbr></a></abbr>
@@ -1519,15 +1483,12 @@ Note: The query string and the  URL #fragment are preserved.</dd>
     <span class="phpdocumentor-signature__visibility">public</span>
                     <span class="phpdocumentor-signature__name">__wakeup</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">void</span></code>
 
-        <section class="phpdocumentor-description"></section>
-
+    <div class="phpdocumentor-label-line">
+        </div>
     
     
+    
 
-        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">void</span>
-            &mdash;
-        
     
 </article>
                     <article
@@ -1539,6 +1500,7 @@ Note: The query string and the  URL #fragment are preserved.</dd>
     <h4 class="phpdocumentor-element__name" id="method_clean">
         clean()
         <a href="classes/vB-Cleaner.html#method_clean" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/cleaner.php"><a href="files/vb-cleaner.html"><abbr title="vb/cleaner.php">cleaner.php</abbr></a></abbr>
@@ -1553,6 +1515,8 @@ Note: The query string and the  URL #fragment are preserved.</dd>
     <span class="phpdocumentor-signature__visibility">public</span>
                 <span class="phpdocumentor-signature__reference-operator">&amp;</span>    <span class="phpdocumentor-signature__name">clean</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__reference-operator">&amp;</span><span class="phpdocumentor-signature__argument__name">$var</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$vartype</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">self::TYPE_NOCLEAN</span><span> ]</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$exists</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">true</span><span> ]</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
 
+    <div class="phpdocumentor-label-line">
+        </div>
     
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
     <dl class="phpdocumentor-argument-list">
@@ -1561,36 +1525,35 @@ Note: The query string and the  URL #fragment are preserved.</dd>
                 : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
                             </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
+                
             </dd>
                     <dt class="phpdocumentor-argument-list__entry">
                 <span class="phpdocumentor-signature__argument__name">$vartype</span>
                 : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
                  = <span class="phpdocumentor-signature__argument__default-value">self::TYPE_NOCLEAN</span>            </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
+                
             </dd>
                     <dt class="phpdocumentor-argument-list__entry">
                 <span class="phpdocumentor-signature__argument__name">$exists</span>
                 : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
                  = <span class="phpdocumentor-signature__argument__default-value">true</span>            </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
+                
             </dd>
             </dl>
 
     
 
+            <section>
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">mixed</span>
-            &mdash;
-            <section class="phpdocumentor-description"><p>The cleaned value</p>
+        <span class="phpdocumentor-signature__response_type">mixed</span>
+                    &mdash;
+                <section class="phpdocumentor-description"><p>The cleaned value</p>
 </section>
 
-    
+            </section>
+
 </article>
                     <article
         class="phpdocumentor-element
@@ -1601,6 +1564,7 @@ Note: The query string and the  URL #fragment are preserved.</dd>
     <h4 class="phpdocumentor-element__name" id="method_cleanArray">
         cleanArray()
         <a href="classes/vB-Cleaner.html#method_cleanArray" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/cleaner.php"><a href="files/vb-cleaner.html"><abbr title="vb/cleaner.php">cleaner.php</abbr></a></abbr>
@@ -1615,6 +1579,8 @@ Note: The query string and the  URL #fragment are preserved.</dd>
     <span class="phpdocumentor-signature__visibility">public</span>
                     <span class="phpdocumentor-signature__name">cleanArray</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__reference-operator">&amp;</span><span class="phpdocumentor-signature__argument__name">$source</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$variables</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">array&lt;string|int, mixed&gt;</span></code>
 
+    <div class="phpdocumentor-label-line">
+        </div>
     
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
     <dl class="phpdocumentor-argument-list">
@@ -1623,26 +1589,24 @@ Note: The query string and the  URL #fragment are preserved.</dd>
                 : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
                             </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
+                
             </dd>
                     <dt class="phpdocumentor-argument-list__entry">
                 <span class="phpdocumentor-signature__argument__name">$variables</span>
                 : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
                             </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
+                
             </dd>
             </dl>
 
     
 
+            <section>
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">array&lt;string|int, mixed&gt;</span>
-            &mdash;
-        
-    
+        <span class="phpdocumentor-signature__response_type">array&lt;string|int, mixed&gt;</span>
+            </section>
+
 </article>
                     <article
         class="phpdocumentor-element
@@ -1653,6 +1617,7 @@ Note: The query string and the  URL #fragment are preserved.</dd>
     <h4 class="phpdocumentor-element__name" id="method_xssClean">
         xssClean()
         <a href="classes/vB-Cleaner.html#method_xssClean" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/cleaner.php"><a href="files/vb-cleaner.html"><abbr title="vb/cleaner.php">cleaner.php</abbr></a></abbr>
@@ -1667,6 +1632,8 @@ Note: The query string and the  URL #fragment are preserved.</dd>
     <span class="phpdocumentor-signature__visibility">public</span>
                     <span class="phpdocumentor-signature__name">xssClean</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$var</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">string</span></code>
 
+    <div class="phpdocumentor-label-line">
+        </div>
     
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
     <dl class="phpdocumentor-argument-list">
@@ -1675,18 +1642,17 @@ Note: The query string and the  URL #fragment are preserved.</dd>
                 : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
                             </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
+                
             </dd>
             </dl>
 
     
 
+            <section>
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">string</span>
-            &mdash;
-        
-    
+        <span class="phpdocumentor-signature__response_type">string</span>
+            </section>
+
 </article>
                     <article
         class="phpdocumentor-element
@@ -1697,6 +1663,7 @@ Note: The query string and the  URL #fragment are preserved.</dd>
     <h4 class="phpdocumentor-element__name" id="method_xssCleanUrl">
         xssCleanUrl()
         <a href="classes/vB-Cleaner.html#method_xssCleanUrl" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/cleaner.php"><a href="files/vb-cleaner.html"><abbr title="vb/cleaner.php">cleaner.php</abbr></a></abbr>
@@ -1712,6 +1679,8 @@ Note: The query string and the  URL #fragment are preserved.</p>
     <span class="phpdocumentor-signature__visibility">public</span>
                     <span class="phpdocumentor-signature__name">xssCleanUrl</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$url</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">string</span></code>
 
+    <div class="phpdocumentor-label-line">
+        </div>
     
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
     <dl class="phpdocumentor-argument-list">
@@ -1720,85 +1689,185 @@ Note: The query string and the  URL #fragment are preserved.</p>
                 : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
                             </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
+                
             </dd>
             </dl>
 
     
 
+            <section>
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">string</span>
-            &mdash;
-        
-    
+        <span class="phpdocumentor-signature__response_type">string</span>
+            </section>
+
 </article>
             </section>
 
-        
+        <div class="phpdocumentor-modal" id="source-view">
+    <div class="phpdocumentor-modal-bg" data-exit-button></div>
+    <div class="phpdocumentor-modal-container">
+        <div class="phpdocumentor-modal-content">
+            <pre style="max-height: 500px; overflow-y: scroll" data-src="files/vb/cleaner.php.txt" class="language-php line-numbers linkable-line-numbers"></pre>
+        </div>
+        <button data-exit-button class="phpdocumentor-modal__close">&times;</button>
+    </div>
+</div>
+
     <script type="text/javascript">
-        function loadExternalCodeSnippets(line) {
-            Array.prototype.slice.call(document.querySelectorAll('pre[data-src]')).forEach((pre) => {
-                var src = pre.getAttribute('data-src').replace( /\\/g, '/');
-                var extension = (src.match(/\.(\w+)$/) || [, ''])[1];
-                var language = 'php';
+        (function () {
+            function loadExternalCodeSnippet(el, url, line) {
+                Array.prototype.slice.call(el.querySelectorAll('pre[data-src]')).forEach((pre) => {
+                    const src = url || pre.getAttribute('data-src').replace(/\\/g, '/');
+                    const language = 'php';
 
-                var code = document.createElement('code');
-                code.className = 'language-' + language;
+                    const code = document.createElement('code');
+                    code.className = 'language-' + language;
+                    pre.textContent = '';
+                    pre.setAttribute('data-line', line)
+                    code.textContent = 'Loading…';
+                    pre.appendChild(code);
 
-                pre.textContent = '';
+                    var xhr = new XMLHttpRequest();
 
-                pre.setAttribute('data-line', line)
-                code.textContent = 'Loading…';
+                    xhr.open('GET', src, true);
 
-                pre.appendChild(code);
-
-                var xhr = new XMLHttpRequest();
-
-                xhr.open('GET', src, true);
-
-                xhr.onreadystatechange = function () {
-                    if (xhr.readyState == 4) {
+                    xhr.onreadystatechange = function () {
+                        if (xhr.readyState !== 4) {
+                            return;
+                        }
 
                         if (xhr.status < 400 && xhr.responseText) {
                             code.textContent = xhr.responseText;
-
                             Prism.highlightElement(code);
+                            return;
                         }
-                        else if (xhr.status >= 400) {
+
+                        if (xhr.status === 404) {
+                            code.textContent = '✖ Error: File could not be found';
+                            return;
+                        }
+
+                        if (xhr.status >= 400) {
                             code.textContent = '✖ Error ' + xhr.status + ' while fetching file: ' + xhr.statusText;
+                            return;
                         }
-                        else {
-                            code.textContent = '✖ Error: File does not exist, is empty or trying to view from localhost';
-                        }
+
+                        code.textContent = '✖ Error: An unknown error occurred';
+                    };
+
+                    xhr.send(null);
+                });
+            }
+
+            const modalButtons = document.querySelectorAll("[data-modal]");
+            const openedAsLocalFile = window.location.protocol === 'file:';
+            if (modalButtons.length > 0 && openedAsLocalFile) {
+                console.warn(
+                    'Viewing the source code is unavailable because you are opening this page from the file:// scheme; ' +
+                    'browsers block XHR requests when a page is opened this way'
+                );
+            }
+
+            modalButtons.forEach(function (trigger) {
+                if (openedAsLocalFile) {
+                    trigger.setAttribute("hidden", "hidden");
+                }
+
+                trigger.addEventListener("click", function (event) {
+                    event.preventDefault();
+                    const modal = document.getElementById(trigger.dataset.modal);
+                    if (!modal) {
+                        console.error(`Modal with id "${trigger.dataset.modal}" could not be found`);
+                        return;
                     }
-                };
+                    modal.classList.add("phpdocumentor-modal__open");
 
-                xhr.send(null);
-            });
-        }
-
-        var modals = document.querySelectorAll("[data-modal]");
-
-        modals.forEach(function (trigger) {
-            trigger.addEventListener("click", function (event) {
-                //event.preventDefault();
-                const modal = document.getElementById(trigger.dataset.modal);
-                modal.classList.add("phpdocumentor-modal__open");
-                loadExternalCodeSnippets(trigger.dataset.line)
-                const exits = modal.querySelectorAll("[data-exit-button]");
-                exits.forEach(function (exit) {
-                    exit.addEventListener("click", function (event) {
-                        event.preventDefault();
-                        modal.classList.remove("phpdocumentor-modal__open");
+                    loadExternalCodeSnippet(modal, trigger.dataset.src || null, trigger.dataset.line)
+                    const exits = modal.querySelectorAll("[data-exit-button]");
+                    exits.forEach(function (exit) {
+                        exit.addEventListener("click", function (event) {
+                            event.preventDefault();
+                            modal.classList.remove("phpdocumentor-modal__open");
+                        });
                     });
                 });
             });
-        });
+        })();
     </script>
 
     </article>
-                <section data-search-results class="phpdocumentor-search-results phpdocumentor-search-results--hidden">
+                                </section>
+                <section class="phpdocumentor-on-this-page__sidebar">
+                                
+    <section class="phpdocumentor-on-this-page__content">
+        <strong class="phpdocumentor-on-this-page__title">On this page</strong>
+
+        <ul class="phpdocumentor-list -clean">
+            <li class="phpdocumentor-on-this-page-section__title">Table Of Contents</li>
+            <li>
+                <ul class="phpdocumentor-list -clean">
+                                        <li><a href="classes/vB-Cleaner.html#toc-constants">Constants</a></li>
+                                                                                <li><a href="classes/vB-Cleaner.html#toc-methods">Methods</a></li>
+                                    </ul>
+            </li>
+                            <li class="phpdocumentor-on-this-page-section__title">Constants</li>
+                <li>
+                    <ul class="phpdocumentor-list -clean">
+                                                    <li><a href="classes/vB-Cleaner.html#constant_CONVERT_KEYS">CONVERT_KEYS</a></li>
+                                                    <li><a href="classes/vB-Cleaner.html#constant_CONVERT_SINGLE">CONVERT_SINGLE</a></li>
+                                                    <li><a href="classes/vB-Cleaner.html#constant_STR_NOHTML">STR_NOHTML</a></li>
+                                                    <li><a href="classes/vB-Cleaner.html#constant_TYPE_ARRAY">TYPE_ARRAY</a></li>
+                                                    <li><a href="classes/vB-Cleaner.html#constant_TYPE_ARRAY_ARRAY">TYPE_ARRAY_ARRAY</a></li>
+                                                    <li><a href="classes/vB-Cleaner.html#constant_TYPE_ARRAY_BINARY">TYPE_ARRAY_BINARY</a></li>
+                                                    <li><a href="classes/vB-Cleaner.html#constant_TYPE_ARRAY_BOOL">TYPE_ARRAY_BOOL</a></li>
+                                                    <li><a href="classes/vB-Cleaner.html#constant_TYPE_ARRAY_FILE">TYPE_ARRAY_FILE</a></li>
+                                                    <li><a href="classes/vB-Cleaner.html#constant_TYPE_ARRAY_INT">TYPE_ARRAY_INT</a></li>
+                                                    <li><a href="classes/vB-Cleaner.html#constant_TYPE_ARRAY_KEYS_INT">TYPE_ARRAY_KEYS_INT</a></li>
+                                                    <li><a href="classes/vB-Cleaner.html#constant_TYPE_ARRAY_KEYS_STR">TYPE_ARRAY_KEYS_STR</a></li>
+                                                    <li><a href="classes/vB-Cleaner.html#constant_TYPE_ARRAY_NOHTML">TYPE_ARRAY_NOHTML</a></li>
+                                                    <li><a href="classes/vB-Cleaner.html#constant_TYPE_ARRAY_NOHTMLCOND">TYPE_ARRAY_NOHTMLCOND</a></li>
+                                                    <li><a href="classes/vB-Cleaner.html#constant_TYPE_ARRAY_NOTRIM">TYPE_ARRAY_NOTRIM</a></li>
+                                                    <li><a href="classes/vB-Cleaner.html#constant_TYPE_ARRAY_NUM">TYPE_ARRAY_NUM</a></li>
+                                                    <li><a href="classes/vB-Cleaner.html#constant_TYPE_ARRAY_STR">TYPE_ARRAY_STR</a></li>
+                                                    <li><a href="classes/vB-Cleaner.html#constant_TYPE_ARRAY_UINT">TYPE_ARRAY_UINT</a></li>
+                                                    <li><a href="classes/vB-Cleaner.html#constant_TYPE_ARRAY_UNIXTIME">TYPE_ARRAY_UNIXTIME</a></li>
+                                                    <li><a href="classes/vB-Cleaner.html#constant_TYPE_ARRAY_UNUM">TYPE_ARRAY_UNUM</a></li>
+                                                    <li><a href="classes/vB-Cleaner.html#constant_TYPE_BINARY">TYPE_BINARY</a></li>
+                                                    <li><a href="classes/vB-Cleaner.html#constant_TYPE_BOOL">TYPE_BOOL</a></li>
+                                                    <li><a href="classes/vB-Cleaner.html#constant_TYPE_FILE">TYPE_FILE</a></li>
+                                                    <li><a href="classes/vB-Cleaner.html#constant_TYPE_INT">TYPE_INT</a></li>
+                                                    <li><a href="classes/vB-Cleaner.html#constant_TYPE_NOCLEAN">TYPE_NOCLEAN</a></li>
+                                                    <li><a href="classes/vB-Cleaner.html#constant_TYPE_NOHTML">TYPE_NOHTML</a></li>
+                                                    <li><a href="classes/vB-Cleaner.html#constant_TYPE_NOHTMLCOND">TYPE_NOHTMLCOND</a></li>
+                                                    <li><a href="classes/vB-Cleaner.html#constant_TYPE_NOTRIM">TYPE_NOTRIM</a></li>
+                                                    <li><a href="classes/vB-Cleaner.html#constant_TYPE_NUM">TYPE_NUM</a></li>
+                                                    <li><a href="classes/vB-Cleaner.html#constant_TYPE_STR">TYPE_STR</a></li>
+                                                    <li><a href="classes/vB-Cleaner.html#constant_TYPE_UINT">TYPE_UINT</a></li>
+                                                    <li><a href="classes/vB-Cleaner.html#constant_TYPE_UNIXTIME">TYPE_UNIXTIME</a></li>
+                                                    <li><a href="classes/vB-Cleaner.html#constant_TYPE_UNUM">TYPE_UNUM</a></li>
+                                            </ul>
+                </li>
+            
+            
+                        <li class="phpdocumentor-on-this-page-section__title">Methods</li>
+            <li>
+                <ul class="phpdocumentor-list -clean">
+                                            <li><a href="classes/vB-Trait-NoSerialize.html#method___serialize">__serialize()</a></li>
+                                            <li><a href="classes/vB-Trait-NoSerialize.html#method___sleep">__sleep()</a></li>
+                                            <li><a href="classes/vB-Trait-NoSerialize.html#method___unserialize">__unserialize()</a></li>
+                                            <li><a href="classes/vB-Trait-NoSerialize.html#method___wakeup">__wakeup()</a></li>
+                                            <li><a href="classes/vB-Cleaner.html#method_clean">clean()</a></li>
+                                            <li><a href="classes/vB-Cleaner.html#method_cleanArray">cleanArray()</a></li>
+                                            <li><a href="classes/vB-Cleaner.html#method_xssClean">xssClean()</a></li>
+                                            <li><a href="classes/vB-Cleaner.html#method_xssCleanUrl">xssCleanUrl()</a></li>
+                                    </ul>
+            </li>
+                    </ul>
+    </section>
+
+                </section>
+                            </div>
+            <section data-search-results class="phpdocumentor-search-results phpdocumentor-search-results--hidden">
     <section class="phpdocumentor-search-results__dialog">
         <header class="phpdocumentor-search-results__header">
             <h2 class="phpdocumentor-search-results__title">Search results</h2>
@@ -1809,7 +1878,6 @@ Note: The query string and the  URL #fragment are preserved.</p>
         </section>
     </section>
 </section>
-            </div>
         </div>
         <a href="classes/vB-Cleaner.html#top" class="phpdocumentor-back-to-top"><i class="fas fa-chevron-circle-up"></i></a>
 

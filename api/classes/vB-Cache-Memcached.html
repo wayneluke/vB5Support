@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-            <title>vBulletin v5.7.2</title>
+            <title>vBulletin v6.0.4</title>
     
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <base href="../">
@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="css/normalize.css">
     <link rel="stylesheet" href="css/base.css">
             <link rel="preconnect" href="https://fonts.gstatic.com">
-        <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@400;600;700&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@100;200;300;400;600;700&display=swap" rel="stylesheet">
         <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@400;600;700&display=swap" rel="stylesheet">
         <link rel="stylesheet" href="css/template.css">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.0/css/all.min.css" integrity="sha256-ybRkN9dBjhcS2qrW1z+hfCxq+1aBdwyQM5wlQoQVt/0=" crossorigin="anonymous" />
@@ -19,12 +19,13 @@
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.23.0/plugins/line-highlight/prism-line-highlight.css">
                 <script src="https://cdn.jsdelivr.net/npm/fuse.js@3.4.6"></script>
         <script src="https://cdn.jsdelivr.net/npm/css-vars-ponyfill@2"></script>
+        <script src="js/template.js"></script>
         <script src="js/search.js"></script>
         <script defer src="js/searchIndex.js"></script>
     </head>
 <body id="top">
     <header class="phpdocumentor-header phpdocumentor-section">
-    <h1 class="phpdocumentor-title"><a href="" class="phpdocumentor-title__link">vBulletin v5.7.2</a></h1>
+    <h1 class="phpdocumentor-title"><a href="" class="phpdocumentor-title__link">vBulletin v6.0.4</a></h1>
     <input class="phpdocumentor-header__menu-button" type="checkbox" id="menu-button" name="menu-button" />
     <label class="phpdocumentor-header__menu-icon" for="menu-button">
         <i class="fas fa-bars"></i>
@@ -52,7 +53,7 @@
 <label class="phpdocumentor-sidebar__menu-icon" for="sidebar-button">
     Menu
 </label>
-<aside class="phpdocumentor-column -four phpdocumentor-sidebar">
+<aside class="phpdocumentor-column -three phpdocumentor-sidebar">
                     <section class="phpdocumentor-sidebar__category">
             <h2 class="phpdocumentor-sidebar__category-header">Packages</h2>
                                     <h4 class="phpdocumentor-sidebar__root-namespace">
@@ -98,8 +99,9 @@
     </section>
 </aside>
 
-            <div class="phpdocumentor-column -eight phpdocumentor-content">
-                    <ul class="phpdocumentor-breadcrumbs">
+            <div class="phpdocumentor-column -nine phpdocumentor-content">
+                                <section>
+                                        <ul class="phpdocumentor-breadcrumbs">
             <li class="phpdocumentor-breadcrumb"><a href="packages/vBulletin.html">vBulletin</a></li>
     </ul>
 
@@ -121,6 +123,11 @@
     
     </h2>
 
+<div class="phpdocumentor-label-line">
+
+
+</div>
+
         <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/cache/memcached.php"><a href="files/vb-cache-memcached.html"><abbr title="vb/cache/memcached.php">memcached.php</abbr></a></abbr>
     :
@@ -136,7 +143,8 @@
 
     <h5 class="phpdocumentor-tag-list__heading" id="tags">
         Tags
-        <a href="#tags" class="headerlink"><i class="fas fa-link"></i></a>
+        <a href="classes/vB-Cache-Memcached.html#tags" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h5>
     <dl class="phpdocumentor-tag-list">
                                     <dt class="phpdocumentor-tag-list__entry">
@@ -147,137 +155,139 @@
                                         
                                              
                                     </dd>
-                        </dl>
-
-
-
+                                            </dl>
 
 
 
 <h3 id="toc">
     Table of Contents
-    <a href="#toc" class="headerlink"><i class="fas fa-link"></i></a>
+    <a href="classes/vB-Cache-Memcached.html#toc" class="headerlink"><i class="fas fa-link"></i></a>
+
 </h3>
 
+
+
+
+
+
+
+<h4 id="toc-constants">
+    Constants
+    <a href="classes/vB-Cache-Memcached.html#toc-constants" class="headerlink"><i class="fas fa-link"></i></a>
+
+</h4>
 <dl class="phpdocumentor-table-of-contents">
             <dt class="phpdocumentor-table-of-contents__entry -constant -public">
     <a href="classes/vB-Cache.html#constant_CACHE_FAST">CACHE_FAST</a>
     <span>
         &nbsp;= 1                            </span>
 </dt>
-<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -constant -public">
     <a href="classes/vB-Cache.html#constant_CACHE_LARGE">CACHE_LARGE</a>
     <span>
         &nbsp;= 2                            </span>
 </dt>
-<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -constant -public">
     <a href="classes/vB-Cache.html#constant_CACHE_LOG_CLEAR">CACHE_LOG_CLEAR</a>
     <span>
         &nbsp;= 6                            </span>
 </dt>
-<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -constant -public">
     <a href="classes/vB-Cache.html#constant_CACHE_LOG_HASVALUE">CACHE_LOG_HASVALUE</a>
     <span>
         &nbsp;= 4                            </span>
 </dt>
-<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -constant -public">
     <a href="classes/vB-Cache.html#constant_CACHE_LOG_NOVALUE">CACHE_LOG_NOVALUE</a>
     <span>
         &nbsp;= 5                            </span>
 </dt>
-<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -constant -public">
     <a href="classes/vB-Cache.html#constant_CACHE_LOG_READFAIL">CACHE_LOG_READFAIL</a>
     <span>
         &nbsp;= 3                            </span>
 </dt>
-<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -constant -public">
     <a href="classes/vB-Cache.html#constant_CACHE_LOG_READSUCCESS">CACHE_LOG_READSUCCESS</a>
     <span>
         &nbsp;= 2                            </span>
 </dt>
-<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -constant -public">
     <a href="classes/vB-Cache.html#constant_CACHE_LOG_WRITE">CACHE_LOG_WRITE</a>
     <span>
         &nbsp;= 1                            </span>
 </dt>
-<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -constant -public">
     <a href="classes/vB-Cache.html#constant_CACHE_STD">CACHE_STD</a>
     <span>
         &nbsp;= 0                            </span>
 </dt>
-<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -constant -public">
     <a href="classes/vB-Cache-Memcached.html#constant_EVENT_PREFIX">EVENT_PREFIX</a>
     <span>
         &nbsp;= &#039;~ev_&#039;                            </span>
 </dt>
-<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -constant -public">
     <a href="classes/vB-Cache-Memcached.html#constant_GLOBAL_EVENT">GLOBAL_EVENT</a>
     <span>
         &nbsp;= &#039;global_cache_clear&#039;                            </span>
 </dt>
-<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -constant -public">
     <a href="classes/vB-Cache-Memcached.html#constant_LOCK_PREFIX">LOCK_PREFIX</a>
     <span>
         &nbsp;= &#039;lock_&#039;                            </span>
 </dt>
-<dd></dd>
 
-                        <dt class="phpdocumentor-table-of-contents__entry -method -public">
+    </dl>
+
+
+
+<h4 id="toc-methods">
+    Methods
+    <a href="classes/vB-Cache-Memcached.html#toc-methods" class="headerlink"><i class="fas fa-link"></i></a>
+
+</h4>
+<dl class="phpdocumentor-table-of-contents">
+            <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a href="classes/vB-Trait-NoSerialize.html#method___serialize">__serialize()</a>
     <span>
                                 &nbsp;: array&lt;string|int, mixed&gt;    </span>
 </dt>
-<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a href="classes/vB-Trait-NoSerialize.html#method___sleep">__sleep()</a>
     <span>
                                 &nbsp;: array&lt;string|int, mixed&gt;    </span>
 </dt>
-<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a href="classes/vB-Trait-NoSerialize.html#method___unserialize">__unserialize()</a>
     <span>
                                 &nbsp;: void    </span>
 </dt>
-<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a href="classes/vB-Trait-NoSerialize.html#method___wakeup">__wakeup()</a>
     <span>
                                 &nbsp;: void    </span>
 </dt>
-<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a href="classes/vB-Cache.html#method_allCacheEvent">allCacheEvent()</a>
     <span>
                                 &nbsp;: mixed    </span>
 </dt>
-<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a href="classes/vB-Cache-Memcached.html#method_clean">clean()</a>
@@ -368,14 +378,12 @@
     <span>
                                 &nbsp;: mixed    </span>
 </dt>
-<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a href="classes/vB-Cache.html#method_resetCache">resetCache()</a>
     <span>
                                 &nbsp;: mixed    </span>
 </dt>
-<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a href="classes/vB-Cache.html#method_restoreCacheInfo">restoreCacheInfo()</a>
@@ -399,7 +407,6 @@ store the cached information.</dd>
     <span>
                                 &nbsp;: mixed    </span>
 </dt>
-<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a href="classes/vB-Cache-Memcached.html#method_unlock">unlock()</a>
@@ -422,7 +429,8 @@ store the cached information.</dd>
 </dt>
 <dd>Writes data as a cache object.</dd>
 
-        </dl>
+    </dl>
+
 
 
 
@@ -431,17 +439,19 @@ store the cached information.</dd>
         <h3 class="phpdocumentor-elements__header" id="constants">
             Constants
             <a href="classes/vB-Cache-Memcached.html#constants" class="headerlink"><i class="fas fa-link"></i></a>
+
         </h3>
                     <article class="phpdocumentor-element -constant -public ">
     <h4 class="phpdocumentor-element__name" id="constant_CACHE_FAST">
         CACHE_FAST
         <a href="classes/vB-Cache.html#constant_CACHE_FAST" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
 
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/cache.php"><a href="files/vb-cache.html"><abbr title="vb/cache.php">cache.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">109</span>
+    <span class="phpdocumentor-element-found-in__line">113</span>
 
     </aside>
 
@@ -454,10 +464,8 @@ store the cached information.</dd>
 </code>
 
 
-        <section class="phpdocumentor-description"></section>
-
-        <section class="phpdocumentor-description"></section>
-
+    
+    
     
 
 </article>
@@ -465,12 +473,13 @@ store the cached information.</dd>
     <h4 class="phpdocumentor-element__name" id="constant_CACHE_LARGE">
         CACHE_LARGE
         <a href="classes/vB-Cache.html#constant_CACHE_LARGE" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
 
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/cache.php"><a href="files/vb-cache.html"><abbr title="vb/cache.php">cache.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">110</span>
+    <span class="phpdocumentor-element-found-in__line">114</span>
 
     </aside>
 
@@ -483,10 +492,8 @@ store the cached information.</dd>
 </code>
 
 
-        <section class="phpdocumentor-description"></section>
-
-        <section class="phpdocumentor-description"></section>
-
+    
+    
     
 
 </article>
@@ -494,6 +501,119 @@ store the cached information.</dd>
     <h4 class="phpdocumentor-element__name" id="constant_CACHE_LOG_CLEAR">
         CACHE_LOG_CLEAR
         <a href="classes/vB-Cache.html#constant_CACHE_LOG_CLEAR" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="vb/cache.php"><a href="files/vb-cache.html"><abbr title="vb/cache.php">cache.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">131</span>
+
+    </aside>
+
+    
+    <code class="phpdocumentor-signature phpdocumentor-code ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+        <span class="phpdocumentor-signature__type">mixed</span>
+    <span class="phpdocumentor-signature__name">CACHE_LOG_CLEAR</span>
+    = <span class="phpdocumentor-signature__default-value">6</span>
+</code>
+
+
+    
+    
+    
+
+</article>
+                    <article class="phpdocumentor-element -constant -public ">
+    <h4 class="phpdocumentor-element__name" id="constant_CACHE_LOG_HASVALUE">
+        CACHE_LOG_HASVALUE
+        <a href="classes/vB-Cache.html#constant_CACHE_LOG_HASVALUE" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="vb/cache.php"><a href="files/vb-cache.html"><abbr title="vb/cache.php">cache.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">129</span>
+
+    </aside>
+
+    
+    <code class="phpdocumentor-signature phpdocumentor-code ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+        <span class="phpdocumentor-signature__type">mixed</span>
+    <span class="phpdocumentor-signature__name">CACHE_LOG_HASVALUE</span>
+    = <span class="phpdocumentor-signature__default-value">4</span>
+</code>
+
+
+    
+    
+    
+
+</article>
+                    <article class="phpdocumentor-element -constant -public ">
+    <h4 class="phpdocumentor-element__name" id="constant_CACHE_LOG_NOVALUE">
+        CACHE_LOG_NOVALUE
+        <a href="classes/vB-Cache.html#constant_CACHE_LOG_NOVALUE" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="vb/cache.php"><a href="files/vb-cache.html"><abbr title="vb/cache.php">cache.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">130</span>
+
+    </aside>
+
+    
+    <code class="phpdocumentor-signature phpdocumentor-code ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+        <span class="phpdocumentor-signature__type">mixed</span>
+    <span class="phpdocumentor-signature__name">CACHE_LOG_NOVALUE</span>
+    = <span class="phpdocumentor-signature__default-value">5</span>
+</code>
+
+
+    
+    
+    
+
+</article>
+                    <article class="phpdocumentor-element -constant -public ">
+    <h4 class="phpdocumentor-element__name" id="constant_CACHE_LOG_READFAIL">
+        CACHE_LOG_READFAIL
+        <a href="classes/vB-Cache.html#constant_CACHE_LOG_READFAIL" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="vb/cache.php"><a href="files/vb-cache.html"><abbr title="vb/cache.php">cache.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">128</span>
+
+    </aside>
+
+    
+    <code class="phpdocumentor-signature phpdocumentor-code ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+        <span class="phpdocumentor-signature__type">mixed</span>
+    <span class="phpdocumentor-signature__name">CACHE_LOG_READFAIL</span>
+    = <span class="phpdocumentor-signature__default-value">3</span>
+</code>
+
+
+    
+    
+    
+
+</article>
+                    <article class="phpdocumentor-element -constant -public ">
+    <h4 class="phpdocumentor-element__name" id="constant_CACHE_LOG_READSUCCESS">
+        CACHE_LOG_READSUCCESS
+        <a href="classes/vB-Cache.html#constant_CACHE_LOG_READSUCCESS" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
 
     <aside class="phpdocumentor-element-found-in">
@@ -507,51 +627,21 @@ store the cached information.</dd>
     <code class="phpdocumentor-signature phpdocumentor-code ">
     <span class="phpdocumentor-signature__visibility">public</span>
         <span class="phpdocumentor-signature__type">mixed</span>
-    <span class="phpdocumentor-signature__name">CACHE_LOG_CLEAR</span>
-    = <span class="phpdocumentor-signature__default-value">6</span>
+    <span class="phpdocumentor-signature__name">CACHE_LOG_READSUCCESS</span>
+    = <span class="phpdocumentor-signature__default-value">2</span>
 </code>
 
 
-        <section class="phpdocumentor-description"></section>
-
-        <section class="phpdocumentor-description"></section>
-
+    
+    
     
 
 </article>
                     <article class="phpdocumentor-element -constant -public ">
-    <h4 class="phpdocumentor-element__name" id="constant_CACHE_LOG_HASVALUE">
-        CACHE_LOG_HASVALUE
-        <a href="classes/vB-Cache.html#constant_CACHE_LOG_HASVALUE" class="headerlink"><i class="fas fa-link"></i></a>
-    </h4>
+    <h4 class="phpdocumentor-element__name" id="constant_CACHE_LOG_WRITE">
+        CACHE_LOG_WRITE
+        <a href="classes/vB-Cache.html#constant_CACHE_LOG_WRITE" class="headerlink"><i class="fas fa-link"></i></a>
 
-    <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="vb/cache.php"><a href="files/vb-cache.html"><abbr title="vb/cache.php">cache.php</abbr></a></abbr>
-    :
-    <span class="phpdocumentor-element-found-in__line">125</span>
-
-    </aside>
-
-    
-    <code class="phpdocumentor-signature phpdocumentor-code ">
-    <span class="phpdocumentor-signature__visibility">public</span>
-        <span class="phpdocumentor-signature__type">mixed</span>
-    <span class="phpdocumentor-signature__name">CACHE_LOG_HASVALUE</span>
-    = <span class="phpdocumentor-signature__default-value">4</span>
-</code>
-
-
-        <section class="phpdocumentor-description"></section>
-
-        <section class="phpdocumentor-description"></section>
-
-    
-
-</article>
-                    <article class="phpdocumentor-element -constant -public ">
-    <h4 class="phpdocumentor-element__name" id="constant_CACHE_LOG_NOVALUE">
-        CACHE_LOG_NOVALUE
-        <a href="classes/vB-Cache.html#constant_CACHE_LOG_NOVALUE" class="headerlink"><i class="fas fa-link"></i></a>
     </h4>
 
     <aside class="phpdocumentor-element-found-in">
@@ -565,102 +655,13 @@ store the cached information.</dd>
     <code class="phpdocumentor-signature phpdocumentor-code ">
     <span class="phpdocumentor-signature__visibility">public</span>
         <span class="phpdocumentor-signature__type">mixed</span>
-    <span class="phpdocumentor-signature__name">CACHE_LOG_NOVALUE</span>
-    = <span class="phpdocumentor-signature__default-value">5</span>
-</code>
-
-
-        <section class="phpdocumentor-description"></section>
-
-        <section class="phpdocumentor-description"></section>
-
-    
-
-</article>
-                    <article class="phpdocumentor-element -constant -public ">
-    <h4 class="phpdocumentor-element__name" id="constant_CACHE_LOG_READFAIL">
-        CACHE_LOG_READFAIL
-        <a href="classes/vB-Cache.html#constant_CACHE_LOG_READFAIL" class="headerlink"><i class="fas fa-link"></i></a>
-    </h4>
-
-    <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="vb/cache.php"><a href="files/vb-cache.html"><abbr title="vb/cache.php">cache.php</abbr></a></abbr>
-    :
-    <span class="phpdocumentor-element-found-in__line">124</span>
-
-    </aside>
-
-    
-    <code class="phpdocumentor-signature phpdocumentor-code ">
-    <span class="phpdocumentor-signature__visibility">public</span>
-        <span class="phpdocumentor-signature__type">mixed</span>
-    <span class="phpdocumentor-signature__name">CACHE_LOG_READFAIL</span>
-    = <span class="phpdocumentor-signature__default-value">3</span>
-</code>
-
-
-        <section class="phpdocumentor-description"></section>
-
-        <section class="phpdocumentor-description"></section>
-
-    
-
-</article>
-                    <article class="phpdocumentor-element -constant -public ">
-    <h4 class="phpdocumentor-element__name" id="constant_CACHE_LOG_READSUCCESS">
-        CACHE_LOG_READSUCCESS
-        <a href="classes/vB-Cache.html#constant_CACHE_LOG_READSUCCESS" class="headerlink"><i class="fas fa-link"></i></a>
-    </h4>
-
-    <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="vb/cache.php"><a href="files/vb-cache.html"><abbr title="vb/cache.php">cache.php</abbr></a></abbr>
-    :
-    <span class="phpdocumentor-element-found-in__line">123</span>
-
-    </aside>
-
-    
-    <code class="phpdocumentor-signature phpdocumentor-code ">
-    <span class="phpdocumentor-signature__visibility">public</span>
-        <span class="phpdocumentor-signature__type">mixed</span>
-    <span class="phpdocumentor-signature__name">CACHE_LOG_READSUCCESS</span>
-    = <span class="phpdocumentor-signature__default-value">2</span>
-</code>
-
-
-        <section class="phpdocumentor-description"></section>
-
-        <section class="phpdocumentor-description"></section>
-
-    
-
-</article>
-                    <article class="phpdocumentor-element -constant -public ">
-    <h4 class="phpdocumentor-element__name" id="constant_CACHE_LOG_WRITE">
-        CACHE_LOG_WRITE
-        <a href="classes/vB-Cache.html#constant_CACHE_LOG_WRITE" class="headerlink"><i class="fas fa-link"></i></a>
-    </h4>
-
-    <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="vb/cache.php"><a href="files/vb-cache.html"><abbr title="vb/cache.php">cache.php</abbr></a></abbr>
-    :
-    <span class="phpdocumentor-element-found-in__line">122</span>
-
-    </aside>
-
-    
-    <code class="phpdocumentor-signature phpdocumentor-code ">
-    <span class="phpdocumentor-signature__visibility">public</span>
-        <span class="phpdocumentor-signature__type">mixed</span>
     <span class="phpdocumentor-signature__name">CACHE_LOG_WRITE</span>
     = <span class="phpdocumentor-signature__default-value">1</span>
 </code>
 
 
-        <section class="phpdocumentor-description"></section>
-
-        <section class="phpdocumentor-description"></section>
-
+    
+    
     
 
 </article>
@@ -668,12 +669,13 @@ store the cached information.</dd>
     <h4 class="phpdocumentor-element__name" id="constant_CACHE_STD">
         CACHE_STD
         <a href="classes/vB-Cache.html#constant_CACHE_STD" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
 
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/cache.php"><a href="files/vb-cache.html"><abbr title="vb/cache.php">cache.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">108</span>
+    <span class="phpdocumentor-element-found-in__line">112</span>
 
     </aside>
 
@@ -686,10 +688,8 @@ store the cached information.</dd>
 </code>
 
 
-        <section class="phpdocumentor-description"></section>
-
-        <section class="phpdocumentor-description"></section>
-
+    
+    
     
 
 </article>
@@ -697,6 +697,7 @@ store the cached information.</dd>
     <h4 class="phpdocumentor-element__name" id="constant_EVENT_PREFIX">
         EVENT_PREFIX
         <a href="classes/vB-Cache-Memcached.html#constant_EVENT_PREFIX" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
 
     <aside class="phpdocumentor-element-found-in">
@@ -715,10 +716,8 @@ store the cached information.</dd>
 </code>
 
 
-        <section class="phpdocumentor-description"></section>
-
-        <section class="phpdocumentor-description"></section>
-
+    
+    
     
 
 </article>
@@ -726,6 +725,7 @@ store the cached information.</dd>
     <h4 class="phpdocumentor-element__name" id="constant_GLOBAL_EVENT">
         GLOBAL_EVENT
         <a href="classes/vB-Cache-Memcached.html#constant_GLOBAL_EVENT" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
 
     <aside class="phpdocumentor-element-found-in">
@@ -744,10 +744,8 @@ store the cached information.</dd>
 </code>
 
 
-        <section class="phpdocumentor-description"></section>
-
-        <section class="phpdocumentor-description"></section>
-
+    
+    
     
 
 </article>
@@ -755,6 +753,7 @@ store the cached information.</dd>
     <h4 class="phpdocumentor-element__name" id="constant_LOCK_PREFIX">
         LOCK_PREFIX
         <a href="classes/vB-Cache-Memcached.html#constant_LOCK_PREFIX" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
 
     <aside class="phpdocumentor-element-found-in">
@@ -773,10 +772,8 @@ store the cached information.</dd>
 </code>
 
 
-        <section class="phpdocumentor-description"></section>
-
-        <section class="phpdocumentor-description"></section>
-
+    
+    
     
 
 </article>
@@ -788,6 +785,7 @@ store the cached information.</dd>
         <h3 class="phpdocumentor-elements__header" id="methods">
             Methods
             <a href="classes/vB-Cache-Memcached.html#methods" class="headerlink"><i class="fas fa-link"></i></a>
+
         </h3>
                     <article
         class="phpdocumentor-element
@@ -798,6 +796,7 @@ store the cached information.</dd>
     <h4 class="phpdocumentor-element__name" id="method___serialize">
         __serialize()
         <a href="classes/vB-Trait-NoSerialize.html#method___serialize" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/trait/noserialize.php"><a href="files/vb-trait-noserialize.html"><abbr title="vb/trait/noserialize.php">noserialize.php</abbr></a></abbr>
@@ -811,16 +810,17 @@ store the cached information.</dd>
     <span class="phpdocumentor-signature__visibility">public</span>
                     <span class="phpdocumentor-signature__name">__serialize</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">array&lt;string|int, mixed&gt;</span></code>
 
-        <section class="phpdocumentor-description"></section>
-
+    <div class="phpdocumentor-label-line">
+        </div>
     
     
+    
 
+            <section>
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">array&lt;string|int, mixed&gt;</span>
-            &mdash;
-        
-    
+        <span class="phpdocumentor-signature__response_type">array&lt;string|int, mixed&gt;</span>
+            </section>
+
 </article>
                     <article
         class="phpdocumentor-element
@@ -831,6 +831,7 @@ store the cached information.</dd>
     <h4 class="phpdocumentor-element__name" id="method___sleep">
         __sleep()
         <a href="classes/vB-Trait-NoSerialize.html#method___sleep" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/trait/noserialize.php"><a href="files/vb-trait-noserialize.html"><abbr title="vb/trait/noserialize.php">noserialize.php</abbr></a></abbr>
@@ -844,16 +845,17 @@ store the cached information.</dd>
     <span class="phpdocumentor-signature__visibility">public</span>
                     <span class="phpdocumentor-signature__name">__sleep</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">array&lt;string|int, mixed&gt;</span></code>
 
-        <section class="phpdocumentor-description"></section>
-
+    <div class="phpdocumentor-label-line">
+        </div>
     
     
+    
 
+            <section>
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">array&lt;string|int, mixed&gt;</span>
-            &mdash;
-        
-    
+        <span class="phpdocumentor-signature__response_type">array&lt;string|int, mixed&gt;</span>
+            </section>
+
 </article>
                     <article
         class="phpdocumentor-element
@@ -864,6 +866,7 @@ store the cached information.</dd>
     <h4 class="phpdocumentor-element__name" id="method___unserialize">
         __unserialize()
         <a href="classes/vB-Trait-NoSerialize.html#method___unserialize" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/trait/noserialize.php"><a href="files/vb-trait-noserialize.html"><abbr title="vb/trait/noserialize.php">noserialize.php</abbr></a></abbr>
@@ -877,8 +880,9 @@ store the cached information.</dd>
     <span class="phpdocumentor-signature__visibility">public</span>
                     <span class="phpdocumentor-signature__name">__unserialize</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">array&lt;string|int, mixed&gt;&nbsp;</span><span class="phpdocumentor-signature__argument__name">$serialized</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">void</span></code>
 
-        <section class="phpdocumentor-description"></section>
-
+    <div class="phpdocumentor-label-line">
+        </div>
+    
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
     <dl class="phpdocumentor-argument-list">
                     <dt class="phpdocumentor-argument-list__entry">
@@ -886,17 +890,12 @@ store the cached information.</dd>
                 : <span class="phpdocumentor-signature__argument__return-type">array&lt;string|int, mixed&gt;</span>
                             </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
+                
             </dd>
             </dl>
 
     
 
-        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">void</span>
-            &mdash;
-        
     
 </article>
                     <article
@@ -908,6 +907,7 @@ store the cached information.</dd>
     <h4 class="phpdocumentor-element__name" id="method___wakeup">
         __wakeup()
         <a href="classes/vB-Trait-NoSerialize.html#method___wakeup" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/trait/noserialize.php"><a href="files/vb-trait-noserialize.html"><abbr title="vb/trait/noserialize.php">noserialize.php</abbr></a></abbr>
@@ -921,15 +921,12 @@ store the cached information.</dd>
     <span class="phpdocumentor-signature__visibility">public</span>
                     <span class="phpdocumentor-signature__name">__wakeup</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">void</span></code>
 
-        <section class="phpdocumentor-description"></section>
-
+    <div class="phpdocumentor-label-line">
+        </div>
     
     
+    
 
-        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">void</span>
-            &mdash;
-        
     
 </article>
                     <article
@@ -941,11 +938,12 @@ store the cached information.</dd>
     <h4 class="phpdocumentor-element__name" id="method_allCacheEvent">
         allCacheEvent()
         <a href="classes/vB-Cache.html#method_allCacheEvent" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/cache.php"><a href="files/vb-cache.html"><abbr title="vb/cache.php">cache.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">599</span>
+    <span class="phpdocumentor-element-found-in__line">612</span>
 
     </aside>
 
@@ -954,8 +952,9 @@ store the cached information.</dd>
     <span class="phpdocumentor-signature__visibility">public</span>
             <span class="phpdocumentor-signature__static">static</span>        <span class="phpdocumentor-signature__name">allCacheEvent</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$events</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
 
-        <section class="phpdocumentor-description"></section>
-
+    <div class="phpdocumentor-label-line">
+        </div>
+    
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
     <dl class="phpdocumentor-argument-list">
                     <dt class="phpdocumentor-argument-list__entry">
@@ -963,17 +962,12 @@ store the cached information.</dd>
                 : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
                             </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
+                
             </dd>
             </dl>
 
     
 
-        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">mixed</span>
-            &mdash;
-        
     
 </article>
                     <article
@@ -985,11 +979,12 @@ store the cached information.</dd>
     <h4 class="phpdocumentor-element__name" id="method_clean">
         clean()
         <a href="classes/vB-Cache-Memcached.html#method_clean" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/cache/memcached.php"><a href="files/vb-cache-memcached.html"><abbr title="vb/cache/memcached.php">memcached.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">516</span>
+    <span class="phpdocumentor-element-found-in__line">515</span>
 
     </aside>
 
@@ -999,6 +994,8 @@ store the cached information.</dd>
     <span class="phpdocumentor-signature__visibility">public</span>
                     <span class="phpdocumentor-signature__name">clean</span><span>(</span><span class="phpdocumentor-signature__argument"><span>[</span><span class="phpdocumentor-signature__argument__return-type">bool&nbsp;</span><span class="phpdocumentor-signature__argument__name">$only_expired</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">true</span><span> ]</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
 
+    <div class="phpdocumentor-label-line">
+        </div>
     
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
     <dl class="phpdocumentor-argument-list">
@@ -1017,10 +1014,6 @@ store the cached information.</dd>
 
     
 
-        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">mixed</span>
-            &mdash;
-        
     
 </article>
                     <article
@@ -1032,11 +1025,12 @@ store the cached information.</dd>
     <h4 class="phpdocumentor-element__name" id="method_cleanNow">
         cleanNow()
         <a href="classes/vB-Cache-Memcached.html#method_cleanNow" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/cache/memcached.php"><a href="files/vb-cache-memcached.html"><abbr title="vb/cache/memcached.php">memcached.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">505</span>
+    <span class="phpdocumentor-element-found-in__line">504</span>
 
     </aside>
 
@@ -1046,14 +1040,12 @@ store the cached information.</dd>
     <span class="phpdocumentor-signature__visibility">public</span>
                     <span class="phpdocumentor-signature__name">cleanNow</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
 
+    <div class="phpdocumentor-label-line">
+        </div>
     
     
     
 
-        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">mixed</span>
-            &mdash;
-        
     
 </article>
                     <article
@@ -1065,11 +1057,12 @@ store the cached information.</dd>
     <h4 class="phpdocumentor-element__name" id="method_event">
         event()
         <a href="classes/vB-Cache-Memcached.html#method_event" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/cache/memcached.php"><a href="files/vb-cache-memcached.html"><abbr title="vb/cache/memcached.php">memcached.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">455</span>
+    <span class="phpdocumentor-element-found-in__line">454</span>
 
     </aside>
 
@@ -1079,6 +1072,8 @@ store the cached information.</dd>
     <span class="phpdocumentor-signature__visibility">public</span>
                     <span class="phpdocumentor-signature__name">event</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$events</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
 
+    <div class="phpdocumentor-label-line">
+        </div>
         <section class="phpdocumentor-description"><p>An event handling vB_CacheObserver must be attached to handle cache events.
 Generally the CacheObservers would respond by calling vB_Cache::expire() with
 the cache_id's of the objects to expire.</p>
@@ -1091,17 +1086,12 @@ the cache_id's of the objects to expire.</p>
                 : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
                             </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
+                
             </dd>
             </dl>
 
     
 
-        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">mixed</span>
-            &mdash;
-        
     
 </article>
                     <article
@@ -1113,11 +1103,12 @@ the cache_id's of the objects to expire.</p>
     <h4 class="phpdocumentor-element__name" id="method_expire">
         expire()
         <a href="classes/vB-Cache.html#method_expire" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/cache.php"><a href="files/vb-cache.html"><abbr title="vb/cache.php">cache.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">560</span>
+    <span class="phpdocumentor-element-found-in__line">573</span>
 
     </aside>
 
@@ -1125,8 +1116,10 @@ the cache_id's of the objects to expire.</p>
 
     <code class="phpdocumentor-code phpdocumentor-signature ">
     <span class="phpdocumentor-signature__visibility">public</span>
-                    <span class="phpdocumentor-signature__name">expire</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$cache_ids</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
+                    <span class="phpdocumentor-signature__name">expire</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">int&nbsp;</span><span class="phpdocumentor-signature__argument__name">$cache_ids</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
 
+    <div class="phpdocumentor-label-line">
+        </div>
         <section class="phpdocumentor-description"><p>This is preferred to purging a cache entry as it ensures that that the cache
 data can still be served while new cache data is being rebuilt.</p>
 </section>
@@ -1135,20 +1128,19 @@ data can still be served while new cache data is being rebuilt.</p>
     <dl class="phpdocumentor-argument-list">
                     <dt class="phpdocumentor-argument-list__entry">
                 <span class="phpdocumentor-signature__argument__name">$cache_ids</span>
-                : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
+                : <span class="phpdocumentor-signature__argument__return-type">int</span>
                             </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
+                    <section class="phpdocumentor-description"><ul>
+<li>Id of the cache entry to expire</li>
+</ul>
+</section>
 
             </dd>
             </dl>
 
     
 
-        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">mixed</span>
-            &mdash;
-        
     
 </article>
                     <article
@@ -1160,11 +1152,12 @@ data can still be served while new cache data is being rebuilt.</p>
     <h4 class="phpdocumentor-element__name" id="method_getContextKey">
         getContextKey()
         <a href="classes/vB-Cache.html#method_getContextKey" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/cache.php"><a href="files/vb-cache.html"><abbr title="vb/cache.php">cache.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">272</span>
+    <span class="phpdocumentor-element-found-in__line">283</span>
 
     </aside>
 
@@ -1174,6 +1167,8 @@ data can still be served while new cache data is being rebuilt.</p>
     <span class="phpdocumentor-signature__visibility">public</span>
                     <span class="phpdocumentor-signature__name">getContextKey</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$prefix</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__return-type">array&lt;string|int, mixed&gt;&nbsp;</span><span class="phpdocumentor-signature__argument__name">$values</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type"><a href="classes/vB-Context.html"><abbr title="\vB_Context">vB_Context</abbr></a></span></code>
 
+    <div class="phpdocumentor-label-line">
+        </div>
         <section class="phpdocumentor-description"><p>This is intended to generate a cache key from complex information,
 particularly arrays which affect the generation of the cached data.
 The end result will is not guarenteed to be particular readable (and
@@ -1208,11 +1203,11 @@ matter since they will be sorted on key generation.</p>
 
     
 
+            <section>
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type"><a href="classes/vB-Context.html"><abbr title="\vB_Context">vB_Context</abbr></a></span>
-            &mdash;
-        
-    
+        <span class="phpdocumentor-signature__response_type"><a href="classes/vB-Context.html"><abbr title="\vB_Context">vB_Context</abbr></a></span>
+            </section>
+
 </article>
                     <article
         class="phpdocumentor-element
@@ -1223,11 +1218,12 @@ matter since they will be sorted on key generation.</p>
     <h4 class="phpdocumentor-element__name" id="method_getDefaults">
         getDefaults()
         <a href="classes/vB-Cache.html#method_getDefaults" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/cache.php"><a href="files/vb-cache.html"><abbr title="vb/cache.php">cache.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">171</span>
+    <span class="phpdocumentor-element-found-in__line">182</span>
 
     </aside>
 
@@ -1237,14 +1233,12 @@ matter since they will be sorted on key generation.</p>
     <span class="phpdocumentor-signature__visibility">public</span>
             <span class="phpdocumentor-signature__static">static</span>        <span class="phpdocumentor-signature__name">getDefaults</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
 
+    <div class="phpdocumentor-label-line">
+        </div>
     
     
     
 
-        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">mixed</span>
-            &mdash;
-        
     
 </article>
                     <article
@@ -1256,11 +1250,12 @@ matter since they will be sorted on key generation.</p>
     <h4 class="phpdocumentor-element__name" id="method_instance">
         instance()
         <a href="classes/vB-Cache-Memcached.html#method_instance" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/cache/memcached.php"><a href="files/vb-cache-memcached.html"><abbr title="vb/cache/memcached.php">memcached.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">102</span>
+    <span class="phpdocumentor-element-found-in__line">101</span>
 
     </aside>
 
@@ -1270,6 +1265,8 @@ matter since they will be sorted on key generation.</p>
     <span class="phpdocumentor-signature__visibility">public</span>
             <span class="phpdocumentor-signature__static">static</span>        <span class="phpdocumentor-signature__name">instance</span><span>(</span><span class="phpdocumentor-signature__argument"><span>[</span><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$type</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">NULL</span><span> ]</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type"><a href="classes/vB-Cache-Memcached.html"><abbr title="\vB_Cache_Memcached">vB_Cache_Memcached</abbr></a></span></code>
 
+    <div class="phpdocumentor-label-line">
+        </div>
     
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
     <dl class="phpdocumentor-argument-list">
@@ -1278,15 +1275,15 @@ matter since they will be sorted on key generation.</p>
                 : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
                  = <span class="phpdocumentor-signature__argument__default-value">NULL</span>            </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
+                
             </dd>
             </dl>
 
     
     <h5 class="phpdocumentor-tag-list__heading" id="tags">
         Tags
-        <a href="#tags" class="headerlink"><i class="fas fa-link"></i></a>
+        <a href="classes/vB-Cache-Memcached.html#method_instance#tags" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h5>
     <dl class="phpdocumentor-tag-list">
                                     <dt class="phpdocumentor-tag-list__entry">
@@ -1299,17 +1296,19 @@ it has to be redefined in the child classes</p>
 </section>
 
                                     </dd>
-                        </dl>
+                                            </dl>
 
+            <section>
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type"><a href="classes/vB-Cache-Memcached.html"><abbr title="\vB_Cache_Memcached">vB_Cache_Memcached</abbr></a></span>
-            &mdash;
-            <section class="phpdocumentor-description"><ul>
+        <span class="phpdocumentor-signature__response_type"><a href="classes/vB-Cache-Memcached.html"><abbr title="\vB_Cache_Memcached">vB_Cache_Memcached</abbr></a></span>
+                    &mdash;
+                <section class="phpdocumentor-description"><ul>
 <li>Reference to singleton instance of cache handler</li>
 </ul>
 </section>
 
-    
+            </section>
+
 </article>
                     <article
         class="phpdocumentor-element
@@ -1320,11 +1319,12 @@ it has to be redefined in the child classes</p>
     <h4 class="phpdocumentor-element__name" id="method_isLoaded">
         isLoaded()
         <a href="classes/vB-Cache.html#method_isLoaded" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/cache.php"><a href="files/vb-cache.html"><abbr title="vb/cache.php">cache.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">449</span>
+    <span class="phpdocumentor-element-found-in__line">460</span>
 
     </aside>
 
@@ -1334,6 +1334,8 @@ it has to be redefined in the child classes</p>
     <span class="phpdocumentor-signature__visibility">public</span>
                     <span class="phpdocumentor-signature__name">isLoaded</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$key</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">bool</span></code>
 
+    <div class="phpdocumentor-label-line">
+        </div>
     
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
     <dl class="phpdocumentor-argument-list">
@@ -1342,18 +1344,17 @@ it has to be redefined in the child classes</p>
                 : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
                             </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
+                
             </dd>
             </dl>
 
     
 
+            <section>
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">bool</span>
-            &mdash;
-        
-    
+        <span class="phpdocumentor-signature__response_type">bool</span>
+            </section>
+
 </article>
                     <article
         class="phpdocumentor-element
@@ -1364,11 +1365,12 @@ it has to be redefined in the child classes</p>
     <h4 class="phpdocumentor-element__name" id="method_lock">
         lock()
         <a href="classes/vB-Cache-Memcached.html#method_lock" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/cache/memcached.php"><a href="files/vb-cache-memcached.html"><abbr title="vb/cache/memcached.php">memcached.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">491</span>
+    <span class="phpdocumentor-element-found-in__line">490</span>
 
     </aside>
 
@@ -1378,6 +1380,8 @@ it has to be redefined in the child classes</p>
     <span class="phpdocumentor-signature__visibility">public</span>
                     <span class="phpdocumentor-signature__name">lock</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$key</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">bool</span></code>
 
+    <div class="phpdocumentor-label-line">
+        </div>
     
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
     <dl class="phpdocumentor-argument-list">
@@ -1396,15 +1400,17 @@ it has to be redefined in the child classes</p>
 
     
 
+            <section>
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">bool</span>
-            &mdash;
-            <section class="phpdocumentor-description"><ul>
+        <span class="phpdocumentor-signature__response_type">bool</span>
+                    &mdash;
+                <section class="phpdocumentor-description"><ul>
 <li>TRUE iff the lock was obtained</li>
 </ul>
 </section>
 
-    
+            </section>
+
 </article>
                     <article
         class="phpdocumentor-element
@@ -1415,11 +1421,12 @@ it has to be redefined in the child classes</p>
     <h4 class="phpdocumentor-element__name" id="method_purge">
         purge()
         <a href="classes/vB-Cache.html#method_purge" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/cache.php"><a href="files/vb-cache.html"><abbr title="vb/cache.php">cache.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">533</span>
+    <span class="phpdocumentor-element-found-in__line">546</span>
 
     </aside>
 
@@ -1429,6 +1436,8 @@ it has to be redefined in the child classes</p>
     <span class="phpdocumentor-signature__visibility">public</span>
                     <span class="phpdocumentor-signature__name">purge</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$cacheid</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
 
+    <div class="phpdocumentor-label-line">
+        </div>
     
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
     <dl class="phpdocumentor-argument-list">
@@ -1437,17 +1446,12 @@ it has to be redefined in the child classes</p>
                 : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
                             </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
+                
             </dd>
             </dl>
 
     
 
-        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">mixed</span>
-            &mdash;
-        
     
 </article>
                     <article
@@ -1459,11 +1463,12 @@ it has to be redefined in the child classes</p>
     <h4 class="phpdocumentor-element__name" id="method_read">
         read()
         <a href="classes/vB-Cache.html#method_read" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/cache.php"><a href="files/vb-cache.html"><abbr title="vb/cache.php">cache.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">677</span>
+    <span class="phpdocumentor-element-found-in__line">690</span>
 
     </aside>
 
@@ -1473,6 +1478,8 @@ it has to be redefined in the child classes</p>
     <span class="phpdocumentor-signature__visibility">public</span>
                     <span class="phpdocumentor-signature__name">read</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$keys</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$writeLock</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">false</span><span> ]</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$save_meta</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">false</span><span> ]</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">array&lt;string|int, mixed&gt;</span></code>
 
+    <div class="phpdocumentor-label-line">
+        </div>
     
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
     <dl class="phpdocumentor-argument-list">
@@ -1492,28 +1499,28 @@ it has to be redefined in the child classes</p>
                 : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
                  = <span class="phpdocumentor-signature__argument__default-value">false</span>            </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
+                
             </dd>
                     <dt class="phpdocumentor-argument-list__entry">
                 <span class="phpdocumentor-signature__argument__name">$save_meta</span>
                 : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
                  = <span class="phpdocumentor-signature__argument__default-value">false</span>            </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
+                
             </dd>
             </dl>
 
     
 
+            <section>
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">array&lt;string|int, mixed&gt;</span>
-            &mdash;
-            <section class="phpdocumentor-description"><p>of array	includes key, data, expires</p>
+        <span class="phpdocumentor-signature__response_type">array&lt;string|int, mixed&gt;</span>
+                    &mdash;
+                <section class="phpdocumentor-description"><p>of array	includes key, data, expires</p>
 </section>
 
-    
+            </section>
+
 </article>
                     <article
         class="phpdocumentor-element
@@ -1524,11 +1531,12 @@ it has to be redefined in the child classes</p>
     <h4 class="phpdocumentor-element__name" id="method_readSingle">
         readSingle()
         <a href="classes/vB-Cache.html#method_readSingle" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/cache.php"><a href="files/vb-cache.html"><abbr title="vb/cache.php">cache.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">480</span>
+    <span class="phpdocumentor-element-found-in__line">491</span>
 
     </aside>
 
@@ -1538,6 +1546,8 @@ it has to be redefined in the child classes</p>
     <span class="phpdocumentor-signature__visibility">public</span>
                     <span class="phpdocumentor-signature__name">readSingle</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$key</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">bool&nbsp;</span><span class="phpdocumentor-signature__argument__reference-operator">&amp;</span><span class="phpdocumentor-signature__argument__name">$write_lock</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">false</span><span> ]</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$save_meta</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">false</span><span> ]</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
 
+    <div class="phpdocumentor-label-line">
+        </div>
         <section class="phpdocumentor-description"><p>Integrity checking should be performed by the client code, ensuring
 that the returned data is in the expected form.</p>
 <p>$key should be a string key with all of the identifying information
@@ -1582,15 +1592,15 @@ decide to rebuild the cache under a race condition.</p>
                 : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
                  = <span class="phpdocumentor-signature__argument__default-value">false</span>            </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
+                
             </dd>
             </dl>
 
     
     <h5 class="phpdocumentor-tag-list__heading" id="tags">
         Tags
-        <a href="#tags" class="headerlink"><i class="fas fa-link"></i></a>
+        <a href="classes/vB-Cache.html#method_readSingle#tags" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h5>
     <dl class="phpdocumentor-tag-list">
                                     <dt class="phpdocumentor-tag-list__entry">
@@ -1601,17 +1611,19 @@ decide to rebuild the cache under a race condition.</p>
                                         
                                              
                                     </dd>
-                        </dl>
+                                            </dl>
 
+            <section>
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">mixed</span>
-            &mdash;
-            <section class="phpdocumentor-description"><ul>
+        <span class="phpdocumentor-signature__response_type">mixed</span>
+                    &mdash;
+                <section class="phpdocumentor-description"><ul>
 <li>The cached data (string or array of strings) or boolean false</li>
 </ul>
 </section>
 
-    
+            </section>
+
 </article>
                     <article
         class="phpdocumentor-element
@@ -1622,11 +1634,12 @@ decide to rebuild the cache under a race condition.</p>
     <h4 class="phpdocumentor-element__name" id="method_resetAllCache">
         resetAllCache()
         <a href="classes/vB-Cache.html#method_resetAllCache" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/cache.php"><a href="files/vb-cache.html"><abbr title="vb/cache.php">cache.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">242</span>
+    <span class="phpdocumentor-element-found-in__line">253</span>
 
     </aside>
 
@@ -1635,8 +1648,9 @@ decide to rebuild the cache under a race condition.</p>
     <span class="phpdocumentor-signature__visibility">public</span>
             <span class="phpdocumentor-signature__static">static</span>        <span class="phpdocumentor-signature__name">resetAllCache</span><span>(</span><span class="phpdocumentor-signature__argument"><span>[</span><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$expiredOnly</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">false</span><span> ]</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
 
-        <section class="phpdocumentor-description"></section>
-
+    <div class="phpdocumentor-label-line">
+        </div>
+    
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
     <dl class="phpdocumentor-argument-list">
                     <dt class="phpdocumentor-argument-list__entry">
@@ -1644,17 +1658,12 @@ decide to rebuild the cache under a race condition.</p>
                 : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
                  = <span class="phpdocumentor-signature__argument__default-value">false</span>            </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
+                
             </dd>
             </dl>
 
     
 
-        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">mixed</span>
-            &mdash;
-        
     
 </article>
                     <article
@@ -1666,11 +1675,12 @@ decide to rebuild the cache under a race condition.</p>
     <h4 class="phpdocumentor-element__name" id="method_resetCache">
         resetCache()
         <a href="classes/vB-Cache.html#method_resetCache" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/cache.php"><a href="files/vb-cache.html"><abbr title="vb/cache.php">cache.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">227</span>
+    <span class="phpdocumentor-element-found-in__line">238</span>
 
     </aside>
 
@@ -1679,8 +1689,9 @@ decide to rebuild the cache under a race condition.</p>
     <span class="phpdocumentor-signature__visibility">public</span>
             <span class="phpdocumentor-signature__static">static</span>        <span class="phpdocumentor-signature__name">resetCache</span><span>(</span><span class="phpdocumentor-signature__argument"><span>[</span><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$expiredOnly</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">false</span><span> ]</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
 
-        <section class="phpdocumentor-description"></section>
-
+    <div class="phpdocumentor-label-line">
+        </div>
+    
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
     <dl class="phpdocumentor-argument-list">
                     <dt class="phpdocumentor-argument-list__entry">
@@ -1688,17 +1699,12 @@ decide to rebuild the cache under a race condition.</p>
                 : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
                  = <span class="phpdocumentor-signature__argument__default-value">false</span>            </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
+                
             </dd>
             </dl>
 
     
 
-        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">mixed</span>
-            &mdash;
-        
     
 </article>
                     <article
@@ -1710,11 +1716,12 @@ decide to rebuild the cache under a race condition.</p>
     <h4 class="phpdocumentor-element__name" id="method_restoreCacheInfo">
         restoreCacheInfo()
         <a href="classes/vB-Cache.html#method_restoreCacheInfo" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/cache.php"><a href="files/vb-cache.html"><abbr title="vb/cache.php">cache.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">422</span>
+    <span class="phpdocumentor-element-found-in__line">433</span>
 
     </aside>
 
@@ -1725,6 +1732,8 @@ this will get it back.</p>
     <span class="phpdocumentor-signature__visibility">public</span>
                     <span class="phpdocumentor-signature__name">restoreCacheInfo</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$cacheid</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
 
+    <div class="phpdocumentor-label-line">
+        </div>
     
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
     <dl class="phpdocumentor-argument-list">
@@ -1733,17 +1742,12 @@ this will get it back.</p>
                 : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
                             </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
+                
             </dd>
             </dl>
 
     
 
-        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">mixed</span>
-            &mdash;
-        
     
 </article>
                     <article
@@ -1755,11 +1759,12 @@ this will get it back.</p>
     <h4 class="phpdocumentor-element__name" id="method_saveCacheInfo">
         saveCacheInfo()
         <a href="classes/vB-Cache.html#method_saveCacheInfo" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/cache.php"><a href="files/vb-cache.html"><abbr title="vb/cache.php">cache.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">359</span>
+    <span class="phpdocumentor-element-found-in__line">370</span>
 
     </aside>
 
@@ -1771,6 +1776,8 @@ store the cached information.</p>
     <span class="phpdocumentor-signature__visibility">public</span>
                     <span class="phpdocumentor-signature__name">saveCacheInfo</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$cacheid</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
 
+    <div class="phpdocumentor-label-line">
+        </div>
     
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
     <dl class="phpdocumentor-argument-list">
@@ -1779,17 +1786,12 @@ store the cached information.</p>
                 : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
                             </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
+                
             </dd>
             </dl>
 
     
 
-        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">mixed</span>
-            &mdash;
-        
     
 </article>
                     <article
@@ -1801,11 +1803,12 @@ store the cached information.</p>
     <h4 class="phpdocumentor-element__name" id="method_shutdown">
         shutdown()
         <a href="classes/vB-Cache-Memcached.html#method_shutdown" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/cache/memcached.php"><a href="files/vb-cache-memcached.html"><abbr title="vb/cache/memcached.php">memcached.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">536</span>
+    <span class="phpdocumentor-element-found-in__line">535</span>
 
     </aside>
 
@@ -1814,15 +1817,12 @@ store the cached information.</p>
     <span class="phpdocumentor-signature__visibility">public</span>
                     <span class="phpdocumentor-signature__name">shutdown</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
 
-        <section class="phpdocumentor-description"></section>
-
+    <div class="phpdocumentor-label-line">
+        </div>
     
     
+    
 
-        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">mixed</span>
-            &mdash;
-        
     
 </article>
                     <article
@@ -1834,11 +1834,12 @@ store the cached information.</p>
     <h4 class="phpdocumentor-element__name" id="method_unlock">
         unlock()
         <a href="classes/vB-Cache-Memcached.html#method_unlock" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/cache/memcached.php"><a href="files/vb-cache-memcached.html"><abbr title="vb/cache/memcached.php">memcached.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">498</span>
+    <span class="phpdocumentor-element-found-in__line">497</span>
 
     </aside>
 
@@ -1848,6 +1849,8 @@ store the cached information.</p>
     <span class="phpdocumentor-signature__visibility">public</span>
                     <span class="phpdocumentor-signature__name">unlock</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$key</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
 
+    <div class="phpdocumentor-label-line">
+        </div>
         <section class="phpdocumentor-description"><p>Most implementations may unlock the cache during write, making this
 redundant.</p>
 </section>
@@ -1859,17 +1862,12 @@ redundant.</p>
                 : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
                             </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
+                
             </dd>
             </dl>
 
     
 
-        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">mixed</span>
-            &mdash;
-        
     
 </article>
                     <article
@@ -1881,11 +1879,12 @@ redundant.</p>
     <h4 class="phpdocumentor-element__name" id="method_updateTime">
         updateTime()
         <a href="classes/vB-Cache.html#method_updateTime" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/cache.php"><a href="files/vb-cache.html"><abbr title="vb/cache.php">cache.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">796</span>
+    <span class="phpdocumentor-element-found-in__line">810</span>
 
     </aside>
 
@@ -1895,6 +1894,8 @@ redundant.</p>
     <span class="phpdocumentor-signature__visibility">public</span>
                     <span class="phpdocumentor-signature__name">updateTime</span><span>(</span><span class="phpdocumentor-signature__argument"><span>[</span><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$time</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">false</span><span> ]</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
 
+    <div class="phpdocumentor-label-line">
+        </div>
         <section class="phpdocumentor-description"><pre class="prettyprint"><code class="prettyprint">@param	integer		timestamp- optional
 </code></pre>
 </section>
@@ -1906,17 +1907,12 @@ redundant.</p>
                 : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
                  = <span class="phpdocumentor-signature__argument__default-value">false</span>            </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
+                
             </dd>
             </dl>
 
     
 
-        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">mixed</span>
-            &mdash;
-        
     
 </article>
                     <article
@@ -1928,11 +1924,12 @@ redundant.</p>
     <h4 class="phpdocumentor-element__name" id="method_write">
         write()
         <a href="classes/vB-Cache.html#method_write" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/cache.php"><a href="files/vb-cache.html"><abbr title="vb/cache.php">cache.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">300</span>
+    <span class="phpdocumentor-element-found-in__line">311</span>
 
     </aside>
 
@@ -1942,6 +1939,8 @@ redundant.</p>
     <span class="phpdocumentor-signature__visibility">public</span>
                     <span class="phpdocumentor-signature__name">write</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$key</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$data</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$lifetime_mins</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">false</span><span> ]</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$events</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">false</span><span> ]</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">string</span></code>
 
+    <div class="phpdocumentor-label-line">
+        </div>
         <section class="phpdocumentor-description"><p>A string key is required to uniquely identify a cache object.  Client
 code should add all information that would affect the individualisation of
 the cache object to the key.</p>
@@ -1982,95 +1981,193 @@ id 55 when it is reconfigured.</p>
                 : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
                  = <span class="phpdocumentor-signature__argument__default-value">false</span>            </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
+                
             </dd>
                     <dt class="phpdocumentor-argument-list__entry">
                 <span class="phpdocumentor-signature__argument__name">$events</span>
                 : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
                  = <span class="phpdocumentor-signature__argument__default-value">false</span>            </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
+                
             </dd>
             </dl>
 
     
 
+            <section>
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">string</span>
-            &mdash;
-            <section class="phpdocumentor-description"><p>| bool						- Cache id or false</p>
+        <span class="phpdocumentor-signature__response_type">string</span>
+                    &mdash;
+                <section class="phpdocumentor-description"><p>| bool						- Cache id or false</p>
 </section>
 
-    
+            </section>
+
 </article>
             </section>
 
-        
+        <div class="phpdocumentor-modal" id="source-view">
+    <div class="phpdocumentor-modal-bg" data-exit-button></div>
+    <div class="phpdocumentor-modal-container">
+        <div class="phpdocumentor-modal-content">
+            <pre style="max-height: 500px; overflow-y: scroll" data-src="files/vb/cache/memcached.php.txt" class="language-php line-numbers linkable-line-numbers"></pre>
+        </div>
+        <button data-exit-button class="phpdocumentor-modal__close">&times;</button>
+    </div>
+</div>
+
     <script type="text/javascript">
-        function loadExternalCodeSnippets(line) {
-            Array.prototype.slice.call(document.querySelectorAll('pre[data-src]')).forEach((pre) => {
-                var src = pre.getAttribute('data-src').replace( /\\/g, '/');
-                var extension = (src.match(/\.(\w+)$/) || [, ''])[1];
-                var language = 'php';
+        (function () {
+            function loadExternalCodeSnippet(el, url, line) {
+                Array.prototype.slice.call(el.querySelectorAll('pre[data-src]')).forEach((pre) => {
+                    const src = url || pre.getAttribute('data-src').replace(/\\/g, '/');
+                    const language = 'php';
 
-                var code = document.createElement('code');
-                code.className = 'language-' + language;
+                    const code = document.createElement('code');
+                    code.className = 'language-' + language;
+                    pre.textContent = '';
+                    pre.setAttribute('data-line', line)
+                    code.textContent = 'Loading…';
+                    pre.appendChild(code);
 
-                pre.textContent = '';
+                    var xhr = new XMLHttpRequest();
 
-                pre.setAttribute('data-line', line)
-                code.textContent = 'Loading…';
+                    xhr.open('GET', src, true);
 
-                pre.appendChild(code);
-
-                var xhr = new XMLHttpRequest();
-
-                xhr.open('GET', src, true);
-
-                xhr.onreadystatechange = function () {
-                    if (xhr.readyState == 4) {
+                    xhr.onreadystatechange = function () {
+                        if (xhr.readyState !== 4) {
+                            return;
+                        }
 
                         if (xhr.status < 400 && xhr.responseText) {
                             code.textContent = xhr.responseText;
-
                             Prism.highlightElement(code);
+                            return;
                         }
-                        else if (xhr.status >= 400) {
+
+                        if (xhr.status === 404) {
+                            code.textContent = '✖ Error: File could not be found';
+                            return;
+                        }
+
+                        if (xhr.status >= 400) {
                             code.textContent = '✖ Error ' + xhr.status + ' while fetching file: ' + xhr.statusText;
+                            return;
                         }
-                        else {
-                            code.textContent = '✖ Error: File does not exist, is empty or trying to view from localhost';
-                        }
+
+                        code.textContent = '✖ Error: An unknown error occurred';
+                    };
+
+                    xhr.send(null);
+                });
+            }
+
+            const modalButtons = document.querySelectorAll("[data-modal]");
+            const openedAsLocalFile = window.location.protocol === 'file:';
+            if (modalButtons.length > 0 && openedAsLocalFile) {
+                console.warn(
+                    'Viewing the source code is unavailable because you are opening this page from the file:// scheme; ' +
+                    'browsers block XHR requests when a page is opened this way'
+                );
+            }
+
+            modalButtons.forEach(function (trigger) {
+                if (openedAsLocalFile) {
+                    trigger.setAttribute("hidden", "hidden");
+                }
+
+                trigger.addEventListener("click", function (event) {
+                    event.preventDefault();
+                    const modal = document.getElementById(trigger.dataset.modal);
+                    if (!modal) {
+                        console.error(`Modal with id "${trigger.dataset.modal}" could not be found`);
+                        return;
                     }
-                };
+                    modal.classList.add("phpdocumentor-modal__open");
 
-                xhr.send(null);
-            });
-        }
-
-        var modals = document.querySelectorAll("[data-modal]");
-
-        modals.forEach(function (trigger) {
-            trigger.addEventListener("click", function (event) {
-                //event.preventDefault();
-                const modal = document.getElementById(trigger.dataset.modal);
-                modal.classList.add("phpdocumentor-modal__open");
-                loadExternalCodeSnippets(trigger.dataset.line)
-                const exits = modal.querySelectorAll("[data-exit-button]");
-                exits.forEach(function (exit) {
-                    exit.addEventListener("click", function (event) {
-                        event.preventDefault();
-                        modal.classList.remove("phpdocumentor-modal__open");
+                    loadExternalCodeSnippet(modal, trigger.dataset.src || null, trigger.dataset.line)
+                    const exits = modal.querySelectorAll("[data-exit-button]");
+                    exits.forEach(function (exit) {
+                        exit.addEventListener("click", function (event) {
+                            event.preventDefault();
+                            modal.classList.remove("phpdocumentor-modal__open");
+                        });
                     });
                 });
             });
-        });
+        })();
     </script>
 
     </article>
-                <section data-search-results class="phpdocumentor-search-results phpdocumentor-search-results--hidden">
+                                </section>
+                <section class="phpdocumentor-on-this-page__sidebar">
+                                
+    <section class="phpdocumentor-on-this-page__content">
+        <strong class="phpdocumentor-on-this-page__title">On this page</strong>
+
+        <ul class="phpdocumentor-list -clean">
+            <li class="phpdocumentor-on-this-page-section__title">Table Of Contents</li>
+            <li>
+                <ul class="phpdocumentor-list -clean">
+                                        <li><a href="classes/vB-Cache-Memcached.html#toc-constants">Constants</a></li>
+                                                                                <li><a href="classes/vB-Cache-Memcached.html#toc-methods">Methods</a></li>
+                                    </ul>
+            </li>
+                            <li class="phpdocumentor-on-this-page-section__title">Constants</li>
+                <li>
+                    <ul class="phpdocumentor-list -clean">
+                                                    <li><a href="classes/vB-Cache.html#constant_CACHE_FAST">CACHE_FAST</a></li>
+                                                    <li><a href="classes/vB-Cache.html#constant_CACHE_LARGE">CACHE_LARGE</a></li>
+                                                    <li><a href="classes/vB-Cache.html#constant_CACHE_LOG_CLEAR">CACHE_LOG_CLEAR</a></li>
+                                                    <li><a href="classes/vB-Cache.html#constant_CACHE_LOG_HASVALUE">CACHE_LOG_HASVALUE</a></li>
+                                                    <li><a href="classes/vB-Cache.html#constant_CACHE_LOG_NOVALUE">CACHE_LOG_NOVALUE</a></li>
+                                                    <li><a href="classes/vB-Cache.html#constant_CACHE_LOG_READFAIL">CACHE_LOG_READFAIL</a></li>
+                                                    <li><a href="classes/vB-Cache.html#constant_CACHE_LOG_READSUCCESS">CACHE_LOG_READSUCCESS</a></li>
+                                                    <li><a href="classes/vB-Cache.html#constant_CACHE_LOG_WRITE">CACHE_LOG_WRITE</a></li>
+                                                    <li><a href="classes/vB-Cache.html#constant_CACHE_STD">CACHE_STD</a></li>
+                                                    <li><a href="classes/vB-Cache-Memcached.html#constant_EVENT_PREFIX">EVENT_PREFIX</a></li>
+                                                    <li><a href="classes/vB-Cache-Memcached.html#constant_GLOBAL_EVENT">GLOBAL_EVENT</a></li>
+                                                    <li><a href="classes/vB-Cache-Memcached.html#constant_LOCK_PREFIX">LOCK_PREFIX</a></li>
+                                            </ul>
+                </li>
+            
+            
+                        <li class="phpdocumentor-on-this-page-section__title">Methods</li>
+            <li>
+                <ul class="phpdocumentor-list -clean">
+                                            <li><a href="classes/vB-Trait-NoSerialize.html#method___serialize">__serialize()</a></li>
+                                            <li><a href="classes/vB-Trait-NoSerialize.html#method___sleep">__sleep()</a></li>
+                                            <li><a href="classes/vB-Trait-NoSerialize.html#method___unserialize">__unserialize()</a></li>
+                                            <li><a href="classes/vB-Trait-NoSerialize.html#method___wakeup">__wakeup()</a></li>
+                                            <li><a href="classes/vB-Cache.html#method_allCacheEvent">allCacheEvent()</a></li>
+                                            <li><a href="classes/vB-Cache-Memcached.html#method_clean">clean()</a></li>
+                                            <li><a href="classes/vB-Cache-Memcached.html#method_cleanNow">cleanNow()</a></li>
+                                            <li><a href="classes/vB-Cache-Memcached.html#method_event">event()</a></li>
+                                            <li><a href="classes/vB-Cache.html#method_expire">expire()</a></li>
+                                            <li><a href="classes/vB-Cache.html#method_getContextKey">getContextKey()</a></li>
+                                            <li><a href="classes/vB-Cache.html#method_getDefaults">getDefaults()</a></li>
+                                            <li><a href="classes/vB-Cache-Memcached.html#method_instance">instance()</a></li>
+                                            <li><a href="classes/vB-Cache.html#method_isLoaded">isLoaded()</a></li>
+                                            <li><a href="classes/vB-Cache-Memcached.html#method_lock">lock()</a></li>
+                                            <li><a href="classes/vB-Cache.html#method_purge">purge()</a></li>
+                                            <li><a href="classes/vB-Cache.html#method_read">read()</a></li>
+                                            <li><a href="classes/vB-Cache.html#method_readSingle">readSingle()</a></li>
+                                            <li><a href="classes/vB-Cache.html#method_resetAllCache">resetAllCache()</a></li>
+                                            <li><a href="classes/vB-Cache.html#method_resetCache">resetCache()</a></li>
+                                            <li><a href="classes/vB-Cache.html#method_restoreCacheInfo">restoreCacheInfo()</a></li>
+                                            <li><a href="classes/vB-Cache.html#method_saveCacheInfo">saveCacheInfo()</a></li>
+                                            <li><a href="classes/vB-Cache-Memcached.html#method_shutdown">shutdown()</a></li>
+                                            <li><a href="classes/vB-Cache-Memcached.html#method_unlock">unlock()</a></li>
+                                            <li><a href="classes/vB-Cache.html#method_updateTime">updateTime()</a></li>
+                                            <li><a href="classes/vB-Cache.html#method_write">write()</a></li>
+                                    </ul>
+            </li>
+                    </ul>
+    </section>
+
+                </section>
+                            </div>
+            <section data-search-results class="phpdocumentor-search-results phpdocumentor-search-results--hidden">
     <section class="phpdocumentor-search-results__dialog">
         <header class="phpdocumentor-search-results__header">
             <h2 class="phpdocumentor-search-results__title">Search results</h2>
@@ -2081,7 +2178,6 @@ id 55 when it is reconfigured.</p>
         </section>
     </section>
 </section>
-            </div>
         </div>
         <a href="classes/vB-Cache-Memcached.html#top" class="phpdocumentor-back-to-top"><i class="fas fa-chevron-circle-up"></i></a>
 

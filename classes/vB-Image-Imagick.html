@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-            <title>vBulletin v5.7.2</title>
+            <title>vBulletin v6.0.4</title>
     
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <base href="../">
@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="css/normalize.css">
     <link rel="stylesheet" href="css/base.css">
             <link rel="preconnect" href="https://fonts.gstatic.com">
-        <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@400;600;700&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@100;200;300;400;600;700&display=swap" rel="stylesheet">
         <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@400;600;700&display=swap" rel="stylesheet">
         <link rel="stylesheet" href="css/template.css">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.0/css/all.min.css" integrity="sha256-ybRkN9dBjhcS2qrW1z+hfCxq+1aBdwyQM5wlQoQVt/0=" crossorigin="anonymous" />
@@ -19,12 +19,13 @@
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.23.0/plugins/line-highlight/prism-line-highlight.css">
                 <script src="https://cdn.jsdelivr.net/npm/fuse.js@3.4.6"></script>
         <script src="https://cdn.jsdelivr.net/npm/css-vars-ponyfill@2"></script>
+        <script src="js/template.js"></script>
         <script src="js/search.js"></script>
         <script defer src="js/searchIndex.js"></script>
     </head>
 <body id="top">
     <header class="phpdocumentor-header phpdocumentor-section">
-    <h1 class="phpdocumentor-title"><a href="" class="phpdocumentor-title__link">vBulletin v5.7.2</a></h1>
+    <h1 class="phpdocumentor-title"><a href="" class="phpdocumentor-title__link">vBulletin v6.0.4</a></h1>
     <input class="phpdocumentor-header__menu-button" type="checkbox" id="menu-button" name="menu-button" />
     <label class="phpdocumentor-header__menu-icon" for="menu-button">
         <i class="fas fa-bars"></i>
@@ -52,7 +53,7 @@
 <label class="phpdocumentor-sidebar__menu-icon" for="sidebar-button">
     Menu
 </label>
-<aside class="phpdocumentor-column -four phpdocumentor-sidebar">
+<aside class="phpdocumentor-column -three phpdocumentor-sidebar">
                     <section class="phpdocumentor-sidebar__category">
             <h2 class="phpdocumentor-sidebar__category-header">Packages</h2>
                                     <h4 class="phpdocumentor-sidebar__root-namespace">
@@ -98,8 +99,9 @@
     </section>
 </aside>
 
-            <div class="phpdocumentor-column -eight phpdocumentor-content">
-                    <ul class="phpdocumentor-breadcrumbs">
+            <div class="phpdocumentor-column -nine phpdocumentor-content">
+                                <section>
+                                        <ul class="phpdocumentor-breadcrumbs">
             <li class="phpdocumentor-breadcrumb"><a href="packages/vBulletin.html">vBulletin</a></li>
     </ul>
 
@@ -121,6 +123,11 @@
     
     </h2>
 
+<div class="phpdocumentor-label-line">
+
+
+</div>
+
         <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/image/imagick.php"><a href="files/vb-image-imagick.html"><abbr title="vb/image/imagick.php">imagick.php</abbr></a></abbr>
     :
@@ -135,21 +142,29 @@
 
 
 
-
-
-
 <h3 id="toc">
     Table of Contents
-    <a href="#toc" class="headerlink"><i class="fas fa-link"></i></a>
+    <a href="classes/vB-Image-Imagick.html#toc" class="headerlink"><i class="fas fa-link"></i></a>
+
 </h3>
 
+
+
+
+
+
+
+<h4 id="toc-constants">
+    Constants
+    <a href="classes/vB-Image-Imagick.html#toc-constants" class="headerlink"><i class="fas fa-link"></i></a>
+
+</h4>
 <dl class="phpdocumentor-table-of-contents">
             <dt class="phpdocumentor-table-of-contents__entry -constant -public">
     <a href="classes/vB-Image.html#constant_ALLOW_RANDOM_COLOR">ALLOW_RANDOM_COLOR</a>
     <span>
         &nbsp;= 8                            </span>
 </dt>
-<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -constant -public">
     <a href="classes/vB-Image.html#constant_ALLOW_RANDOM_FONT">ALLOW_RANDOM_FONT</a>
@@ -163,21 +178,18 @@
     <span>
         &nbsp;= 16                            </span>
 </dt>
-<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -constant -public">
     <a href="classes/vB-Image.html#constant_ALLOW_RANDOM_SIZE">ALLOW_RANDOM_SIZE</a>
     <span>
         &nbsp;= 2                            </span>
 </dt>
-<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -constant -public">
     <a href="classes/vB-Image.html#constant_ALLOW_RANDOM_SLANT">ALLOW_RANDOM_SLANT</a>
     <span>
         &nbsp;= 4                            </span>
 </dt>
-<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -constant -public">
     <a href="classes/vB-Image.html#constant_GIF">GIF</a>
@@ -191,28 +203,33 @@
     <span>
         &nbsp;= 2                            </span>
 </dt>
-<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -constant -public">
     <a href="classes/vB-Image.html#constant_PNG">PNG</a>
     <span>
         &nbsp;= 3                            </span>
 </dt>
-<dd></dd>
 
-                    <dt class="phpdocumentor-table-of-contents__entry -property -public">
+    </dl>
+
+
+<h4 id="toc-properties">
+    Properties
+    <a href="classes/vB-Image-Imagick.html#toc-properties" class="headerlink"><i class="fas fa-link"></i></a>
+
+</h4>
+<dl class="phpdocumentor-table-of-contents">
+            <dt class="phpdocumentor-table-of-contents__entry -property -public">
     <a href="classes/vB-Image.html#property_imageinfo">$imageinfo</a>
     <span>
                         &nbsp;: mixed            </span>
 </dt>
-<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -property -public">
     <a href="classes/vB-Image.html#property_must_convert_types">$must_convert_types</a>
     <span>
                         &nbsp;: array&lt;string|int, mixed&gt;            </span>
 </dt>
-<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -property -public">
     <a href="classes/vB-Image.html#property_options">$options</a>
@@ -226,16 +243,22 @@
     <span>
                         &nbsp;: array&lt;string|int, mixed&gt;            </span>
 </dt>
-<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -property -public">
     <a href="classes/vB-Image.html#property_thumb_extensions">$thumb_extensions</a>
     <span>
                         &nbsp;: array&lt;string|int, mixed&gt;            </span>
 </dt>
-<dd></dd>
 
-                <dt class="phpdocumentor-table-of-contents__entry -method -public">
+    </dl>
+
+<h4 id="toc-methods">
+    Methods
+    <a href="classes/vB-Image-Imagick.html#toc-methods" class="headerlink"><i class="fas fa-link"></i></a>
+
+</h4>
+<dl class="phpdocumentor-table-of-contents">
+            <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a href="classes/vB-Image-Imagick.html#method___construct">__construct()</a>
     <span>
                                 &nbsp;: void    </span>
@@ -248,35 +271,30 @@ Sets ImageMagick paths to convert and identify</dd>
     <span>
                                 &nbsp;: mixed    </span>
 </dt>
-<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a href="classes/vB-Trait-NoSerialize.html#method___serialize">__serialize()</a>
     <span>
                                 &nbsp;: array&lt;string|int, mixed&gt;    </span>
 </dt>
-<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a href="classes/vB-Trait-NoSerialize.html#method___sleep">__sleep()</a>
     <span>
                                 &nbsp;: array&lt;string|int, mixed&gt;    </span>
 </dt>
-<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a href="classes/vB-Trait-NoSerialize.html#method___unserialize">__unserialize()</a>
     <span>
                                 &nbsp;: void    </span>
 </dt>
-<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a href="classes/vB-Trait-NoSerialize.html#method___wakeup">__wakeup()</a>
     <span>
                                 &nbsp;: void    </span>
 </dt>
-<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a href="classes/vB-Image.html#method_bestResize">bestResize()</a>
@@ -297,21 +315,18 @@ Sets ImageMagick paths to convert and identify</dd>
     <span>
                                 &nbsp;: mixed    </span>
 </dt>
-<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a href="classes/vB-Image.html#method_checkLegacySupportedTypes">checkLegacySupportedTypes()</a>
     <span>
                                 &nbsp;: mixed    </span>
 </dt>
-<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a href="classes/vB-Image.html#method_compareExtensionToFilesignature">compareExtensionToFilesignature()</a>
     <span>
                                 &nbsp;: mixed    </span>
 </dt>
-<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a href="classes/vB-Image-Imagick.html#method_cropImg">cropImg()</a>
@@ -325,14 +340,12 @@ Sets ImageMagick paths to convert and identify</dd>
     <span>
                                 &nbsp;: mixed    </span>
 </dt>
-<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a href="classes/vB-Image.html#method_fetchImageExtensions">fetchImageExtensions()</a>
     <span>
                                 &nbsp;: mixed    </span>
 </dt>
-<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a href="classes/vB-Image-Imagick.html#method_fetchImageInfo">fetchImageInfo()</a>
@@ -346,7 +359,6 @@ Sets ImageMagick paths to convert and identify</dd>
     <span>
                                 &nbsp;: mixed    </span>
 </dt>
-<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a href="classes/vB-Image.html#method_fetchImagetypeFromExtension">fetchImagetypeFromExtension()</a>
@@ -360,7 +372,6 @@ Sets ImageMagick paths to convert and identify</dd>
     <span>
                                 &nbsp;: bool    </span>
 </dt>
-<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a href="classes/vB-Image-Imagick.html#method_fetchThumbnail">fetchThumbnail()</a>
@@ -374,14 +385,12 @@ Sets ImageMagick paths to convert and identify</dd>
     <span>
                                 &nbsp;: mixed    </span>
 </dt>
-<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a href="classes/vB-Image.html#method_fileIsAnimatedGif">fileIsAnimatedGif()</a>
     <span>
                                 &nbsp;: mixed    </span>
 </dt>
-<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a href="classes/vB-Image.html#method_fileLocationIsImage">fileLocationIsImage()</a>
@@ -403,7 +412,6 @@ if not an image or not whitelisted.</dd>
     <span>
                                 &nbsp;: mixed    </span>
 </dt>
-<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a href="classes/vB-Image.html#method_getExtensionMap">getExtensionMap()</a>
@@ -424,7 +432,6 @@ if not an image or not whitelisted.</dd>
     <span>
                                 &nbsp;: mixed    </span>
 </dt>
-<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a href="classes/vB-Image.html#method_getResizeTypes">getResizeTypes()</a>
@@ -498,7 +505,6 @@ didn&#039;t create.</dd>
     <span>
                                 &nbsp;: mixed    </span>
 </dt>
-<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a href="classes/vB-Image.html#method_verifyFileHeadersAndExif">verifyFileHeadersAndExif()</a>
@@ -515,7 +521,8 @@ didn&#039;t create.</dd>
 <dd>Checks for HTML tags that can be exploited via IE, scripts in exif tags, and checks file signature
 against a whitelist of image signatures (currently only support gif, jpg, bmp, tif, psd)</dd>
 
-        </dl>
+    </dl>
+
 
 
 
@@ -524,11 +531,13 @@ against a whitelist of image signatures (currently only support gif, jpg, bmp, t
         <h3 class="phpdocumentor-elements__header" id="constants">
             Constants
             <a href="classes/vB-Image-Imagick.html#constants" class="headerlink"><i class="fas fa-link"></i></a>
+
         </h3>
                     <article class="phpdocumentor-element -constant -public ">
     <h4 class="phpdocumentor-element__name" id="constant_ALLOW_RANDOM_COLOR">
         ALLOW_RANDOM_COLOR
         <a href="classes/vB-Image.html#constant_ALLOW_RANDOM_COLOR" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
 
     <aside class="phpdocumentor-element-found-in">
@@ -547,10 +556,8 @@ against a whitelist of image signatures (currently only support gif, jpg, bmp, t
 </code>
 
 
-        <section class="phpdocumentor-description"></section>
-
-        <section class="phpdocumentor-description"></section>
-
+    
+    
     
 
 </article>
@@ -558,6 +565,7 @@ against a whitelist of image signatures (currently only support gif, jpg, bmp, t
     <h4 class="phpdocumentor-element__name" id="constant_ALLOW_RANDOM_FONT">
         ALLOW_RANDOM_FONT
         <a href="classes/vB-Image.html#constant_ALLOW_RANDOM_FONT" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
 
     <aside class="phpdocumentor-element-found-in">
@@ -578,8 +586,7 @@ against a whitelist of image signatures (currently only support gif, jpg, bmp, t
 
 
     
-        <section class="phpdocumentor-description"></section>
-
+    
     
 
 </article>
@@ -587,6 +594,7 @@ against a whitelist of image signatures (currently only support gif, jpg, bmp, t
     <h4 class="phpdocumentor-element__name" id="constant_ALLOW_RANDOM_SHAPE">
         ALLOW_RANDOM_SHAPE
         <a href="classes/vB-Image.html#constant_ALLOW_RANDOM_SHAPE" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
 
     <aside class="phpdocumentor-element-found-in">
@@ -605,10 +613,8 @@ against a whitelist of image signatures (currently only support gif, jpg, bmp, t
 </code>
 
 
-        <section class="phpdocumentor-description"></section>
-
-        <section class="phpdocumentor-description"></section>
-
+    
+    
     
 
 </article>
@@ -616,6 +622,7 @@ against a whitelist of image signatures (currently only support gif, jpg, bmp, t
     <h4 class="phpdocumentor-element__name" id="constant_ALLOW_RANDOM_SIZE">
         ALLOW_RANDOM_SIZE
         <a href="classes/vB-Image.html#constant_ALLOW_RANDOM_SIZE" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
 
     <aside class="phpdocumentor-element-found-in">
@@ -634,10 +641,8 @@ against a whitelist of image signatures (currently only support gif, jpg, bmp, t
 </code>
 
 
-        <section class="phpdocumentor-description"></section>
-
-        <section class="phpdocumentor-description"></section>
-
+    
+    
     
 
 </article>
@@ -645,6 +650,7 @@ against a whitelist of image signatures (currently only support gif, jpg, bmp, t
     <h4 class="phpdocumentor-element__name" id="constant_ALLOW_RANDOM_SLANT">
         ALLOW_RANDOM_SLANT
         <a href="classes/vB-Image.html#constant_ALLOW_RANDOM_SLANT" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
 
     <aside class="phpdocumentor-element-found-in">
@@ -663,10 +669,8 @@ against a whitelist of image signatures (currently only support gif, jpg, bmp, t
 </code>
 
 
-        <section class="phpdocumentor-description"></section>
-
-        <section class="phpdocumentor-description"></section>
-
+    
+    
     
 
 </article>
@@ -674,6 +678,7 @@ against a whitelist of image signatures (currently only support gif, jpg, bmp, t
     <h4 class="phpdocumentor-element__name" id="constant_GIF">
         GIF
         <a href="classes/vB-Image.html#constant_GIF" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
 
     <aside class="phpdocumentor-element-found-in">
@@ -694,8 +699,7 @@ against a whitelist of image signatures (currently only support gif, jpg, bmp, t
 
 
     
-        <section class="phpdocumentor-description"></section>
-
+    
     
 
 </article>
@@ -703,6 +707,7 @@ against a whitelist of image signatures (currently only support gif, jpg, bmp, t
     <h4 class="phpdocumentor-element__name" id="constant_JPG">
         JPG
         <a href="classes/vB-Image.html#constant_JPG" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
 
     <aside class="phpdocumentor-element-found-in">
@@ -721,10 +726,8 @@ against a whitelist of image signatures (currently only support gif, jpg, bmp, t
 </code>
 
 
-        <section class="phpdocumentor-description"></section>
-
-        <section class="phpdocumentor-description"></section>
-
+    
+    
     
 
 </article>
@@ -732,6 +735,7 @@ against a whitelist of image signatures (currently only support gif, jpg, bmp, t
     <h4 class="phpdocumentor-element__name" id="constant_PNG">
         PNG
         <a href="classes/vB-Image.html#constant_PNG" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
 
     <aside class="phpdocumentor-element-found-in">
@@ -750,10 +754,8 @@ against a whitelist of image signatures (currently only support gif, jpg, bmp, t
 </code>
 
 
-        <section class="phpdocumentor-description"></section>
-
-        <section class="phpdocumentor-description"></section>
-
+    
+    
     
 
 </article>
@@ -764,6 +766,7 @@ against a whitelist of image signatures (currently only support gif, jpg, bmp, t
         <h3 class="phpdocumentor-elements__header" id="properties">
             Properties
             <a href="classes/vB-Image-Imagick.html#properties" class="headerlink"><i class="fas fa-link"></i></a>
+
         </h3>
                     <article
         class="
@@ -775,6 +778,7 @@ against a whitelist of image signatures (currently only support gif, jpg, bmp, t
     <h4 class="phpdocumentor-element__name" id="property_imageinfo">
         $imageinfo
         <a href="classes/vB-Image.html#property_imageinfo" class="headerlink"><i class="fas fa-link"></i></a>
+
         <span class="phpdocumentor-element__modifiers">
                                 </span>
     </h4>
@@ -807,6 +811,7 @@ against a whitelist of image signatures (currently only support gif, jpg, bmp, t
     <h4 class="phpdocumentor-element__name" id="property_must_convert_types">
         $must_convert_types
         <a href="classes/vB-Image.html#property_must_convert_types" class="headerlink"><i class="fas fa-link"></i></a>
+
         <span class="phpdocumentor-element__modifiers">
                                 </span>
     </h4>
@@ -839,6 +844,7 @@ against a whitelist of image signatures (currently only support gif, jpg, bmp, t
     <h4 class="phpdocumentor-element__name" id="property_options">
         $options
         <a href="classes/vB-Image.html#property_options" class="headerlink"><i class="fas fa-link"></i></a>
+
         <span class="phpdocumentor-element__modifiers">
                                 </span>
     </h4>
@@ -872,6 +878,7 @@ against a whitelist of image signatures (currently only support gif, jpg, bmp, t
     <h4 class="phpdocumentor-element__name" id="property_resize_types">
         $resize_types
         <a href="classes/vB-Image.html#property_resize_types" class="headerlink"><i class="fas fa-link"></i></a>
+
         <span class="phpdocumentor-element__modifiers">
                                 </span>
     </h4>
@@ -904,6 +911,7 @@ against a whitelist of image signatures (currently only support gif, jpg, bmp, t
     <h4 class="phpdocumentor-element__name" id="property_thumb_extensions">
         $thumb_extensions
         <a href="classes/vB-Image.html#property_thumb_extensions" class="headerlink"><i class="fas fa-link"></i></a>
+
         <span class="phpdocumentor-element__modifiers">
                                 </span>
     </h4>
@@ -932,6 +940,7 @@ against a whitelist of image signatures (currently only support gif, jpg, bmp, t
         <h3 class="phpdocumentor-elements__header" id="methods">
             Methods
             <a href="classes/vB-Image-Imagick.html#methods" class="headerlink"><i class="fas fa-link"></i></a>
+
         </h3>
                     <article
         class="phpdocumentor-element
@@ -942,6 +951,7 @@ against a whitelist of image signatures (currently only support gif, jpg, bmp, t
     <h4 class="phpdocumentor-element__name" id="method___construct">
         __construct()
         <a href="classes/vB-Image-Imagick.html#method___construct" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/image/imagick.php"><a href="files/vb-image-imagick.html"><abbr title="vb/image/imagick.php">imagick.php</abbr></a></abbr>
@@ -957,6 +967,8 @@ Sets ImageMagick paths to convert and identify</p>
     <span class="phpdocumentor-signature__visibility">public</span>
                     <span class="phpdocumentor-signature__name">__construct</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$options</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$extras</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">[]</span><span> ]</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">void</span></code>
 
+    <div class="phpdocumentor-label-line">
+        </div>
     
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
     <dl class="phpdocumentor-argument-list">
@@ -965,25 +977,19 @@ Sets ImageMagick paths to convert and identify</p>
                 : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
                             </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
+                
             </dd>
                     <dt class="phpdocumentor-argument-list__entry">
                 <span class="phpdocumentor-signature__argument__name">$extras</span>
                 : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
                  = <span class="phpdocumentor-signature__argument__default-value">[]</span>            </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
+                
             </dd>
             </dl>
 
     
 
-        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">void</span>
-            &mdash;
-        
     
 </article>
                     <article
@@ -995,6 +1001,7 @@ Sets ImageMagick paths to convert and identify</p>
     <h4 class="phpdocumentor-element__name" id="method___destruct">
         __destruct()
         <a href="classes/vB-Image.html#method___destruct" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/image.php"><a href="files/vb-image.html"><abbr title="vb/image.php">image.php</abbr></a></abbr>
@@ -1008,15 +1015,12 @@ Sets ImageMagick paths to convert and identify</p>
     <span class="phpdocumentor-signature__visibility">public</span>
         <span class="phpdocumentor-signature__final">final</span>            <span class="phpdocumentor-signature__name">__destruct</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
 
-        <section class="phpdocumentor-description"></section>
-
+    <div class="phpdocumentor-label-line">
+        </div>
     
     
+    
 
-        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">mixed</span>
-            &mdash;
-        
     
 </article>
                     <article
@@ -1028,6 +1032,7 @@ Sets ImageMagick paths to convert and identify</p>
     <h4 class="phpdocumentor-element__name" id="method___serialize">
         __serialize()
         <a href="classes/vB-Trait-NoSerialize.html#method___serialize" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/trait/noserialize.php"><a href="files/vb-trait-noserialize.html"><abbr title="vb/trait/noserialize.php">noserialize.php</abbr></a></abbr>
@@ -1041,16 +1046,17 @@ Sets ImageMagick paths to convert and identify</p>
     <span class="phpdocumentor-signature__visibility">public</span>
                     <span class="phpdocumentor-signature__name">__serialize</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">array&lt;string|int, mixed&gt;</span></code>
 
-        <section class="phpdocumentor-description"></section>
-
+    <div class="phpdocumentor-label-line">
+        </div>
     
     
+    
 
+            <section>
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">array&lt;string|int, mixed&gt;</span>
-            &mdash;
-        
-    
+        <span class="phpdocumentor-signature__response_type">array&lt;string|int, mixed&gt;</span>
+            </section>
+
 </article>
                     <article
         class="phpdocumentor-element
@@ -1061,6 +1067,7 @@ Sets ImageMagick paths to convert and identify</p>
     <h4 class="phpdocumentor-element__name" id="method___sleep">
         __sleep()
         <a href="classes/vB-Trait-NoSerialize.html#method___sleep" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/trait/noserialize.php"><a href="files/vb-trait-noserialize.html"><abbr title="vb/trait/noserialize.php">noserialize.php</abbr></a></abbr>
@@ -1074,16 +1081,17 @@ Sets ImageMagick paths to convert and identify</p>
     <span class="phpdocumentor-signature__visibility">public</span>
                     <span class="phpdocumentor-signature__name">__sleep</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">array&lt;string|int, mixed&gt;</span></code>
 
-        <section class="phpdocumentor-description"></section>
-
+    <div class="phpdocumentor-label-line">
+        </div>
     
     
+    
 
+            <section>
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">array&lt;string|int, mixed&gt;</span>
-            &mdash;
-        
-    
+        <span class="phpdocumentor-signature__response_type">array&lt;string|int, mixed&gt;</span>
+            </section>
+
 </article>
                     <article
         class="phpdocumentor-element
@@ -1094,6 +1102,7 @@ Sets ImageMagick paths to convert and identify</p>
     <h4 class="phpdocumentor-element__name" id="method___unserialize">
         __unserialize()
         <a href="classes/vB-Trait-NoSerialize.html#method___unserialize" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/trait/noserialize.php"><a href="files/vb-trait-noserialize.html"><abbr title="vb/trait/noserialize.php">noserialize.php</abbr></a></abbr>
@@ -1107,8 +1116,9 @@ Sets ImageMagick paths to convert and identify</p>
     <span class="phpdocumentor-signature__visibility">public</span>
                     <span class="phpdocumentor-signature__name">__unserialize</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">array&lt;string|int, mixed&gt;&nbsp;</span><span class="phpdocumentor-signature__argument__name">$serialized</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">void</span></code>
 
-        <section class="phpdocumentor-description"></section>
-
+    <div class="phpdocumentor-label-line">
+        </div>
+    
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
     <dl class="phpdocumentor-argument-list">
                     <dt class="phpdocumentor-argument-list__entry">
@@ -1116,17 +1126,12 @@ Sets ImageMagick paths to convert and identify</p>
                 : <span class="phpdocumentor-signature__argument__return-type">array&lt;string|int, mixed&gt;</span>
                             </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
+                
             </dd>
             </dl>
 
     
 
-        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">void</span>
-            &mdash;
-        
     
 </article>
                     <article
@@ -1138,6 +1143,7 @@ Sets ImageMagick paths to convert and identify</p>
     <h4 class="phpdocumentor-element__name" id="method___wakeup">
         __wakeup()
         <a href="classes/vB-Trait-NoSerialize.html#method___wakeup" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/trait/noserialize.php"><a href="files/vb-trait-noserialize.html"><abbr title="vb/trait/noserialize.php">noserialize.php</abbr></a></abbr>
@@ -1151,15 +1157,12 @@ Sets ImageMagick paths to convert and identify</p>
     <span class="phpdocumentor-signature__visibility">public</span>
                     <span class="phpdocumentor-signature__name">__wakeup</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">void</span></code>
 
-        <section class="phpdocumentor-description"></section>
-
+    <div class="phpdocumentor-label-line">
+        </div>
     
     
+    
 
-        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">void</span>
-            &mdash;
-        
     
 </article>
                     <article
@@ -1171,6 +1174,7 @@ Sets ImageMagick paths to convert and identify</p>
     <h4 class="phpdocumentor-element__name" id="method_bestResize">
         bestResize()
         <a href="classes/vB-Image.html#method_bestResize" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/image.php"><a href="files/vb-image.html"><abbr title="vb/image.php">image.php</abbr></a></abbr>
@@ -1185,6 +1189,8 @@ Sets ImageMagick paths to convert and identify</p>
     <span class="phpdocumentor-signature__visibility">public</span>
                     <span class="phpdocumentor-signature__name">bestResize</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$width</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$height</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
 
+    <div class="phpdocumentor-label-line">
+        </div>
     
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
     <dl class="phpdocumentor-argument-list">
@@ -1193,25 +1199,19 @@ Sets ImageMagick paths to convert and identify</p>
                 : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
                             </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
+                
             </dd>
                     <dt class="phpdocumentor-argument-list__entry">
                 <span class="phpdocumentor-signature__argument__name">$height</span>
                 : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
                             </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
+                
             </dd>
             </dl>
 
     
 
-        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">mixed</span>
-            &mdash;
-        
     
 </article>
                     <article
@@ -1223,6 +1223,7 @@ Sets ImageMagick paths to convert and identify</p>
     <h4 class="phpdocumentor-element__name" id="method_canThumbnailPdf">
         canThumbnailPdf()
         <a href="classes/vB-Image-Imagick.html#method_canThumbnailPdf" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/image/imagick.php"><a href="files/vb-image-imagick.html"><abbr title="vb/image/imagick.php">imagick.php</abbr></a></abbr>
@@ -1237,15 +1238,17 @@ Sets ImageMagick paths to convert and identify</p>
     <span class="phpdocumentor-signature__visibility">public</span>
                     <span class="phpdocumentor-signature__name">canThumbnailPdf</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">bool</span></code>
 
+    <div class="phpdocumentor-label-line">
+        </div>
     
     
     
 
+            <section>
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">bool</span>
-            &mdash;
-        
-    
+        <span class="phpdocumentor-signature__response_type">bool</span>
+            </section>
+
 </article>
                     <article
         class="phpdocumentor-element
@@ -1256,6 +1259,7 @@ Sets ImageMagick paths to convert and identify</p>
     <h4 class="phpdocumentor-element__name" id="method_checkInstallation">
         checkInstallation()
         <a href="classes/vB-Image-Imagick.html#method_checkInstallation" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/image/imagick.php"><a href="files/vb-image-imagick.html"><abbr title="vb/image/imagick.php">imagick.php</abbr></a></abbr>
@@ -1269,15 +1273,12 @@ Sets ImageMagick paths to convert and identify</p>
     <span class="phpdocumentor-signature__visibility">public</span>
             <span class="phpdocumentor-signature__static">static</span>        <span class="phpdocumentor-signature__name">checkInstallation</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
 
-        <section class="phpdocumentor-description"></section>
-
+    <div class="phpdocumentor-label-line">
+        </div>
     
     
+    
 
-        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">mixed</span>
-            &mdash;
-        
     
 </article>
                     <article
@@ -1289,6 +1290,7 @@ Sets ImageMagick paths to convert and identify</p>
     <h4 class="phpdocumentor-element__name" id="method_checkLegacySupportedTypes">
         checkLegacySupportedTypes()
         <a href="classes/vB-Image.html#method_checkLegacySupportedTypes" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/image.php"><a href="files/vb-image.html"><abbr title="vb/image.php">image.php</abbr></a></abbr>
@@ -1302,8 +1304,9 @@ Sets ImageMagick paths to convert and identify</p>
     <span class="phpdocumentor-signature__visibility">public</span>
         <span class="phpdocumentor-signature__final">final</span>            <span class="phpdocumentor-signature__name">checkLegacySupportedTypes</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$extension</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
 
-        <section class="phpdocumentor-description"></section>
-
+    <div class="phpdocumentor-label-line">
+        </div>
+    
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
     <dl class="phpdocumentor-argument-list">
                     <dt class="phpdocumentor-argument-list__entry">
@@ -1311,17 +1314,12 @@ Sets ImageMagick paths to convert and identify</p>
                 : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
                             </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
+                
             </dd>
             </dl>
 
     
 
-        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">mixed</span>
-            &mdash;
-        
     
 </article>
                     <article
@@ -1333,6 +1331,7 @@ Sets ImageMagick paths to convert and identify</p>
     <h4 class="phpdocumentor-element__name" id="method_compareExtensionToFilesignature">
         compareExtensionToFilesignature()
         <a href="classes/vB-Image.html#method_compareExtensionToFilesignature" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/image.php"><a href="files/vb-image.html"><abbr title="vb/image.php">image.php</abbr></a></abbr>
@@ -1346,8 +1345,9 @@ Sets ImageMagick paths to convert and identify</p>
     <span class="phpdocumentor-signature__visibility">public</span>
         <span class="phpdocumentor-signature__final">final</span>            <span class="phpdocumentor-signature__name">compareExtensionToFilesignature</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$extension</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$location</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
 
-        <section class="phpdocumentor-description"></section>
-
+    <div class="phpdocumentor-label-line">
+        </div>
+    
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
     <dl class="phpdocumentor-argument-list">
                     <dt class="phpdocumentor-argument-list__entry">
@@ -1355,25 +1355,19 @@ Sets ImageMagick paths to convert and identify</p>
                 : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
                             </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
+                
             </dd>
                     <dt class="phpdocumentor-argument-list__entry">
                 <span class="phpdocumentor-signature__argument__name">$location</span>
                 : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
                             </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
+                
             </dd>
             </dl>
 
     
 
-        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">mixed</span>
-            &mdash;
-        
     
 </article>
                     <article
@@ -1385,6 +1379,7 @@ Sets ImageMagick paths to convert and identify</p>
     <h4 class="phpdocumentor-element__name" id="method_cropImg">
         cropImg()
         <a href="classes/vB-Image-Imagick.html#method_cropImg" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/image/imagick.php"><a href="files/vb-image-imagick.html"><abbr title="vb/image/imagick.php">imagick.php</abbr></a></abbr>
@@ -1399,6 +1394,8 @@ Sets ImageMagick paths to convert and identify</p>
     <span class="phpdocumentor-signature__visibility">public</span>
                     <span class="phpdocumentor-signature__name">cropImg</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$imgInfo</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$maxwidth</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">100</span><span> ]</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$maxheight</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">100</span><span> ]</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$forceResize</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">false</span><span> ]</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
 
+    <div class="phpdocumentor-label-line">
+        </div>
         <section class="phpdocumentor-description"><pre class="prettyprint"><code class="prettyprint">@param 	array $imgInfo contains all the required information
 </code></pre>
 <ul>
@@ -1419,8 +1416,7 @@ Sets ImageMagick paths to convert and identify</p>
                 : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
                             </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
+                
             </dd>
                     <dt class="phpdocumentor-argument-list__entry">
                 <span class="phpdocumentor-signature__argument__name">$maxwidth</span>
@@ -1437,25 +1433,24 @@ Sets ImageMagick paths to convert and identify</p>
                 : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
                  = <span class="phpdocumentor-signature__argument__default-value">100</span>            </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
+                
             </dd>
                     <dt class="phpdocumentor-argument-list__entry">
                 <span class="phpdocumentor-signature__argument__name">$forceResize</span>
                 : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
                  = <span class="phpdocumentor-signature__argument__default-value">false</span>            </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
+                
             </dd>
             </dl>
 
     
 
+            <section>
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">mixed</span>
-            &mdash;
-            <section class="phpdocumentor-description"><p>array of data with the cropped image info:</p>
+        <span class="phpdocumentor-signature__response_type">mixed</span>
+                    &mdash;
+                <section class="phpdocumentor-description"><p>array of data with the cropped image info:</p>
 <ul>
 <li>width</li>
 <li>height</li>
@@ -1467,7 +1462,8 @@ Sets ImageMagick paths to convert and identify</p>
 </ul>
 </section>
 
-    
+            </section>
+
 </article>
                     <article
         class="phpdocumentor-element
@@ -1478,6 +1474,7 @@ Sets ImageMagick paths to convert and identify</p>
     <h4 class="phpdocumentor-element__name" id="method_diagnostics">
         diagnostics()
         <a href="classes/vB-Image-Imagick.html#method_diagnostics" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/image/imagick.php"><a href="files/vb-image-imagick.html"><abbr title="vb/image/imagick.php">imagick.php</abbr></a></abbr>
@@ -1491,15 +1488,12 @@ Sets ImageMagick paths to convert and identify</p>
     <span class="phpdocumentor-signature__visibility">public</span>
             <span class="phpdocumentor-signature__static">static</span>        <span class="phpdocumentor-signature__name">diagnostics</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
 
-        <section class="phpdocumentor-description"></section>
-
+    <div class="phpdocumentor-label-line">
+        </div>
     
     
+    
 
-        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">mixed</span>
-            &mdash;
-        
     
 </article>
                     <article
@@ -1511,6 +1505,7 @@ Sets ImageMagick paths to convert and identify</p>
     <h4 class="phpdocumentor-element__name" id="method_fetchImageExtensions">
         fetchImageExtensions()
         <a href="classes/vB-Image.html#method_fetchImageExtensions" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/image.php"><a href="files/vb-image.html"><abbr title="vb/image.php">image.php</abbr></a></abbr>
@@ -1524,15 +1519,12 @@ Sets ImageMagick paths to convert and identify</p>
     <span class="phpdocumentor-signature__visibility">public</span>
         <span class="phpdocumentor-signature__final">final</span>            <span class="phpdocumentor-signature__name">fetchImageExtensions</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
 
-        <section class="phpdocumentor-description"></section>
-
+    <div class="phpdocumentor-label-line">
+        </div>
     
     
+    
 
-        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">mixed</span>
-            &mdash;
-        
     
 </article>
                     <article
@@ -1544,6 +1536,7 @@ Sets ImageMagick paths to convert and identify</p>
     <h4 class="phpdocumentor-element__name" id="method_fetchImageInfo">
         fetchImageInfo()
         <a href="classes/vB-Image-Imagick.html#method_fetchImageInfo" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/image/imagick.php"><a href="files/vb-image-imagick.html"><abbr title="vb/image/imagick.php">imagick.php</abbr></a></abbr>
@@ -1558,6 +1551,8 @@ Sets ImageMagick paths to convert and identify</p>
     <span class="phpdocumentor-signature__visibility">public</span>
                     <span class="phpdocumentor-signature__name">fetchImageInfo</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$filename</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">array&lt;string|int, mixed&gt;</span></code>
 
+    <div class="phpdocumentor-label-line">
+        </div>
     
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
     <dl class="phpdocumentor-argument-list">
@@ -1566,17 +1561,17 @@ Sets ImageMagick paths to convert and identify</p>
                 : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
                             </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
+                
             </dd>
             </dl>
 
     
 
+            <section>
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">array&lt;string|int, mixed&gt;</span>
-            &mdash;
-            <section class="phpdocumentor-description"><p>[0]           int       width
+        <span class="phpdocumentor-signature__response_type">array&lt;string|int, mixed&gt;</span>
+                    &mdash;
+                <section class="phpdocumentor-description"><p>[0]           int       width
 [1]           int       height
 [2]           string    type ('GIF', 'JPEG', 'PNG', 'PSD', 'BMP', 'TIFF',) (and so on)
 [scenes]      int       Number of scenes
@@ -1586,7 +1581,8 @@ COLORSPACE_sRGB, COLORSPACE_CMYK etc)
 [library]     string    Library Identifier</p>
 </section>
 
-    
+            </section>
+
 </article>
                     <article
         class="phpdocumentor-element
@@ -1597,6 +1593,7 @@ COLORSPACE_sRGB, COLORSPACE_CMYK etc)
     <h4 class="phpdocumentor-element__name" id="method_fetchImageInfoForThumbnails">
         fetchImageInfoForThumbnails()
         <a href="classes/vB-Image-Imagick.html#method_fetchImageInfoForThumbnails" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/image/imagick.php"><a href="files/vb-image-imagick.html"><abbr title="vb/image/imagick.php">imagick.php</abbr></a></abbr>
@@ -1610,8 +1607,9 @@ COLORSPACE_sRGB, COLORSPACE_CMYK etc)
     <span class="phpdocumentor-signature__visibility">public</span>
                     <span class="phpdocumentor-signature__name">fetchImageInfoForThumbnails</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$filename</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
 
-        <section class="phpdocumentor-description"></section>
-
+    <div class="phpdocumentor-label-line">
+        </div>
+    
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
     <dl class="phpdocumentor-argument-list">
                     <dt class="phpdocumentor-argument-list__entry">
@@ -1619,17 +1617,12 @@ COLORSPACE_sRGB, COLORSPACE_CMYK etc)
                 : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
                             </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
+                
             </dd>
             </dl>
 
     
 
-        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">mixed</span>
-            &mdash;
-        
     
 </article>
                     <article
@@ -1641,6 +1634,7 @@ COLORSPACE_sRGB, COLORSPACE_CMYK etc)
     <h4 class="phpdocumentor-element__name" id="method_fetchImagetypeFromExtension">
         fetchImagetypeFromExtension()
         <a href="classes/vB-Image.html#method_fetchImagetypeFromExtension" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/image.php"><a href="files/vb-image.html"><abbr title="vb/image.php">image.php</abbr></a></abbr>
@@ -1655,6 +1649,8 @@ COLORSPACE_sRGB, COLORSPACE_CMYK etc)
     <span class="phpdocumentor-signature__visibility">public</span>
         <span class="phpdocumentor-signature__final">final</span>            <span class="phpdocumentor-signature__name">fetchImagetypeFromExtension</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$extension</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">bool</span></code>
 
+    <div class="phpdocumentor-label-line">
+        </div>
     
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
     <dl class="phpdocumentor-argument-list">
@@ -1671,11 +1667,11 @@ COLORSPACE_sRGB, COLORSPACE_CMYK etc)
 
     
 
+            <section>
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">bool</span>
-            &mdash;
-        
-    
+        <span class="phpdocumentor-signature__response_type">bool</span>
+            </section>
+
 </article>
                     <article
         class="phpdocumentor-element
@@ -1686,6 +1682,7 @@ COLORSPACE_sRGB, COLORSPACE_CMYK etc)
     <h4 class="phpdocumentor-element__name" id="method_fetchMustConvert">
         fetchMustConvert()
         <a href="classes/vB-Image.html#method_fetchMustConvert" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/image.php"><a href="files/vb-image.html"><abbr title="vb/image.php">image.php</abbr></a></abbr>
@@ -1699,6 +1696,8 @@ COLORSPACE_sRGB, COLORSPACE_CMYK etc)
     <span class="phpdocumentor-signature__visibility">public</span>
         <span class="phpdocumentor-signature__final">final</span>            <span class="phpdocumentor-signature__name">fetchMustConvert</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$type</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">bool</span></code>
 
+    <div class="phpdocumentor-label-line">
+        </div>
     
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
     <dl class="phpdocumentor-argument-list">
@@ -1715,11 +1714,11 @@ COLORSPACE_sRGB, COLORSPACE_CMYK etc)
 
     
 
+            <section>
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">bool</span>
-            &mdash;
-        
-    
+        <span class="phpdocumentor-signature__response_type">bool</span>
+            </section>
+
 </article>
                     <article
         class="phpdocumentor-element
@@ -1730,6 +1729,7 @@ COLORSPACE_sRGB, COLORSPACE_CMYK etc)
     <h4 class="phpdocumentor-element__name" id="method_fetchThumbnail">
         fetchThumbnail()
         <a href="classes/vB-Image-Imagick.html#method_fetchThumbnail" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/image/imagick.php"><a href="files/vb-image-imagick.html"><abbr title="vb/image/imagick.php">imagick.php</abbr></a></abbr>
@@ -1744,6 +1744,8 @@ COLORSPACE_sRGB, COLORSPACE_CMYK etc)
     <span class="phpdocumentor-signature__visibility">public</span>
                     <span class="phpdocumentor-signature__name">fetchThumbnail</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$filename</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$location</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$maxwidth</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">100</span><span> ]</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$maxheight</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">100</span><span> ]</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$quality</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">75</span><span> ]</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$labelimage</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">false</span><span> ]</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$drawborder</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">false</span><span> ]</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$jpegconvert</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">false</span><span> ]</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$sharpen</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">true</span><span> ]</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$owidth</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">null</span><span> ]</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$oheight</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">null</span><span> ]</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$ofilesize</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">null</span><span> ]</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">array&lt;string|int, mixed&gt;</span></code>
 
+    <div class="phpdocumentor-label-line">
+        </div>
     
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
     <dl class="phpdocumentor-argument-list">
@@ -1752,106 +1754,94 @@ COLORSPACE_sRGB, COLORSPACE_CMYK etc)
                 : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
                             </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
+                
             </dd>
                     <dt class="phpdocumentor-argument-list__entry">
                 <span class="phpdocumentor-signature__argument__name">$location</span>
                 : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
                             </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
+                
             </dd>
                     <dt class="phpdocumentor-argument-list__entry">
                 <span class="phpdocumentor-signature__argument__name">$maxwidth</span>
                 : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
                  = <span class="phpdocumentor-signature__argument__default-value">100</span>            </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
+                
             </dd>
                     <dt class="phpdocumentor-argument-list__entry">
                 <span class="phpdocumentor-signature__argument__name">$maxheight</span>
                 : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
                  = <span class="phpdocumentor-signature__argument__default-value">100</span>            </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
+                
             </dd>
                     <dt class="phpdocumentor-argument-list__entry">
                 <span class="phpdocumentor-signature__argument__name">$quality</span>
                 : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
                  = <span class="phpdocumentor-signature__argument__default-value">75</span>            </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
+                
             </dd>
                     <dt class="phpdocumentor-argument-list__entry">
                 <span class="phpdocumentor-signature__argument__name">$labelimage</span>
                 : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
                  = <span class="phpdocumentor-signature__argument__default-value">false</span>            </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
+                
             </dd>
                     <dt class="phpdocumentor-argument-list__entry">
                 <span class="phpdocumentor-signature__argument__name">$drawborder</span>
                 : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
                  = <span class="phpdocumentor-signature__argument__default-value">false</span>            </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
+                
             </dd>
                     <dt class="phpdocumentor-argument-list__entry">
                 <span class="phpdocumentor-signature__argument__name">$jpegconvert</span>
                 : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
                  = <span class="phpdocumentor-signature__argument__default-value">false</span>            </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
+                
             </dd>
                     <dt class="phpdocumentor-argument-list__entry">
                 <span class="phpdocumentor-signature__argument__name">$sharpen</span>
                 : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
                  = <span class="phpdocumentor-signature__argument__default-value">true</span>            </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
+                
             </dd>
                     <dt class="phpdocumentor-argument-list__entry">
                 <span class="phpdocumentor-signature__argument__name">$owidth</span>
                 : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
                  = <span class="phpdocumentor-signature__argument__default-value">null</span>            </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
+                
             </dd>
                     <dt class="phpdocumentor-argument-list__entry">
                 <span class="phpdocumentor-signature__argument__name">$oheight</span>
                 : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
                  = <span class="phpdocumentor-signature__argument__default-value">null</span>            </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
+                
             </dd>
                     <dt class="phpdocumentor-argument-list__entry">
                 <span class="phpdocumentor-signature__argument__name">$ofilesize</span>
                 : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
                  = <span class="phpdocumentor-signature__argument__default-value">null</span>            </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
+                
             </dd>
             </dl>
 
     
 
+            <section>
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">array&lt;string|int, mixed&gt;</span>
-            &mdash;
-        
-    
+        <span class="phpdocumentor-signature__response_type">array&lt;string|int, mixed&gt;</span>
+            </section>
+
 </article>
                     <article
         class="phpdocumentor-element
@@ -1862,6 +1852,7 @@ COLORSPACE_sRGB, COLORSPACE_CMYK etc)
     <h4 class="phpdocumentor-element__name" id="method_fileContentIsAnimatedGif">
         fileContentIsAnimatedGif()
         <a href="classes/vB-Image.html#method_fileContentIsAnimatedGif" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/image.php"><a href="files/vb-image.html"><abbr title="vb/image.php">image.php</abbr></a></abbr>
@@ -1875,8 +1866,9 @@ COLORSPACE_sRGB, COLORSPACE_CMYK etc)
     <span class="phpdocumentor-signature__visibility">public</span>
         <span class="phpdocumentor-signature__final">final</span>            <span class="phpdocumentor-signature__name">fileContentIsAnimatedGif</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$filecontent</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
 
-        <section class="phpdocumentor-description"></section>
-
+    <div class="phpdocumentor-label-line">
+        </div>
+    
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
     <dl class="phpdocumentor-argument-list">
                     <dt class="phpdocumentor-argument-list__entry">
@@ -1884,17 +1876,12 @@ COLORSPACE_sRGB, COLORSPACE_CMYK etc)
                 : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
                             </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
+                
             </dd>
             </dl>
 
     
 
-        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">mixed</span>
-            &mdash;
-        
     
 </article>
                     <article
@@ -1906,6 +1893,7 @@ COLORSPACE_sRGB, COLORSPACE_CMYK etc)
     <h4 class="phpdocumentor-element__name" id="method_fileIsAnimatedGif">
         fileIsAnimatedGif()
         <a href="classes/vB-Image.html#method_fileIsAnimatedGif" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/image.php"><a href="files/vb-image.html"><abbr title="vb/image.php">image.php</abbr></a></abbr>
@@ -1919,8 +1907,9 @@ COLORSPACE_sRGB, COLORSPACE_CMYK etc)
     <span class="phpdocumentor-signature__visibility">public</span>
         <span class="phpdocumentor-signature__final">final</span>            <span class="phpdocumentor-signature__name">fileIsAnimatedGif</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$filename</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
 
-        <section class="phpdocumentor-description"></section>
-
+    <div class="phpdocumentor-label-line">
+        </div>
+    
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
     <dl class="phpdocumentor-argument-list">
                     <dt class="phpdocumentor-argument-list__entry">
@@ -1928,17 +1917,12 @@ COLORSPACE_sRGB, COLORSPACE_CMYK etc)
                 : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
                             </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
+                
             </dd>
             </dl>
 
     
 
-        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">mixed</span>
-            &mdash;
-        
     
 </article>
                     <article
@@ -1950,6 +1934,7 @@ COLORSPACE_sRGB, COLORSPACE_CMYK etc)
     <h4 class="phpdocumentor-element__name" id="method_fileLocationIsImage">
         fileLocationIsImage()
         <a href="classes/vB-Image.html#method_fileLocationIsImage" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/image.php"><a href="files/vb-image.html"><abbr title="vb/image.php">image.php</abbr></a></abbr>
@@ -1965,6 +1950,8 @@ if not an image or not whitelisted.</p>
     <span class="phpdocumentor-signature__visibility">public</span>
         <span class="phpdocumentor-signature__final">final</span>            <span class="phpdocumentor-signature__name">fileLocationIsImage</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$location</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">bool</span></code>
 
+    <div class="phpdocumentor-label-line">
+        </div>
     
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
     <dl class="phpdocumentor-argument-list">
@@ -1981,11 +1968,11 @@ if not an image or not whitelisted.</p>
 
     
 
+            <section>
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">bool</span>
-            &mdash;
-        
-    
+        <span class="phpdocumentor-signature__response_type">bool</span>
+            </section>
+
 </article>
                     <article
         class="phpdocumentor-element
@@ -1996,6 +1983,7 @@ if not an image or not whitelisted.</p>
     <h4 class="phpdocumentor-element__name" id="method_getConvertTypes">
         getConvertTypes()
         <a href="classes/vB-Image.html#method_getConvertTypes" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/image.php"><a href="files/vb-image.html"><abbr title="vb/image.php">image.php</abbr></a></abbr>
@@ -2010,17 +1998,21 @@ if not an image or not whitelisted.</p>
     <span class="phpdocumentor-signature__visibility">public</span>
         <span class="phpdocumentor-signature__final">final</span>            <span class="phpdocumentor-signature__name">getConvertTypes</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
 
+    <div class="phpdocumentor-label-line">
+        </div>
     
     
     
 
+            <section>
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">mixed</span>
-            &mdash;
-            <section class="phpdocumentor-description"><p>array of must conver types</p>
+        <span class="phpdocumentor-signature__response_type">mixed</span>
+                    &mdash;
+                <section class="phpdocumentor-description"><p>array of must conver types</p>
 </section>
 
-    
+            </section>
+
 </article>
                     <article
         class="phpdocumentor-element
@@ -2031,6 +2023,7 @@ if not an image or not whitelisted.</p>
     <h4 class="phpdocumentor-element__name" id="method_getExtensionFromFileheaders">
         getExtensionFromFileheaders()
         <a href="classes/vB-Image.html#method_getExtensionFromFileheaders" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/image.php"><a href="files/vb-image.html"><abbr title="vb/image.php">image.php</abbr></a></abbr>
@@ -2044,8 +2037,9 @@ if not an image or not whitelisted.</p>
     <span class="phpdocumentor-signature__visibility">public</span>
         <span class="phpdocumentor-signature__final">final</span>            <span class="phpdocumentor-signature__name">getExtensionFromFileheaders</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$location</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
 
-        <section class="phpdocumentor-description"></section>
-
+    <div class="phpdocumentor-label-line">
+        </div>
+    
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
     <dl class="phpdocumentor-argument-list">
                     <dt class="phpdocumentor-argument-list__entry">
@@ -2053,17 +2047,12 @@ if not an image or not whitelisted.</p>
                 : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
                             </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
+                
             </dd>
             </dl>
 
     
 
-        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">mixed</span>
-            &mdash;
-        
     
 </article>
                     <article
@@ -2075,6 +2064,7 @@ if not an image or not whitelisted.</p>
     <h4 class="phpdocumentor-element__name" id="method_getExtensionMap">
         getExtensionMap()
         <a href="classes/vB-Image.html#method_getExtensionMap" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/image.php"><a href="files/vb-image.html"><abbr title="vb/image.php">image.php</abbr></a></abbr>
@@ -2089,18 +2079,22 @@ if not an image or not whitelisted.</p>
     <span class="phpdocumentor-signature__visibility">public</span>
                     <span class="phpdocumentor-signature__name">getExtensionMap</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
 
+    <div class="phpdocumentor-label-line">
+        </div>
     
     
     
 
+            <section>
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">mixed</span>
-            &mdash;
-            <section class="phpdocumentor-description"><p>array of file extension-to-type maps , like 'gif' =&gt; &quot;GIF'
+        <span class="phpdocumentor-signature__response_type">mixed</span>
+                    &mdash;
+                <section class="phpdocumentor-description"><p>array of file extension-to-type maps , like 'gif' =&gt; &quot;GIF'
 *</p>
 </section>
 
-    
+            </section>
+
 </article>
                     <article
         class="phpdocumentor-element
@@ -2111,6 +2105,7 @@ if not an image or not whitelisted.</p>
     <h4 class="phpdocumentor-element__name" id="method_getImageFromString">
         getImageFromString()
         <a href="classes/vB-Image-Imagick.html#method_getImageFromString" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/image/imagick.php"><a href="files/vb-image-imagick.html"><abbr title="vb/image/imagick.php">imagick.php</abbr></a></abbr>
@@ -2125,6 +2120,8 @@ if not an image or not whitelisted.</p>
     <span class="phpdocumentor-signature__visibility">public</span>
                     <span class="phpdocumentor-signature__name">getImageFromString</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$string</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$moveabout</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">true</span><span> ]</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">array&lt;string|int, mixed&gt;</span></code>
 
+    <div class="phpdocumentor-label-line">
+        </div>
     
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
     <dl class="phpdocumentor-argument-list">
@@ -2133,28 +2130,28 @@ if not an image or not whitelisted.</p>
                 : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
                             </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
+                
             </dd>
                     <dt class="phpdocumentor-argument-list__entry">
                 <span class="phpdocumentor-signature__argument__name">$moveabout</span>
                 : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
                  = <span class="phpdocumentor-signature__argument__default-value">true</span>            </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
+                
             </dd>
             </dl>
 
     
 
+            <section>
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">array&lt;string|int, mixed&gt;</span>
-            &mdash;
-            <section class="phpdocumentor-description"><p>Array containing imageInfo: filedata, filesize, filetype and htmltype</p>
+        <span class="phpdocumentor-signature__response_type">array&lt;string|int, mixed&gt;</span>
+                    &mdash;
+                <section class="phpdocumentor-description"><p>Array containing imageInfo: filedata, filesize, filetype and htmltype</p>
 </section>
 
-    
+            </section>
+
 </article>
                     <article
         class="phpdocumentor-element
@@ -2165,6 +2162,7 @@ if not an image or not whitelisted.</p>
     <h4 class="phpdocumentor-element__name" id="method_getOrientation">
         getOrientation()
         <a href="classes/vB-Image.html#method_getOrientation" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/image.php"><a href="files/vb-image.html"><abbr title="vb/image.php">image.php</abbr></a></abbr>
@@ -2178,8 +2176,9 @@ if not an image or not whitelisted.</p>
     <span class="phpdocumentor-signature__visibility">public</span>
         <span class="phpdocumentor-signature__final">final</span>            <span class="phpdocumentor-signature__name">getOrientation</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$location</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
 
-        <section class="phpdocumentor-description"></section>
-
+    <div class="phpdocumentor-label-line">
+        </div>
+    
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
     <dl class="phpdocumentor-argument-list">
                     <dt class="phpdocumentor-argument-list__entry">
@@ -2187,17 +2186,12 @@ if not an image or not whitelisted.</p>
                 : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
                             </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
+                
             </dd>
             </dl>
 
     
 
-        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">mixed</span>
-            &mdash;
-        
     
 </article>
                     <article
@@ -2209,6 +2203,7 @@ if not an image or not whitelisted.</p>
     <h4 class="phpdocumentor-element__name" id="method_getResizeTypes">
         getResizeTypes()
         <a href="classes/vB-Image.html#method_getResizeTypes" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/image.php"><a href="files/vb-image.html"><abbr title="vb/image.php">image.php</abbr></a></abbr>
@@ -2223,17 +2218,21 @@ if not an image or not whitelisted.</p>
     <span class="phpdocumentor-signature__visibility">public</span>
         <span class="phpdocumentor-signature__final">final</span>            <span class="phpdocumentor-signature__name">getResizeTypes</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
 
+    <div class="phpdocumentor-label-line">
+        </div>
     
     
     
 
+            <section>
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">mixed</span>
-            &mdash;
-            <section class="phpdocumentor-description"><p>array of resize types</p>
+        <span class="phpdocumentor-signature__response_type">mixed</span>
+                    &mdash;
+                <section class="phpdocumentor-description"><p>array of resize types</p>
 </section>
 
-    
+            </section>
+
 </article>
                     <article
         class="phpdocumentor-element
@@ -2244,6 +2243,7 @@ if not an image or not whitelisted.</p>
     <h4 class="phpdocumentor-element__name" id="method_getThumbExtensions">
         getThumbExtensions()
         <a href="classes/vB-Image.html#method_getThumbExtensions" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/image.php"><a href="files/vb-image.html"><abbr title="vb/image.php">image.php</abbr></a></abbr>
@@ -2258,17 +2258,21 @@ if not an image or not whitelisted.</p>
     <span class="phpdocumentor-signature__visibility">public</span>
         <span class="phpdocumentor-signature__final">final</span>            <span class="phpdocumentor-signature__name">getThumbExtensions</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
 
+    <div class="phpdocumentor-label-line">
+        </div>
     
     
     
 
+            <section>
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">mixed</span>
-            &mdash;
-            <section class="phpdocumentor-description"><p>array of thumbnail ext</p>
+        <span class="phpdocumentor-signature__response_type">mixed</span>
+                    &mdash;
+                <section class="phpdocumentor-description"><p>array of thumbnail ext</p>
 </section>
 
-    
+            </section>
+
 </article>
                     <article
         class="phpdocumentor-element
@@ -2279,6 +2283,7 @@ if not an image or not whitelisted.</p>
     <h4 class="phpdocumentor-element__name" id="method_imageThumbnailSupported">
         imageThumbnailSupported()
         <a href="classes/vB-Image.html#method_imageThumbnailSupported" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/image.php"><a href="files/vb-image.html"><abbr title="vb/image.php">image.php</abbr></a></abbr>
@@ -2294,6 +2299,8 @@ an alias for isValidThumbnailExtension().</p>
     <span class="phpdocumentor-signature__visibility">public</span>
         <span class="phpdocumentor-signature__final">final</span>            <span class="phpdocumentor-signature__name">imageThumbnailSupported</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$extension</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">bool</span></code>
 
+    <div class="phpdocumentor-label-line">
+        </div>
         <section class="phpdocumentor-description"><p>Mostly for the PDF to image thumbnail handling for imagemagick.</p>
 </section>
 
@@ -2312,11 +2319,11 @@ an alias for isValidThumbnailExtension().</p>
 
     
 
+            <section>
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">bool</span>
-            &mdash;
-        
-    
+        <span class="phpdocumentor-signature__response_type">bool</span>
+            </section>
+
 </article>
                     <article
         class="phpdocumentor-element
@@ -2327,6 +2334,7 @@ an alias for isValidThumbnailExtension().</p>
     <h4 class="phpdocumentor-element__name" id="method_instance">
         instance()
         <a href="classes/vB-Image.html#method_instance" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/image.php"><a href="files/vb-image.html"><abbr title="vb/image.php">image.php</abbr></a></abbr>
@@ -2341,6 +2349,8 @@ an alias for isValidThumbnailExtension().</p>
     <span class="phpdocumentor-signature__visibility">public</span>
             <span class="phpdocumentor-signature__static">static</span>        <span class="phpdocumentor-signature__name">instance</span><span>(</span><span class="phpdocumentor-signature__argument"><span>[</span><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$type</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">&#039;image&#039;</span><span> ]</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$additionalOptions</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">array()</span><span> ]</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">object</span></code>
 
+    <div class="phpdocumentor-label-line">
+        </div>
     
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
     <dl class="phpdocumentor-argument-list">
@@ -2349,26 +2359,24 @@ an alias for isValidThumbnailExtension().</p>
                 : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
                  = <span class="phpdocumentor-signature__argument__default-value">&#039;image&#039;</span>            </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
+                
             </dd>
                     <dt class="phpdocumentor-argument-list__entry">
                 <span class="phpdocumentor-signature__argument__name">$additionalOptions</span>
                 : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
                  = <span class="phpdocumentor-signature__argument__default-value">array()</span>            </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
+                
             </dd>
             </dl>
 
     
 
+            <section>
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">object</span>
-            &mdash;
-        
-    
+        <span class="phpdocumentor-signature__response_type">object</span>
+            </section>
+
 </article>
                     <article
         class="phpdocumentor-element
@@ -2379,6 +2387,7 @@ an alias for isValidThumbnailExtension().</p>
     <h4 class="phpdocumentor-element__name" id="method_isImageExtension">
         isImageExtension()
         <a href="classes/vB-Image.html#method_isImageExtension" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/image.php"><a href="files/vb-image.html"><abbr title="vb/image.php">image.php</abbr></a></abbr>
@@ -2395,6 +2404,8 @@ the cangetimgattachment permission.</p>
     <span class="phpdocumentor-signature__visibility">public</span>
         <span class="phpdocumentor-signature__final">final</span>            <span class="phpdocumentor-signature__name">isImageExtension</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$extension</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$type</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">vB_Api_Filedata::SIZE_FULL</span><span> ]</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">bool</span></code>
 
+    <div class="phpdocumentor-label-line">
+        </div>
     
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
     <dl class="phpdocumentor-argument-list">
@@ -2420,11 +2431,11 @@ the cangetimgattachment permission.</p>
 
     
 
+            <section>
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">bool</span>
-            &mdash;
-        
-    
+        <span class="phpdocumentor-signature__response_type">bool</span>
+            </section>
+
 </article>
                     <article
         class="phpdocumentor-element
@@ -2435,6 +2446,7 @@ the cangetimgattachment permission.</p>
     <h4 class="phpdocumentor-element__name" id="method_isValidResizeType">
         isValidResizeType()
         <a href="classes/vB-Image.html#method_isValidResizeType" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/image.php"><a href="files/vb-image.html"><abbr title="vb/image.php">image.php</abbr></a></abbr>
@@ -2449,6 +2461,8 @@ the cangetimgattachment permission.</p>
     <span class="phpdocumentor-signature__visibility">public</span>
         <span class="phpdocumentor-signature__final">final</span>            <span class="phpdocumentor-signature__name">isValidResizeType</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$type</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">bool</span></code>
 
+    <div class="phpdocumentor-label-line">
+        </div>
     
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
     <dl class="phpdocumentor-argument-list">
@@ -2465,11 +2479,11 @@ the cangetimgattachment permission.</p>
 
     
 
+            <section>
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">bool</span>
-            &mdash;
-        
-    
+        <span class="phpdocumentor-signature__response_type">bool</span>
+            </section>
+
 </article>
                     <article
         class="phpdocumentor-element
@@ -2480,6 +2494,7 @@ the cangetimgattachment permission.</p>
     <h4 class="phpdocumentor-element__name" id="method_isValidThumbnailExtension">
         isValidThumbnailExtension()
         <a href="classes/vB-Image.html#method_isValidThumbnailExtension" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/image.php"><a href="files/vb-image.html"><abbr title="vb/image.php">image.php</abbr></a></abbr>
@@ -2494,6 +2509,8 @@ the cangetimgattachment permission.</p>
     <span class="phpdocumentor-signature__visibility">public</span>
         <span class="phpdocumentor-signature__final">final</span>            <span class="phpdocumentor-signature__name">isValidThumbnailExtension</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$extension</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">bool</span></code>
 
+    <div class="phpdocumentor-label-line">
+        </div>
     
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
     <dl class="phpdocumentor-argument-list">
@@ -2510,11 +2527,11 @@ the cangetimgattachment permission.</p>
 
     
 
+            <section>
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">bool</span>
-            &mdash;
-        
-    
+        <span class="phpdocumentor-signature__response_type">bool</span>
+            </section>
+
 </article>
                     <article
         class="phpdocumentor-element
@@ -2525,6 +2542,7 @@ the cangetimgattachment permission.</p>
     <h4 class="phpdocumentor-element__name" id="method_loadFileData">
         loadFileData()
         <a href="classes/vB-Image.html#method_loadFileData" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/image.php"><a href="files/vb-image.html"><abbr title="vb/image.php">image.php</abbr></a></abbr>
@@ -2539,6 +2557,8 @@ the cangetimgattachment permission.</p>
     <span class="phpdocumentor-signature__visibility">public</span>
                     <span class="phpdocumentor-signature__name">loadFileData</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$record</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$type</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">vB_Api_Filedata::SIZE_FULL</span><span> ]</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$includeData</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">true</span><span> ]</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
 
+    <div class="phpdocumentor-label-line">
+        </div>
     
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
     <dl class="phpdocumentor-argument-list">
@@ -2547,36 +2567,35 @@ the cangetimgattachment permission.</p>
                 : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
                             </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
+                
             </dd>
                     <dt class="phpdocumentor-argument-list__entry">
                 <span class="phpdocumentor-signature__argument__name">$type</span>
                 : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
                  = <span class="phpdocumentor-signature__argument__default-value">vB_Api_Filedata::SIZE_FULL</span>            </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
+                
             </dd>
                     <dt class="phpdocumentor-argument-list__entry">
                 <span class="phpdocumentor-signature__argument__name">$includeData</span>
                 : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
                  = <span class="phpdocumentor-signature__argument__default-value">true</span>            </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
+                
             </dd>
             </dl>
 
     
 
+            <section>
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">mixed</span>
-            &mdash;
-            <section class="phpdocumentor-description"><p>array of data, includes filesize, dateline, htmltype, filename, extension, and filedataid</p>
+        <span class="phpdocumentor-signature__response_type">mixed</span>
+                    &mdash;
+                <section class="phpdocumentor-description"><p>array of data, includes filesize, dateline, htmltype, filename, extension, and filedataid</p>
 </section>
 
-    
+            </section>
+
 </article>
                     <article
         class="phpdocumentor-element
@@ -2587,6 +2606,7 @@ the cangetimgattachment permission.</p>
     <h4 class="phpdocumentor-element__name" id="method_loadImage">
         loadImage()
         <a href="classes/vB-Image.html#method_loadImage" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/image.php"><a href="files/vb-image.html"><abbr title="vb/image.php">image.php</abbr></a></abbr>
@@ -2602,6 +2622,8 @@ didn&#039;t create.</p>
     <span class="phpdocumentor-signature__visibility">public</span>
         <span class="phpdocumentor-signature__final">final</span>            <span class="phpdocumentor-signature__name">loadImage</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$location</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
 
+    <div class="phpdocumentor-label-line">
+        </div>
     
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
     <dl class="phpdocumentor-argument-list">
@@ -2610,17 +2632,12 @@ didn&#039;t create.</p>
                 : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
                             </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
+                
             </dd>
             </dl>
 
     
 
-        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">mixed</span>
-            &mdash;
-        
     
 </article>
                     <article
@@ -2632,6 +2649,7 @@ didn&#039;t create.</p>
     <h4 class="phpdocumentor-element__name" id="method_unloadImage">
         unloadImage()
         <a href="classes/vB-Image.html#method_unloadImage" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/image.php"><a href="files/vb-image.html"><abbr title="vb/image.php">image.php</abbr></a></abbr>
@@ -2645,15 +2663,12 @@ didn&#039;t create.</p>
     <span class="phpdocumentor-signature__visibility">public</span>
         <span class="phpdocumentor-signature__final">final</span>            <span class="phpdocumentor-signature__name">unloadImage</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
 
-        <section class="phpdocumentor-description"></section>
-
+    <div class="phpdocumentor-label-line">
+        </div>
     
     
+    
 
-        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">mixed</span>
-            &mdash;
-        
     
 </article>
                     <article
@@ -2665,6 +2680,7 @@ didn&#039;t create.</p>
     <h4 class="phpdocumentor-element__name" id="method_verifyFileHeadersAndExif">
         verifyFileHeadersAndExif()
         <a href="classes/vB-Image.html#method_verifyFileHeadersAndExif" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/image.php"><a href="files/vb-image.html"><abbr title="vb/image.php">image.php</abbr></a></abbr>
@@ -2679,6 +2695,8 @@ didn&#039;t create.</p>
     <span class="phpdocumentor-signature__visibility">public</span>
                     <span class="phpdocumentor-signature__name">verifyFileHeadersAndExif</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$fileContents</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__return-type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$location</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">bool</span></code>
 
+    <div class="phpdocumentor-label-line">
+        </div>
     
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
     <dl class="phpdocumentor-argument-list">
@@ -2704,11 +2722,11 @@ didn&#039;t create.</p>
 
     
 
+            <section>
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">bool</span>
-            &mdash;
-        
-    
+        <span class="phpdocumentor-signature__response_type">bool</span>
+            </section>
+
 </article>
                     <article
         class="phpdocumentor-element
@@ -2719,6 +2737,7 @@ didn&#039;t create.</p>
     <h4 class="phpdocumentor-element__name" id="method_verifyImageFile">
         verifyImageFile()
         <a href="classes/vB-Image.html#method_verifyImageFile" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/image.php"><a href="files/vb-image.html"><abbr title="vb/image.php">image.php</abbr></a></abbr>
@@ -2734,6 +2753,8 @@ against a whitelist of image signatures (currently only support gif, jpg, bmp, t
     <span class="phpdocumentor-signature__visibility">public</span>
                     <span class="phpdocumentor-signature__name">verifyImageFile</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$fileContents</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__return-type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$location</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">bool</span></code>
 
+    <div class="phpdocumentor-label-line">
+        </div>
     
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
     <dl class="phpdocumentor-argument-list">
@@ -2759,81 +2780,202 @@ against a whitelist of image signatures (currently only support gif, jpg, bmp, t
 
     
 
+            <section>
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">bool</span>
-            &mdash;
-            <section class="phpdocumentor-description"><p>True if nothing was detected, false if headers were not found, throws an exception
+        <span class="phpdocumentor-signature__response_type">bool</span>
+                    &mdash;
+                <section class="phpdocumentor-description"><p>True if nothing was detected, false if headers were not found, throws an exception
 if possible nasty was detected.</p>
 </section>
 
-    
+            </section>
+
 </article>
             </section>
 
-        
+        <div class="phpdocumentor-modal" id="source-view">
+    <div class="phpdocumentor-modal-bg" data-exit-button></div>
+    <div class="phpdocumentor-modal-container">
+        <div class="phpdocumentor-modal-content">
+            <pre style="max-height: 500px; overflow-y: scroll" data-src="files/vb/image/imagick.php.txt" class="language-php line-numbers linkable-line-numbers"></pre>
+        </div>
+        <button data-exit-button class="phpdocumentor-modal__close">&times;</button>
+    </div>
+</div>
+
     <script type="text/javascript">
-        function loadExternalCodeSnippets(line) {
-            Array.prototype.slice.call(document.querySelectorAll('pre[data-src]')).forEach((pre) => {
-                var src = pre.getAttribute('data-src').replace( /\\/g, '/');
-                var extension = (src.match(/\.(\w+)$/) || [, ''])[1];
-                var language = 'php';
+        (function () {
+            function loadExternalCodeSnippet(el, url, line) {
+                Array.prototype.slice.call(el.querySelectorAll('pre[data-src]')).forEach((pre) => {
+                    const src = url || pre.getAttribute('data-src').replace(/\\/g, '/');
+                    const language = 'php';
 
-                var code = document.createElement('code');
-                code.className = 'language-' + language;
+                    const code = document.createElement('code');
+                    code.className = 'language-' + language;
+                    pre.textContent = '';
+                    pre.setAttribute('data-line', line)
+                    code.textContent = 'Loading…';
+                    pre.appendChild(code);
 
-                pre.textContent = '';
+                    var xhr = new XMLHttpRequest();
 
-                pre.setAttribute('data-line', line)
-                code.textContent = 'Loading…';
+                    xhr.open('GET', src, true);
 
-                pre.appendChild(code);
-
-                var xhr = new XMLHttpRequest();
-
-                xhr.open('GET', src, true);
-
-                xhr.onreadystatechange = function () {
-                    if (xhr.readyState == 4) {
+                    xhr.onreadystatechange = function () {
+                        if (xhr.readyState !== 4) {
+                            return;
+                        }
 
                         if (xhr.status < 400 && xhr.responseText) {
                             code.textContent = xhr.responseText;
-
                             Prism.highlightElement(code);
+                            return;
                         }
-                        else if (xhr.status >= 400) {
+
+                        if (xhr.status === 404) {
+                            code.textContent = '✖ Error: File could not be found';
+                            return;
+                        }
+
+                        if (xhr.status >= 400) {
                             code.textContent = '✖ Error ' + xhr.status + ' while fetching file: ' + xhr.statusText;
+                            return;
                         }
-                        else {
-                            code.textContent = '✖ Error: File does not exist, is empty or trying to view from localhost';
-                        }
+
+                        code.textContent = '✖ Error: An unknown error occurred';
+                    };
+
+                    xhr.send(null);
+                });
+            }
+
+            const modalButtons = document.querySelectorAll("[data-modal]");
+            const openedAsLocalFile = window.location.protocol === 'file:';
+            if (modalButtons.length > 0 && openedAsLocalFile) {
+                console.warn(
+                    'Viewing the source code is unavailable because you are opening this page from the file:// scheme; ' +
+                    'browsers block XHR requests when a page is opened this way'
+                );
+            }
+
+            modalButtons.forEach(function (trigger) {
+                if (openedAsLocalFile) {
+                    trigger.setAttribute("hidden", "hidden");
+                }
+
+                trigger.addEventListener("click", function (event) {
+                    event.preventDefault();
+                    const modal = document.getElementById(trigger.dataset.modal);
+                    if (!modal) {
+                        console.error(`Modal with id "${trigger.dataset.modal}" could not be found`);
+                        return;
                     }
-                };
+                    modal.classList.add("phpdocumentor-modal__open");
 
-                xhr.send(null);
-            });
-        }
-
-        var modals = document.querySelectorAll("[data-modal]");
-
-        modals.forEach(function (trigger) {
-            trigger.addEventListener("click", function (event) {
-                //event.preventDefault();
-                const modal = document.getElementById(trigger.dataset.modal);
-                modal.classList.add("phpdocumentor-modal__open");
-                loadExternalCodeSnippets(trigger.dataset.line)
-                const exits = modal.querySelectorAll("[data-exit-button]");
-                exits.forEach(function (exit) {
-                    exit.addEventListener("click", function (event) {
-                        event.preventDefault();
-                        modal.classList.remove("phpdocumentor-modal__open");
+                    loadExternalCodeSnippet(modal, trigger.dataset.src || null, trigger.dataset.line)
+                    const exits = modal.querySelectorAll("[data-exit-button]");
+                    exits.forEach(function (exit) {
+                        exit.addEventListener("click", function (event) {
+                            event.preventDefault();
+                            modal.classList.remove("phpdocumentor-modal__open");
+                        });
                     });
                 });
             });
-        });
+        })();
     </script>
 
     </article>
-                <section data-search-results class="phpdocumentor-search-results phpdocumentor-search-results--hidden">
+                                </section>
+                <section class="phpdocumentor-on-this-page__sidebar">
+                                
+    <section class="phpdocumentor-on-this-page__content">
+        <strong class="phpdocumentor-on-this-page__title">On this page</strong>
+
+        <ul class="phpdocumentor-list -clean">
+            <li class="phpdocumentor-on-this-page-section__title">Table Of Contents</li>
+            <li>
+                <ul class="phpdocumentor-list -clean">
+                                        <li><a href="classes/vB-Image-Imagick.html#toc-constants">Constants</a></li>
+                                                            <li><a href="classes/vB-Image-Imagick.html#toc-properties">Properties</a></li>
+                                                            <li><a href="classes/vB-Image-Imagick.html#toc-methods">Methods</a></li>
+                                    </ul>
+            </li>
+                            <li class="phpdocumentor-on-this-page-section__title">Constants</li>
+                <li>
+                    <ul class="phpdocumentor-list -clean">
+                                                    <li><a href="classes/vB-Image.html#constant_ALLOW_RANDOM_COLOR">ALLOW_RANDOM_COLOR</a></li>
+                                                    <li><a href="classes/vB-Image.html#constant_ALLOW_RANDOM_FONT">ALLOW_RANDOM_FONT</a></li>
+                                                    <li><a href="classes/vB-Image.html#constant_ALLOW_RANDOM_SHAPE">ALLOW_RANDOM_SHAPE</a></li>
+                                                    <li><a href="classes/vB-Image.html#constant_ALLOW_RANDOM_SIZE">ALLOW_RANDOM_SIZE</a></li>
+                                                    <li><a href="classes/vB-Image.html#constant_ALLOW_RANDOM_SLANT">ALLOW_RANDOM_SLANT</a></li>
+                                                    <li><a href="classes/vB-Image.html#constant_GIF">GIF</a></li>
+                                                    <li><a href="classes/vB-Image.html#constant_JPG">JPG</a></li>
+                                                    <li><a href="classes/vB-Image.html#constant_PNG">PNG</a></li>
+                                            </ul>
+                </li>
+            
+                            <li class="phpdocumentor-on-this-page-section__title">Properties</li>
+                <li>
+                    <ul class="phpdocumentor-list -clean">
+                                                    <li><a href="classes/vB-Image.html#property_imageinfo">$imageinfo<a href="classes/vB-Image-Imagick.html"></li>
+                                                    <li><a href="classes/vB-Image.html#property_must_convert_types">$must_convert_types<a href="classes/vB-Image-Imagick.html"></li>
+                                                    <li><a href="classes/vB-Image.html#property_options">$options<a href="classes/vB-Image-Imagick.html"></li>
+                                                    <li><a href="classes/vB-Image.html#property_resize_types">$resize_types<a href="classes/vB-Image-Imagick.html"></li>
+                                                    <li><a href="classes/vB-Image.html#property_thumb_extensions">$thumb_extensions<a href="classes/vB-Image-Imagick.html"></li>
+                                            </ul>
+                </li>
+            
+                        <li class="phpdocumentor-on-this-page-section__title">Methods</li>
+            <li>
+                <ul class="phpdocumentor-list -clean">
+                                            <li><a href="classes/vB-Image-Imagick.html#method___construct">__construct()</a></li>
+                                            <li><a href="classes/vB-Image.html#method___destruct">__destruct()</a></li>
+                                            <li><a href="classes/vB-Trait-NoSerialize.html#method___serialize">__serialize()</a></li>
+                                            <li><a href="classes/vB-Trait-NoSerialize.html#method___sleep">__sleep()</a></li>
+                                            <li><a href="classes/vB-Trait-NoSerialize.html#method___unserialize">__unserialize()</a></li>
+                                            <li><a href="classes/vB-Trait-NoSerialize.html#method___wakeup">__wakeup()</a></li>
+                                            <li><a href="classes/vB-Image.html#method_bestResize">bestResize()</a></li>
+                                            <li><a href="classes/vB-Image-Imagick.html#method_canThumbnailPdf">canThumbnailPdf()</a></li>
+                                            <li><a href="classes/vB-Image-Imagick.html#method_checkInstallation">checkInstallation()</a></li>
+                                            <li><a href="classes/vB-Image.html#method_checkLegacySupportedTypes">checkLegacySupportedTypes()</a></li>
+                                            <li><a href="classes/vB-Image.html#method_compareExtensionToFilesignature">compareExtensionToFilesignature()</a></li>
+                                            <li><a href="classes/vB-Image-Imagick.html#method_cropImg">cropImg()</a></li>
+                                            <li><a href="classes/vB-Image-Imagick.html#method_diagnostics">diagnostics()</a></li>
+                                            <li><a href="classes/vB-Image.html#method_fetchImageExtensions">fetchImageExtensions()</a></li>
+                                            <li><a href="classes/vB-Image-Imagick.html#method_fetchImageInfo">fetchImageInfo()</a></li>
+                                            <li><a href="classes/vB-Image-Imagick.html#method_fetchImageInfoForThumbnails">fetchImageInfoForThumbnails()</a></li>
+                                            <li><a href="classes/vB-Image.html#method_fetchImagetypeFromExtension">fetchImagetypeFromExtension()</a></li>
+                                            <li><a href="classes/vB-Image.html#method_fetchMustConvert">fetchMustConvert()</a></li>
+                                            <li><a href="classes/vB-Image-Imagick.html#method_fetchThumbnail">fetchThumbnail()</a></li>
+                                            <li><a href="classes/vB-Image.html#method_fileContentIsAnimatedGif">fileContentIsAnimatedGif()</a></li>
+                                            <li><a href="classes/vB-Image.html#method_fileIsAnimatedGif">fileIsAnimatedGif()</a></li>
+                                            <li><a href="classes/vB-Image.html#method_fileLocationIsImage">fileLocationIsImage()</a></li>
+                                            <li><a href="classes/vB-Image.html#method_getConvertTypes">getConvertTypes()</a></li>
+                                            <li><a href="classes/vB-Image.html#method_getExtensionFromFileheaders">getExtensionFromFileheaders()</a></li>
+                                            <li><a href="classes/vB-Image.html#method_getExtensionMap">getExtensionMap()</a></li>
+                                            <li><a href="classes/vB-Image-Imagick.html#method_getImageFromString">getImageFromString()</a></li>
+                                            <li><a href="classes/vB-Image.html#method_getOrientation">getOrientation()</a></li>
+                                            <li><a href="classes/vB-Image.html#method_getResizeTypes">getResizeTypes()</a></li>
+                                            <li><a href="classes/vB-Image.html#method_getThumbExtensions">getThumbExtensions()</a></li>
+                                            <li><a href="classes/vB-Image.html#method_imageThumbnailSupported">imageThumbnailSupported()</a></li>
+                                            <li><a href="classes/vB-Image.html#method_instance">instance()</a></li>
+                                            <li><a href="classes/vB-Image.html#method_isImageExtension">isImageExtension()</a></li>
+                                            <li><a href="classes/vB-Image.html#method_isValidResizeType">isValidResizeType()</a></li>
+                                            <li><a href="classes/vB-Image.html#method_isValidThumbnailExtension">isValidThumbnailExtension()</a></li>
+                                            <li><a href="classes/vB-Image.html#method_loadFileData">loadFileData()</a></li>
+                                            <li><a href="classes/vB-Image.html#method_loadImage">loadImage()</a></li>
+                                            <li><a href="classes/vB-Image.html#method_unloadImage">unloadImage()</a></li>
+                                            <li><a href="classes/vB-Image.html#method_verifyFileHeadersAndExif">verifyFileHeadersAndExif()</a></li>
+                                            <li><a href="classes/vB-Image.html#method_verifyImageFile">verifyImageFile()</a></li>
+                                    </ul>
+            </li>
+                    </ul>
+    </section>
+
+                </section>
+                            </div>
+            <section data-search-results class="phpdocumentor-search-results phpdocumentor-search-results--hidden">
     <section class="phpdocumentor-search-results__dialog">
         <header class="phpdocumentor-search-results__header">
             <h2 class="phpdocumentor-search-results__title">Search results</h2>
@@ -2844,7 +2986,6 @@ if possible nasty was detected.</p>
         </section>
     </section>
 </section>
-            </div>
         </div>
         <a href="classes/vB-Image-Imagick.html#top" class="phpdocumentor-back-to-top"><i class="fas fa-chevron-circle-up"></i></a>
 

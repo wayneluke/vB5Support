@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-            <title>vBulletin v5.7.2</title>
+            <title>vBulletin v6.0.4</title>
     
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <base href="../">
@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="css/normalize.css">
     <link rel="stylesheet" href="css/base.css">
             <link rel="preconnect" href="https://fonts.gstatic.com">
-        <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@400;600;700&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@100;200;300;400;600;700&display=swap" rel="stylesheet">
         <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@400;600;700&display=swap" rel="stylesheet">
         <link rel="stylesheet" href="css/template.css">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.0/css/all.min.css" integrity="sha256-ybRkN9dBjhcS2qrW1z+hfCxq+1aBdwyQM5wlQoQVt/0=" crossorigin="anonymous" />
@@ -19,12 +19,13 @@
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.23.0/plugins/line-highlight/prism-line-highlight.css">
                 <script src="https://cdn.jsdelivr.net/npm/fuse.js@3.4.6"></script>
         <script src="https://cdn.jsdelivr.net/npm/css-vars-ponyfill@2"></script>
+        <script src="js/template.js"></script>
         <script src="js/search.js"></script>
         <script defer src="js/searchIndex.js"></script>
     </head>
 <body id="top">
     <header class="phpdocumentor-header phpdocumentor-section">
-    <h1 class="phpdocumentor-title"><a href="" class="phpdocumentor-title__link">vBulletin v5.7.2</a></h1>
+    <h1 class="phpdocumentor-title"><a href="" class="phpdocumentor-title__link">vBulletin v6.0.4</a></h1>
     <input class="phpdocumentor-header__menu-button" type="checkbox" id="menu-button" name="menu-button" />
     <label class="phpdocumentor-header__menu-icon" for="menu-button">
         <i class="fas fa-bars"></i>
@@ -52,7 +53,7 @@
 <label class="phpdocumentor-sidebar__menu-icon" for="sidebar-button">
     Menu
 </label>
-<aside class="phpdocumentor-column -four phpdocumentor-sidebar">
+<aside class="phpdocumentor-column -three phpdocumentor-sidebar">
                     <section class="phpdocumentor-sidebar__category">
             <h2 class="phpdocumentor-sidebar__category-header">Packages</h2>
                                     <h4 class="phpdocumentor-sidebar__root-namespace">
@@ -98,8 +99,9 @@
     </section>
 </aside>
 
-            <div class="phpdocumentor-column -eight phpdocumentor-content">
-                    <ul class="phpdocumentor-breadcrumbs">
+            <div class="phpdocumentor-column -nine phpdocumentor-content">
+                                <section>
+                                        <ul class="phpdocumentor-breadcrumbs">
             <li class="phpdocumentor-breadcrumb"><a href="packages/Application.html">Application</a></li>
     </ul>
 
@@ -107,104 +109,101 @@
         <h2 class="phpdocumentor-content__title">web.php</h2>
 
         
-    <section class="phpdocumentor-description"></section>
 
 
 
-
-
-
-<h3 id="interfaces_class_traits">
-    Interfaces, Classes, Traits and Enums
-    <a href="#interfaces_class_traits" class="headerlink"><i class="fas fa-link"></i></a>
-</h3>
-
-<dl class="phpdocumentor-table-of-contents">
-    
-            <dt class="phpdocumentor-table-of-contents__entry -class"><a href="classes/vB-Request-Web.html"><abbr title="\vB_Request_Web">vB_Request_Web</abbr></a></dt>
-        <dd></dd>
-    
-    
-    </dl>
 
 
 <h3 id="toc">
     Table of Contents
-    <a href="#toc" class="headerlink"><i class="fas fa-link"></i></a>
+    <a href="files/vb-request-web.html#toc" class="headerlink"><i class="fas fa-link"></i></a>
+
 </h3>
 
+
+
+
+    <h4 id="toc-classes">
+        Classes
+        <a href="files/vb-request-web.html#toc-classes" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+    <dl class="phpdocumentor-table-of-contents">
+                    <dt class="phpdocumentor-table-of-contents__entry -class"><a href="classes/vB-Request-Web.html"><abbr title="\vB_Request_Web">vB_Request_Web</abbr></a></dt>    </dl>
+
+
+
+<h4 id="toc-constants">
+    Constants
+    <a href="files/vb-request-web.html#toc-constants" class="headerlink"><i class="fas fa-link"></i></a>
+
+</h4>
 <dl class="phpdocumentor-table-of-contents">
             <dt class="phpdocumentor-table-of-contents__entry -constant -public">
     <a href="namespaces/default.html#constant_LOCATION_BYPASS">LOCATION_BYPASS</a>
     <span>
         &nbsp;= 1                            </span>
 </dt>
-<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -constant -public">
     <a href="namespaces/default.html#constant_SCRIPT">SCRIPT</a>
     <span>
         &nbsp;= $_SERVER[&#039;SCRIPT_NAME&#039;]                            </span>
 </dt>
-<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -constant -public">
     <a href="namespaces/default.html#constant_SCRIPTPATH">SCRIPTPATH</a>
     <span>
         &nbsp;= $this-&gt;scriptPath                            </span>
 </dt>
-<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -constant -public">
     <a href="namespaces/default.html#constant_VB_HTTP_HOST">VB_HTTP_HOST</a>
     <span>
         &nbsp;= $this-&gt;vBHttpHost                            </span>
 </dt>
-<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -constant -public">
     <a href="namespaces/default.html#constant_VB_URL">VB_URL</a>
     <span>
         &nbsp;= $vbUrl                            </span>
 </dt>
-<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -constant -public">
     <a href="namespaces/default.html#constant_VB_URL_BASE_PATH">VB_URL_BASE_PATH</a>
     <span>
         &nbsp;= $this-&gt;vBUrlBasePath                            </span>
 </dt>
-<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -constant -public">
     <a href="namespaces/default.html#constant_VB_URL_CLEAN">VB_URL_CLEAN</a>
     <span>
         &nbsp;= $this-&gt;vBUrlClean                            </span>
 </dt>
-<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -constant -public">
     <a href="namespaces/default.html#constant_VB_URL_PATH">VB_URL_PATH</a>
     <span>
         &nbsp;= $this-&gt;vBUrlPath                            </span>
 </dt>
-<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -constant -public">
     <a href="namespaces/default.html#constant_VB_URL_QUERY">VB_URL_QUERY</a>
     <span>
         &nbsp;= $this-&gt;vBUrlQuery                            </span>
 </dt>
-<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -constant -public">
     <a href="namespaces/default.html#constant_VB_URL_QUERY_RAW">VB_URL_QUERY_RAW</a>
     <span>
         &nbsp;= $this-&gt;vBUrlQueryRaw                            </span>
 </dt>
-<dd></dd>
 
-                    </dl>
+    </dl>
+
+
+
+
 
 
 
@@ -213,11 +212,13 @@
         <h3 class="phpdocumentor-elements__header" id="constants">
             Constants
             <a href="files/vb-request-web.html#constants" class="headerlink"><i class="fas fa-link"></i></a>
+
         </h3>
                     <article class="phpdocumentor-element -constant -public ">
     <h4 class="phpdocumentor-element__name" id="constant_LOCATION_BYPASS">
         LOCATION_BYPASS
         <a href="namespaces/default.html#constant_LOCATION_BYPASS" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
 
     <aside class="phpdocumentor-element-found-in">
@@ -236,10 +237,8 @@
 </code>
 
 
-        <section class="phpdocumentor-description"></section>
-
-        <section class="phpdocumentor-description"></section>
-
+    
+    
     
 
 </article>
@@ -247,6 +246,7 @@
     <h4 class="phpdocumentor-element__name" id="constant_SCRIPT">
         SCRIPT
         <a href="namespaces/default.html#constant_SCRIPT" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
 
     <aside class="phpdocumentor-element-found-in">
@@ -265,10 +265,8 @@
 </code>
 
 
-        <section class="phpdocumentor-description"></section>
-
-        <section class="phpdocumentor-description"></section>
-
+    
+    
     
 
 </article>
@@ -276,6 +274,7 @@
     <h4 class="phpdocumentor-element__name" id="constant_SCRIPTPATH">
         SCRIPTPATH
         <a href="namespaces/default.html#constant_SCRIPTPATH" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
 
     <aside class="phpdocumentor-element-found-in">
@@ -294,10 +293,8 @@
 </code>
 
 
-        <section class="phpdocumentor-description"></section>
-
-        <section class="phpdocumentor-description"></section>
-
+    
+    
     
 
 </article>
@@ -305,6 +302,7 @@
     <h4 class="phpdocumentor-element__name" id="constant_VB_HTTP_HOST">
         VB_HTTP_HOST
         <a href="namespaces/default.html#constant_VB_HTTP_HOST" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
 
     <aside class="phpdocumentor-element-found-in">
@@ -323,10 +321,8 @@
 </code>
 
 
-        <section class="phpdocumentor-description"></section>
-
-        <section class="phpdocumentor-description"></section>
-
+    
+    
     
 
 </article>
@@ -334,6 +330,7 @@
     <h4 class="phpdocumentor-element__name" id="constant_VB_URL">
         VB_URL
         <a href="namespaces/default.html#constant_VB_URL" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
 
     <aside class="phpdocumentor-element-found-in">
@@ -352,10 +349,8 @@
 </code>
 
 
-        <section class="phpdocumentor-description"></section>
-
-        <section class="phpdocumentor-description"></section>
-
+    
+    
     
 
 </article>
@@ -363,6 +358,7 @@
     <h4 class="phpdocumentor-element__name" id="constant_VB_URL_BASE_PATH">
         VB_URL_BASE_PATH
         <a href="namespaces/default.html#constant_VB_URL_BASE_PATH" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
 
     <aside class="phpdocumentor-element-found-in">
@@ -381,10 +377,8 @@
 </code>
 
 
-        <section class="phpdocumentor-description"></section>
-
-        <section class="phpdocumentor-description"></section>
-
+    
+    
     
 
 </article>
@@ -392,6 +386,7 @@
     <h4 class="phpdocumentor-element__name" id="constant_VB_URL_CLEAN">
         VB_URL_CLEAN
         <a href="namespaces/default.html#constant_VB_URL_CLEAN" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
 
     <aside class="phpdocumentor-element-found-in">
@@ -410,10 +405,8 @@
 </code>
 
 
-        <section class="phpdocumentor-description"></section>
-
-        <section class="phpdocumentor-description"></section>
-
+    
+    
     
 
 </article>
@@ -421,6 +414,7 @@
     <h4 class="phpdocumentor-element__name" id="constant_VB_URL_PATH">
         VB_URL_PATH
         <a href="namespaces/default.html#constant_VB_URL_PATH" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
 
     <aside class="phpdocumentor-element-found-in">
@@ -439,10 +433,8 @@
 </code>
 
 
-        <section class="phpdocumentor-description"></section>
-
-        <section class="phpdocumentor-description"></section>
-
+    
+    
     
 
 </article>
@@ -450,6 +442,7 @@
     <h4 class="phpdocumentor-element__name" id="constant_VB_URL_QUERY">
         VB_URL_QUERY
         <a href="namespaces/default.html#constant_VB_URL_QUERY" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
 
     <aside class="phpdocumentor-element-found-in">
@@ -468,10 +461,8 @@
 </code>
 
 
-        <section class="phpdocumentor-description"></section>
-
-        <section class="phpdocumentor-description"></section>
-
+    
+    
     
 
 </article>
@@ -479,6 +470,7 @@
     <h4 class="phpdocumentor-element__name" id="constant_VB_URL_QUERY_RAW">
         VB_URL_QUERY_RAW
         <a href="namespaces/default.html#constant_VB_URL_QUERY_RAW" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
 
     <aside class="phpdocumentor-element-found-in">
@@ -497,18 +489,144 @@
 </code>
 
 
-        <section class="phpdocumentor-description"></section>
-
-        <section class="phpdocumentor-description"></section>
-
+    
+    
     
 
 </article>
             </section>
 
         
+        <div class="phpdocumentor-modal" id="source-view">
+    <div class="phpdocumentor-modal-bg" data-exit-button></div>
+    <div class="phpdocumentor-modal-container">
+        <div class="phpdocumentor-modal-content">
+            <pre style="max-height: 500px; overflow-y: scroll" data-src="files/vb/request/web.php.txt" class="language-php line-numbers linkable-line-numbers"></pre>
+        </div>
+        <button data-exit-button class="phpdocumentor-modal__close">&times;</button>
+    </div>
+</div>
+
+    <script type="text/javascript">
+        (function () {
+            function loadExternalCodeSnippet(el, url, line) {
+                Array.prototype.slice.call(el.querySelectorAll('pre[data-src]')).forEach((pre) => {
+                    const src = url || pre.getAttribute('data-src').replace(/\\/g, '/');
+                    const language = 'php';
+
+                    const code = document.createElement('code');
+                    code.className = 'language-' + language;
+                    pre.textContent = '';
+                    pre.setAttribute('data-line', line)
+                    code.textContent = 'Loading…';
+                    pre.appendChild(code);
+
+                    var xhr = new XMLHttpRequest();
+
+                    xhr.open('GET', src, true);
+
+                    xhr.onreadystatechange = function () {
+                        if (xhr.readyState !== 4) {
+                            return;
+                        }
+
+                        if (xhr.status < 400 && xhr.responseText) {
+                            code.textContent = xhr.responseText;
+                            Prism.highlightElement(code);
+                            return;
+                        }
+
+                        if (xhr.status === 404) {
+                            code.textContent = '✖ Error: File could not be found';
+                            return;
+                        }
+
+                        if (xhr.status >= 400) {
+                            code.textContent = '✖ Error ' + xhr.status + ' while fetching file: ' + xhr.statusText;
+                            return;
+                        }
+
+                        code.textContent = '✖ Error: An unknown error occurred';
+                    };
+
+                    xhr.send(null);
+                });
+            }
+
+            const modalButtons = document.querySelectorAll("[data-modal]");
+            const openedAsLocalFile = window.location.protocol === 'file:';
+            if (modalButtons.length > 0 && openedAsLocalFile) {
+                console.warn(
+                    'Viewing the source code is unavailable because you are opening this page from the file:// scheme; ' +
+                    'browsers block XHR requests when a page is opened this way'
+                );
+            }
+
+            modalButtons.forEach(function (trigger) {
+                if (openedAsLocalFile) {
+                    trigger.setAttribute("hidden", "hidden");
+                }
+
+                trigger.addEventListener("click", function (event) {
+                    event.preventDefault();
+                    const modal = document.getElementById(trigger.dataset.modal);
+                    if (!modal) {
+                        console.error(`Modal with id "${trigger.dataset.modal}" could not be found`);
+                        return;
+                    }
+                    modal.classList.add("phpdocumentor-modal__open");
+
+                    loadExternalCodeSnippet(modal, trigger.dataset.src || null, trigger.dataset.line)
+                    const exits = modal.querySelectorAll("[data-exit-button]");
+                    exits.forEach(function (exit) {
+                        exit.addEventListener("click", function (event) {
+                            event.preventDefault();
+                            modal.classList.remove("phpdocumentor-modal__open");
+                        });
+                    });
+                });
+            });
+        })();
+    </script>
+
     </article>
-                <section data-search-results class="phpdocumentor-search-results phpdocumentor-search-results--hidden">
+                                </section>
+                <section class="phpdocumentor-on-this-page__sidebar">
+                            
+    <section class="phpdocumentor-on-this-page__content">
+        <strong class="phpdocumentor-on-this-page__title">On this page</strong>
+
+        <ul class="phpdocumentor-list -clean">
+            <li class="phpdocumentor-on-this-page-section__title">Table Of Contents</li>
+            <li>
+                <ul class="phpdocumentor-list -clean">
+                                                                                                        <li><a href="files/vb-request-web.html#toc-classes">Classes</a></li>
+                                                                                                        <li><a href="files/vb-request-web.html#toc-constants">Constants</a></li>
+                                                        </ul>
+            </li>
+
+                            <li class="phpdocumentor-on-this-page-section__title">Constants</li>
+                <li>
+                    <ul class="phpdocumentor-list -clean">
+                                                    <li><a href="namespaces/default.html#constant_LOCATION_BYPASS">LOCATION_BYPASS</a></li>
+                                                    <li><a href="namespaces/default.html#constant_SCRIPT">SCRIPT</a></li>
+                                                    <li><a href="namespaces/default.html#constant_SCRIPTPATH">SCRIPTPATH</a></li>
+                                                    <li><a href="namespaces/default.html#constant_VB_HTTP_HOST">VB_HTTP_HOST</a></li>
+                                                    <li><a href="namespaces/default.html#constant_VB_URL">VB_URL</a></li>
+                                                    <li><a href="namespaces/default.html#constant_VB_URL_BASE_PATH">VB_URL_BASE_PATH</a></li>
+                                                    <li><a href="namespaces/default.html#constant_VB_URL_CLEAN">VB_URL_CLEAN</a></li>
+                                                    <li><a href="namespaces/default.html#constant_VB_URL_PATH">VB_URL_PATH</a></li>
+                                                    <li><a href="namespaces/default.html#constant_VB_URL_QUERY">VB_URL_QUERY</a></li>
+                                                    <li><a href="namespaces/default.html#constant_VB_URL_QUERY_RAW">VB_URL_QUERY_RAW</a></li>
+                                            </ul>
+                </li>
+            
+                    </ul>
+    </section>
+
+                </section>
+                            </div>
+            <section data-search-results class="phpdocumentor-search-results phpdocumentor-search-results--hidden">
     <section class="phpdocumentor-search-results__dialog">
         <header class="phpdocumentor-search-results__header">
             <h2 class="phpdocumentor-search-results__title">Search results</h2>
@@ -519,7 +637,6 @@
         </section>
     </section>
 </section>
-            </div>
         </div>
         <a href="files/vb-request-web.html#top" class="phpdocumentor-back-to-top"><i class="fas fa-chevron-circle-up"></i></a>
 

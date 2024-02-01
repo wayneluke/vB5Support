@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-            <title>vBulletin v5.7.2</title>
+            <title>vBulletin v6.0.4</title>
     
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <base href="../">
@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="css/normalize.css">
     <link rel="stylesheet" href="css/base.css">
             <link rel="preconnect" href="https://fonts.gstatic.com">
-        <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@400;600;700&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@100;200;300;400;600;700&display=swap" rel="stylesheet">
         <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@400;600;700&display=swap" rel="stylesheet">
         <link rel="stylesheet" href="css/template.css">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.0/css/all.min.css" integrity="sha256-ybRkN9dBjhcS2qrW1z+hfCxq+1aBdwyQM5wlQoQVt/0=" crossorigin="anonymous" />
@@ -19,12 +19,13 @@
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.23.0/plugins/line-highlight/prism-line-highlight.css">
                 <script src="https://cdn.jsdelivr.net/npm/fuse.js@3.4.6"></script>
         <script src="https://cdn.jsdelivr.net/npm/css-vars-ponyfill@2"></script>
+        <script src="js/template.js"></script>
         <script src="js/search.js"></script>
         <script defer src="js/searchIndex.js"></script>
     </head>
 <body id="top">
     <header class="phpdocumentor-header phpdocumentor-section">
-    <h1 class="phpdocumentor-title"><a href="" class="phpdocumentor-title__link">vBulletin v5.7.2</a></h1>
+    <h1 class="phpdocumentor-title"><a href="" class="phpdocumentor-title__link">vBulletin v6.0.4</a></h1>
     <input class="phpdocumentor-header__menu-button" type="checkbox" id="menu-button" name="menu-button" />
     <label class="phpdocumentor-header__menu-icon" for="menu-button">
         <i class="fas fa-bars"></i>
@@ -52,7 +53,7 @@
 <label class="phpdocumentor-sidebar__menu-icon" for="sidebar-button">
     Menu
 </label>
-<aside class="phpdocumentor-column -four phpdocumentor-sidebar">
+<aside class="phpdocumentor-column -three phpdocumentor-sidebar">
                     <section class="phpdocumentor-sidebar__category">
             <h2 class="phpdocumentor-sidebar__category-header">Packages</h2>
                                     <h4 class="phpdocumentor-sidebar__root-namespace">
@@ -98,8 +99,9 @@
     </section>
 </aside>
 
-            <div class="phpdocumentor-column -eight phpdocumentor-content">
-                    <ul class="phpdocumentor-breadcrumbs">
+            <div class="phpdocumentor-column -nine phpdocumentor-content">
+                                <section>
+                                        <ul class="phpdocumentor-breadcrumbs">
             <li class="phpdocumentor-breadcrumb"><a href="packages/vBulletin.html">vBulletin</a></li>
     </ul>
 
@@ -121,10 +123,17 @@
                             <a href="classes/vB-Trait-NoSerialize.html"><abbr title="\vB_Trait_NoSerialize">vB_Trait_NoSerialize</abbr></a>                    </span>
     </h2>
 
+<div class="phpdocumentor-label-line">
+
+
+    <div class="phpdocumentor-label phpdocumentor-label--success"><span>Abstract</span><span>Yes</span></div>
+
+</div>
+
         <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/database.php"><a href="files/vb-database.html"><abbr title="vb/database.php">database.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">21</span>
+    <span class="phpdocumentor-element-found-in__line">20</span>
 
     </aside>
 
@@ -134,39 +143,32 @@
 </section>
 
 
-    <h5 class="phpdocumentor-tag-list__heading" id="tags">
-        Tags
-        <a href="#tags" class="headerlink"><i class="fas fa-link"></i></a>
-    </h5>
-    <dl class="phpdocumentor-tag-list">
-                                    <dt class="phpdocumentor-tag-list__entry">
-                    <span class="phpdocumentor-tag__name">date</span>
-                </dt>
-                <dd class="phpdocumentor-tag-list__definition">
-                                                                                
-                                                 <section class="phpdocumentor-description"><p>$Date: 2022-09-09 16:56:03 -0700 (Fri, 09 Sep 2022) $</p>
-</section>
-
-                                    </dd>
-                        </dl>
-
-
-
 
 
 
 <h3 id="toc">
     Table of Contents
-    <a href="#toc" class="headerlink"><i class="fas fa-link"></i></a>
+    <a href="classes/vB-Database.html#toc" class="headerlink"><i class="fas fa-link"></i></a>
+
 </h3>
 
+
+
+
+
+
+
+<h4 id="toc-constants">
+    Constants
+    <a href="classes/vB-Database.html#toc-constants" class="headerlink"><i class="fas fa-link"></i></a>
+
+</h4>
 <dl class="phpdocumentor-table-of-contents">
             <dt class="phpdocumentor-table-of-contents__entry -constant -public">
     <a href="classes/vB-Database.html#constant_DBARRAY_ASSOC">DBARRAY_ASSOC</a>
     <span>
         &nbsp;= 1                            </span>
 </dt>
-<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -constant -public">
     <a href="classes/vB-Database.html#constant_DBARRAY_BOTH">DBARRAY_BOTH</a>
@@ -180,9 +182,17 @@
     <span>
         &nbsp;= 2                            </span>
 </dt>
-<dd></dd>
 
-                    <dt class="phpdocumentor-table-of-contents__entry -property -public">
+    </dl>
+
+
+<h4 id="toc-properties">
+    Properties
+    <a href="classes/vB-Database.html#toc-properties" class="headerlink"><i class="fas fa-link"></i></a>
+
+</h4>
+<dl class="phpdocumentor-table-of-contents">
+            <dt class="phpdocumentor-table-of-contents__entry -property -public">
     <a href="classes/vB-Database.html#property_appname">$appname</a>
     <span>
                         &nbsp;: string            </span>
@@ -199,7 +209,7 @@
             <dt class="phpdocumentor-table-of-contents__entry -property -public">
     <a href="classes/vB-Database.html#property_connection_recent">$connection_recent</a>
     <span>
-                        &nbsp;: string            </span>
+                        &nbsp;: <abbr title="\mysqli">mysqli</abbr>            </span>
 </dt>
 <dd>Link variable. The connection last used.</dd>
 
@@ -250,7 +260,6 @@
     <span>
                         &nbsp;: mixed            </span>
 </dt>
-<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -property -public">
     <a href="classes/vB-Database.html#property_querycount">$querycount</a>
@@ -280,7 +289,15 @@
 </dt>
 <dd>The contents of the most recent SQL query string.</dd>
 
-                <dt class="phpdocumentor-table-of-contents__entry -method -public">
+    </dl>
+
+<h4 id="toc-methods">
+    Methods
+    <a href="classes/vB-Database.html#toc-methods" class="headerlink"><i class="fas fa-link"></i></a>
+
+</h4>
+<dl class="phpdocumentor-table-of-contents">
+            <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a href="classes/vB-Database.html#method___construct">__construct()</a>
     <span>
                                 &nbsp;: mixed    </span>
@@ -292,28 +309,24 @@
     <span>
                                 &nbsp;: array&lt;string|int, mixed&gt;    </span>
 </dt>
-<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a href="classes/vB-Trait-NoSerialize.html#method___sleep">__sleep()</a>
     <span>
                                 &nbsp;: array&lt;string|int, mixed&gt;    </span>
 </dt>
-<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a href="classes/vB-Trait-NoSerialize.html#method___unserialize">__unserialize()</a>
     <span>
                                 &nbsp;: void    </span>
 </dt>
-<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a href="classes/vB-Trait-NoSerialize.html#method___wakeup">__wakeup()</a>
     <span>
                                 &nbsp;: void    </span>
 </dt>
-<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a href="classes/vB-Database.html#method_affected_rows">affected_rows()</a>
@@ -376,14 +389,12 @@
     <span>
                                 &nbsp;: mixed    </span>
 </dt>
-<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a href="classes/vB-Database.html#method_create_database_using_dbconfig">create_database_using_dbconfig()</a>
     <span>
                                 &nbsp;: mixed    </span>
 </dt>
-<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a href="classes/vB-Database.html#method_data_seek">data_seek()</a>
@@ -439,7 +450,6 @@
     <span>
                                 &nbsp;: mixed    </span>
 </dt>
-<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a href="classes/vB-Database.html#method_fetch_row">fetch_row()</a>
@@ -524,14 +534,12 @@ incompatible with vBulletin. Applies to MySQL 4.1+.</dd>
     <span>
                                 &nbsp;: mixed    </span>
 </dt>
-<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a href="classes/vB-Database.html#method_is_valid">is_valid()</a>
     <span>
                                 &nbsp;: mixed    </span>
 </dt>
-<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a href="classes/vB-Database.html#method_isExplainEmpty">isExplainEmpty()</a>
@@ -645,7 +653,6 @@ we don&#039;t know if the &#039;read&#039; database is up to date so be on the s
     <span>
                                 &nbsp;: mixed    </span>
 </dt>
-<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a href="classes/vB-Database.html#method_select_db_wrapper">select_db_wrapper()</a>
@@ -675,7 +682,8 @@ we don&#039;t know if the &#039;read&#039; database is up to date so be on the s
 </dt>
 <dd>Unlock tables</dd>
 
-        </dl>
+    </dl>
+
 
 
 
@@ -684,17 +692,19 @@ we don&#039;t know if the &#039;read&#039; database is up to date so be on the s
         <h3 class="phpdocumentor-elements__header" id="constants">
             Constants
             <a href="classes/vB-Database.html#constants" class="headerlink"><i class="fas fa-link"></i></a>
+
         </h3>
                     <article class="phpdocumentor-element -constant -public ">
     <h4 class="phpdocumentor-element__name" id="constant_DBARRAY_ASSOC">
         DBARRAY_ASSOC
         <a href="classes/vB-Database.html#constant_DBARRAY_ASSOC" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
 
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/database.php"><a href="files/vb-database.html"><abbr title="vb/database.php">database.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">29</span>
+    <span class="phpdocumentor-element-found-in__line">28</span>
 
     </aside>
 
@@ -707,10 +717,8 @@ we don&#039;t know if the &#039;read&#039; database is up to date so be on the s
 </code>
 
 
-        <section class="phpdocumentor-description"></section>
-
-        <section class="phpdocumentor-description"></section>
-
+    
+    
     
 
 </article>
@@ -718,12 +726,13 @@ we don&#039;t know if the &#039;read&#039; database is up to date so be on the s
     <h4 class="phpdocumentor-element__name" id="constant_DBARRAY_BOTH">
         DBARRAY_BOTH
         <a href="classes/vB-Database.html#constant_DBARRAY_BOTH" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
 
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/database.php"><a href="files/vb-database.html"><abbr title="vb/database.php">database.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">28</span>
+    <span class="phpdocumentor-element-found-in__line">27</span>
 
     </aside>
 
@@ -738,8 +747,7 @@ we don&#039;t know if the &#039;read&#039; database is up to date so be on the s
 
 
     
-        <section class="phpdocumentor-description"></section>
-
+    
     
 
 </article>
@@ -747,12 +755,13 @@ we don&#039;t know if the &#039;read&#039; database is up to date so be on the s
     <h4 class="phpdocumentor-element__name" id="constant_DBARRAY_NUM">
         DBARRAY_NUM
         <a href="classes/vB-Database.html#constant_DBARRAY_NUM" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
 
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/database.php"><a href="files/vb-database.html"><abbr title="vb/database.php">database.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">30</span>
+    <span class="phpdocumentor-element-found-in__line">29</span>
 
     </aside>
 
@@ -765,10 +774,8 @@ we don&#039;t know if the &#039;read&#039; database is up to date so be on the s
 </code>
 
 
-        <section class="phpdocumentor-description"></section>
-
-        <section class="phpdocumentor-description"></section>
-
+    
+    
     
 
 </article>
@@ -779,6 +786,7 @@ we don&#039;t know if the &#039;read&#039; database is up to date so be on the s
         <h3 class="phpdocumentor-elements__header" id="properties">
             Properties
             <a href="classes/vB-Database.html#properties" class="headerlink"><i class="fas fa-link"></i></a>
+
         </h3>
                     <article
         class="
@@ -790,13 +798,14 @@ we don&#039;t know if the &#039;read&#039; database is up to date so be on the s
     <h4 class="phpdocumentor-element__name" id="property_appname">
         $appname
         <a href="classes/vB-Database.html#property_appname" class="headerlink"><i class="fas fa-link"></i></a>
+
         <span class="phpdocumentor-element__modifiers">
                                 </span>
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/database.php"><a href="files/vb-database.html"><abbr title="vb/database.php">database.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">67</span>
+    <span class="phpdocumentor-element-found-in__line">66</span>
 
     </aside>
 
@@ -823,13 +832,14 @@ we don&#039;t know if the &#039;read&#039; database is up to date so be on the s
     <h4 class="phpdocumentor-element__name" id="property_appshortname">
         $appshortname
         <a href="classes/vB-Database.html#property_appshortname" class="headerlink"><i class="fas fa-link"></i></a>
+
         <span class="phpdocumentor-element__modifiers">
                                 </span>
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/database.php"><a href="files/vb-database.html"><abbr title="vb/database.php">database.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">74</span>
+    <span class="phpdocumentor-element-found-in__line">73</span>
 
     </aside>
 
@@ -856,13 +866,14 @@ we don&#039;t know if the &#039;read&#039; database is up to date so be on the s
     <h4 class="phpdocumentor-element__name" id="property_connection_recent">
         $connection_recent
         <a href="classes/vB-Database.html#property_connection_recent" class="headerlink"><i class="fas fa-link"></i></a>
+
         <span class="phpdocumentor-element__modifiers">
                                 </span>
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/database.php"><a href="files/vb-database.html"><abbr title="vb/database.php">database.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">102</span>
+    <span class="phpdocumentor-element-found-in__line">101</span>
 
     </aside>
 
@@ -870,7 +881,7 @@ we don&#039;t know if the &#039;read&#039; database is up to date so be on the s
 
     <code class="phpdocumentor-code phpdocumentor-signature ">
     <span class="phpdocumentor-signature__visibility">public</span>
-        <span class="phpdocumentor-signature__type">string</span>
+        <span class="phpdocumentor-signature__type"><abbr title="\mysqli">mysqli</abbr></span>
     <span class="phpdocumentor-signature__name">$connection_recent</span>
      = <span class="phpdocumentor-signature__default-value">\null</span></code>
 
@@ -889,13 +900,14 @@ we don&#039;t know if the &#039;read&#039; database is up to date so be on the s
     <h4 class="phpdocumentor-element__name" id="property_database">
         $database
         <a href="classes/vB-Database.html#property_database" class="headerlink"><i class="fas fa-link"></i></a>
+
         <span class="phpdocumentor-element__modifiers">
                                 </span>
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/database.php"><a href="files/vb-database.html"><abbr title="vb/database.php">database.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">81</span>
+    <span class="phpdocumentor-element-found-in__line">80</span>
 
     </aside>
 
@@ -922,13 +934,14 @@ we don&#039;t know if the &#039;read&#039; database is up to date so be on the s
     <h4 class="phpdocumentor-element__name" id="property_doExplain">
         $doExplain
         <a href="classes/vB-Database.html#property_doExplain" class="headerlink"><i class="fas fa-link"></i></a>
+
         <span class="phpdocumentor-element__modifiers">
                                 </span>
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/database.php"><a href="files/vb-database.html"><abbr title="vb/database.php">database.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">167</span>
+    <span class="phpdocumentor-element-found-in__line">166</span>
 
     </aside>
 
@@ -955,13 +968,14 @@ we don&#039;t know if the &#039;read&#039; database is up to date so be on the s
     <h4 class="phpdocumentor-element__name" id="property_errno">
         $errno
         <a href="classes/vB-Database.html#property_errno" class="headerlink"><i class="fas fa-link"></i></a>
+
         <span class="phpdocumentor-element__modifiers">
                                 </span>
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/database.php"><a href="files/vb-database.html"><abbr title="vb/database.php">database.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">139</span>
+    <span class="phpdocumentor-element-found-in__line">138</span>
 
     </aside>
 
@@ -988,13 +1002,14 @@ we don&#039;t know if the &#039;read&#039; database is up to date so be on the s
     <h4 class="phpdocumentor-element__name" id="property_error">
         $error
         <a href="classes/vB-Database.html#property_error" class="headerlink"><i class="fas fa-link"></i></a>
+
         <span class="phpdocumentor-element__modifiers">
                                 </span>
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/database.php"><a href="files/vb-database.html"><abbr title="vb/database.php">database.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">132</span>
+    <span class="phpdocumentor-element-found-in__line">131</span>
 
     </aside>
 
@@ -1021,13 +1036,14 @@ we don&#039;t know if the &#039;read&#039; database is up to date so be on the s
     <h4 class="phpdocumentor-element__name" id="property_locked">
         $locked
         <a href="classes/vB-Database.html#property_locked" class="headerlink"><i class="fas fa-link"></i></a>
+
         <span class="phpdocumentor-element__modifiers">
                                 </span>
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/database.php"><a href="files/vb-database.html"><abbr title="vb/database.php">database.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">153</span>
+    <span class="phpdocumentor-element-found-in__line">152</span>
 
     </aside>
 
@@ -1054,13 +1070,14 @@ we don&#039;t know if the &#039;read&#039; database is up to date so be on the s
     <h4 class="phpdocumentor-element__name" id="property_maxpacket">
         $maxpacket
         <a href="classes/vB-Database.html#property_maxpacket" class="headerlink"><i class="fas fa-link"></i></a>
+
         <span class="phpdocumentor-element__modifiers">
                                 </span>
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/database.php"><a href="files/vb-database.html"><abbr title="vb/database.php">database.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">146</span>
+    <span class="phpdocumentor-element-found-in__line">145</span>
 
     </aside>
 
@@ -1089,13 +1106,14 @@ we don&#039;t know if the &#039;read&#039; database is up to date so be on the s
     <h4 class="phpdocumentor-element__name" id="property_multiserver">
         $multiserver
         <a href="classes/vB-Database.html#property_multiserver" class="headerlink"><i class="fas fa-link"></i></a>
+
         <span class="phpdocumentor-element__modifiers">
                                 </span>
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/database.php"><a href="files/vb-database.html"><abbr title="vb/database.php">database.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">104</span>
+    <span class="phpdocumentor-element-found-in__line">103</span>
 
     </aside>
 
@@ -1106,10 +1124,8 @@ we don&#039;t know if the &#039;read&#039; database is up to date so be on the s
     <span class="phpdocumentor-signature__name">$multiserver</span>
      = <span class="phpdocumentor-signature__default-value">\false</span></code>
 
-        <section class="phpdocumentor-description"></section>
-
-        <section class="phpdocumentor-description"></section>
-
+    
+    
     
 
 </article>
@@ -1123,13 +1139,14 @@ we don&#039;t know if the &#039;read&#039; database is up to date so be on the s
     <h4 class="phpdocumentor-element__name" id="property_querycount">
         $querycount
         <a href="classes/vB-Database.html#property_querycount" class="headerlink"><i class="fas fa-link"></i></a>
+
         <span class="phpdocumentor-element__modifiers">
                                 </span>
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/database.php"><a href="files/vb-database.html"><abbr title="vb/database.php">database.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">160</span>
+    <span class="phpdocumentor-element-found-in__line">159</span>
 
     </aside>
 
@@ -1158,13 +1175,14 @@ we don&#039;t know if the &#039;read&#039; database is up to date so be on the s
     <h4 class="phpdocumentor-element__name" id="property_reporterror">
         $reporterror
         <a href="classes/vB-Database.html#property_reporterror" class="headerlink"><i class="fas fa-link"></i></a>
+
         <span class="phpdocumentor-element__modifiers">
                                 </span>
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/database.php"><a href="files/vb-database.html"><abbr title="vb/database.php">database.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">125</span>
+    <span class="phpdocumentor-element-found-in__line">124</span>
 
     </aside>
 
@@ -1191,13 +1209,14 @@ we don&#039;t know if the &#039;read&#039; database is up to date so be on the s
     <h4 class="phpdocumentor-element__name" id="property_shutdownqueries">
         $shutdownqueries
         <a href="classes/vB-Database.html#property_shutdownqueries" class="headerlink"><i class="fas fa-link"></i></a>
+
         <span class="phpdocumentor-element__modifiers">
                                 </span>
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/database.php"><a href="files/vb-database.html"><abbr title="vb/database.php">database.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">111</span>
+    <span class="phpdocumentor-element-found-in__line">110</span>
 
     </aside>
 
@@ -1224,13 +1243,14 @@ we don&#039;t know if the &#039;read&#039; database is up to date so be on the s
     <h4 class="phpdocumentor-element__name" id="property_sql">
         $sql
         <a href="classes/vB-Database.html#property_sql" class="headerlink"><i class="fas fa-link"></i></a>
+
         <span class="phpdocumentor-element__modifiers">
                                 </span>
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/database.php"><a href="files/vb-database.html"><abbr title="vb/database.php">database.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">118</span>
+    <span class="phpdocumentor-element-found-in__line">117</span>
 
     </aside>
 
@@ -1253,6 +1273,7 @@ we don&#039;t know if the &#039;read&#039; database is up to date so be on the s
         <h3 class="phpdocumentor-elements__header" id="methods">
             Methods
             <a href="classes/vB-Database.html#methods" class="headerlink"><i class="fas fa-link"></i></a>
+
         </h3>
                     <article
         class="phpdocumentor-element
@@ -1263,11 +1284,12 @@ we don&#039;t know if the &#039;read&#039; database is up to date so be on the s
     <h4 class="phpdocumentor-element__name" id="method___construct">
         __construct()
         <a href="classes/vB-Database.html#method___construct" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/database.php"><a href="files/vb-database.html"><abbr title="vb/database.php">database.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">204</span>
+    <span class="phpdocumentor-element-found-in__line">203</span>
 
     </aside>
 
@@ -1277,6 +1299,8 @@ we don&#039;t know if the &#039;read&#039; database is up to date so be on the s
     <span class="phpdocumentor-signature__visibility">public</span>
                     <span class="phpdocumentor-signature__name">__construct</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__reference-operator">&amp;</span><span class="phpdocumentor-signature__argument__name">$dbconfig</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__reference-operator">&amp;</span><span class="phpdocumentor-signature__argument__name">$config</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
 
+    <div class="phpdocumentor-label-line">
+        </div>
     
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
     <dl class="phpdocumentor-argument-list">
@@ -1285,25 +1309,19 @@ we don&#039;t know if the &#039;read&#039; database is up to date so be on the s
                 : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
                             </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
+                
             </dd>
                     <dt class="phpdocumentor-argument-list__entry">
                 <span class="phpdocumentor-signature__argument__name">$config</span>
                 : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
                             </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
+                
             </dd>
             </dl>
 
     
 
-        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">mixed</span>
-            &mdash;
-        
     
 </article>
                     <article
@@ -1315,6 +1333,7 @@ we don&#039;t know if the &#039;read&#039; database is up to date so be on the s
     <h4 class="phpdocumentor-element__name" id="method___serialize">
         __serialize()
         <a href="classes/vB-Trait-NoSerialize.html#method___serialize" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/trait/noserialize.php"><a href="files/vb-trait-noserialize.html"><abbr title="vb/trait/noserialize.php">noserialize.php</abbr></a></abbr>
@@ -1328,16 +1347,17 @@ we don&#039;t know if the &#039;read&#039; database is up to date so be on the s
     <span class="phpdocumentor-signature__visibility">public</span>
                     <span class="phpdocumentor-signature__name">__serialize</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">array&lt;string|int, mixed&gt;</span></code>
 
-        <section class="phpdocumentor-description"></section>
-
+    <div class="phpdocumentor-label-line">
+        </div>
     
     
+    
 
+            <section>
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">array&lt;string|int, mixed&gt;</span>
-            &mdash;
-        
-    
+        <span class="phpdocumentor-signature__response_type">array&lt;string|int, mixed&gt;</span>
+            </section>
+
 </article>
                     <article
         class="phpdocumentor-element
@@ -1348,6 +1368,7 @@ we don&#039;t know if the &#039;read&#039; database is up to date so be on the s
     <h4 class="phpdocumentor-element__name" id="method___sleep">
         __sleep()
         <a href="classes/vB-Trait-NoSerialize.html#method___sleep" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/trait/noserialize.php"><a href="files/vb-trait-noserialize.html"><abbr title="vb/trait/noserialize.php">noserialize.php</abbr></a></abbr>
@@ -1361,16 +1382,17 @@ we don&#039;t know if the &#039;read&#039; database is up to date so be on the s
     <span class="phpdocumentor-signature__visibility">public</span>
                     <span class="phpdocumentor-signature__name">__sleep</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">array&lt;string|int, mixed&gt;</span></code>
 
-        <section class="phpdocumentor-description"></section>
-
+    <div class="phpdocumentor-label-line">
+        </div>
     
     
+    
 
+            <section>
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">array&lt;string|int, mixed&gt;</span>
-            &mdash;
-        
-    
+        <span class="phpdocumentor-signature__response_type">array&lt;string|int, mixed&gt;</span>
+            </section>
+
 </article>
                     <article
         class="phpdocumentor-element
@@ -1381,6 +1403,7 @@ we don&#039;t know if the &#039;read&#039; database is up to date so be on the s
     <h4 class="phpdocumentor-element__name" id="method___unserialize">
         __unserialize()
         <a href="classes/vB-Trait-NoSerialize.html#method___unserialize" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/trait/noserialize.php"><a href="files/vb-trait-noserialize.html"><abbr title="vb/trait/noserialize.php">noserialize.php</abbr></a></abbr>
@@ -1394,8 +1417,9 @@ we don&#039;t know if the &#039;read&#039; database is up to date so be on the s
     <span class="phpdocumentor-signature__visibility">public</span>
                     <span class="phpdocumentor-signature__name">__unserialize</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">array&lt;string|int, mixed&gt;&nbsp;</span><span class="phpdocumentor-signature__argument__name">$serialized</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">void</span></code>
 
-        <section class="phpdocumentor-description"></section>
-
+    <div class="phpdocumentor-label-line">
+        </div>
+    
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
     <dl class="phpdocumentor-argument-list">
                     <dt class="phpdocumentor-argument-list__entry">
@@ -1403,17 +1427,12 @@ we don&#039;t know if the &#039;read&#039; database is up to date so be on the s
                 : <span class="phpdocumentor-signature__argument__return-type">array&lt;string|int, mixed&gt;</span>
                             </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
+                
             </dd>
             </dl>
 
     
 
-        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">void</span>
-            &mdash;
-        
     
 </article>
                     <article
@@ -1425,6 +1444,7 @@ we don&#039;t know if the &#039;read&#039; database is up to date so be on the s
     <h4 class="phpdocumentor-element__name" id="method___wakeup">
         __wakeup()
         <a href="classes/vB-Trait-NoSerialize.html#method___wakeup" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/trait/noserialize.php"><a href="files/vb-trait-noserialize.html"><abbr title="vb/trait/noserialize.php">noserialize.php</abbr></a></abbr>
@@ -1438,15 +1458,12 @@ we don&#039;t know if the &#039;read&#039; database is up to date so be on the s
     <span class="phpdocumentor-signature__visibility">public</span>
                     <span class="phpdocumentor-signature__name">__wakeup</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">void</span></code>
 
-        <section class="phpdocumentor-description"></section>
-
+    <div class="phpdocumentor-label-line">
+        </div>
     
     
+    
 
-        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">void</span>
-            &mdash;
-        
     
 </article>
                     <article
@@ -1458,11 +1475,12 @@ we don&#039;t know if the &#039;read&#039; database is up to date so be on the s
     <h4 class="phpdocumentor-element__name" id="method_affected_rows">
         affected_rows()
         <a href="classes/vB-Database.html#method_affected_rows" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/database.php"><a href="files/vb-database.html"><abbr title="vb/database.php">database.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">975</span>
+    <span class="phpdocumentor-element-found-in__line">972</span>
 
     </aside>
 
@@ -1472,15 +1490,17 @@ we don&#039;t know if the &#039;read&#039; database is up to date so be on the s
     <span class="phpdocumentor-signature__visibility">public</span>
                     <span class="phpdocumentor-signature__name">affected_rows</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">int</span></code>
 
+    <div class="phpdocumentor-label-line">
+        </div>
     
     
     
 
+            <section>
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">int</span>
-            &mdash;
-        
-    
+        <span class="phpdocumentor-signature__response_type">int</span>
+            </section>
+
 </article>
                     <article
         class="phpdocumentor-element
@@ -1491,11 +1511,12 @@ we don&#039;t know if the &#039;read&#039; database is up to date so be on the s
     <h4 class="phpdocumentor-element__name" id="method_beginTransaction">
         beginTransaction()
         <a href="classes/vB-Database.html#method_beginTransaction" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/database.php"><a href="files/vb-database.html"><abbr title="vb/database.php">database.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">393</span>
+    <span class="phpdocumentor-element-found-in__line">392</span>
 
     </aside>
 
@@ -1505,14 +1526,12 @@ we don&#039;t know if the &#039;read&#039; database is up to date so be on the s
     <span class="phpdocumentor-signature__visibility">public</span>
                     <span class="phpdocumentor-signature__name">beginTransaction</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
 
+    <div class="phpdocumentor-label-line">
+        </div>
     
     
     
 
-        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">mixed</span>
-            &mdash;
-        
     
 </article>
                     <article
@@ -1524,11 +1543,12 @@ we don&#039;t know if the &#039;read&#039; database is up to date so be on the s
     <h4 class="phpdocumentor-element__name" id="method_catch_db_error">
         catch_db_error()
         <a href="classes/vB-Database.html#method_catch_db_error" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/database.php"><a href="files/vb-database.html"><abbr title="vb/database.php">database.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">1103</span>
+    <span class="phpdocumentor-element-found-in__line">1100</span>
 
     </aside>
 
@@ -1538,6 +1558,8 @@ we don&#039;t know if the &#039;read&#039; database is up to date so be on the s
     <span class="phpdocumentor-signature__visibility">public</span>
                     <span class="phpdocumentor-signature__name">catch_db_error</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$errno</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$errstr</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$errfile</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$errline</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
 
+    <div class="phpdocumentor-label-line">
+        </div>
     
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
     <dl class="phpdocumentor-argument-list">
@@ -1546,41 +1568,33 @@ we don&#039;t know if the &#039;read&#039; database is up to date so be on the s
                 : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
                             </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
+                
             </dd>
                     <dt class="phpdocumentor-argument-list__entry">
                 <span class="phpdocumentor-signature__argument__name">$errstr</span>
                 : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
                             </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
+                
             </dd>
                     <dt class="phpdocumentor-argument-list__entry">
                 <span class="phpdocumentor-signature__argument__name">$errfile</span>
                 : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
                             </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
+                
             </dd>
                     <dt class="phpdocumentor-argument-list__entry">
                 <span class="phpdocumentor-signature__argument__name">$errline</span>
                 : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
                             </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
+                
             </dd>
             </dl>
 
     
 
-        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">mixed</span>
-            &mdash;
-        
     
 </article>
                     <article
@@ -1592,11 +1606,12 @@ we don&#039;t know if the &#039;read&#039; database is up to date so be on the s
     <h4 class="phpdocumentor-element__name" id="method_clean_identifier">
         clean_identifier()
         <a href="classes/vB-Database.html#method_clean_identifier" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/database.php"><a href="files/vb-database.html"><abbr title="vb/database.php">database.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">899</span>
+    <span class="phpdocumentor-element-found-in__line">896</span>
 
     </aside>
 
@@ -1606,6 +1621,8 @@ we don&#039;t know if the &#039;read&#039; database is up to date so be on the s
     <span class="phpdocumentor-signature__visibility">public</span>
                     <span class="phpdocumentor-signature__name">clean_identifier</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$identifier</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">string</span></code>
 
+    <div class="phpdocumentor-label-line">
+        </div>
     
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
     <dl class="phpdocumentor-argument-list">
@@ -1614,18 +1631,17 @@ we don&#039;t know if the &#039;read&#039; database is up to date so be on the s
                 : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
                             </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
+                
             </dd>
             </dl>
 
     
 
+            <section>
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">string</span>
-            &mdash;
-        
-    
+        <span class="phpdocumentor-signature__response_type">string</span>
+            </section>
+
 </article>
                     <article
         class="phpdocumentor-element
@@ -1636,11 +1652,12 @@ we don&#039;t know if the &#039;read&#039; database is up to date so be on the s
     <h4 class="phpdocumentor-element__name" id="method_client_encoding">
         client_encoding()
         <a href="classes/vB-Database.html#method_client_encoding" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/database.php"><a href="files/vb-database.html"><abbr title="vb/database.php">database.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">853</span>
+    <span class="phpdocumentor-element-found-in__line">850</span>
 
     </aside>
 
@@ -1650,15 +1667,17 @@ we don&#039;t know if the &#039;read&#039; database is up to date so be on the s
     <span class="phpdocumentor-signature__visibility">public</span>
                     <span class="phpdocumentor-signature__name">client_encoding</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">string</span></code>
 
+    <div class="phpdocumentor-label-line">
+        </div>
     
     
     
 
+            <section>
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">string</span>
-            &mdash;
-        
-    
+        <span class="phpdocumentor-signature__response_type">string</span>
+            </section>
+
 </article>
                     <article
         class="phpdocumentor-element
@@ -1669,11 +1688,12 @@ we don&#039;t know if the &#039;read&#039; database is up to date so be on the s
     <h4 class="phpdocumentor-element__name" id="method_close">
         close()
         <a href="classes/vB-Database.html#method_close" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/database.php"><a href="files/vb-database.html"><abbr title="vb/database.php">database.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">863</span>
+    <span class="phpdocumentor-element-found-in__line">860</span>
 
     </aside>
 
@@ -1683,15 +1703,17 @@ we don&#039;t know if the &#039;read&#039; database is up to date so be on the s
     <span class="phpdocumentor-signature__visibility">public</span>
                     <span class="phpdocumentor-signature__name">close</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">int</span></code>
 
+    <div class="phpdocumentor-label-line">
+        </div>
     
     
     
 
+            <section>
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">int</span>
-            &mdash;
-        
-    
+        <span class="phpdocumentor-signature__response_type">int</span>
+            </section>
+
 </article>
                     <article
         class="phpdocumentor-element
@@ -1702,11 +1724,12 @@ we don&#039;t know if the &#039;read&#039; database is up to date so be on the s
     <h4 class="phpdocumentor-element__name" id="method_commitTransaction">
         commitTransaction()
         <a href="classes/vB-Database.html#method_commitTransaction" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/database.php"><a href="files/vb-database.html"><abbr title="vb/database.php">database.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">435</span>
+    <span class="phpdocumentor-element-found-in__line">434</span>
 
     </aside>
 
@@ -1716,14 +1739,12 @@ we don&#039;t know if the &#039;read&#039; database is up to date so be on the s
     <span class="phpdocumentor-signature__visibility">public</span>
                     <span class="phpdocumentor-signature__name">commitTransaction</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
 
+    <div class="phpdocumentor-label-line">
+        </div>
     
     
     
 
-        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">mixed</span>
-            &mdash;
-        
     
 </article>
                     <article
@@ -1735,11 +1756,12 @@ we don&#039;t know if the &#039;read&#039; database is up to date so be on the s
     <h4 class="phpdocumentor-element__name" id="method_connect">
         connect()
         <a href="classes/vB-Database.html#method_connect" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/database.php"><a href="files/vb-database.html"><abbr title="vb/database.php">database.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">237</span>
+    <span class="phpdocumentor-element-found-in__line">236</span>
 
     </aside>
 
@@ -1749,6 +1771,8 @@ we don&#039;t know if the &#039;read&#039; database is up to date so be on the s
     <span class="phpdocumentor-signature__visibility">public</span>
                     <span class="phpdocumentor-signature__name">connect</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$database</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$w_servername</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$w_port</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$w_username</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$w_password</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$w_usepconnect</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">false</span><span> ]</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$r_servername</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">&#039;&#039;</span><span> ]</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$r_port</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">3306</span><span> ]</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$r_username</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">&#039;&#039;</span><span> ]</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$r_password</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">&#039;&#039;</span><span> ]</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$r_usepconnect</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">false</span><span> ]</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$configfile</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">&#039;&#039;</span><span> ]</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$charset</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">&#039;&#039;</span><span> ]</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type"><abbr title="\none">none</abbr></span></code>
 
+    <div class="phpdocumentor-label-line">
+        </div>
     
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
     <dl class="phpdocumentor-argument-list">
@@ -1757,114 +1781,101 @@ we don&#039;t know if the &#039;read&#039; database is up to date so be on the s
                 : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
                             </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
+                
             </dd>
                     <dt class="phpdocumentor-argument-list__entry">
                 <span class="phpdocumentor-signature__argument__name">$w_servername</span>
                 : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
                             </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
+                
             </dd>
                     <dt class="phpdocumentor-argument-list__entry">
                 <span class="phpdocumentor-signature__argument__name">$w_port</span>
                 : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
                             </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
+                
             </dd>
                     <dt class="phpdocumentor-argument-list__entry">
                 <span class="phpdocumentor-signature__argument__name">$w_username</span>
                 : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
                             </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
+                
             </dd>
                     <dt class="phpdocumentor-argument-list__entry">
                 <span class="phpdocumentor-signature__argument__name">$w_password</span>
                 : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
                             </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
+                
             </dd>
                     <dt class="phpdocumentor-argument-list__entry">
                 <span class="phpdocumentor-signature__argument__name">$w_usepconnect</span>
                 : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
                  = <span class="phpdocumentor-signature__argument__default-value">false</span>            </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
+                
             </dd>
                     <dt class="phpdocumentor-argument-list__entry">
                 <span class="phpdocumentor-signature__argument__name">$r_servername</span>
                 : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
                  = <span class="phpdocumentor-signature__argument__default-value">&#039;&#039;</span>            </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
+                
             </dd>
                     <dt class="phpdocumentor-argument-list__entry">
                 <span class="phpdocumentor-signature__argument__name">$r_port</span>
                 : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
                  = <span class="phpdocumentor-signature__argument__default-value">3306</span>            </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
+                
             </dd>
                     <dt class="phpdocumentor-argument-list__entry">
                 <span class="phpdocumentor-signature__argument__name">$r_username</span>
                 : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
                  = <span class="phpdocumentor-signature__argument__default-value">&#039;&#039;</span>            </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
+                
             </dd>
                     <dt class="phpdocumentor-argument-list__entry">
                 <span class="phpdocumentor-signature__argument__name">$r_password</span>
                 : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
                  = <span class="phpdocumentor-signature__argument__default-value">&#039;&#039;</span>            </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
+                
             </dd>
                     <dt class="phpdocumentor-argument-list__entry">
                 <span class="phpdocumentor-signature__argument__name">$r_usepconnect</span>
                 : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
                  = <span class="phpdocumentor-signature__argument__default-value">false</span>            </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
+                
             </dd>
                     <dt class="phpdocumentor-argument-list__entry">
                 <span class="phpdocumentor-signature__argument__name">$configfile</span>
                 : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
                  = <span class="phpdocumentor-signature__argument__default-value">&#039;&#039;</span>            </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
+                
             </dd>
                     <dt class="phpdocumentor-argument-list__entry">
                 <span class="phpdocumentor-signature__argument__name">$charset</span>
                 : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
                  = <span class="phpdocumentor-signature__argument__default-value">&#039;&#039;</span>            </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
+                
             </dd>
             </dl>
 
     
 
+            <section>
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type"><abbr title="\none">none</abbr></span>
-            &mdash;
-        
-    
+        <span class="phpdocumentor-signature__response_type"><abbr title="\none">none</abbr></span>
+            </section>
+
 </article>
                     <article
         class="phpdocumentor-element
@@ -1875,11 +1886,12 @@ we don&#039;t know if the &#039;read&#039; database is up to date so be on the s
     <h4 class="phpdocumentor-element__name" id="method_connect_using_dbconfig">
         connect_using_dbconfig()
         <a href="classes/vB-Database.html#method_connect_using_dbconfig" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/database.php"><a href="files/vb-database.html"><abbr title="vb/database.php">database.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">333</span>
+    <span class="phpdocumentor-element-found-in__line">332</span>
 
     </aside>
 
@@ -1888,8 +1900,9 @@ we don&#039;t know if the &#039;read&#039; database is up to date so be on the s
     <span class="phpdocumentor-signature__visibility">public</span>
                     <span class="phpdocumentor-signature__name">connect_using_dbconfig</span><span>(</span><span class="phpdocumentor-signature__argument"><span>[</span><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$override_config</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">[]</span><span> ]</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
 
-        <section class="phpdocumentor-description"></section>
-
+    <div class="phpdocumentor-label-line">
+        </div>
+    
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
     <dl class="phpdocumentor-argument-list">
                     <dt class="phpdocumentor-argument-list__entry">
@@ -1897,17 +1910,12 @@ we don&#039;t know if the &#039;read&#039; database is up to date so be on the s
                 : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
                  = <span class="phpdocumentor-signature__argument__default-value">[]</span>            </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
+                
             </dd>
             </dl>
 
     
 
-        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">mixed</span>
-            &mdash;
-        
     
 </article>
                     <article
@@ -1919,11 +1927,12 @@ we don&#039;t know if the &#039;read&#039; database is up to date so be on the s
     <h4 class="phpdocumentor-element__name" id="method_create_database_using_dbconfig">
         create_database_using_dbconfig()
         <a href="classes/vB-Database.html#method_create_database_using_dbconfig" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/database.php"><a href="files/vb-database.html"><abbr title="vb/database.php">database.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">355</span>
+    <span class="phpdocumentor-element-found-in__line">354</span>
 
     </aside>
 
@@ -1932,15 +1941,12 @@ we don&#039;t know if the &#039;read&#039; database is up to date so be on the s
     <span class="phpdocumentor-signature__visibility">public</span>
                     <span class="phpdocumentor-signature__name">create_database_using_dbconfig</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
 
-        <section class="phpdocumentor-description"></section>
-
+    <div class="phpdocumentor-label-line">
+        </div>
     
     
+    
 
-        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">mixed</span>
-            &mdash;
-        
     
 </article>
                     <article
@@ -1952,11 +1958,12 @@ we don&#039;t know if the &#039;read&#039; database is up to date so be on the s
     <h4 class="phpdocumentor-element__name" id="method_data_seek">
         data_seek()
         <a href="classes/vB-Database.html#method_data_seek" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/database.php"><a href="files/vb-database.html"><abbr title="vb/database.php">database.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">953</span>
+    <span class="phpdocumentor-element-found-in__line">950</span>
 
     </aside>
 
@@ -1966,6 +1973,8 @@ we don&#039;t know if the &#039;read&#039; database is up to date so be on the s
     <span class="phpdocumentor-signature__visibility">public</span>
                     <span class="phpdocumentor-signature__name">data_seek</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$queryresult</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$index</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">bool</span></code>
 
+    <div class="phpdocumentor-label-line">
+        </div>
     
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
     <dl class="phpdocumentor-argument-list">
@@ -1974,26 +1983,24 @@ we don&#039;t know if the &#039;read&#039; database is up to date so be on the s
                 : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
                             </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
+                
             </dd>
                     <dt class="phpdocumentor-argument-list__entry">
                 <span class="phpdocumentor-signature__argument__name">$index</span>
                 : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
                             </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
+                
             </dd>
             </dl>
 
     
 
+            <section>
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">bool</span>
-            &mdash;
-        
-    
+        <span class="phpdocumentor-signature__response_type">bool</span>
+            </section>
+
 </article>
                     <article
         class="phpdocumentor-element
@@ -2004,11 +2011,12 @@ we don&#039;t know if the &#039;read&#039; database is up to date so be on the s
     <h4 class="phpdocumentor-element__name" id="method_errno">
         errno()
         <a href="classes/vB-Database.html#method_errno" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/database.php"><a href="files/vb-database.html"><abbr title="vb/database.php">database.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">1071</span>
+    <span class="phpdocumentor-element-found-in__line">1068</span>
 
     </aside>
 
@@ -2018,15 +2026,17 @@ we don&#039;t know if the &#039;read&#039; database is up to date so be on the s
     <span class="phpdocumentor-signature__visibility">public</span>
                     <span class="phpdocumentor-signature__name">errno</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">int</span></code>
 
+    <div class="phpdocumentor-label-line">
+        </div>
     
     
     
 
+            <section>
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">int</span>
-            &mdash;
-        
-    
+        <span class="phpdocumentor-signature__response_type">int</span>
+            </section>
+
 </article>
                     <article
         class="phpdocumentor-element
@@ -2037,11 +2047,12 @@ we don&#039;t know if the &#039;read&#039; database is up to date so be on the s
     <h4 class="phpdocumentor-element__name" id="method_error">
         error()
         <a href="classes/vB-Database.html#method_error" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/database.php"><a href="files/vb-database.html"><abbr title="vb/database.php">database.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">1053</span>
+    <span class="phpdocumentor-element-found-in__line">1050</span>
 
     </aside>
 
@@ -2051,15 +2062,17 @@ we don&#039;t know if the &#039;read&#039; database is up to date so be on the s
     <span class="phpdocumentor-signature__visibility">public</span>
                     <span class="phpdocumentor-signature__name">error</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">string</span></code>
 
+    <div class="phpdocumentor-label-line">
+        </div>
     
     
     
 
+            <section>
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">string</span>
-            &mdash;
-        
-    
+        <span class="phpdocumentor-signature__response_type">string</span>
+            </section>
+
 </article>
                     <article
         class="phpdocumentor-element
@@ -2070,11 +2083,12 @@ we don&#039;t know if the &#039;read&#039; database is up to date so be on the s
     <h4 class="phpdocumentor-element__name" id="method_escape_string">
         escape_string()
         <a href="classes/vB-Database.html#method_escape_string" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/database.php"><a href="files/vb-database.html"><abbr title="vb/database.php">database.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">875</span>
+    <span class="phpdocumentor-element-found-in__line">872</span>
 
     </aside>
 
@@ -2084,6 +2098,8 @@ we don&#039;t know if the &#039;read&#039; database is up to date so be on the s
     <span class="phpdocumentor-signature__visibility">public</span>
                     <span class="phpdocumentor-signature__name">escape_string</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$string</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">string</span></code>
 
+    <div class="phpdocumentor-label-line">
+        </div>
     
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
     <dl class="phpdocumentor-argument-list">
@@ -2092,18 +2108,17 @@ we don&#039;t know if the &#039;read&#039; database is up to date so be on the s
                 : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
                             </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
+                
             </dd>
             </dl>
 
     
 
+            <section>
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">string</span>
-            &mdash;
-        
-    
+        <span class="phpdocumentor-signature__response_type">string</span>
+            </section>
+
 </article>
                     <article
         class="phpdocumentor-element
@@ -2114,11 +2129,12 @@ we don&#039;t know if the &#039;read&#039; database is up to date so be on the s
     <h4 class="phpdocumentor-element__name" id="method_escape_string_like">
         escape_string_like()
         <a href="classes/vB-Database.html#method_escape_string_like" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/database.php"><a href="files/vb-database.html"><abbr title="vb/database.php">database.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">887</span>
+    <span class="phpdocumentor-element-found-in__line">884</span>
 
     </aside>
 
@@ -2128,6 +2144,8 @@ we don&#039;t know if the &#039;read&#039; database is up to date so be on the s
     <span class="phpdocumentor-signature__visibility">public</span>
                     <span class="phpdocumentor-signature__name">escape_string_like</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$string</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">string</span></code>
 
+    <div class="phpdocumentor-label-line">
+        </div>
     
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
     <dl class="phpdocumentor-argument-list">
@@ -2136,18 +2154,17 @@ we don&#039;t know if the &#039;read&#039; database is up to date so be on the s
                 : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
                             </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
+                
             </dd>
             </dl>
 
     
 
+            <section>
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">string</span>
-            &mdash;
-        
-    
+        <span class="phpdocumentor-signature__response_type">string</span>
+            </section>
+
 </article>
                     <article
         class="phpdocumentor-element
@@ -2158,11 +2175,12 @@ we don&#039;t know if the &#039;read&#039; database is up to date so be on the s
     <h4 class="phpdocumentor-element__name" id="method_fetch_array">
         fetch_array()
         <a href="classes/vB-Database.html#method_fetch_array" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/database.php"><a href="files/vb-database.html"><abbr title="vb/database.php">database.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">914</span>
+    <span class="phpdocumentor-element-found-in__line">911</span>
 
     </aside>
 
@@ -2172,6 +2190,8 @@ we don&#039;t know if the &#039;read&#039; database is up to date so be on the s
     <span class="phpdocumentor-signature__visibility">public</span>
                     <span class="phpdocumentor-signature__name">fetch_array</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$queryresult</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$type</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">self::DBARRAY_ASSOC</span><span> ]</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">array&lt;string|int, mixed&gt;</span></code>
 
+    <div class="phpdocumentor-label-line">
+        </div>
         <section class="phpdocumentor-description"><p>The value of $type defines whether the array will have numeric or associative keys, or both</p>
 </section>
 
@@ -2182,26 +2202,24 @@ we don&#039;t know if the &#039;read&#039; database is up to date so be on the s
                 : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
                             </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
+                
             </dd>
                     <dt class="phpdocumentor-argument-list__entry">
                 <span class="phpdocumentor-signature__argument__name">$type</span>
                 : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
                  = <span class="phpdocumentor-signature__argument__default-value">self::DBARRAY_ASSOC</span>            </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
+                
             </dd>
             </dl>
 
     
 
+            <section>
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">array&lt;string|int, mixed&gt;</span>
-            &mdash;
-        
-    
+        <span class="phpdocumentor-signature__response_type">array&lt;string|int, mixed&gt;</span>
+            </section>
+
 </article>
                     <article
         class="phpdocumentor-element
@@ -2212,11 +2230,12 @@ we don&#039;t know if the &#039;read&#039; database is up to date so be on the s
     <h4 class="phpdocumentor-element__name" id="method_fetch_field">
         fetch_field()
         <a href="classes/vB-Database.html#method_fetch_field" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/database.php"><a href="files/vb-database.html"><abbr title="vb/database.php">database.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">939</span>
+    <span class="phpdocumentor-element-found-in__line">936</span>
 
     </aside>
 
@@ -2226,6 +2245,8 @@ we don&#039;t know if the &#039;read&#039; database is up to date so be on the s
     <span class="phpdocumentor-signature__visibility">public</span>
                     <span class="phpdocumentor-signature__name">fetch_field</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$queryresult</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">array&lt;string|int, mixed&gt;</span></code>
 
+    <div class="phpdocumentor-label-line">
+        </div>
     
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
     <dl class="phpdocumentor-argument-list">
@@ -2234,18 +2255,17 @@ we don&#039;t know if the &#039;read&#039; database is up to date so be on the s
                 : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
                             </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
+                
             </dd>
             </dl>
 
     
 
+            <section>
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">array&lt;string|int, mixed&gt;</span>
-            &mdash;
-        
-    
+        <span class="phpdocumentor-signature__response_type">array&lt;string|int, mixed&gt;</span>
+            </section>
+
 </article>
                     <article
         class="phpdocumentor-element
@@ -2256,11 +2276,12 @@ we don&#039;t know if the &#039;read&#039; database is up to date so be on the s
     <h4 class="phpdocumentor-element__name" id="method_fetch_my_query_status">
         fetch_my_query_status()
         <a href="classes/vB-Database.html#method_fetch_my_query_status" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/database.php"><a href="files/vb-database.html"><abbr title="vb/database.php">database.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">1540</span>
+    <span class="phpdocumentor-element-found-in__line">1538</span>
 
     </aside>
 
@@ -2269,15 +2290,12 @@ we don&#039;t know if the &#039;read&#039; database is up to date so be on the s
     <span class="phpdocumentor-signature__visibility">public</span>
                     <span class="phpdocumentor-signature__name">fetch_my_query_status</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
 
-        <section class="phpdocumentor-description"></section>
-
+    <div class="phpdocumentor-label-line">
+        </div>
     
     
+    
 
-        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">mixed</span>
-            &mdash;
-        
     
 </article>
                     <article
@@ -2289,11 +2307,12 @@ we don&#039;t know if the &#039;read&#039; database is up to date so be on the s
     <h4 class="phpdocumentor-element__name" id="method_fetch_row">
         fetch_row()
         <a href="classes/vB-Database.html#method_fetch_row" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/database.php"><a href="files/vb-database.html"><abbr title="vb/database.php">database.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">926</span>
+    <span class="phpdocumentor-element-found-in__line">923</span>
 
     </aside>
 
@@ -2303,6 +2322,8 @@ we don&#039;t know if the &#039;read&#039; database is up to date so be on the s
     <span class="phpdocumentor-signature__visibility">public</span>
                     <span class="phpdocumentor-signature__name">fetch_row</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$queryresult</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">array&lt;string|int, mixed&gt;</span></code>
 
+    <div class="phpdocumentor-label-line">
+        </div>
     
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
     <dl class="phpdocumentor-argument-list">
@@ -2311,18 +2332,17 @@ we don&#039;t know if the &#039;read&#039; database is up to date so be on the s
                 : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
                             </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
+                
             </dd>
             </dl>
 
     
 
+            <section>
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">array&lt;string|int, mixed&gt;</span>
-            &mdash;
-        
-    
+        <span class="phpdocumentor-signature__response_type">array&lt;string|int, mixed&gt;</span>
+            </section>
+
 </article>
                     <article
         class="phpdocumentor-element
@@ -2333,11 +2353,12 @@ we don&#039;t know if the &#039;read&#039; database is up to date so be on the s
     <h4 class="phpdocumentor-element__name" id="method_fetchInTransaction">
         fetchInTransaction()
         <a href="classes/vB-Database.html#method_fetchInTransaction" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/database.php"><a href="files/vb-database.html"><abbr title="vb/database.php">database.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">426</span>
+    <span class="phpdocumentor-element-found-in__line">425</span>
 
     </aside>
 
@@ -2347,14 +2368,12 @@ we don&#039;t know if the &#039;read&#039; database is up to date so be on the s
     <span class="phpdocumentor-signature__visibility">public</span>
                     <span class="phpdocumentor-signature__name">fetchInTransaction</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
 
+    <div class="phpdocumentor-label-line">
+        </div>
     
     
     
 
-        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">mixed</span>
-            &mdash;
-        
     
 </article>
                     <article
@@ -2366,11 +2385,12 @@ we don&#039;t know if the &#039;read&#039; database is up to date so be on the s
     <h4 class="phpdocumentor-element__name" id="method_field_name">
         field_name()
         <a href="classes/vB-Database.html#method_field_name" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/database.php"><a href="files/vb-database.html"><abbr title="vb/database.php">database.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">833</span>
+    <span class="phpdocumentor-element-found-in__line">830</span>
 
     </aside>
 
@@ -2380,6 +2400,8 @@ we don&#039;t know if the &#039;read&#039; database is up to date so be on the s
     <span class="phpdocumentor-signature__visibility">public</span>
                     <span class="phpdocumentor-signature__name">field_name</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$queryresult</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$index</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">string</span></code>
 
+    <div class="phpdocumentor-label-line">
+        </div>
     
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
     <dl class="phpdocumentor-argument-list">
@@ -2388,26 +2410,24 @@ we don&#039;t know if the &#039;read&#039; database is up to date so be on the s
                 : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
                             </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
+                
             </dd>
                     <dt class="phpdocumentor-argument-list__entry">
                 <span class="phpdocumentor-signature__argument__name">$index</span>
                 : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
                             </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
+                
             </dd>
             </dl>
 
     
 
+            <section>
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">string</span>
-            &mdash;
-        
-    
+        <span class="phpdocumentor-signature__response_type">string</span>
+            </section>
+
 </article>
                     <article
         class="phpdocumentor-element
@@ -2418,11 +2438,12 @@ we don&#039;t know if the &#039;read&#039; database is up to date so be on the s
     <h4 class="phpdocumentor-element__name" id="method_force_sql_mode">
         force_sql_mode()
         <a href="classes/vB-Database.html#method_force_sql_mode" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/database.php"><a href="files/vb-database.html"><abbr title="vb/database.php">database.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">547</span>
+    <span class="phpdocumentor-element-found-in__line">546</span>
 
     </aside>
 
@@ -2433,6 +2454,8 @@ incompatible with vBulletin. Applies to MySQL 4.1+.</p>
     <span class="phpdocumentor-signature__visibility">public</span>
                     <span class="phpdocumentor-signature__name">force_sql_mode</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$mode</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
 
+    <div class="phpdocumentor-label-line">
+        </div>
     
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
     <dl class="phpdocumentor-argument-list">
@@ -2441,17 +2464,12 @@ incompatible with vBulletin. Applies to MySQL 4.1+.</p>
                 : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
                             </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
+                
             </dd>
             </dl>
 
     
 
-        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">mixed</span>
-            &mdash;
-        
     
 </article>
                     <article
@@ -2463,11 +2481,12 @@ incompatible with vBulletin. Applies to MySQL 4.1+.</p>
     <h4 class="phpdocumentor-element__name" id="method_found_rows">
         found_rows()
         <a href="classes/vB-Database.html#method_found_rows" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/database.php"><a href="files/vb-database.html"><abbr title="vb/database.php">database.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">664</span>
+    <span class="phpdocumentor-element-found-in__line">661</span>
 
     </aside>
 
@@ -2477,15 +2496,17 @@ incompatible with vBulletin. Applies to MySQL 4.1+.</p>
     <span class="phpdocumentor-signature__visibility">public</span>
                     <span class="phpdocumentor-signature__name">found_rows</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">int</span></code>
 
+    <div class="phpdocumentor-label-line">
+        </div>
     
     
     
 
+            <section>
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">int</span>
-            &mdash;
-        
-    
+        <span class="phpdocumentor-signature__response_type">int</span>
+            </section>
+
 </article>
                     <article
         class="phpdocumentor-element
@@ -2496,11 +2517,12 @@ incompatible with vBulletin. Applies to MySQL 4.1+.</p>
     <h4 class="phpdocumentor-element__name" id="method_free_result">
         free_result()
         <a href="classes/vB-Database.html#method_free_result" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/database.php"><a href="files/vb-database.html"><abbr title="vb/database.php">database.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">965</span>
+    <span class="phpdocumentor-element-found-in__line">962</span>
 
     </aside>
 
@@ -2510,6 +2532,8 @@ incompatible with vBulletin. Applies to MySQL 4.1+.</p>
     <span class="phpdocumentor-signature__visibility">public</span>
                     <span class="phpdocumentor-signature__name">free_result</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$queryresult</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">bool</span></code>
 
+    <div class="phpdocumentor-label-line">
+        </div>
     
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
     <dl class="phpdocumentor-argument-list">
@@ -2518,18 +2542,17 @@ incompatible with vBulletin. Applies to MySQL 4.1+.</p>
                 : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
                             </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
+                
             </dd>
             </dl>
 
     
 
+            <section>
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">bool</span>
-            &mdash;
-        
-    
+        <span class="phpdocumentor-signature__response_type">bool</span>
+            </section>
+
 </article>
                     <article
         class="phpdocumentor-element
@@ -2540,11 +2563,12 @@ incompatible with vBulletin. Applies to MySQL 4.1+.</p>
     <h4 class="phpdocumentor-element__name" id="method_getExplain">
         getExplain()
         <a href="classes/vB-Database.html#method_getExplain" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/database.php"><a href="files/vb-database.html"><abbr title="vb/database.php">database.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">1419</span>
+    <span class="phpdocumentor-element-found-in__line">1417</span>
 
     </aside>
 
@@ -2554,14 +2578,12 @@ incompatible with vBulletin. Applies to MySQL 4.1+.</p>
     <span class="phpdocumentor-signature__visibility">public</span>
                     <span class="phpdocumentor-signature__name">getExplain</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
 
+    <div class="phpdocumentor-label-line">
+        </div>
     
     
     
 
-        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">mixed</span>
-            &mdash;
-        
     
 </article>
                     <article
@@ -2573,11 +2595,12 @@ incompatible with vBulletin. Applies to MySQL 4.1+.</p>
     <h4 class="phpdocumentor-element__name" id="method_hasConfigCharset">
         hasConfigCharset()
         <a href="classes/vB-Database.html#method_hasConfigCharset" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/database.php"><a href="files/vb-database.html"><abbr title="vb/database.php">database.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">328</span>
+    <span class="phpdocumentor-element-found-in__line">327</span>
 
     </aside>
 
@@ -2587,14 +2610,12 @@ incompatible with vBulletin. Applies to MySQL 4.1+.</p>
     <span class="phpdocumentor-signature__visibility">public</span>
                     <span class="phpdocumentor-signature__name">hasConfigCharset</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
 
+    <div class="phpdocumentor-label-line">
+        </div>
     
     
     
 
-        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">mixed</span>
-            &mdash;
-        
     
 </article>
                     <article
@@ -2606,11 +2627,12 @@ incompatible with vBulletin. Applies to MySQL 4.1+.</p>
     <h4 class="phpdocumentor-element__name" id="method_hide_errors">
         hide_errors()
         <a href="classes/vB-Database.html#method_hide_errors" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/database.php"><a href="files/vb-database.html"><abbr title="vb/database.php">database.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">1087</span>
+    <span class="phpdocumentor-element-found-in__line">1084</span>
 
     </aside>
 
@@ -2620,14 +2642,12 @@ incompatible with vBulletin. Applies to MySQL 4.1+.</p>
     <span class="phpdocumentor-signature__visibility">public</span>
                     <span class="phpdocumentor-signature__name">hide_errors</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
 
+    <div class="phpdocumentor-label-line">
+        </div>
     
     
     
 
-        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">mixed</span>
-            &mdash;
-        
     
 </article>
                     <article
@@ -2639,11 +2659,12 @@ incompatible with vBulletin. Applies to MySQL 4.1+.</p>
     <h4 class="phpdocumentor-element__name" id="method_insert_id">
         insert_id()
         <a href="classes/vB-Database.html#method_insert_id" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/database.php"><a href="files/vb-database.html"><abbr title="vb/database.php">database.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">843</span>
+    <span class="phpdocumentor-element-found-in__line">840</span>
 
     </aside>
 
@@ -2653,15 +2674,17 @@ incompatible with vBulletin. Applies to MySQL 4.1+.</p>
     <span class="phpdocumentor-signature__visibility">public</span>
                     <span class="phpdocumentor-signature__name">insert_id</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">int</span></code>
 
+    <div class="phpdocumentor-label-line">
+        </div>
     
     
     
 
+            <section>
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">int</span>
-            &mdash;
-        
-    
+        <span class="phpdocumentor-signature__response_type">int</span>
+            </section>
+
 </article>
                     <article
         class="phpdocumentor-element
@@ -2672,11 +2695,12 @@ incompatible with vBulletin. Applies to MySQL 4.1+.</p>
     <h4 class="phpdocumentor-element__name" id="method_insert_multiple">
         insert_multiple()
         <a href="classes/vB-Database.html#method_insert_multiple" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/database.php"><a href="files/vb-database.html"><abbr title="vb/database.php">database.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">730</span>
+    <span class="phpdocumentor-element-found-in__line">727</span>
 
     </aside>
 
@@ -2686,6 +2710,8 @@ incompatible with vBulletin. Applies to MySQL 4.1+.</p>
     <span class="phpdocumentor-signature__visibility">public</span>
                     <span class="phpdocumentor-signature__name">insert_multiple</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$sql</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__reference-operator">&amp;</span><span class="phpdocumentor-signature__argument__name">$values</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$buffered</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
 
+    <div class="phpdocumentor-label-line">
+        </div>
     
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
     <dl class="phpdocumentor-argument-list">
@@ -2694,33 +2720,26 @@ incompatible with vBulletin. Applies to MySQL 4.1+.</p>
                 : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
                             </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
+                
             </dd>
                     <dt class="phpdocumentor-argument-list__entry">
                 <span class="phpdocumentor-signature__argument__name">$values</span>
                 : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
                             </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
+                
             </dd>
                     <dt class="phpdocumentor-argument-list__entry">
                 <span class="phpdocumentor-signature__argument__name">$buffered</span>
                 : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
                             </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
+                
             </dd>
             </dl>
 
     
 
-        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">mixed</span>
-            &mdash;
-        
     
 </article>
                     <article
@@ -2732,11 +2751,12 @@ incompatible with vBulletin. Applies to MySQL 4.1+.</p>
     <h4 class="phpdocumentor-element__name" id="method_is_install_valid">
         is_install_valid()
         <a href="classes/vB-Database.html#method_is_install_valid" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/database.php"><a href="files/vb-database.html"><abbr title="vb/database.php">database.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">457</span>
+    <span class="phpdocumentor-element-found-in__line">456</span>
 
     </aside>
 
@@ -2745,15 +2765,12 @@ incompatible with vBulletin. Applies to MySQL 4.1+.</p>
     <span class="phpdocumentor-signature__visibility">public</span>
                     <span class="phpdocumentor-signature__name">is_install_valid</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
 
-        <section class="phpdocumentor-description"></section>
-
+    <div class="phpdocumentor-label-line">
+        </div>
     
     
+    
 
-        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">mixed</span>
-            &mdash;
-        
     
 </article>
                     <article
@@ -2765,11 +2782,12 @@ incompatible with vBulletin. Applies to MySQL 4.1+.</p>
     <h4 class="phpdocumentor-element__name" id="method_is_valid">
         is_valid()
         <a href="classes/vB-Database.html#method_is_valid" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/database.php"><a href="files/vb-database.html"><abbr title="vb/database.php">database.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">452</span>
+    <span class="phpdocumentor-element-found-in__line">451</span>
 
     </aside>
 
@@ -2778,15 +2796,12 @@ incompatible with vBulletin. Applies to MySQL 4.1+.</p>
     <span class="phpdocumentor-signature__visibility">public</span>
                     <span class="phpdocumentor-signature__name">is_valid</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
 
-        <section class="phpdocumentor-description"></section>
-
+    <div class="phpdocumentor-label-line">
+        </div>
     
     
+    
 
-        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">mixed</span>
-            &mdash;
-        
     
 </article>
                     <article
@@ -2798,11 +2813,12 @@ incompatible with vBulletin. Applies to MySQL 4.1+.</p>
     <h4 class="phpdocumentor-element__name" id="method_isExplainEmpty">
         isExplainEmpty()
         <a href="classes/vB-Database.html#method_isExplainEmpty" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/database.php"><a href="files/vb-database.html"><abbr title="vb/database.php">database.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">1535</span>
+    <span class="phpdocumentor-element-found-in__line">1533</span>
 
     </aside>
 
@@ -2812,15 +2828,17 @@ incompatible with vBulletin. Applies to MySQL 4.1+.</p>
     <span class="phpdocumentor-signature__visibility">public</span>
                     <span class="phpdocumentor-signature__name">isExplainEmpty</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">bool</span></code>
 
+    <div class="phpdocumentor-label-line">
+        </div>
     
     
     
 
+            <section>
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">bool</span>
-            &mdash;
-        
-    
+        <span class="phpdocumentor-signature__response_type">bool</span>
+            </section>
+
 </article>
                     <article
         class="phpdocumentor-element
@@ -2831,11 +2849,12 @@ incompatible with vBulletin. Applies to MySQL 4.1+.</p>
     <h4 class="phpdocumentor-element__name" id="method_lock_tables">
         lock_tables()
         <a href="classes/vB-Database.html#method_lock_tables" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/database.php"><a href="files/vb-database.html"><abbr title="vb/database.php">database.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">1015</span>
+    <span class="phpdocumentor-element-found-in__line">1012</span>
 
     </aside>
 
@@ -2845,6 +2864,8 @@ incompatible with vBulletin. Applies to MySQL 4.1+.</p>
     <span class="phpdocumentor-signature__visibility">public</span>
                     <span class="phpdocumentor-signature__name">lock_tables</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$tablelist</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
 
+    <div class="phpdocumentor-label-line">
+        </div>
     
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
     <dl class="phpdocumentor-argument-list">
@@ -2853,17 +2874,12 @@ incompatible with vBulletin. Applies to MySQL 4.1+.</p>
                 : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
                             </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
+                
             </dd>
             </dl>
 
     
 
-        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">mixed</span>
-            &mdash;
-        
     
 </article>
                     <article
@@ -2875,11 +2891,12 @@ incompatible with vBulletin. Applies to MySQL 4.1+.</p>
     <h4 class="phpdocumentor-element__name" id="method_num_fields">
         num_fields()
         <a href="classes/vB-Database.html#method_num_fields" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/database.php"><a href="files/vb-database.html"><abbr title="vb/database.php">database.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">820</span>
+    <span class="phpdocumentor-element-found-in__line">817</span>
 
     </aside>
 
@@ -2889,6 +2906,8 @@ incompatible with vBulletin. Applies to MySQL 4.1+.</p>
     <span class="phpdocumentor-signature__visibility">public</span>
                     <span class="phpdocumentor-signature__name">num_fields</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$queryresult</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">int</span></code>
 
+    <div class="phpdocumentor-label-line">
+        </div>
     
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
     <dl class="phpdocumentor-argument-list">
@@ -2897,18 +2916,17 @@ incompatible with vBulletin. Applies to MySQL 4.1+.</p>
                 : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
                             </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
+                
             </dd>
             </dl>
 
     
 
+            <section>
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">int</span>
-            &mdash;
-        
-    
+        <span class="phpdocumentor-signature__response_type">int</span>
+            </section>
+
 </article>
                     <article
         class="phpdocumentor-element
@@ -2919,11 +2937,12 @@ incompatible with vBulletin. Applies to MySQL 4.1+.</p>
     <h4 class="phpdocumentor-element__name" id="method_num_rows">
         num_rows()
         <a href="classes/vB-Database.html#method_num_rows" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/database.php"><a href="files/vb-database.html"><abbr title="vb/database.php">database.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">808</span>
+    <span class="phpdocumentor-element-found-in__line">805</span>
 
     </aside>
 
@@ -2933,6 +2952,8 @@ incompatible with vBulletin. Applies to MySQL 4.1+.</p>
     <span class="phpdocumentor-signature__visibility">public</span>
                     <span class="phpdocumentor-signature__name">num_rows</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$queryresult</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">int</span></code>
 
+    <div class="phpdocumentor-label-line">
+        </div>
     
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
     <dl class="phpdocumentor-argument-list">
@@ -2941,18 +2962,17 @@ incompatible with vBulletin. Applies to MySQL 4.1+.</p>
                 : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
                             </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
+                
             </dd>
             </dl>
 
     
 
+            <section>
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">int</span>
-            &mdash;
-        
-    
+        <span class="phpdocumentor-signature__response_type">int</span>
+            </section>
+
 </article>
                     <article
         class="phpdocumentor-element
@@ -2963,11 +2983,12 @@ incompatible with vBulletin. Applies to MySQL 4.1+.</p>
     <h4 class="phpdocumentor-element__name" id="method_ping">
         ping()
         <a href="classes/vB-Database.html#method_ping" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/database.php"><a href="files/vb-database.html"><abbr title="vb/database.php">database.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">985</span>
+    <span class="phpdocumentor-element-found-in__line">982</span>
 
     </aside>
 
@@ -2978,14 +2999,12 @@ Don&#039;t use this in a manner that could cause a loop condition</p>
     <span class="phpdocumentor-signature__visibility">public</span>
                     <span class="phpdocumentor-signature__name">ping</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
 
+    <div class="phpdocumentor-label-line">
+        </div>
     
     
     
 
-        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">mixed</span>
-            &mdash;
-        
     
 </article>
                     <article
@@ -2997,11 +3016,12 @@ Don&#039;t use this in a manner that could cause a loop condition</p>
     <h4 class="phpdocumentor-element__name" id="method_query">
         query()
         <a href="classes/vB-Database.html#method_query" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/database.php"><a href="files/vb-database.html"><abbr title="vb/database.php">database.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">629</span>
+    <span class="phpdocumentor-element-found-in__line">628</span>
 
     </aside>
 
@@ -3011,6 +3031,8 @@ Don&#039;t use this in a manner that could cause a loop condition</p>
     <span class="phpdocumentor-signature__visibility">public</span>
                     <span class="phpdocumentor-signature__name">query</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$sql</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$buffered</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">true</span><span> ]</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">string</span></code>
 
+    <div class="phpdocumentor-label-line">
+        </div>
     
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
     <dl class="phpdocumentor-argument-list">
@@ -3019,23 +3041,22 @@ Don&#039;t use this in a manner that could cause a loop condition</p>
                 : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
                             </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
+                
             </dd>
                     <dt class="phpdocumentor-argument-list__entry">
                 <span class="phpdocumentor-signature__argument__name">$buffered</span>
                 : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
                  = <span class="phpdocumentor-signature__argument__default-value">true</span>            </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
+                
             </dd>
             </dl>
 
     
     <h5 class="phpdocumentor-tag-list__heading" id="tags">
         Tags
-        <a href="#tags" class="headerlink"><i class="fas fa-link"></i></a>
+        <a href="classes/vB-Database.html#method_query#tags" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h5>
     <dl class="phpdocumentor-tag-list">
                                     <dt class="phpdocumentor-tag-list__entry">
@@ -3047,13 +3068,13 @@ Don&#039;t use this in a manner that could cause a loop condition</p>
 </section>
 
                                     </dd>
-                        </dl>
+                                            </dl>
 
+            <section>
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">string</span>
-            &mdash;
-        
-    
+        <span class="phpdocumentor-signature__response_type">string</span>
+            </section>
+
 </article>
                     <article
         class="phpdocumentor-element
@@ -3064,11 +3085,12 @@ Don&#039;t use this in a manner that could cause a loop condition</p>
     <h4 class="phpdocumentor-element__name" id="method_query_first">
         query_first()
         <a href="classes/vB-Database.html#method_query_first" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/database.php"><a href="files/vb-database.html"><abbr title="vb/database.php">database.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">643</span>
+    <span class="phpdocumentor-element-found-in__line">642</span>
 
     </aside>
 
@@ -3076,8 +3098,10 @@ Don&#039;t use this in a manner that could cause a loop condition</p>
 
     <code class="phpdocumentor-code phpdocumentor-signature ">
     <span class="phpdocumentor-signature__visibility">public</span>
-                <span class="phpdocumentor-signature__reference-operator">&amp;</span>    <span class="phpdocumentor-signature__name">query_first</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$sql</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$type</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">self::DBARRAY_ASSOC</span><span> ]</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">array&lt;string|int, mixed&gt;</span></code>
+                    <span class="phpdocumentor-signature__name">query_first</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$sql</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$type</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">self::DBARRAY_ASSOC</span><span> ]</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">array&lt;string|int, mixed&gt;</span></code>
 
+    <div class="phpdocumentor-label-line">
+        </div>
     
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
     <dl class="phpdocumentor-argument-list">
@@ -3086,26 +3110,24 @@ Don&#039;t use this in a manner that could cause a loop condition</p>
                 : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
                             </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
+                
             </dd>
                     <dt class="phpdocumentor-argument-list__entry">
                 <span class="phpdocumentor-signature__argument__name">$type</span>
                 : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
                  = <span class="phpdocumentor-signature__argument__default-value">self::DBARRAY_ASSOC</span>            </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
+                
             </dd>
             </dl>
 
     
 
+            <section>
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">array&lt;string|int, mixed&gt;</span>
-            &mdash;
-        
-    
+        <span class="phpdocumentor-signature__response_type">array&lt;string|int, mixed&gt;</span>
+            </section>
+
 </article>
                     <article
         class="phpdocumentor-element
@@ -3116,11 +3138,12 @@ Don&#039;t use this in a manner that could cause a loop condition</p>
     <h4 class="phpdocumentor-element__name" id="method_query_first_slave">
         query_first_slave()
         <a href="classes/vB-Database.html#method_query_first_slave" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/database.php"><a href="files/vb-database.html"><abbr title="vb/database.php">database.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">682</span>
+    <span class="phpdocumentor-element-found-in__line">679</span>
 
     </aside>
 
@@ -3130,6 +3153,8 @@ Don&#039;t use this in a manner that could cause a loop condition</p>
     <span class="phpdocumentor-signature__visibility">public</span>
                 <span class="phpdocumentor-signature__reference-operator">&amp;</span>    <span class="phpdocumentor-signature__name">query_first_slave</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$sql</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$type</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">self::DBARRAY_ASSOC</span><span> ]</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">array&lt;string|int, mixed&gt;</span></code>
 
+    <div class="phpdocumentor-label-line">
+        </div>
     
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
     <dl class="phpdocumentor-argument-list">
@@ -3138,26 +3163,24 @@ Don&#039;t use this in a manner that could cause a loop condition</p>
                 : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
                             </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
+                
             </dd>
                     <dt class="phpdocumentor-argument-list__entry">
                 <span class="phpdocumentor-signature__argument__name">$type</span>
                 : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
                  = <span class="phpdocumentor-signature__argument__default-value">self::DBARRAY_ASSOC</span>            </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
+                
             </dd>
             </dl>
 
     
 
+            <section>
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">array&lt;string|int, mixed&gt;</span>
-            &mdash;
-        
-    
+        <span class="phpdocumentor-signature__response_type">array&lt;string|int, mixed&gt;</span>
+            </section>
+
 </article>
                     <article
         class="phpdocumentor-element
@@ -3168,11 +3191,12 @@ Don&#039;t use this in a manner that could cause a loop condition</p>
     <h4 class="phpdocumentor-element__name" id="method_query_insert">
         query_insert()
         <a href="classes/vB-Database.html#method_query_insert" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/database.php"><a href="files/vb-database.html"><abbr title="vb/database.php">database.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">701</span>
+    <span class="phpdocumentor-element-found-in__line">698</span>
 
     </aside>
 
@@ -3182,6 +3206,8 @@ Don&#039;t use this in a manner that could cause a loop condition</p>
     <span class="phpdocumentor-signature__visibility">public</span>
                 <span class="phpdocumentor-signature__reference-operator">&amp;</span>    <span class="phpdocumentor-signature__name">query_insert</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$table</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$fields</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__reference-operator">&amp;</span><span class="phpdocumentor-signature__argument__name">$values</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$buffered</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">true</span><span> ]</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
 
+    <div class="phpdocumentor-label-line">
+        </div>
     
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
     <dl class="phpdocumentor-argument-list">
@@ -3190,41 +3216,33 @@ Don&#039;t use this in a manner that could cause a loop condition</p>
                 : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
                             </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
+                
             </dd>
                     <dt class="phpdocumentor-argument-list__entry">
                 <span class="phpdocumentor-signature__argument__name">$fields</span>
                 : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
                             </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
+                
             </dd>
                     <dt class="phpdocumentor-argument-list__entry">
                 <span class="phpdocumentor-signature__argument__name">$values</span>
                 : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
                             </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
+                
             </dd>
                     <dt class="phpdocumentor-argument-list__entry">
                 <span class="phpdocumentor-signature__argument__name">$buffered</span>
                 : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
                  = <span class="phpdocumentor-signature__argument__default-value">true</span>            </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
+                
             </dd>
             </dl>
 
     
 
-        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">mixed</span>
-            &mdash;
-        
     
 </article>
                     <article
@@ -3236,11 +3254,12 @@ Don&#039;t use this in a manner that could cause a loop condition</p>
     <h4 class="phpdocumentor-element__name" id="method_query_read">
         query_read()
         <a href="classes/vB-Database.html#method_query_read" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/database.php"><a href="files/vb-database.html"><abbr title="vb/database.php">database.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">599</span>
+    <span class="phpdocumentor-element-found-in__line">598</span>
 
     </aside>
 
@@ -3251,6 +3270,8 @@ we don&#039;t know if the &#039;read&#039; database is up to date so be on the s
     <span class="phpdocumentor-signature__visibility">public</span>
                     <span class="phpdocumentor-signature__name">query_read</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$sql</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$buffered</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">true</span><span> ]</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">string</span></code>
 
+    <div class="phpdocumentor-label-line">
+        </div>
     
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
     <dl class="phpdocumentor-argument-list">
@@ -3259,26 +3280,24 @@ we don&#039;t know if the &#039;read&#039; database is up to date so be on the s
                 : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
                             </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
+                
             </dd>
                     <dt class="phpdocumentor-argument-list__entry">
                 <span class="phpdocumentor-signature__argument__name">$buffered</span>
                 : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
                  = <span class="phpdocumentor-signature__argument__default-value">true</span>            </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
+                
             </dd>
             </dl>
 
     
 
+            <section>
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">string</span>
-            &mdash;
-        
-    
+        <span class="phpdocumentor-signature__response_type">string</span>
+            </section>
+
 </article>
                     <article
         class="phpdocumentor-element
@@ -3289,11 +3308,12 @@ we don&#039;t know if the &#039;read&#039; database is up to date so be on the s
     <h4 class="phpdocumentor-element__name" id="method_query_read_slave">
         query_read_slave()
         <a href="classes/vB-Database.html#method_query_read_slave" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/database.php"><a href="files/vb-database.html"><abbr title="vb/database.php">database.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">613</span>
+    <span class="phpdocumentor-element-found-in__line">612</span>
 
     </aside>
 
@@ -3303,6 +3323,8 @@ we don&#039;t know if the &#039;read&#039; database is up to date so be on the s
     <span class="phpdocumentor-signature__visibility">public</span>
                     <span class="phpdocumentor-signature__name">query_read_slave</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$sql</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$buffered</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">true</span><span> ]</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">string</span></code>
 
+    <div class="phpdocumentor-label-line">
+        </div>
     
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
     <dl class="phpdocumentor-argument-list">
@@ -3311,26 +3333,24 @@ we don&#039;t know if the &#039;read&#039; database is up to date so be on the s
                 : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
                             </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
+                
             </dd>
                     <dt class="phpdocumentor-argument-list__entry">
                 <span class="phpdocumentor-signature__argument__name">$buffered</span>
                 : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
                  = <span class="phpdocumentor-signature__argument__default-value">true</span>            </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
+                
             </dd>
             </dl>
 
     
 
+            <section>
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">string</span>
-            &mdash;
-        
-    
+        <span class="phpdocumentor-signature__response_type">string</span>
+            </section>
+
 </article>
                     <article
         class="phpdocumentor-element
@@ -3341,11 +3361,12 @@ we don&#039;t know if the &#039;read&#039; database is up to date so be on the s
     <h4 class="phpdocumentor-element__name" id="method_query_replace">
         query_replace()
         <a href="classes/vB-Database.html#method_query_replace" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/database.php"><a href="files/vb-database.html"><abbr title="vb/database.php">database.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">716</span>
+    <span class="phpdocumentor-element-found-in__line">713</span>
 
     </aside>
 
@@ -3355,6 +3376,8 @@ we don&#039;t know if the &#039;read&#039; database is up to date so be on the s
     <span class="phpdocumentor-signature__visibility">public</span>
                 <span class="phpdocumentor-signature__reference-operator">&amp;</span>    <span class="phpdocumentor-signature__name">query_replace</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$table</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$fields</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__reference-operator">&amp;</span><span class="phpdocumentor-signature__argument__name">$values</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$buffered</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">true</span><span> ]</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
 
+    <div class="phpdocumentor-label-line">
+        </div>
     
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
     <dl class="phpdocumentor-argument-list">
@@ -3363,41 +3386,33 @@ we don&#039;t know if the &#039;read&#039; database is up to date so be on the s
                 : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
                             </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
+                
             </dd>
                     <dt class="phpdocumentor-argument-list__entry">
                 <span class="phpdocumentor-signature__argument__name">$fields</span>
                 : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
                             </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
+                
             </dd>
                     <dt class="phpdocumentor-argument-list__entry">
                 <span class="phpdocumentor-signature__argument__name">$values</span>
                 : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
                             </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
+                
             </dd>
                     <dt class="phpdocumentor-argument-list__entry">
                 <span class="phpdocumentor-signature__argument__name">$buffered</span>
                 : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
                  = <span class="phpdocumentor-signature__argument__default-value">true</span>            </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
+                
             </dd>
             </dl>
 
     
 
-        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">mixed</span>
-            &mdash;
-        
     
 </article>
                     <article
@@ -3409,11 +3424,12 @@ we don&#039;t know if the &#039;read&#039; database is up to date so be on the s
     <h4 class="phpdocumentor-element__name" id="method_query_write">
         query_write()
         <a href="classes/vB-Database.html#method_query_write" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/database.php"><a href="files/vb-database.html"><abbr title="vb/database.php">database.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">584</span>
+    <span class="phpdocumentor-element-found-in__line">583</span>
 
     </aside>
 
@@ -3423,6 +3439,8 @@ we don&#039;t know if the &#039;read&#039; database is up to date so be on the s
     <span class="phpdocumentor-signature__visibility">public</span>
                     <span class="phpdocumentor-signature__name">query_write</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$sql</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$buffered</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">true</span><span> ]</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">string</span></code>
 
+    <div class="phpdocumentor-label-line">
+        </div>
     
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
     <dl class="phpdocumentor-argument-list">
@@ -3431,26 +3449,24 @@ we don&#039;t know if the &#039;read&#039; database is up to date so be on the s
                 : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
                             </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
+                
             </dd>
                     <dt class="phpdocumentor-argument-list__entry">
                 <span class="phpdocumentor-signature__argument__name">$buffered</span>
                 : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
                  = <span class="phpdocumentor-signature__argument__default-value">true</span>            </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
+                
             </dd>
             </dl>
 
     
 
+            <section>
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">string</span>
-            &mdash;
-        
-    
+        <span class="phpdocumentor-signature__response_type">string</span>
+            </section>
+
 </article>
                     <article
         class="phpdocumentor-element
@@ -3461,11 +3477,12 @@ we don&#039;t know if the &#039;read&#039; database is up to date so be on the s
     <h4 class="phpdocumentor-element__name" id="method_rollbackTransaction">
         rollbackTransaction()
         <a href="classes/vB-Database.html#method_rollbackTransaction" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/database.php"><a href="files/vb-database.html"><abbr title="vb/database.php">database.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">410</span>
+    <span class="phpdocumentor-element-found-in__line">409</span>
 
     </aside>
 
@@ -3475,14 +3492,12 @@ we don&#039;t know if the &#039;read&#039; database is up to date so be on the s
     <span class="phpdocumentor-signature__visibility">public</span>
                     <span class="phpdocumentor-signature__name">rollbackTransaction</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
 
+    <div class="phpdocumentor-label-line">
+        </div>
     
     
     
 
-        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">mixed</span>
-            &mdash;
-        
     
 </article>
                     <article
@@ -3494,11 +3509,12 @@ we don&#039;t know if the &#039;read&#039; database is up to date so be on the s
     <h4 class="phpdocumentor-element__name" id="method_select_db">
         select_db()
         <a href="classes/vB-Database.html#method_select_db" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/database.php"><a href="files/vb-database.html"><abbr title="vb/database.php">database.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">490</span>
+    <span class="phpdocumentor-element-found-in__line">489</span>
 
     </aside>
 
@@ -3508,6 +3524,8 @@ we don&#039;t know if the &#039;read&#039; database is up to date so be on the s
     <span class="phpdocumentor-signature__visibility">public</span>
                     <span class="phpdocumentor-signature__name">select_db</span><span>(</span><span class="phpdocumentor-signature__argument"><span>[</span><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$database</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">&#039;&#039;</span><span> ]</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">bool</span></code>
 
+    <div class="phpdocumentor-label-line">
+        </div>
     
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
     <dl class="phpdocumentor-argument-list">
@@ -3516,18 +3534,17 @@ we don&#039;t know if the &#039;read&#039; database is up to date so be on the s
                 : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
                  = <span class="phpdocumentor-signature__argument__default-value">&#039;&#039;</span>            </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
+                
             </dd>
             </dl>
 
     
 
+            <section>
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">bool</span>
-            &mdash;
-        
-    
+        <span class="phpdocumentor-signature__response_type">bool</span>
+            </section>
+
 </article>
                     <article
         class="phpdocumentor-element
@@ -3538,11 +3555,12 @@ we don&#039;t know if the &#039;read&#039; database is up to date so be on the s
     <h4 class="phpdocumentor-element__name" id="method_select_db_using_dbconfig">
         select_db_using_dbconfig()
         <a href="classes/vB-Database.html#method_select_db_using_dbconfig" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/database.php"><a href="files/vb-database.html"><abbr title="vb/database.php">database.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">385</span>
+    <span class="phpdocumentor-element-found-in__line">384</span>
 
     </aside>
 
@@ -3551,15 +3569,12 @@ we don&#039;t know if the &#039;read&#039; database is up to date so be on the s
     <span class="phpdocumentor-signature__visibility">public</span>
                     <span class="phpdocumentor-signature__name">select_db_using_dbconfig</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
 
-        <section class="phpdocumentor-description"></section>
-
+    <div class="phpdocumentor-label-line">
+        </div>
     
     
+    
 
-        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">mixed</span>
-            &mdash;
-        
     
 </article>
                     <article
@@ -3571,11 +3586,12 @@ we don&#039;t know if the &#039;read&#039; database is up to date so be on the s
     <h4 class="phpdocumentor-element__name" id="method_select_db_wrapper">
         select_db_wrapper()
         <a href="classes/vB-Database.html#method_select_db_wrapper" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/database.php"><a href="files/vb-database.html"><abbr title="vb/database.php">database.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">536</span>
+    <span class="phpdocumentor-element-found-in__line">535</span>
 
     </aside>
 
@@ -3585,6 +3601,8 @@ we don&#039;t know if the &#039;read&#039; database is up to date so be on the s
     <span class="phpdocumentor-signature__visibility">public</span>
                     <span class="phpdocumentor-signature__name">select_db_wrapper</span><span>(</span><span class="phpdocumentor-signature__argument"><span>[</span><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$database</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">&#039;&#039;</span><span> ]</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$link</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">null</span><span> ]</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">bool</span></code>
 
+    <div class="phpdocumentor-label-line">
+        </div>
     
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
     <dl class="phpdocumentor-argument-list">
@@ -3593,26 +3611,24 @@ we don&#039;t know if the &#039;read&#039; database is up to date so be on the s
                 : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
                  = <span class="phpdocumentor-signature__argument__default-value">&#039;&#039;</span>            </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
+                
             </dd>
                     <dt class="phpdocumentor-argument-list__entry">
                 <span class="phpdocumentor-signature__argument__name">$link</span>
                 : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
                  = <span class="phpdocumentor-signature__argument__default-value">null</span>            </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
+                
             </dd>
             </dl>
 
     
 
+            <section>
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">bool</span>
-            &mdash;
-        
-    
+        <span class="phpdocumentor-signature__response_type">bool</span>
+            </section>
+
 </article>
                     <article
         class="phpdocumentor-element
@@ -3623,11 +3639,12 @@ we don&#039;t know if the &#039;read&#039; database is up to date so be on the s
     <h4 class="phpdocumentor-element__name" id="method_show_errors">
         show_errors()
         <a href="classes/vB-Database.html#method_show_errors" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/database.php"><a href="files/vb-database.html"><abbr title="vb/database.php">database.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">1079</span>
+    <span class="phpdocumentor-element-found-in__line">1076</span>
 
     </aside>
 
@@ -3637,14 +3654,12 @@ we don&#039;t know if the &#039;read&#039; database is up to date so be on the s
     <span class="phpdocumentor-signature__visibility">public</span>
                     <span class="phpdocumentor-signature__name">show_errors</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
 
+    <div class="phpdocumentor-label-line">
+        </div>
     
     
     
 
-        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">mixed</span>
-            &mdash;
-        
     
 </article>
                     <article
@@ -3656,11 +3671,12 @@ we don&#039;t know if the &#039;read&#039; database is up to date so be on the s
     <h4 class="phpdocumentor-element__name" id="method_shutdown_query">
         shutdown_query()
         <a href="classes/vB-Database.html#method_shutdown_query" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/database.php"><a href="files/vb-database.html"><abbr title="vb/database.php">database.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">787</span>
+    <span class="phpdocumentor-element-found-in__line">784</span>
 
     </aside>
 
@@ -3670,6 +3686,8 @@ we don&#039;t know if the &#039;read&#039; database is up to date so be on the s
     <span class="phpdocumentor-signature__visibility">public</span>
                     <span class="phpdocumentor-signature__name">shutdown_query</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$sql</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$arraykey</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">-1</span><span> ]</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">bool</span></code>
 
+    <div class="phpdocumentor-label-line">
+        </div>
     
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
     <dl class="phpdocumentor-argument-list">
@@ -3678,26 +3696,24 @@ we don&#039;t know if the &#039;read&#039; database is up to date so be on the s
                 : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
                             </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
+                
             </dd>
                     <dt class="phpdocumentor-argument-list__entry">
                 <span class="phpdocumentor-signature__argument__name">$arraykey</span>
                 : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
                  = <span class="phpdocumentor-signature__argument__default-value">-1</span>            </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
+                
             </dd>
             </dl>
 
     
 
+            <section>
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">bool</span>
-            &mdash;
-        
-    
+        <span class="phpdocumentor-signature__response_type">bool</span>
+            </section>
+
 </article>
                     <article
         class="phpdocumentor-element
@@ -3708,11 +3724,12 @@ we don&#039;t know if the &#039;read&#039; database is up to date so be on the s
     <h4 class="phpdocumentor-element__name" id="method_unlock_tables">
         unlock_tables()
         <a href="classes/vB-Database.html#method_unlock_tables" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/database.php"><a href="files/vb-database.html"><abbr title="vb/database.php">database.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">1040</span>
+    <span class="phpdocumentor-element-found-in__line">1037</span>
 
     </aside>
 
@@ -3722,82 +3739,220 @@ we don&#039;t know if the &#039;read&#039; database is up to date so be on the s
     <span class="phpdocumentor-signature__visibility">public</span>
                     <span class="phpdocumentor-signature__name">unlock_tables</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
 
+    <div class="phpdocumentor-label-line">
+        </div>
     
     
     
 
-        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">mixed</span>
-            &mdash;
-        
     
 </article>
             </section>
 
-        
+        <div class="phpdocumentor-modal" id="source-view">
+    <div class="phpdocumentor-modal-bg" data-exit-button></div>
+    <div class="phpdocumentor-modal-container">
+        <div class="phpdocumentor-modal-content">
+            <pre style="max-height: 500px; overflow-y: scroll" data-src="files/vb/database.php.txt" class="language-php line-numbers linkable-line-numbers"></pre>
+        </div>
+        <button data-exit-button class="phpdocumentor-modal__close">&times;</button>
+    </div>
+</div>
+
     <script type="text/javascript">
-        function loadExternalCodeSnippets(line) {
-            Array.prototype.slice.call(document.querySelectorAll('pre[data-src]')).forEach((pre) => {
-                var src = pre.getAttribute('data-src').replace( /\\/g, '/');
-                var extension = (src.match(/\.(\w+)$/) || [, ''])[1];
-                var language = 'php';
+        (function () {
+            function loadExternalCodeSnippet(el, url, line) {
+                Array.prototype.slice.call(el.querySelectorAll('pre[data-src]')).forEach((pre) => {
+                    const src = url || pre.getAttribute('data-src').replace(/\\/g, '/');
+                    const language = 'php';
 
-                var code = document.createElement('code');
-                code.className = 'language-' + language;
+                    const code = document.createElement('code');
+                    code.className = 'language-' + language;
+                    pre.textContent = '';
+                    pre.setAttribute('data-line', line)
+                    code.textContent = 'Loading…';
+                    pre.appendChild(code);
 
-                pre.textContent = '';
+                    var xhr = new XMLHttpRequest();
 
-                pre.setAttribute('data-line', line)
-                code.textContent = 'Loading…';
+                    xhr.open('GET', src, true);
 
-                pre.appendChild(code);
-
-                var xhr = new XMLHttpRequest();
-
-                xhr.open('GET', src, true);
-
-                xhr.onreadystatechange = function () {
-                    if (xhr.readyState == 4) {
+                    xhr.onreadystatechange = function () {
+                        if (xhr.readyState !== 4) {
+                            return;
+                        }
 
                         if (xhr.status < 400 && xhr.responseText) {
                             code.textContent = xhr.responseText;
-
                             Prism.highlightElement(code);
+                            return;
                         }
-                        else if (xhr.status >= 400) {
+
+                        if (xhr.status === 404) {
+                            code.textContent = '✖ Error: File could not be found';
+                            return;
+                        }
+
+                        if (xhr.status >= 400) {
                             code.textContent = '✖ Error ' + xhr.status + ' while fetching file: ' + xhr.statusText;
+                            return;
                         }
-                        else {
-                            code.textContent = '✖ Error: File does not exist, is empty or trying to view from localhost';
-                        }
+
+                        code.textContent = '✖ Error: An unknown error occurred';
+                    };
+
+                    xhr.send(null);
+                });
+            }
+
+            const modalButtons = document.querySelectorAll("[data-modal]");
+            const openedAsLocalFile = window.location.protocol === 'file:';
+            if (modalButtons.length > 0 && openedAsLocalFile) {
+                console.warn(
+                    'Viewing the source code is unavailable because you are opening this page from the file:// scheme; ' +
+                    'browsers block XHR requests when a page is opened this way'
+                );
+            }
+
+            modalButtons.forEach(function (trigger) {
+                if (openedAsLocalFile) {
+                    trigger.setAttribute("hidden", "hidden");
+                }
+
+                trigger.addEventListener("click", function (event) {
+                    event.preventDefault();
+                    const modal = document.getElementById(trigger.dataset.modal);
+                    if (!modal) {
+                        console.error(`Modal with id "${trigger.dataset.modal}" could not be found`);
+                        return;
                     }
-                };
+                    modal.classList.add("phpdocumentor-modal__open");
 
-                xhr.send(null);
-            });
-        }
-
-        var modals = document.querySelectorAll("[data-modal]");
-
-        modals.forEach(function (trigger) {
-            trigger.addEventListener("click", function (event) {
-                //event.preventDefault();
-                const modal = document.getElementById(trigger.dataset.modal);
-                modal.classList.add("phpdocumentor-modal__open");
-                loadExternalCodeSnippets(trigger.dataset.line)
-                const exits = modal.querySelectorAll("[data-exit-button]");
-                exits.forEach(function (exit) {
-                    exit.addEventListener("click", function (event) {
-                        event.preventDefault();
-                        modal.classList.remove("phpdocumentor-modal__open");
+                    loadExternalCodeSnippet(modal, trigger.dataset.src || null, trigger.dataset.line)
+                    const exits = modal.querySelectorAll("[data-exit-button]");
+                    exits.forEach(function (exit) {
+                        exit.addEventListener("click", function (event) {
+                            event.preventDefault();
+                            modal.classList.remove("phpdocumentor-modal__open");
+                        });
                     });
                 });
             });
-        });
+        })();
     </script>
 
     </article>
-                <section data-search-results class="phpdocumentor-search-results phpdocumentor-search-results--hidden">
+                                </section>
+                <section class="phpdocumentor-on-this-page__sidebar">
+                                
+    <section class="phpdocumentor-on-this-page__content">
+        <strong class="phpdocumentor-on-this-page__title">On this page</strong>
+
+        <ul class="phpdocumentor-list -clean">
+            <li class="phpdocumentor-on-this-page-section__title">Table Of Contents</li>
+            <li>
+                <ul class="phpdocumentor-list -clean">
+                                        <li><a href="classes/vB-Database.html#toc-constants">Constants</a></li>
+                                                            <li><a href="classes/vB-Database.html#toc-properties">Properties</a></li>
+                                                            <li><a href="classes/vB-Database.html#toc-methods">Methods</a></li>
+                                    </ul>
+            </li>
+                            <li class="phpdocumentor-on-this-page-section__title">Constants</li>
+                <li>
+                    <ul class="phpdocumentor-list -clean">
+                                                    <li><a href="classes/vB-Database.html#constant_DBARRAY_ASSOC">DBARRAY_ASSOC</a></li>
+                                                    <li><a href="classes/vB-Database.html#constant_DBARRAY_BOTH">DBARRAY_BOTH</a></li>
+                                                    <li><a href="classes/vB-Database.html#constant_DBARRAY_NUM">DBARRAY_NUM</a></li>
+                                            </ul>
+                </li>
+            
+                            <li class="phpdocumentor-on-this-page-section__title">Properties</li>
+                <li>
+                    <ul class="phpdocumentor-list -clean">
+                                                    <li><a href="classes/vB-Database.html#property_appname">$appname<a href="classes/vB-Database.html"></li>
+                                                    <li><a href="classes/vB-Database.html#property_appshortname">$appshortname<a href="classes/vB-Database.html"></li>
+                                                    <li><a href="classes/vB-Database.html#property_connection_recent">$connection_recent<a href="classes/vB-Database.html"></li>
+                                                    <li><a href="classes/vB-Database.html#property_database">$database<a href="classes/vB-Database.html"></li>
+                                                    <li><a href="classes/vB-Database.html#property_doExplain">$doExplain<a href="classes/vB-Database.html"></li>
+                                                    <li><a href="classes/vB-Database.html#property_errno">$errno<a href="classes/vB-Database.html"></li>
+                                                    <li><a href="classes/vB-Database.html#property_error">$error<a href="classes/vB-Database.html"></li>
+                                                    <li><a href="classes/vB-Database.html#property_locked">$locked<a href="classes/vB-Database.html"></li>
+                                                    <li><a href="classes/vB-Database.html#property_maxpacket">$maxpacket<a href="classes/vB-Database.html"></li>
+                                                    <li><a href="classes/vB-Database.html#property_multiserver">$multiserver<a href="classes/vB-Database.html"></li>
+                                                    <li><a href="classes/vB-Database.html#property_querycount">$querycount<a href="classes/vB-Database.html"></li>
+                                                    <li><a href="classes/vB-Database.html#property_reporterror">$reporterror<a href="classes/vB-Database.html"></li>
+                                                    <li><a href="classes/vB-Database.html#property_shutdownqueries">$shutdownqueries<a href="classes/vB-Database.html"></li>
+                                                    <li><a href="classes/vB-Database.html#property_sql">$sql<a href="classes/vB-Database.html"></li>
+                                            </ul>
+                </li>
+            
+                        <li class="phpdocumentor-on-this-page-section__title">Methods</li>
+            <li>
+                <ul class="phpdocumentor-list -clean">
+                                            <li><a href="classes/vB-Database.html#method___construct">__construct()</a></li>
+                                            <li><a href="classes/vB-Trait-NoSerialize.html#method___serialize">__serialize()</a></li>
+                                            <li><a href="classes/vB-Trait-NoSerialize.html#method___sleep">__sleep()</a></li>
+                                            <li><a href="classes/vB-Trait-NoSerialize.html#method___unserialize">__unserialize()</a></li>
+                                            <li><a href="classes/vB-Trait-NoSerialize.html#method___wakeup">__wakeup()</a></li>
+                                            <li><a href="classes/vB-Database.html#method_affected_rows">affected_rows()</a></li>
+                                            <li><a href="classes/vB-Database.html#method_beginTransaction">beginTransaction()</a></li>
+                                            <li><a href="classes/vB-Database.html#method_catch_db_error">catch_db_error()</a></li>
+                                            <li><a href="classes/vB-Database.html#method_clean_identifier">clean_identifier()</a></li>
+                                            <li><a href="classes/vB-Database.html#method_client_encoding">client_encoding()</a></li>
+                                            <li><a href="classes/vB-Database.html#method_close">close()</a></li>
+                                            <li><a href="classes/vB-Database.html#method_commitTransaction">commitTransaction()</a></li>
+                                            <li><a href="classes/vB-Database.html#method_connect">connect()</a></li>
+                                            <li><a href="classes/vB-Database.html#method_connect_using_dbconfig">connect_using_dbconfig()</a></li>
+                                            <li><a href="classes/vB-Database.html#method_create_database_using_dbconfig">create_database_using_dbconfig()</a></li>
+                                            <li><a href="classes/vB-Database.html#method_data_seek">data_seek()</a></li>
+                                            <li><a href="classes/vB-Database.html#method_errno">errno()</a></li>
+                                            <li><a href="classes/vB-Database.html#method_error">error()</a></li>
+                                            <li><a href="classes/vB-Database.html#method_escape_string">escape_string()</a></li>
+                                            <li><a href="classes/vB-Database.html#method_escape_string_like">escape_string_like()</a></li>
+                                            <li><a href="classes/vB-Database.html#method_fetch_array">fetch_array()</a></li>
+                                            <li><a href="classes/vB-Database.html#method_fetch_field">fetch_field()</a></li>
+                                            <li><a href="classes/vB-Database.html#method_fetch_my_query_status">fetch_my_query_status()</a></li>
+                                            <li><a href="classes/vB-Database.html#method_fetch_row">fetch_row()</a></li>
+                                            <li><a href="classes/vB-Database.html#method_fetchInTransaction">fetchInTransaction()</a></li>
+                                            <li><a href="classes/vB-Database.html#method_field_name">field_name()</a></li>
+                                            <li><a href="classes/vB-Database.html#method_force_sql_mode">force_sql_mode()</a></li>
+                                            <li><a href="classes/vB-Database.html#method_found_rows">found_rows()</a></li>
+                                            <li><a href="classes/vB-Database.html#method_free_result">free_result()</a></li>
+                                            <li><a href="classes/vB-Database.html#method_getExplain">getExplain()</a></li>
+                                            <li><a href="classes/vB-Database.html#method_hasConfigCharset">hasConfigCharset()</a></li>
+                                            <li><a href="classes/vB-Database.html#method_hide_errors">hide_errors()</a></li>
+                                            <li><a href="classes/vB-Database.html#method_insert_id">insert_id()</a></li>
+                                            <li><a href="classes/vB-Database.html#method_insert_multiple">insert_multiple()</a></li>
+                                            <li><a href="classes/vB-Database.html#method_is_install_valid">is_install_valid()</a></li>
+                                            <li><a href="classes/vB-Database.html#method_is_valid">is_valid()</a></li>
+                                            <li><a href="classes/vB-Database.html#method_isExplainEmpty">isExplainEmpty()</a></li>
+                                            <li><a href="classes/vB-Database.html#method_lock_tables">lock_tables()</a></li>
+                                            <li><a href="classes/vB-Database.html#method_num_fields">num_fields()</a></li>
+                                            <li><a href="classes/vB-Database.html#method_num_rows">num_rows()</a></li>
+                                            <li><a href="classes/vB-Database.html#method_ping">ping()</a></li>
+                                            <li><a href="classes/vB-Database.html#method_query">query()</a></li>
+                                            <li><a href="classes/vB-Database.html#method_query_first">query_first()</a></li>
+                                            <li><a href="classes/vB-Database.html#method_query_first_slave">query_first_slave()</a></li>
+                                            <li><a href="classes/vB-Database.html#method_query_insert">query_insert()</a></li>
+                                            <li><a href="classes/vB-Database.html#method_query_read">query_read()</a></li>
+                                            <li><a href="classes/vB-Database.html#method_query_read_slave">query_read_slave()</a></li>
+                                            <li><a href="classes/vB-Database.html#method_query_replace">query_replace()</a></li>
+                                            <li><a href="classes/vB-Database.html#method_query_write">query_write()</a></li>
+                                            <li><a href="classes/vB-Database.html#method_rollbackTransaction">rollbackTransaction()</a></li>
+                                            <li><a href="classes/vB-Database.html#method_select_db">select_db()</a></li>
+                                            <li><a href="classes/vB-Database.html#method_select_db_using_dbconfig">select_db_using_dbconfig()</a></li>
+                                            <li><a href="classes/vB-Database.html#method_select_db_wrapper">select_db_wrapper()</a></li>
+                                            <li><a href="classes/vB-Database.html#method_show_errors">show_errors()</a></li>
+                                            <li><a href="classes/vB-Database.html#method_shutdown_query">shutdown_query()</a></li>
+                                            <li><a href="classes/vB-Database.html#method_unlock_tables">unlock_tables()</a></li>
+                                    </ul>
+            </li>
+                    </ul>
+    </section>
+
+                </section>
+                            </div>
+            <section data-search-results class="phpdocumentor-search-results phpdocumentor-search-results--hidden">
     <section class="phpdocumentor-search-results__dialog">
         <header class="phpdocumentor-search-results__header">
             <h2 class="phpdocumentor-search-results__title">Search results</h2>
@@ -3808,7 +3963,6 @@ we don&#039;t know if the &#039;read&#039; database is up to date so be on the s
         </section>
     </section>
 </section>
-            </div>
         </div>
         <a href="classes/vB-Database.html#top" class="phpdocumentor-back-to-top"><i class="fas fa-chevron-circle-up"></i></a>
 

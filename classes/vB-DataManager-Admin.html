@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-            <title>vBulletin v5.7.2</title>
+            <title>vBulletin v6.0.4</title>
     
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <base href="../">
@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="css/normalize.css">
     <link rel="stylesheet" href="css/base.css">
             <link rel="preconnect" href="https://fonts.gstatic.com">
-        <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@400;600;700&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@100;200;300;400;600;700&display=swap" rel="stylesheet">
         <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@400;600;700&display=swap" rel="stylesheet">
         <link rel="stylesheet" href="css/template.css">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.0/css/all.min.css" integrity="sha256-ybRkN9dBjhcS2qrW1z+hfCxq+1aBdwyQM5wlQoQVt/0=" crossorigin="anonymous" />
@@ -19,12 +19,13 @@
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.23.0/plugins/line-highlight/prism-line-highlight.css">
                 <script src="https://cdn.jsdelivr.net/npm/fuse.js@3.4.6"></script>
         <script src="https://cdn.jsdelivr.net/npm/css-vars-ponyfill@2"></script>
+        <script src="js/template.js"></script>
         <script src="js/search.js"></script>
         <script defer src="js/searchIndex.js"></script>
     </head>
 <body id="top">
     <header class="phpdocumentor-header phpdocumentor-section">
-    <h1 class="phpdocumentor-title"><a href="" class="phpdocumentor-title__link">vBulletin v5.7.2</a></h1>
+    <h1 class="phpdocumentor-title"><a href="" class="phpdocumentor-title__link">vBulletin v6.0.4</a></h1>
     <input class="phpdocumentor-header__menu-button" type="checkbox" id="menu-button" name="menu-button" />
     <label class="phpdocumentor-header__menu-icon" for="menu-button">
         <i class="fas fa-bars"></i>
@@ -52,7 +53,7 @@
 <label class="phpdocumentor-sidebar__menu-icon" for="sidebar-button">
     Menu
 </label>
-<aside class="phpdocumentor-column -four phpdocumentor-sidebar">
+<aside class="phpdocumentor-column -three phpdocumentor-sidebar">
                     <section class="phpdocumentor-sidebar__category">
             <h2 class="phpdocumentor-sidebar__category-header">Packages</h2>
                                     <h4 class="phpdocumentor-sidebar__root-namespace">
@@ -98,8 +99,9 @@
     </section>
 </aside>
 
-            <div class="phpdocumentor-column -eight phpdocumentor-content">
-                    <ul class="phpdocumentor-breadcrumbs">
+            <div class="phpdocumentor-column -nine phpdocumentor-content">
+                                <section>
+                                        <ul class="phpdocumentor-breadcrumbs">
             <li class="phpdocumentor-breadcrumb"><a href="packages/vBulletin.html">vBulletin</a></li>
     </ul>
 
@@ -121,6 +123,11 @@
     
     </h2>
 
+<div class="phpdocumentor-label-line">
+
+
+</div>
+
         <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/datamanager/admin.php"><a href="files/vb-datamanager-admin.html"><abbr title="vb/datamanager/admin.php">admin.php</abbr></a></abbr>
     :
@@ -136,7 +143,8 @@
 
     <h5 class="phpdocumentor-tag-list__heading" id="tags">
         Tags
-        <a href="#tags" class="headerlink"><i class="fas fa-link"></i></a>
+        <a href="classes/vB-DataManager-Admin.html#tags" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h5>
     <dl class="phpdocumentor-tag-list">
                                     <dt class="phpdocumentor-tag-list__entry">
@@ -144,37 +152,34 @@
                 </dt>
                 <dd class="phpdocumentor-tag-list__definition">
                                                                                 
-                                                 <section class="phpdocumentor-description"><p>$Date: 2021-02-16 11:04:48 -0800 (Tue, 16 Feb 2021) $</p>
+                                                 <section class="phpdocumentor-description"><p>$Date: 2022-11-29 14:33:37 -0800 (Tue, 29 Nov 2022) $</p>
 </section>
 
                                     </dd>
-                        </dl>
-
-
-
+                                            </dl>
 
 
 
 <h3 id="toc">
     Table of Contents
-    <a href="#toc" class="headerlink"><i class="fas fa-link"></i></a>
+    <a href="classes/vB-DataManager-Admin.html#toc" class="headerlink"><i class="fas fa-link"></i></a>
+
 </h3>
 
+
+
+
+
+
+
+
+
+<h4 id="toc-properties">
+    Properties
+    <a href="classes/vB-DataManager-Admin.html#toc-properties" class="headerlink"><i class="fas fa-link"></i></a>
+
+</h4>
 <dl class="phpdocumentor-table-of-contents">
-                    <dt class="phpdocumentor-table-of-contents__entry -property -public">
-    <a href="classes/vB-DataManager-Admin.html#property_administrator">$administrator</a>
-    <span>
-                        &nbsp;: array&lt;string|int, mixed&gt;            </span>
-</dt>
-<dd>Arrays to store stuff to save to admin-related tables</dd>
-
-            <dt class="phpdocumentor-table-of-contents__entry -property -public">
-    <a href="classes/vB-DataManager-Admin.html#property_bitfields">$bitfields</a>
-    <span>
-                        &nbsp;: array&lt;string|int, mixed&gt;            </span>
-</dt>
-<dd>Array of field names that are bitfields, together with the name of the variable in the registry with the definitions.</dd>
-
             <dt class="phpdocumentor-table-of-contents__entry -property -public">
     <a href="classes/vB-DataManager.html#property_condition">$condition</a>
     <span>
@@ -215,21 +220,6 @@
     <span>
                         &nbsp;: mixed            </span>
 </dt>
-<dd></dd>
-
-            <dt class="phpdocumentor-table-of-contents__entry -property -public">
-    <a href="classes/vB-DataManager.html#property_rawfields">$rawfields</a>
-    <span>
-                        &nbsp;: array&lt;string|int, mixed&gt;            </span>
-</dt>
-<dd>Array to store the names for fields that will be taking raw SQL</dd>
-
-            <dt class="phpdocumentor-table-of-contents__entry -property -public">
-    <a href="classes/vB-DataManager-Admin.html#property_table">$table</a>
-    <span>
-                        &nbsp;: string            </span>
-</dt>
-<dd>The main table this class deals with</dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -property -public">
     <a href="classes/vB-DataManager-Admin.html#property_validfields">$validfields</a>
@@ -238,7 +228,15 @@
 </dt>
 <dd>Array of recognised and required fields for moderators, and their types</dd>
 
-                <dt class="phpdocumentor-table-of-contents__entry -method -public">
+    </dl>
+
+<h4 id="toc-methods">
+    Methods
+    <a href="classes/vB-DataManager-Admin.html#toc-methods" class="headerlink"><i class="fas fa-link"></i></a>
+
+</h4>
+<dl class="phpdocumentor-table-of-contents">
+            <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a href="classes/vB-DataManager.html#method___construct">__construct()</a>
     <span>
                                 &nbsp;: mixed    </span>
@@ -250,28 +248,24 @@
     <span>
                                 &nbsp;: array&lt;string|int, mixed&gt;    </span>
 </dt>
-<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a href="classes/vB-Trait-NoSerialize.html#method___sleep">__sleep()</a>
     <span>
                                 &nbsp;: array&lt;string|int, mixed&gt;    </span>
 </dt>
-<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a href="classes/vB-Trait-NoSerialize.html#method___unserialize">__unserialize()</a>
     <span>
                                 &nbsp;: void    </span>
 </dt>
-<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a href="classes/vB-Trait-NoSerialize.html#method___wakeup">__wakeup()</a>
     <span>
                                 &nbsp;: void    </span>
 </dt>
-<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a href="classes/vB-DataManager.html#method_check_required">check_required()</a>
@@ -320,7 +314,7 @@
     <span>
                                 &nbsp;: mixed    </span>
 </dt>
-<dd>Shows an error message and halts execution - use this in the same way as print_stop_message();</dd>
+<dd>Shows an error message and halts execution</dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a href="classes/vB-DataManager.html#method_fetch_field">fetch_field()</a>
@@ -341,7 +335,6 @@
     <span>
                                 &nbsp;: mixed    </span>
 </dt>
-<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a href="classes/vB-DataManager.html#method_has_errors">has_errors()</a>
@@ -362,7 +355,6 @@
     <span>
                                 &nbsp;: mixed    </span>
 </dt>
-<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a href="classes/vB-DataManager.html#method_is_field_set">is_field_set()</a>
@@ -391,13 +383,6 @@
                                 &nbsp;: mixed    </span>
 </dt>
 <dd>Additional data to update after a save call (such as denormalized values in other tables).</dd>
-
-            <dt class="phpdocumentor-table-of-contents__entry -method -public">
-    <a href="classes/vB-DataManager.html#method_pre_delete">pre_delete()</a>
-    <span>
-                                &nbsp;: mixed    </span>
-</dt>
-<dd>Additional data to update before a delete call (such as denormalized values in other tables).</dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a href="classes/vB-DataManager-Admin.html#method_pre_save">pre_save()</a>
@@ -513,27 +498,14 @@ the $this-&gt;condition_constuct condition template.</dd>
 <dd>Verifies that the navigation preferences are valid</dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
-    <a href="classes/vB-DataManager.html#method_verify_serialized">verify_serialized()</a>
-    <span>
-                                &nbsp;: bool    </span>
-</dt>
-<dd>Verifies that input is a serialized array (or force an array to serialize)</dd>
-
-            <dt class="phpdocumentor-table-of-contents__entry -method -public">
-    <a href="classes/vB-DataManager.html#method_verify_userid">verify_userid()</a>
-    <span>
-                                &nbsp;: bool    </span>
-</dt>
-<dd>Verifies that the specified user exists</dd>
-
-            <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a href="classes/vB-DataManager.html#method_verify_username">verify_username()</a>
     <span>
                                 &nbsp;: bool    </span>
 </dt>
 <dd>Verifies that the provided username is valid, and attempts to correct it if it is not valid</dd>
 
-        </dl>
+    </dl>
+
 
 
 
@@ -544,73 +516,8 @@ the $this-&gt;condition_constuct condition template.</dd>
         <h3 class="phpdocumentor-elements__header" id="properties">
             Properties
             <a href="classes/vB-DataManager-Admin.html#properties" class="headerlink"><i class="fas fa-link"></i></a>
+
         </h3>
-                    <article
-        class="
-            phpdocumentor-element
-            -property
-            -public
-                                                        "
->
-    <h4 class="phpdocumentor-element__name" id="property_administrator">
-        $administrator
-        <a href="classes/vB-DataManager-Admin.html#property_administrator" class="headerlink"><i class="fas fa-link"></i></a>
-        <span class="phpdocumentor-element__modifiers">
-                                </span>
-    </h4>
-    <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="vb/datamanager/admin.php"><a href="files/vb-datamanager-admin.html"><abbr title="vb/datamanager/admin.php">admin.php</abbr></a></abbr>
-    :
-    <span class="phpdocumentor-element-found-in__line">57</span>
-
-    </aside>
-
-        <p class="phpdocumentor-summary">Arrays to store stuff to save to admin-related tables</p>
-
-    <code class="phpdocumentor-code phpdocumentor-signature ">
-    <span class="phpdocumentor-signature__visibility">public</span>
-        <span class="phpdocumentor-signature__type">array&lt;string|int, mixed&gt;</span>
-    <span class="phpdocumentor-signature__name">$administrator</span>
-     = <span class="phpdocumentor-signature__default-value">array()</span></code>
-
-    
-    
-    
-
-</article>
-                    <article
-        class="
-            phpdocumentor-element
-            -property
-            -public
-                                                        "
->
-    <h4 class="phpdocumentor-element__name" id="property_bitfields">
-        $bitfields
-        <a href="classes/vB-DataManager-Admin.html#property_bitfields" class="headerlink"><i class="fas fa-link"></i></a>
-        <span class="phpdocumentor-element__modifiers">
-                                </span>
-    </h4>
-    <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="vb/datamanager/admin.php"><a href="files/vb-datamanager-admin.html"><abbr title="vb/datamanager/admin.php">admin.php</abbr></a></abbr>
-    :
-    <span class="phpdocumentor-element-found-in__line">42</span>
-
-    </aside>
-
-        <p class="phpdocumentor-summary">Array of field names that are bitfields, together with the name of the variable in the registry with the definitions.</p>
-
-    <code class="phpdocumentor-code phpdocumentor-signature ">
-    <span class="phpdocumentor-signature__visibility">public</span>
-        <span class="phpdocumentor-signature__type">array&lt;string|int, mixed&gt;</span>
-    <span class="phpdocumentor-signature__name">$bitfields</span>
-     = <span class="phpdocumentor-signature__default-value">array(&#039;adminpermissions&#039; =&gt; &#039;bf_ugp_adminpermissions&#039;)</span></code>
-
-    
-    
-    
-
-</article>
                     <article
         class="
             phpdocumentor-element
@@ -621,13 +528,14 @@ the $this-&gt;condition_constuct condition template.</dd>
     <h4 class="phpdocumentor-element__name" id="property_condition">
         $condition
         <a href="classes/vB-DataManager.html#property_condition" class="headerlink"><i class="fas fa-link"></i></a>
+
         <span class="phpdocumentor-element__modifiers">
                                 </span>
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/datamanager.php"><a href="files/vb-datamanager.html"><abbr title="vb/datamanager.php">datamanager.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">136</span>
+    <span class="phpdocumentor-element-found-in__line">135</span>
 
     </aside>
 
@@ -654,13 +562,14 @@ the $this-&gt;condition_constuct condition template.</dd>
     <h4 class="phpdocumentor-element__name" id="property_error_handler">
         $error_handler
         <a href="classes/vB-DataManager.html#property_error_handler" class="headerlink"><i class="fas fa-link"></i></a>
+
         <span class="phpdocumentor-element__modifiers">
                                 </span>
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/datamanager.php"><a href="files/vb-datamanager.html"><abbr title="vb/datamanager.php">datamanager.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">115</span>
+    <span class="phpdocumentor-element-found-in__line">114</span>
 
     </aside>
 
@@ -687,13 +596,14 @@ the $this-&gt;condition_constuct condition template.</dd>
     <h4 class="phpdocumentor-element__name" id="property_errors">
         $errors
         <a href="classes/vB-DataManager.html#property_errors" class="headerlink"><i class="fas fa-link"></i></a>
+
         <span class="phpdocumentor-element__modifiers">
                                 </span>
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/datamanager.php"><a href="files/vb-datamanager.html"><abbr title="vb/datamanager.php">datamanager.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">108</span>
+    <span class="phpdocumentor-element-found-in__line">107</span>
 
     </aside>
 
@@ -720,13 +630,14 @@ the $this-&gt;condition_constuct condition template.</dd>
     <h4 class="phpdocumentor-element__name" id="property_existing">
         $existing
         <a href="classes/vB-DataManager.html#property_existing" class="headerlink"><i class="fas fa-link"></i></a>
+
         <span class="phpdocumentor-element__modifiers">
                                 </span>
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/datamanager.php"><a href="files/vb-datamanager.html"><abbr title="vb/datamanager.php">datamanager.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">122</span>
+    <span class="phpdocumentor-element-found-in__line">121</span>
 
     </aside>
 
@@ -753,13 +664,14 @@ the $this-&gt;condition_constuct condition template.</dd>
     <h4 class="phpdocumentor-element__name" id="property_info">
         $info
         <a href="classes/vB-DataManager.html#property_info" class="headerlink"><i class="fas fa-link"></i></a>
+
         <span class="phpdocumentor-element__modifiers">
                                 </span>
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/datamanager.php"><a href="files/vb-datamanager.html"><abbr title="vb/datamanager.php">datamanager.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">129</span>
+    <span class="phpdocumentor-element-found-in__line">128</span>
 
     </aside>
 
@@ -786,6 +698,7 @@ the $this-&gt;condition_constuct condition template.</dd>
     <h4 class="phpdocumentor-element__name" id="property_keyField">
         $keyField
         <a href="classes/vB-DataManager-Admin.html#property_keyField" class="headerlink"><i class="fas fa-link"></i></a>
+
         <span class="phpdocumentor-element__modifiers">
                                 </span>
     </h4>
@@ -803,74 +716,6 @@ the $this-&gt;condition_constuct condition template.</dd>
     <span class="phpdocumentor-signature__name">$keyField</span>
      = <span class="phpdocumentor-signature__default-value">&#039;userid&#039;</span></code>
 
-        <section class="phpdocumentor-description"></section>
-
-        <section class="phpdocumentor-description"></section>
-
-    
-
-</article>
-                    <article
-        class="
-            phpdocumentor-element
-            -property
-            -public
-                                                        "
->
-    <h4 class="phpdocumentor-element__name" id="property_rawfields">
-        $rawfields
-        <a href="classes/vB-DataManager.html#property_rawfields" class="headerlink"><i class="fas fa-link"></i></a>
-        <span class="phpdocumentor-element__modifiers">
-                                </span>
-    </h4>
-    <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="vb/datamanager.php"><a href="files/vb-datamanager.html"><abbr title="vb/datamanager.php">datamanager.php</abbr></a></abbr>
-    :
-    <span class="phpdocumentor-element-found-in__line">59</span>
-
-    </aside>
-
-        <p class="phpdocumentor-summary">Array to store the names for fields that will be taking raw SQL</p>
-
-    <code class="phpdocumentor-code phpdocumentor-signature ">
-    <span class="phpdocumentor-signature__visibility">public</span>
-        <span class="phpdocumentor-signature__type">array&lt;string|int, mixed&gt;</span>
-    <span class="phpdocumentor-signature__name">$rawfields</span>
-     = <span class="phpdocumentor-signature__default-value">[]</span></code>
-
-    
-    
-    
-
-</article>
-                    <article
-        class="
-            phpdocumentor-element
-            -property
-            -public
-                                                        "
->
-    <h4 class="phpdocumentor-element__name" id="property_table">
-        $table
-        <a href="classes/vB-DataManager-Admin.html#property_table" class="headerlink"><i class="fas fa-link"></i></a>
-        <span class="phpdocumentor-element__modifiers">
-                                </span>
-    </h4>
-    <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="vb/datamanager/admin.php"><a href="files/vb-datamanager-admin.html"><abbr title="vb/datamanager/admin.php">admin.php</abbr></a></abbr>
-    :
-    <span class="phpdocumentor-element-found-in__line">49</span>
-
-    </aside>
-
-        <p class="phpdocumentor-summary">The main table this class deals with</p>
-
-    <code class="phpdocumentor-code phpdocumentor-signature ">
-    <span class="phpdocumentor-signature__visibility">public</span>
-        <span class="phpdocumentor-signature__type">string</span>
-    <span class="phpdocumentor-signature__name">$table</span>
-     = <span class="phpdocumentor-signature__default-value">&#039;vBForum:administrator&#039;</span></code>
-
     
     
     
@@ -886,6 +731,7 @@ the $this-&gt;condition_constuct condition template.</dd>
     <h4 class="phpdocumentor-element__name" id="property_validfields">
         $validfields
         <a href="classes/vB-DataManager-Admin.html#property_validfields" class="headerlink"><i class="fas fa-link"></i></a>
+
         <span class="phpdocumentor-element__modifiers">
                                 </span>
     </h4>
@@ -902,7 +748,7 @@ the $this-&gt;condition_constuct condition template.</dd>
     <span class="phpdocumentor-signature__visibility">public</span>
         <span class="phpdocumentor-signature__type">array&lt;string|int, mixed&gt;</span>
     <span class="phpdocumentor-signature__name">$validfields</span>
-     = <span class="phpdocumentor-signature__default-value">array(&#039;userid&#039; =&gt; array(\vB_Cleaner::TYPE_UINT, \vB_DataManager_Constants::REQ_YES, \vB_DataManager_Constants::VF_METHOD), &#039;adminpermissions&#039; =&gt; array(\vB_Cleaner::TYPE_UINT, \vB_DataManager_Constants::REQ_NO), &#039;navprefs&#039; =&gt; array(\vB_Cleaner::TYPE_STR, \vB_DataManager_Constants::REQ_NO, \vB_DataManager_Constants::VF_METHOD), &#039;cssprefs&#039; =&gt; array(\vB_Cleaner::TYPE_STR, \vB_DataManager_Constants::REQ_NO, \vB_DataManager_Constants::VF_METHOD), &#039;notes&#039; =&gt; array(\vB_Cleaner::TYPE_NOHTML, \vB_DataManager_Constants::REQ_NO), &#039;dismissednews&#039; =&gt; array(\vB_Cleaner::TYPE_NOCLEAN, \vB_DataManager_Constants::REQ_NO, \vB_DataManager_Constants::VF_METHOD, &#039;verify_commalist&#039;))</span></code>
+     = <span class="phpdocumentor-signature__default-value">[&#039;userid&#039; =&gt; [\vB_Cleaner::TYPE_UINT, \vB_DataManager_Constants::REQ_YES, \vB_DataManager_Constants::VF_METHOD], &#039;adminpermissions&#039; =&gt; [\vB_Cleaner::TYPE_UINT, \vB_DataManager_Constants::REQ_NO], &#039;navprefs&#039; =&gt; [\vB_Cleaner::TYPE_STR, \vB_DataManager_Constants::REQ_NO, \vB_DataManager_Constants::VF_METHOD], &#039;cssprefs&#039; =&gt; [\vB_Cleaner::TYPE_STR, \vB_DataManager_Constants::REQ_NO, \vB_DataManager_Constants::VF_METHOD], &#039;notes&#039; =&gt; [\vB_Cleaner::TYPE_NOHTML, \vB_DataManager_Constants::REQ_NO], &#039;dismissednews&#039; =&gt; [\vB_Cleaner::TYPE_NOCLEAN, \vB_DataManager_Constants::REQ_NO, \vB_DataManager_Constants::VF_METHOD, &#039;verify_commalist&#039;]]</span></code>
 
     
     
@@ -915,6 +761,7 @@ the $this-&gt;condition_constuct condition template.</dd>
         <h3 class="phpdocumentor-elements__header" id="methods">
             Methods
             <a href="classes/vB-DataManager-Admin.html#methods" class="headerlink"><i class="fas fa-link"></i></a>
+
         </h3>
                     <article
         class="phpdocumentor-element
@@ -925,11 +772,12 @@ the $this-&gt;condition_constuct condition template.</dd>
     <h4 class="phpdocumentor-element__name" id="method___construct">
         __construct()
         <a href="classes/vB-DataManager.html#method___construct" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/datamanager.php"><a href="files/vb-datamanager.html"><abbr title="vb/datamanager.php">datamanager.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">186</span>
+    <span class="phpdocumentor-element-found-in__line">185</span>
 
     </aside>
 
@@ -939,6 +787,8 @@ the $this-&gt;condition_constuct condition template.</dd>
     <span class="phpdocumentor-signature__visibility">public</span>
                     <span class="phpdocumentor-signature__name">__construct</span><span>(</span><span class="phpdocumentor-signature__argument"><span>[</span><span class="phpdocumentor-signature__argument__return-type"><abbr title="\vB_Registry">vB_Registry</abbr>&nbsp;</span><span class="phpdocumentor-signature__argument__name">$registry</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">NULL</span><span> ]</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">int&nbsp;</span><span class="phpdocumentor-signature__argument__name">$errtype</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">NULL</span><span> ]</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
 
+    <div class="phpdocumentor-label-line">
+        </div>
         <section class="phpdocumentor-description"><p>Note that this method will accept only the $errtype parameter (via some magic checking of the parameters)
 and this is the preferred way of calling the datamanager functions.  The registry object is deprecated
 and will be created internally for those managers that still need it.</p>
@@ -969,10 +819,6 @@ database object as one of its $this-&gt;db member.</p>
 
     
 
-        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">mixed</span>
-            &mdash;
-        
     
 </article>
                     <article
@@ -984,6 +830,7 @@ database object as one of its $this-&gt;db member.</p>
     <h4 class="phpdocumentor-element__name" id="method___serialize">
         __serialize()
         <a href="classes/vB-Trait-NoSerialize.html#method___serialize" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/trait/noserialize.php"><a href="files/vb-trait-noserialize.html"><abbr title="vb/trait/noserialize.php">noserialize.php</abbr></a></abbr>
@@ -997,16 +844,17 @@ database object as one of its $this-&gt;db member.</p>
     <span class="phpdocumentor-signature__visibility">public</span>
                     <span class="phpdocumentor-signature__name">__serialize</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">array&lt;string|int, mixed&gt;</span></code>
 
-        <section class="phpdocumentor-description"></section>
-
+    <div class="phpdocumentor-label-line">
+        </div>
     
     
+    
 
+            <section>
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">array&lt;string|int, mixed&gt;</span>
-            &mdash;
-        
-    
+        <span class="phpdocumentor-signature__response_type">array&lt;string|int, mixed&gt;</span>
+            </section>
+
 </article>
                     <article
         class="phpdocumentor-element
@@ -1017,6 +865,7 @@ database object as one of its $this-&gt;db member.</p>
     <h4 class="phpdocumentor-element__name" id="method___sleep">
         __sleep()
         <a href="classes/vB-Trait-NoSerialize.html#method___sleep" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/trait/noserialize.php"><a href="files/vb-trait-noserialize.html"><abbr title="vb/trait/noserialize.php">noserialize.php</abbr></a></abbr>
@@ -1030,16 +879,17 @@ database object as one of its $this-&gt;db member.</p>
     <span class="phpdocumentor-signature__visibility">public</span>
                     <span class="phpdocumentor-signature__name">__sleep</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">array&lt;string|int, mixed&gt;</span></code>
 
-        <section class="phpdocumentor-description"></section>
-
+    <div class="phpdocumentor-label-line">
+        </div>
     
     
+    
 
+            <section>
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">array&lt;string|int, mixed&gt;</span>
-            &mdash;
-        
-    
+        <span class="phpdocumentor-signature__response_type">array&lt;string|int, mixed&gt;</span>
+            </section>
+
 </article>
                     <article
         class="phpdocumentor-element
@@ -1050,6 +900,7 @@ database object as one of its $this-&gt;db member.</p>
     <h4 class="phpdocumentor-element__name" id="method___unserialize">
         __unserialize()
         <a href="classes/vB-Trait-NoSerialize.html#method___unserialize" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/trait/noserialize.php"><a href="files/vb-trait-noserialize.html"><abbr title="vb/trait/noserialize.php">noserialize.php</abbr></a></abbr>
@@ -1063,8 +914,9 @@ database object as one of its $this-&gt;db member.</p>
     <span class="phpdocumentor-signature__visibility">public</span>
                     <span class="phpdocumentor-signature__name">__unserialize</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">array&lt;string|int, mixed&gt;&nbsp;</span><span class="phpdocumentor-signature__argument__name">$serialized</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">void</span></code>
 
-        <section class="phpdocumentor-description"></section>
-
+    <div class="phpdocumentor-label-line">
+        </div>
+    
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
     <dl class="phpdocumentor-argument-list">
                     <dt class="phpdocumentor-argument-list__entry">
@@ -1072,17 +924,12 @@ database object as one of its $this-&gt;db member.</p>
                 : <span class="phpdocumentor-signature__argument__return-type">array&lt;string|int, mixed&gt;</span>
                             </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
+                
             </dd>
             </dl>
 
     
 
-        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">void</span>
-            &mdash;
-        
     
 </article>
                     <article
@@ -1094,6 +941,7 @@ database object as one of its $this-&gt;db member.</p>
     <h4 class="phpdocumentor-element__name" id="method___wakeup">
         __wakeup()
         <a href="classes/vB-Trait-NoSerialize.html#method___wakeup" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/trait/noserialize.php"><a href="files/vb-trait-noserialize.html"><abbr title="vb/trait/noserialize.php">noserialize.php</abbr></a></abbr>
@@ -1107,15 +955,12 @@ database object as one of its $this-&gt;db member.</p>
     <span class="phpdocumentor-signature__visibility">public</span>
                     <span class="phpdocumentor-signature__name">__wakeup</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">void</span></code>
 
-        <section class="phpdocumentor-description"></section>
-
+    <div class="phpdocumentor-label-line">
+        </div>
     
     
+    
 
-        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">void</span>
-            &mdash;
-        
     
 </article>
                     <article
@@ -1127,11 +972,12 @@ database object as one of its $this-&gt;db member.</p>
     <h4 class="phpdocumentor-element__name" id="method_check_required">
         check_required()
         <a href="classes/vB-DataManager.html#method_check_required" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/datamanager.php"><a href="files/vb-datamanager.html"><abbr title="vb/datamanager.php">datamanager.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">666</span>
+    <span class="phpdocumentor-element-found-in__line">665</span>
 
     </aside>
 
@@ -1141,17 +987,21 @@ database object as one of its $this-&gt;db member.</p>
     <span class="phpdocumentor-signature__visibility">public</span>
                     <span class="phpdocumentor-signature__name">check_required</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">bool</span></code>
 
+    <div class="phpdocumentor-label-line">
+        </div>
     
     
     
 
+            <section>
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">bool</span>
-            &mdash;
-            <section class="phpdocumentor-description"><p>Returns true if all required fields have a valid value set</p>
+        <span class="phpdocumentor-signature__response_type">bool</span>
+                    &mdash;
+                <section class="phpdocumentor-description"><p>Returns true if all required fields have a valid value set</p>
 </section>
 
-    
+            </section>
+
 </article>
                     <article
         class="phpdocumentor-element
@@ -1162,11 +1012,12 @@ database object as one of its $this-&gt;db member.</p>
     <h4 class="phpdocumentor-element__name" id="method_db_insert">
         db_insert()
         <a href="classes/vB-DataManager.html#method_db_insert" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/datamanager.php"><a href="files/vb-datamanager.html"><abbr title="vb/datamanager.php">datamanager.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">797</span>
+    <span class="phpdocumentor-element-found-in__line">796</span>
 
     </aside>
 
@@ -1176,6 +1027,8 @@ database object as one of its $this-&gt;db member.</p>
     <span class="phpdocumentor-signature__visibility">public</span>
                     <span class="phpdocumentor-signature__name">db_insert</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$tableprefix</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$table</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$doquery</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">true</span><span> ]</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$replace</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">false</span><span> ]</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">int</span></code>
 
+    <div class="phpdocumentor-label-line">
+        </div>
     
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
     <dl class="phpdocumentor-argument-list">
@@ -1184,44 +1037,42 @@ database object as one of its $this-&gt;db member.</p>
                 : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
                             </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
+                
             </dd>
                     <dt class="phpdocumentor-argument-list__entry">
                 <span class="phpdocumentor-signature__argument__name">$table</span>
                 : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
                             </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
+                
             </dd>
                     <dt class="phpdocumentor-argument-list__entry">
                 <span class="phpdocumentor-signature__argument__name">$doquery</span>
                 : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
                  = <span class="phpdocumentor-signature__argument__default-value">true</span>            </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
+                
             </dd>
                     <dt class="phpdocumentor-argument-list__entry">
                 <span class="phpdocumentor-signature__argument__name">$replace</span>
                 : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
                  = <span class="phpdocumentor-signature__argument__default-value">false</span>            </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
+                
             </dd>
             </dl>
 
     
 
+            <section>
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">int</span>
-            &mdash;
-            <section class="phpdocumentor-description"><p>Returns the ID of the inserted record</p>
+        <span class="phpdocumentor-signature__response_type">int</span>
+                    &mdash;
+                <section class="phpdocumentor-description"><p>Returns the ID of the inserted record</p>
 </section>
 
-    
+            </section>
+
 </article>
                     <article
         class="phpdocumentor-element
@@ -1232,11 +1083,12 @@ database object as one of its $this-&gt;db member.</p>
     <h4 class="phpdocumentor-element__name" id="method_db_update">
         db_update()
         <a href="classes/vB-DataManager.html#method_db_update" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/datamanager.php"><a href="files/vb-datamanager.html"><abbr title="vb/datamanager.php">datamanager.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">709</span>
+    <span class="phpdocumentor-element-found-in__line">708</span>
 
     </aside>
 
@@ -1246,6 +1098,8 @@ database object as one of its $this-&gt;db member.</p>
     <span class="phpdocumentor-signature__visibility">public</span>
                     <span class="phpdocumentor-signature__name">db_update</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$tableprefix</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$table</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$condition</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">null</span><span> ]</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$doquery</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">true</span><span> ]</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$delayed</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">false</span><span> ]</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$affected_rows</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">false</span><span> ]</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">bool</span></code>
 
+    <div class="phpdocumentor-label-line">
+        </div>
     
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
     <dl class="phpdocumentor-argument-list">
@@ -1254,60 +1108,56 @@ database object as one of its $this-&gt;db member.</p>
                 : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
                             </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
+                
             </dd>
                     <dt class="phpdocumentor-argument-list__entry">
                 <span class="phpdocumentor-signature__argument__name">$table</span>
                 : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
                             </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
+                
             </dd>
                     <dt class="phpdocumentor-argument-list__entry">
                 <span class="phpdocumentor-signature__argument__name">$condition</span>
                 : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
                  = <span class="phpdocumentor-signature__argument__default-value">null</span>            </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
+                
             </dd>
                     <dt class="phpdocumentor-argument-list__entry">
                 <span class="phpdocumentor-signature__argument__name">$doquery</span>
                 : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
                  = <span class="phpdocumentor-signature__argument__default-value">true</span>            </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
+                
             </dd>
                     <dt class="phpdocumentor-argument-list__entry">
                 <span class="phpdocumentor-signature__argument__name">$delayed</span>
                 : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
                  = <span class="phpdocumentor-signature__argument__default-value">false</span>            </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
+                
             </dd>
                     <dt class="phpdocumentor-argument-list__entry">
                 <span class="phpdocumentor-signature__argument__name">$affected_rows</span>
                 : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
                  = <span class="phpdocumentor-signature__argument__default-value">false</span>            </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
+                
             </dd>
             </dl>
 
     
 
+            <section>
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">bool</span>
-            &mdash;
-            <section class="phpdocumentor-description"><p>Returns true on success</p>
+        <span class="phpdocumentor-signature__response_type">bool</span>
+                    &mdash;
+                <section class="phpdocumentor-description"><p>Returns true on success</p>
 </section>
 
-    
+            </section>
+
 </article>
                     <article
         class="phpdocumentor-element
@@ -1318,11 +1168,12 @@ database object as one of its $this-&gt;db member.</p>
     <h4 class="phpdocumentor-element__name" id="method_delete">
         delete()
         <a href="classes/vB-DataManager.html#method_delete" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/datamanager.php"><a href="files/vb-datamanager.html"><abbr title="vb/datamanager.php">datamanager.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">1138</span>
+    <span class="phpdocumentor-element-found-in__line">1137</span>
 
     </aside>
 
@@ -1332,6 +1183,8 @@ database object as one of its $this-&gt;db member.</p>
     <span class="phpdocumentor-signature__visibility">public</span>
                     <span class="phpdocumentor-signature__name">delete</span><span>(</span><span class="phpdocumentor-signature__argument"><span>[</span><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$doquery</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">true</span><span> ]</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">int</span></code>
 
+    <div class="phpdocumentor-label-line">
+        </div>
     
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
     <dl class="phpdocumentor-argument-list">
@@ -1340,20 +1193,21 @@ database object as one of its $this-&gt;db member.</p>
                 : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
                  = <span class="phpdocumentor-signature__argument__default-value">true</span>            </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
+                
             </dd>
             </dl>
 
     
 
+            <section>
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">int</span>
-            &mdash;
-            <section class="phpdocumentor-description"><p>The number of rows deleted</p>
+        <span class="phpdocumentor-signature__response_type">int</span>
+                    &mdash;
+                <section class="phpdocumentor-description"><p>The number of rows deleted</p>
 </section>
 
-    
+            </section>
+
 </article>
                     <article
         class="phpdocumentor-element
@@ -1364,11 +1218,12 @@ database object as one of its $this-&gt;db member.</p>
     <h4 class="phpdocumentor-element__name" id="method_do_set">
         do_set()
         <a href="classes/vB-DataManager.html#method_do_set" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/datamanager.php"><a href="files/vb-datamanager.html"><abbr title="vb/datamanager.php">datamanager.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">648</span>
+    <span class="phpdocumentor-element-found-in__line">647</span>
 
     </aside>
 
@@ -1378,6 +1233,8 @@ database object as one of its $this-&gt;db member.</p>
     <span class="phpdocumentor-signature__visibility">public</span>
                     <span class="phpdocumentor-signature__name">do_set</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$fieldname</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__reference-operator">&amp;</span><span class="phpdocumentor-signature__argument__name">$value</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$table</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">null</span><span> ]</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
 
+    <div class="phpdocumentor-label-line">
+        </div>
     
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
     <dl class="phpdocumentor-argument-list">
@@ -1386,33 +1243,26 @@ database object as one of its $this-&gt;db member.</p>
                 : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
                             </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
+                
             </dd>
                     <dt class="phpdocumentor-argument-list__entry">
                 <span class="phpdocumentor-signature__argument__name">$value</span>
                 : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
                             </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
+                
             </dd>
                     <dt class="phpdocumentor-argument-list__entry">
                 <span class="phpdocumentor-signature__argument__name">$table</span>
                 : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
                  = <span class="phpdocumentor-signature__argument__default-value">null</span>            </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
+                
             </dd>
             </dl>
 
     
 
-        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">mixed</span>
-            &mdash;
-        
     
 </article>
                     <article
@@ -1424,11 +1274,12 @@ database object as one of its $this-&gt;db member.</p>
     <h4 class="phpdocumentor-element__name" id="method_do_unset">
         do_unset()
         <a href="classes/vB-DataManager.html#method_do_unset" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/datamanager.php"><a href="files/vb-datamanager.html"><abbr title="vb/datamanager.php">datamanager.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">626</span>
+    <span class="phpdocumentor-element-found-in__line">625</span>
 
     </aside>
 
@@ -1438,6 +1289,8 @@ database object as one of its $this-&gt;db member.</p>
     <span class="phpdocumentor-signature__visibility">public</span>
                     <span class="phpdocumentor-signature__name">do_unset</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$fieldname</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$table</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">null</span><span> ]</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
 
+    <div class="phpdocumentor-label-line">
+        </div>
     
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
     <dl class="phpdocumentor-argument-list">
@@ -1446,25 +1299,19 @@ database object as one of its $this-&gt;db member.</p>
                 : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
                             </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
+                
             </dd>
                     <dt class="phpdocumentor-argument-list__entry">
                 <span class="phpdocumentor-signature__argument__name">$table</span>
                 : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
                  = <span class="phpdocumentor-signature__argument__default-value">null</span>            </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
+                
             </dd>
             </dl>
 
     
 
-        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">mixed</span>
-            &mdash;
-        
     
 </article>
                     <article
@@ -1476,20 +1323,23 @@ database object as one of its $this-&gt;db member.</p>
     <h4 class="phpdocumentor-element__name" id="method_error">
         error()
         <a href="classes/vB-DataManager.html#method_error" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/datamanager.php"><a href="files/vb-datamanager.html"><abbr title="vb/datamanager.php">datamanager.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">1221</span>
+    <span class="phpdocumentor-element-found-in__line">1220</span>
 
     </aside>
 
-        <p class="phpdocumentor-summary">Shows an error message and halts execution - use this in the same way as print_stop_message();</p>
+        <p class="phpdocumentor-summary">Shows an error message and halts execution</p>
 
     <code class="phpdocumentor-code phpdocumentor-signature ">
     <span class="phpdocumentor-signature__visibility">public</span>
                     <span class="phpdocumentor-signature__name">error</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$errorphrase</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
 
+    <div class="phpdocumentor-label-line">
+        </div>
     
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
     <dl class="phpdocumentor-argument-list">
@@ -1498,17 +1348,12 @@ database object as one of its $this-&gt;db member.</p>
                 : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
                             </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
+                
             </dd>
             </dl>
 
     
 
-        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">mixed</span>
-            &mdash;
-        
     
 </article>
                     <article
@@ -1520,11 +1365,12 @@ database object as one of its $this-&gt;db member.</p>
     <h4 class="phpdocumentor-element__name" id="method_fetch_field">
         fetch_field()
         <a href="classes/vB-DataManager.html#method_fetch_field" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/datamanager.php"><a href="files/vb-datamanager.html"><abbr title="vb/datamanager.php">datamanager.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">341</span>
+    <span class="phpdocumentor-element-found-in__line">340</span>
 
     </aside>
 
@@ -1534,6 +1380,8 @@ database object as one of its $this-&gt;db member.</p>
     <span class="phpdocumentor-signature__visibility">public</span>
                 <span class="phpdocumentor-signature__reference-operator">&amp;</span>    <span class="phpdocumentor-signature__name">fetch_field</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$fieldname</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$table</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">null</span><span> ]</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
 
+    <div class="phpdocumentor-label-line">
+        </div>
     
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
     <dl class="phpdocumentor-argument-list">
@@ -1542,28 +1390,28 @@ database object as one of its $this-&gt;db member.</p>
                 : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
                             </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
+                
             </dd>
                     <dt class="phpdocumentor-argument-list__entry">
                 <span class="phpdocumentor-signature__argument__name">$table</span>
                 : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
                  = <span class="phpdocumentor-signature__argument__default-value">null</span>            </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
+                
             </dd>
             </dl>
 
     
 
+            <section>
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">mixed</span>
-            &mdash;
-            <section class="phpdocumentor-description"><p>The requested data</p>
+        <span class="phpdocumentor-signature__response_type">mixed</span>
+                    &mdash;
+                <section class="phpdocumentor-description"><p>The requested data</p>
 </section>
 
-    
+            </section>
+
 </article>
                     <article
         class="phpdocumentor-element
@@ -1574,11 +1422,12 @@ database object as one of its $this-&gt;db member.</p>
     <h4 class="phpdocumentor-element__name" id="method_get_errors">
         get_errors()
         <a href="classes/vB-DataManager.html#method_get_errors" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/datamanager.php"><a href="files/vb-datamanager.html"><abbr title="vb/datamanager.php">datamanager.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">941</span>
+    <span class="phpdocumentor-element-found-in__line">940</span>
 
     </aside>
 
@@ -1588,17 +1437,21 @@ database object as one of its $this-&gt;db member.</p>
     <span class="phpdocumentor-signature__visibility">public</span>
                     <span class="phpdocumentor-signature__name">get_errors</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">array&lt;string|int, mixed&gt;</span></code>
 
+    <div class="phpdocumentor-label-line">
+        </div>
     
     
     
 
+            <section>
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">array&lt;string|int, mixed&gt;</span>
-            &mdash;
-            <section class="phpdocumentor-description"><p>--</p>
+        <span class="phpdocumentor-signature__response_type">array&lt;string|int, mixed&gt;</span>
+                    &mdash;
+                <section class="phpdocumentor-description"><p>--</p>
 </section>
 
-    
+            </section>
+
 </article>
                     <article
         class="phpdocumentor-element
@@ -1609,11 +1462,12 @@ database object as one of its $this-&gt;db member.</p>
     <h4 class="phpdocumentor-element__name" id="method_get_exception">
         get_exception()
         <a href="classes/vB-DataManager.html#method_get_exception" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/datamanager.php"><a href="files/vb-datamanager.html"><abbr title="vb/datamanager.php">datamanager.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">946</span>
+    <span class="phpdocumentor-element-found-in__line">945</span>
 
     </aside>
 
@@ -1622,15 +1476,12 @@ database object as one of its $this-&gt;db member.</p>
     <span class="phpdocumentor-signature__visibility">public</span>
                     <span class="phpdocumentor-signature__name">get_exception</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
 
-        <section class="phpdocumentor-description"></section>
-
+    <div class="phpdocumentor-label-line">
+        </div>
     
     
+    
 
-        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">mixed</span>
-            &mdash;
-        
     
 </article>
                     <article
@@ -1642,11 +1493,12 @@ database object as one of its $this-&gt;db member.</p>
     <h4 class="phpdocumentor-element__name" id="method_has_errors">
         has_errors()
         <a href="classes/vB-DataManager.html#method_has_errors" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/datamanager.php"><a href="files/vb-datamanager.html"><abbr title="vb/datamanager.php">datamanager.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">891</span>
+    <span class="phpdocumentor-element-found-in__line">890</span>
 
     </aside>
 
@@ -1656,6 +1508,8 @@ database object as one of its $this-&gt;db member.</p>
     <span class="phpdocumentor-signature__visibility">public</span>
                     <span class="phpdocumentor-signature__name">has_errors</span><span>(</span><span class="phpdocumentor-signature__argument"><span>[</span><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$die</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">true</span><span> ]</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">bool</span></code>
 
+    <div class="phpdocumentor-label-line">
+        </div>
     
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
     <dl class="phpdocumentor-argument-list">
@@ -1664,20 +1518,21 @@ database object as one of its $this-&gt;db member.</p>
                 : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
                  = <span class="phpdocumentor-signature__argument__default-value">true</span>            </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
+                
             </dd>
             </dl>
 
     
 
+            <section>
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">bool</span>
-            &mdash;
-            <section class="phpdocumentor-description"><p>True if there <em>are</em> errors, false otherwise</p>
+        <span class="phpdocumentor-signature__response_type">bool</span>
+                    &mdash;
+                <section class="phpdocumentor-description"><p>True if there <em>are</em> errors, false otherwise</p>
 </section>
 
-    
+            </section>
+
 </article>
                     <article
         class="phpdocumentor-element
@@ -1688,11 +1543,12 @@ database object as one of its $this-&gt;db member.</p>
     <h4 class="phpdocumentor-element__name" id="method_is_bitfield_set">
         is_bitfield_set()
         <a href="classes/vB-DataManager.html#method_is_bitfield_set" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/datamanager.php"><a href="files/vb-datamanager.html"><abbr title="vb/datamanager.php">datamanager.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">520</span>
+    <span class="phpdocumentor-element-found-in__line">519</span>
 
     </aside>
 
@@ -1702,6 +1558,8 @@ database object as one of its $this-&gt;db member.</p>
     <span class="phpdocumentor-signature__visibility">public</span>
                     <span class="phpdocumentor-signature__name">is_bitfield_set</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$fieldname</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$bitname</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">bool</span></code>
 
+    <div class="phpdocumentor-label-line">
+        </div>
     
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
     <dl class="phpdocumentor-argument-list">
@@ -1710,26 +1568,24 @@ database object as one of its $this-&gt;db member.</p>
                 : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
                             </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
+                
             </dd>
                     <dt class="phpdocumentor-argument-list__entry">
                 <span class="phpdocumentor-signature__argument__name">$bitname</span>
                 : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
                             </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
+                
             </dd>
             </dl>
 
     
 
+            <section>
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">bool</span>
-            &mdash;
-        
-    
+        <span class="phpdocumentor-signature__response_type">bool</span>
+            </section>
+
 </article>
                     <article
         class="phpdocumentor-element
@@ -1740,11 +1596,12 @@ database object as one of its $this-&gt;db member.</p>
     <h4 class="phpdocumentor-element__name" id="method_is_field_defined">
         is_field_defined()
         <a href="classes/vB-DataManager.html#method_is_field_defined" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/datamanager.php"><a href="files/vb-datamanager.html"><abbr title="vb/datamanager.php">datamanager.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">329</span>
+    <span class="phpdocumentor-element-found-in__line">328</span>
 
     </aside>
 
@@ -1753,8 +1610,9 @@ database object as one of its $this-&gt;db member.</p>
     <span class="phpdocumentor-signature__visibility">public</span>
                     <span class="phpdocumentor-signature__name">is_field_defined</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$fieldname</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
 
-        <section class="phpdocumentor-description"></section>
-
+    <div class="phpdocumentor-label-line">
+        </div>
+    
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
     <dl class="phpdocumentor-argument-list">
                     <dt class="phpdocumentor-argument-list__entry">
@@ -1762,17 +1620,12 @@ database object as one of its $this-&gt;db member.</p>
                 : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
                             </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
+                
             </dd>
             </dl>
 
     
 
-        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">mixed</span>
-            &mdash;
-        
     
 </article>
                     <article
@@ -1784,11 +1637,12 @@ database object as one of its $this-&gt;db member.</p>
     <h4 class="phpdocumentor-element__name" id="method_is_field_set">
         is_field_set()
         <a href="classes/vB-DataManager.html#method_is_field_set" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/datamanager.php"><a href="files/vb-datamanager.html"><abbr title="vb/datamanager.php">datamanager.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">324</span>
+    <span class="phpdocumentor-element-found-in__line">323</span>
 
     </aside>
 
@@ -1798,6 +1652,8 @@ database object as one of its $this-&gt;db member.</p>
     <span class="phpdocumentor-signature__visibility">public</span>
                     <span class="phpdocumentor-signature__name">is_field_set</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$field</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
 
+    <div class="phpdocumentor-label-line">
+        </div>
     
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
     <dl class="phpdocumentor-argument-list">
@@ -1806,17 +1662,12 @@ database object as one of its $this-&gt;db member.</p>
                 : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
                             </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
+                
             </dd>
             </dl>
 
     
 
-        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">mixed</span>
-            &mdash;
-        
     
 </article>
                     <article
@@ -1828,6 +1679,7 @@ database object as one of its $this-&gt;db member.</p>
     <h4 class="phpdocumentor-element__name" id="method_post_delete">
         post_delete()
         <a href="classes/vB-DataManager-Admin.html#method_post_delete" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/datamanager/admin.php"><a href="files/vb-datamanager-admin.html"><abbr title="vb/datamanager/admin.php">admin.php</abbr></a></abbr>
@@ -1842,6 +1694,8 @@ database object as one of its $this-&gt;db member.</p>
     <span class="phpdocumentor-signature__visibility">public</span>
                     <span class="phpdocumentor-signature__name">post_delete</span><span>(</span><span class="phpdocumentor-signature__argument"><span>[</span><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$doquery</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">true</span><span> ]</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
 
+    <div class="phpdocumentor-label-line">
+        </div>
     
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
     <dl class="phpdocumentor-argument-list">
@@ -1850,17 +1704,12 @@ database object as one of its $this-&gt;db member.</p>
                 : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
                  = <span class="phpdocumentor-signature__argument__default-value">true</span>            </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
+                
             </dd>
             </dl>
 
     
 
-        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">mixed</span>
-            &mdash;
-        
     
 </article>
                     <article
@@ -1872,6 +1721,7 @@ database object as one of its $this-&gt;db member.</p>
     <h4 class="phpdocumentor-element__name" id="method_post_save_each">
         post_save_each()
         <a href="classes/vB-DataManager-Admin.html#method_post_save_each" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/datamanager/admin.php"><a href="files/vb-datamanager-admin.html"><abbr title="vb/datamanager/admin.php">admin.php</abbr></a></abbr>
@@ -1886,6 +1736,8 @@ database object as one of its $this-&gt;db member.</p>
     <span class="phpdocumentor-signature__visibility">public</span>
                     <span class="phpdocumentor-signature__name">post_save_each</span><span>(</span><span class="phpdocumentor-signature__argument"><span>[</span><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$doquery</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">true</span><span> ]</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
 
+    <div class="phpdocumentor-label-line">
+        </div>
         <section class="phpdocumentor-description"><p>In batch updates, is executed for each record updated.</p>
 </section>
 
@@ -1896,17 +1748,12 @@ database object as one of its $this-&gt;db member.</p>
                 : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
                  = <span class="phpdocumentor-signature__argument__default-value">true</span>            </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
+                
             </dd>
             </dl>
 
     
 
-        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">mixed</span>
-            &mdash;
-        
     
 </article>
                     <article
@@ -1918,11 +1765,12 @@ database object as one of its $this-&gt;db member.</p>
     <h4 class="phpdocumentor-element__name" id="method_post_save_once">
         post_save_once()
         <a href="classes/vB-DataManager.html#method_post_save_once" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/datamanager.php"><a href="files/vb-datamanager.html"><abbr title="vb/datamanager.php">datamanager.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">1125</span>
+    <span class="phpdocumentor-element-found-in__line">1124</span>
 
     </aside>
 
@@ -1932,6 +1780,8 @@ database object as one of its $this-&gt;db member.</p>
     <span class="phpdocumentor-signature__visibility">public</span>
                     <span class="phpdocumentor-signature__name">post_save_once</span><span>(</span><span class="phpdocumentor-signature__argument"><span>[</span><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$doquery</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">true</span><span> ]</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
 
+    <div class="phpdocumentor-label-line">
+        </div>
         <section class="phpdocumentor-description"><p>In batch updates, is executed once after all records are updated.</p>
 </section>
 
@@ -1942,61 +1792,12 @@ database object as one of its $this-&gt;db member.</p>
                 : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
                  = <span class="phpdocumentor-signature__argument__default-value">true</span>            </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
+                
             </dd>
             </dl>
 
     
 
-        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">mixed</span>
-            &mdash;
-        
-    
-</article>
-                    <article
-        class="phpdocumentor-element
-            -method
-            -public
-                                                        "
->
-    <h4 class="phpdocumentor-element__name" id="method_pre_delete">
-        pre_delete()
-        <a href="classes/vB-DataManager.html#method_pre_delete" class="headerlink"><i class="fas fa-link"></i></a>
-    </h4>
-    <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="vb/datamanager.php"><a href="files/vb-datamanager.html"><abbr title="vb/datamanager.php">datamanager.php</abbr></a></abbr>
-    :
-    <span class="phpdocumentor-element-found-in__line">1173</span>
-
-    </aside>
-
-        <p class="phpdocumentor-summary">Additional data to update before a delete call (such as denormalized values in other tables).</p>
-
-    <code class="phpdocumentor-code phpdocumentor-signature ">
-    <span class="phpdocumentor-signature__visibility">public</span>
-                    <span class="phpdocumentor-signature__name">pre_delete</span><span>(</span><span class="phpdocumentor-signature__argument"><span>[</span><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$doquery</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">true</span><span> ]</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
-
-    
-        <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
-    <dl class="phpdocumentor-argument-list">
-                    <dt class="phpdocumentor-argument-list__entry">
-                <span class="phpdocumentor-signature__argument__name">$doquery</span>
-                : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
-                 = <span class="phpdocumentor-signature__argument__default-value">true</span>            </dt>
-            <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
-            </dd>
-            </dl>
-
-    
-
-        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">mixed</span>
-            &mdash;
-        
     
 </article>
                     <article
@@ -2008,6 +1809,7 @@ database object as one of its $this-&gt;db member.</p>
     <h4 class="phpdocumentor-element__name" id="method_pre_save">
         pre_save()
         <a href="classes/vB-DataManager-Admin.html#method_pre_save" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/datamanager/admin.php"><a href="files/vb-datamanager-admin.html"><abbr title="vb/datamanager/admin.php">admin.php</abbr></a></abbr>
@@ -2022,6 +1824,8 @@ database object as one of its $this-&gt;db member.</p>
     <span class="phpdocumentor-signature__visibility">public</span>
                     <span class="phpdocumentor-signature__name">pre_save</span><span>(</span><span class="phpdocumentor-signature__argument"><span>[</span><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$doquery</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">true</span><span> ]</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">bool</span></code>
 
+    <div class="phpdocumentor-label-line">
+        </div>
     
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
     <dl class="phpdocumentor-argument-list">
@@ -2030,20 +1834,21 @@ database object as one of its $this-&gt;db member.</p>
                 : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
                  = <span class="phpdocumentor-signature__argument__default-value">true</span>            </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
+                
             </dd>
             </dl>
 
     
 
+            <section>
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">bool</span>
-            &mdash;
-            <section class="phpdocumentor-description"><p>True on success; false if an error occurred</p>
+        <span class="phpdocumentor-signature__response_type">bool</span>
+                    &mdash;
+                <section class="phpdocumentor-description"><p>True on success; false if an error occurred</p>
 </section>
 
-    
+            </section>
+
 </article>
                     <article
         class="phpdocumentor-element
@@ -2054,11 +1859,12 @@ database object as one of its $this-&gt;db member.</p>
     <h4 class="phpdocumentor-element__name" id="method_save">
         save()
         <a href="classes/vB-DataManager.html#method_save" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/datamanager.php"><a href="files/vb-datamanager.html"><abbr title="vb/datamanager.php">datamanager.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">977</span>
+    <span class="phpdocumentor-element-found-in__line">976</span>
 
     </aside>
 
@@ -2068,6 +1874,8 @@ database object as one of its $this-&gt;db member.</p>
     <span class="phpdocumentor-signature__visibility">public</span>
                     <span class="phpdocumentor-signature__name">save</span><span>(</span><span class="phpdocumentor-signature__argument"><span>[</span><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$doquery</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">true</span><span> ]</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$delayed</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">false</span><span> ]</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$affected_rows</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">false</span><span> ]</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$replace</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">false</span><span> ]</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
 
+    <div class="phpdocumentor-label-line">
+        </div>
     
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
     <dl class="phpdocumentor-argument-list">
@@ -2076,44 +1884,42 @@ database object as one of its $this-&gt;db member.</p>
                 : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
                  = <span class="phpdocumentor-signature__argument__default-value">true</span>            </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
+                
             </dd>
                     <dt class="phpdocumentor-argument-list__entry">
                 <span class="phpdocumentor-signature__argument__name">$delayed</span>
                 : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
                  = <span class="phpdocumentor-signature__argument__default-value">false</span>            </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
+                
             </dd>
                     <dt class="phpdocumentor-argument-list__entry">
                 <span class="phpdocumentor-signature__argument__name">$affected_rows</span>
                 : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
                  = <span class="phpdocumentor-signature__argument__default-value">false</span>            </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
+                
             </dd>
                     <dt class="phpdocumentor-argument-list__entry">
                 <span class="phpdocumentor-signature__argument__name">$replace</span>
                 : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
                  = <span class="phpdocumentor-signature__argument__default-value">false</span>            </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
+                
             </dd>
             </dl>
 
     
 
+            <section>
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">mixed</span>
-            &mdash;
-            <section class="phpdocumentor-description"><p>If this was an INSERT query, the INSERT ID is returned</p>
+        <span class="phpdocumentor-signature__response_type">mixed</span>
+                    &mdash;
+                <section class="phpdocumentor-description"><p>If this was an INSERT query, the INSERT ID is returned</p>
 </section>
 
-    
+            </section>
+
 </article>
                     <article
         class="phpdocumentor-element
@@ -2124,11 +1930,12 @@ database object as one of its $this-&gt;db member.</p>
     <h4 class="phpdocumentor-element__name" id="method_set">
         set()
         <a href="classes/vB-DataManager.html#method_set" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/datamanager.php"><a href="files/vb-datamanager.html"><abbr title="vb/datamanager.php">datamanager.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">412</span>
+    <span class="phpdocumentor-element-found-in__line">411</span>
 
     </aside>
 
@@ -2138,6 +1945,8 @@ database object as one of its $this-&gt;db member.</p>
     <span class="phpdocumentor-signature__visibility">public</span>
                     <span class="phpdocumentor-signature__name">set</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$fieldname</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$value</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$clean</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">true</span><span> ]</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$doverify</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">true</span><span> ]</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$table</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">null</span><span> ]</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">bool</span></code>
 
+    <div class="phpdocumentor-label-line">
+        </div>
     
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
     <dl class="phpdocumentor-argument-list">
@@ -2146,52 +1955,49 @@ database object as one of its $this-&gt;db member.</p>
                 : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
                             </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
+                
             </dd>
                     <dt class="phpdocumentor-argument-list__entry">
                 <span class="phpdocumentor-signature__argument__name">$value</span>
                 : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
                             </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
+                
             </dd>
                     <dt class="phpdocumentor-argument-list__entry">
                 <span class="phpdocumentor-signature__argument__name">$clean</span>
                 : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
                  = <span class="phpdocumentor-signature__argument__default-value">true</span>            </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
+                
             </dd>
                     <dt class="phpdocumentor-argument-list__entry">
                 <span class="phpdocumentor-signature__argument__name">$doverify</span>
                 : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
                  = <span class="phpdocumentor-signature__argument__default-value">true</span>            </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
+                
             </dd>
                     <dt class="phpdocumentor-argument-list__entry">
                 <span class="phpdocumentor-signature__argument__name">$table</span>
                 : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
                  = <span class="phpdocumentor-signature__argument__default-value">null</span>            </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
+                
             </dd>
             </dl>
 
     
 
+            <section>
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">bool</span>
-            &mdash;
-            <section class="phpdocumentor-description"><p>Returns false if the data is rejected for whatever reason</p>
+        <span class="phpdocumentor-signature__response_type">bool</span>
+                    &mdash;
+                <section class="phpdocumentor-description"><p>Returns false if the data is rejected for whatever reason</p>
 </section>
 
-    
+            </section>
+
 </article>
                     <article
         class="phpdocumentor-element
@@ -2202,6 +2008,7 @@ database object as one of its $this-&gt;db member.</p>
     <h4 class="phpdocumentor-element__name" id="method_set_bitfield">
         set_bitfield()
         <a href="classes/vB-DataManager-Admin.html#method_set_bitfield" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/datamanager/admin.php"><a href="files/vb-datamanager-admin.html"><abbr title="vb/datamanager/admin.php">admin.php</abbr></a></abbr>
@@ -2216,6 +2023,8 @@ database object as one of its $this-&gt;db member.</p>
     <span class="phpdocumentor-signature__visibility">public</span>
                     <span class="phpdocumentor-signature__name">set_bitfield</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$fieldname</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$bitname</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$onoff</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">bool</span></code>
 
+    <div class="phpdocumentor-label-line">
+        </div>
     
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
     <dl class="phpdocumentor-argument-list">
@@ -2224,34 +2033,31 @@ database object as one of its $this-&gt;db member.</p>
                 : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
                             </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
+                
             </dd>
                     <dt class="phpdocumentor-argument-list__entry">
                 <span class="phpdocumentor-signature__argument__name">$bitname</span>
                 : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
                             </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
+                
             </dd>
                     <dt class="phpdocumentor-argument-list__entry">
                 <span class="phpdocumentor-signature__argument__name">$onoff</span>
                 : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
                             </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
+                
             </dd>
             </dl>
 
     
 
+            <section>
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">bool</span>
-            &mdash;
-        
-    
+        <span class="phpdocumentor-signature__response_type">bool</span>
+            </section>
+
 </article>
                     <article
         class="phpdocumentor-element
@@ -2262,11 +2068,12 @@ database object as one of its $this-&gt;db member.</p>
     <h4 class="phpdocumentor-element__name" id="method_set_condition">
         set_condition()
         <a href="classes/vB-DataManager.html#method_set_condition" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/datamanager.php"><a href="files/vb-datamanager.html"><abbr title="vb/datamanager.php">datamanager.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">273</span>
+    <span class="phpdocumentor-element-found-in__line">272</span>
 
     </aside>
 
@@ -2277,6 +2084,8 @@ the $this-&gt;condition_constuct condition template.</p>
     <span class="phpdocumentor-signature__visibility">public</span>
                     <span class="phpdocumentor-signature__name">set_condition</span><span>(</span><span class="phpdocumentor-signature__argument"><span>[</span><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$params</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">null</span><span> ]</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
 
+    <div class="phpdocumentor-label-line">
+        </div>
     
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
     <dl class="phpdocumentor-argument-list">
@@ -2285,17 +2094,12 @@ the $this-&gt;condition_constuct condition template.</p>
                 : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
                  = <span class="phpdocumentor-signature__argument__default-value">null</span>            </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
+                
             </dd>
             </dl>
 
     
 
-        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">mixed</span>
-            &mdash;
-        
     
 </article>
                     <article
@@ -2307,11 +2111,12 @@ the $this-&gt;condition_constuct condition template.</p>
     <h4 class="phpdocumentor-element__name" id="method_set_existing">
         set_existing()
         <a href="classes/vB-DataManager.html#method_set_existing" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/datamanager.php"><a href="files/vb-datamanager.html"><abbr title="vb/datamanager.php">datamanager.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">245</span>
+    <span class="phpdocumentor-element-found-in__line">244</span>
 
     </aside>
 
@@ -2321,6 +2126,8 @@ the $this-&gt;condition_constuct condition template.</p>
     <span class="phpdocumentor-signature__visibility">public</span>
                     <span class="phpdocumentor-signature__name">set_existing</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$existing</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">bool</span></code>
 
+    <div class="phpdocumentor-label-line">
+        </div>
     
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
     <dl class="phpdocumentor-argument-list">
@@ -2329,20 +2136,21 @@ the $this-&gt;condition_constuct condition template.</p>
                 : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
                             </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
+                
             </dd>
             </dl>
 
     
 
+            <section>
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">bool</span>
-            &mdash;
-            <section class="phpdocumentor-description"><p>Returns true if successful</p>
+        <span class="phpdocumentor-signature__response_type">bool</span>
+                    &mdash;
+                <section class="phpdocumentor-description"><p>Returns true if successful</p>
 </section>
 
-    
+            </section>
+
 </article>
                     <article
         class="phpdocumentor-element
@@ -2353,11 +2161,12 @@ the $this-&gt;condition_constuct condition template.</p>
     <h4 class="phpdocumentor-element__name" id="method_set_info">
         set_info()
         <a href="classes/vB-DataManager.html#method_set_info" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/datamanager.php"><a href="files/vb-datamanager.html"><abbr title="vb/datamanager.php">datamanager.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">545</span>
+    <span class="phpdocumentor-element-found-in__line">544</span>
 
     </aside>
 
@@ -2367,6 +2176,8 @@ the $this-&gt;condition_constuct condition template.</p>
     <span class="phpdocumentor-signature__visibility">public</span>
                     <span class="phpdocumentor-signature__name">set_info</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$fieldname</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$value</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
 
+    <div class="phpdocumentor-label-line">
+        </div>
     
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
     <dl class="phpdocumentor-argument-list">
@@ -2375,25 +2186,19 @@ the $this-&gt;condition_constuct condition template.</p>
                 : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
                             </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
+                
             </dd>
                     <dt class="phpdocumentor-argument-list__entry">
                 <span class="phpdocumentor-signature__argument__name">$value</span>
                 : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
                             </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
+                
             </dd>
             </dl>
 
     
 
-        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">mixed</span>
-            &mdash;
-        
     
 </article>
                     <article
@@ -2405,11 +2210,12 @@ the $this-&gt;condition_constuct condition template.</p>
     <h4 class="phpdocumentor-element__name" id="method_setr">
         setr()
         <a href="classes/vB-DataManager.html#method_setr" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/datamanager.php"><a href="files/vb-datamanager.html"><abbr title="vb/datamanager.php">datamanager.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">456</span>
+    <span class="phpdocumentor-element-found-in__line">455</span>
 
     </aside>
 
@@ -2419,6 +2225,8 @@ the $this-&gt;condition_constuct condition template.</p>
     <span class="phpdocumentor-signature__visibility">public</span>
                     <span class="phpdocumentor-signature__name">setr</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$fieldname</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__reference-operator">&amp;</span><span class="phpdocumentor-signature__argument__name">$value</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$clean</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">true</span><span> ]</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$doverify</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">true</span><span> ]</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">bool</span></code>
 
+    <div class="phpdocumentor-label-line">
+        </div>
     
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
     <dl class="phpdocumentor-argument-list">
@@ -2427,44 +2235,42 @@ the $this-&gt;condition_constuct condition template.</p>
                 : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
                             </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
+                
             </dd>
                     <dt class="phpdocumentor-argument-list__entry">
                 <span class="phpdocumentor-signature__argument__name">$value</span>
                 : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
                             </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
+                
             </dd>
                     <dt class="phpdocumentor-argument-list__entry">
                 <span class="phpdocumentor-signature__argument__name">$clean</span>
                 : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
                  = <span class="phpdocumentor-signature__argument__default-value">true</span>            </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
+                
             </dd>
                     <dt class="phpdocumentor-argument-list__entry">
                 <span class="phpdocumentor-signature__argument__name">$doverify</span>
                 : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
                  = <span class="phpdocumentor-signature__argument__default-value">true</span>            </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
+                
             </dd>
             </dl>
 
     
 
+            <section>
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">bool</span>
-            &mdash;
-            <section class="phpdocumentor-description"><p>Returns false if the data is rejected for whatever reason</p>
+        <span class="phpdocumentor-signature__response_type">bool</span>
+                    &mdash;
+                <section class="phpdocumentor-description"><p>Returns false if the data is rejected for whatever reason</p>
 </section>
 
-    
+            </section>
+
 </article>
                     <article
         class="phpdocumentor-element
@@ -2475,11 +2281,12 @@ the $this-&gt;condition_constuct condition template.</p>
     <h4 class="phpdocumentor-element__name" id="method_setr_info">
         setr_info()
         <a href="classes/vB-DataManager.html#method_setr_info" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/datamanager.php"><a href="files/vb-datamanager.html"><abbr title="vb/datamanager.php">datamanager.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">560</span>
+    <span class="phpdocumentor-element-found-in__line">559</span>
 
     </aside>
 
@@ -2489,6 +2296,8 @@ the $this-&gt;condition_constuct condition template.</p>
     <span class="phpdocumentor-signature__visibility">public</span>
                     <span class="phpdocumentor-signature__name">setr_info</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$fieldname</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__reference-operator">&amp;</span><span class="phpdocumentor-signature__argument__name">$value</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
 
+    <div class="phpdocumentor-label-line">
+        </div>
     
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
     <dl class="phpdocumentor-argument-list">
@@ -2497,25 +2306,19 @@ the $this-&gt;condition_constuct condition template.</p>
                 : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
                             </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
+                
             </dd>
                     <dt class="phpdocumentor-argument-list__entry">
                 <span class="phpdocumentor-signature__argument__name">$value</span>
                 : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
                             </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
+                
             </dd>
             </dl>
 
     
 
-        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">mixed</span>
-            &mdash;
-        
     
 </article>
                     <article
@@ -2527,11 +2330,12 @@ the $this-&gt;condition_constuct condition template.</p>
     <h4 class="phpdocumentor-element__name" id="method_verify">
         verify()
         <a href="classes/vB-DataManager.html#method_verify" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/datamanager.php"><a href="files/vb-datamanager.html"><abbr title="vb/datamanager.php">datamanager.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">581</span>
+    <span class="phpdocumentor-element-found-in__line">580</span>
 
     </aside>
 
@@ -2541,6 +2345,8 @@ the $this-&gt;condition_constuct condition template.</p>
     <span class="phpdocumentor-signature__visibility">public</span>
                     <span class="phpdocumentor-signature__name">verify</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$fieldname</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__reference-operator">&amp;</span><span class="phpdocumentor-signature__argument__name">$value</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$doverify</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">true</span><span> ]</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">bool</span></code>
 
+    <div class="phpdocumentor-label-line">
+        </div>
         <section class="phpdocumentor-description"><p>Also ensures that the data is of the correct type,
 and attempts to correct errors in the supplied data.</p>
 </section>
@@ -2552,36 +2358,35 @@ and attempts to correct errors in the supplied data.</p>
                 : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
                             </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
+                
             </dd>
                     <dt class="phpdocumentor-argument-list__entry">
                 <span class="phpdocumentor-signature__argument__name">$value</span>
                 : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
                             </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
+                
             </dd>
                     <dt class="phpdocumentor-argument-list__entry">
                 <span class="phpdocumentor-signature__argument__name">$doverify</span>
                 : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
                  = <span class="phpdocumentor-signature__argument__default-value">true</span>            </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
+                
             </dd>
             </dl>
 
     
 
+            <section>
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">bool</span>
-            &mdash;
-            <section class="phpdocumentor-description"><p>Returns true if the data is one of the fields used by this object, and is the correct type (or has been successfully corrected to be so)</p>
+        <span class="phpdocumentor-signature__response_type">bool</span>
+                    &mdash;
+                <section class="phpdocumentor-description"><p>Returns true if the data is one of the fields used by this object, and is the correct type (or has been successfully corrected to be so)</p>
 </section>
 
-    
+            </section>
+
 </article>
                     <article
         class="phpdocumentor-element
@@ -2592,6 +2397,7 @@ and attempts to correct errors in the supplied data.</p>
     <h4 class="phpdocumentor-element__name" id="method_verify_cssprefs">
         verify_cssprefs()
         <a href="classes/vB-DataManager-Admin.html#method_verify_cssprefs" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/datamanager/admin.php"><a href="files/vb-datamanager-admin.html"><abbr title="vb/datamanager/admin.php">admin.php</abbr></a></abbr>
@@ -2606,6 +2412,8 @@ and attempts to correct errors in the supplied data.</p>
     <span class="phpdocumentor-signature__visibility">public</span>
                     <span class="phpdocumentor-signature__name">verify_cssprefs</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__reference-operator">&amp;</span><span class="phpdocumentor-signature__argument__name">$cssprefs</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">bool</span></code>
 
+    <div class="phpdocumentor-label-line">
+        </div>
     
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
     <dl class="phpdocumentor-argument-list">
@@ -2614,18 +2422,17 @@ and attempts to correct errors in the supplied data.</p>
                 : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
                             </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
+                
             </dd>
             </dl>
 
     
 
+            <section>
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">bool</span>
-            &mdash;
-        
-    
+        <span class="phpdocumentor-signature__response_type">bool</span>
+            </section>
+
 </article>
                     <article
         class="phpdocumentor-element
@@ -2636,11 +2443,12 @@ and attempts to correct errors in the supplied data.</p>
     <h4 class="phpdocumentor-element__name" id="method_verify_date_array">
         verify_date_array()
         <a href="classes/vB-DataManager.html#method_verify_date_array" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/datamanager.php"><a href="files/vb-datamanager.html"><abbr title="vb/datamanager.php">datamanager.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">1630</span>
+    <span class="phpdocumentor-element-found-in__line">1624</span>
 
     </aside>
 
@@ -2650,6 +2458,8 @@ and attempts to correct errors in the supplied data.</p>
     <span class="phpdocumentor-signature__visibility">public</span>
                     <span class="phpdocumentor-signature__name">verify_date_array</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__reference-operator">&amp;</span><span class="phpdocumentor-signature__argument__name">$date</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">bool</span></code>
 
+    <div class="phpdocumentor-label-line">
+        </div>
     
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
     <dl class="phpdocumentor-argument-list">
@@ -2658,18 +2468,17 @@ and attempts to correct errors in the supplied data.</p>
                 : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
                             </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
+                
             </dd>
             </dl>
 
     
 
+            <section>
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">bool</span>
-            &mdash;
-        
-    
+        <span class="phpdocumentor-signature__response_type">bool</span>
+            </section>
+
 </article>
                     <article
         class="phpdocumentor-element
@@ -2680,11 +2489,12 @@ and attempts to correct errors in the supplied data.</p>
     <h4 class="phpdocumentor-element__name" id="method_verify_email">
         verify_email()
         <a href="classes/vB-DataManager.html#method_verify_email" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/datamanager.php"><a href="files/vb-datamanager.html"><abbr title="vb/datamanager.php">datamanager.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">1587</span>
+    <span class="phpdocumentor-element-found-in__line">1581</span>
 
     </aside>
 
@@ -2694,6 +2504,8 @@ and attempts to correct errors in the supplied data.</p>
     <span class="phpdocumentor-signature__visibility">public</span>
                     <span class="phpdocumentor-signature__name">verify_email</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__reference-operator">&amp;</span><span class="phpdocumentor-signature__argument__name">$email</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">bool</span></code>
 
+    <div class="phpdocumentor-label-line">
+        </div>
     
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
     <dl class="phpdocumentor-argument-list">
@@ -2702,18 +2514,17 @@ and attempts to correct errors in the supplied data.</p>
                 : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
                             </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
+                
             </dd>
             </dl>
 
     
 
+            <section>
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">bool</span>
-            &mdash;
-        
-    
+        <span class="phpdocumentor-signature__response_type">bool</span>
+            </section>
+
 </article>
                     <article
         class="phpdocumentor-element
@@ -2724,11 +2535,12 @@ and attempts to correct errors in the supplied data.</p>
     <h4 class="phpdocumentor-element__name" id="method_verify_link">
         verify_link()
         <a href="classes/vB-DataManager.html#method_verify_link" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/datamanager.php"><a href="files/vb-datamanager.html"><abbr title="vb/datamanager.php">datamanager.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">1600</span>
+    <span class="phpdocumentor-element-found-in__line">1594</span>
 
     </aside>
 
@@ -2738,6 +2550,8 @@ and attempts to correct errors in the supplied data.</p>
     <span class="phpdocumentor-signature__visibility">public</span>
                     <span class="phpdocumentor-signature__name">verify_link</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__reference-operator">&amp;</span><span class="phpdocumentor-signature__argument__name">$link</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$strict</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">false</span><span> ]</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">bool</span></code>
 
+    <div class="phpdocumentor-label-line">
+        </div>
     
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
     <dl class="phpdocumentor-argument-list">
@@ -2746,26 +2560,24 @@ and attempts to correct errors in the supplied data.</p>
                 : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
                             </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
+                
             </dd>
                     <dt class="phpdocumentor-argument-list__entry">
                 <span class="phpdocumentor-signature__argument__name">$strict</span>
                 : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
                  = <span class="phpdocumentor-signature__argument__default-value">false</span>            </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
+                
             </dd>
             </dl>
 
     
 
+            <section>
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">bool</span>
-            &mdash;
-        
-    
+        <span class="phpdocumentor-signature__response_type">bool</span>
+            </section>
+
 </article>
                     <article
         class="phpdocumentor-element
@@ -2776,11 +2588,12 @@ and attempts to correct errors in the supplied data.</p>
     <h4 class="phpdocumentor-element__name" id="method_verify_md5">
         verify_md5()
         <a href="classes/vB-DataManager.html#method_verify_md5" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/datamanager.php"><a href="files/vb-datamanager.html"><abbr title="vb/datamanager.php">datamanager.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">1575</span>
+    <span class="phpdocumentor-element-found-in__line">1569</span>
 
     </aside>
 
@@ -2790,6 +2603,8 @@ and attempts to correct errors in the supplied data.</p>
     <span class="phpdocumentor-signature__visibility">public</span>
                     <span class="phpdocumentor-signature__name">verify_md5</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__reference-operator">&amp;</span><span class="phpdocumentor-signature__argument__name">$md5</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">bool</span></code>
 
+    <div class="phpdocumentor-label-line">
+        </div>
     
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
     <dl class="phpdocumentor-argument-list">
@@ -2798,18 +2613,17 @@ and attempts to correct errors in the supplied data.</p>
                 : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
                             </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
+                
             </dd>
             </dl>
 
     
 
+            <section>
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">bool</span>
-            &mdash;
-        
-    
+        <span class="phpdocumentor-signature__response_type">bool</span>
+            </section>
+
 </article>
                     <article
         class="phpdocumentor-element
@@ -2820,6 +2634,7 @@ and attempts to correct errors in the supplied data.</p>
     <h4 class="phpdocumentor-element__name" id="method_verify_navprefs">
         verify_navprefs()
         <a href="classes/vB-DataManager-Admin.html#method_verify_navprefs" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/datamanager/admin.php"><a href="files/vb-datamanager-admin.html"><abbr title="vb/datamanager/admin.php">admin.php</abbr></a></abbr>
@@ -2834,6 +2649,8 @@ and attempts to correct errors in the supplied data.</p>
     <span class="phpdocumentor-signature__visibility">public</span>
                     <span class="phpdocumentor-signature__name">verify_navprefs</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__reference-operator">&amp;</span><span class="phpdocumentor-signature__argument__name">$navprefs</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">bool</span></code>
 
+    <div class="phpdocumentor-label-line">
+        </div>
     
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
     <dl class="phpdocumentor-argument-list">
@@ -2842,108 +2659,17 @@ and attempts to correct errors in the supplied data.</p>
                 : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
                             </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
+                
             </dd>
             </dl>
 
     
 
+            <section>
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">bool</span>
-            &mdash;
-        
-    
-</article>
-                    <article
-        class="phpdocumentor-element
-            -method
-            -public
-                                                        "
->
-    <h4 class="phpdocumentor-element__name" id="method_verify_serialized">
-        verify_serialized()
-        <a href="classes/vB-DataManager.html#method_verify_serialized" class="headerlink"><i class="fas fa-link"></i></a>
-    </h4>
-    <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="vb/datamanager.php"><a href="files/vb-datamanager.html"><abbr title="vb/datamanager.php">datamanager.php</abbr></a></abbr>
-    :
-    <span class="phpdocumentor-element-found-in__line">1518</span>
+        <span class="phpdocumentor-signature__response_type">bool</span>
+            </section>
 
-    </aside>
-
-        <p class="phpdocumentor-summary">Verifies that input is a serialized array (or force an array to serialize)</p>
-
-    <code class="phpdocumentor-code phpdocumentor-signature ">
-    <span class="phpdocumentor-signature__visibility">public</span>
-                    <span class="phpdocumentor-signature__name">verify_serialized</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__reference-operator">&amp;</span><span class="phpdocumentor-signature__argument__name">$data</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">bool</span></code>
-
-    
-        <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
-    <dl class="phpdocumentor-argument-list">
-                    <dt class="phpdocumentor-argument-list__entry">
-                <span class="phpdocumentor-signature__argument__name">$data</span>
-                : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
-                            </dt>
-            <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
-            </dd>
-            </dl>
-
-    
-
-        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">bool</span>
-            &mdash;
-        
-    
-</article>
-                    <article
-        class="phpdocumentor-element
-            -method
-            -public
-                                                        "
->
-    <h4 class="phpdocumentor-element__name" id="method_verify_userid">
-        verify_userid()
-        <a href="classes/vB-DataManager.html#method_verify_userid" class="headerlink"><i class="fas fa-link"></i></a>
-    </h4>
-    <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="vb/datamanager.php"><a href="files/vb-datamanager.html"><abbr title="vb/datamanager.php">datamanager.php</abbr></a></abbr>
-    :
-    <span class="phpdocumentor-element-found-in__line">1299</span>
-
-    </aside>
-
-        <p class="phpdocumentor-summary">Verifies that the specified user exists</p>
-
-    <code class="phpdocumentor-code phpdocumentor-signature ">
-    <span class="phpdocumentor-signature__visibility">public</span>
-                    <span class="phpdocumentor-signature__name">verify_userid</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__reference-operator">&amp;</span><span class="phpdocumentor-signature__argument__name">$userid</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">bool</span></code>
-
-    
-        <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
-    <dl class="phpdocumentor-argument-list">
-                    <dt class="phpdocumentor-argument-list__entry">
-                <span class="phpdocumentor-signature__argument__name">$userid</span>
-                : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
-                            </dt>
-            <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
-            </dd>
-            </dl>
-
-    
-
-        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">bool</span>
-            &mdash;
-            <section class="phpdocumentor-description"><p>Returns true if user exists</p>
-</section>
-
-    
 </article>
                     <article
         class="phpdocumentor-element
@@ -2954,11 +2680,12 @@ and attempts to correct errors in the supplied data.</p>
     <h4 class="phpdocumentor-element__name" id="method_verify_username">
         verify_username()
         <a href="classes/vB-DataManager.html#method_verify_username" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/datamanager.php"><a href="files/vb-datamanager.html"><abbr title="vb/datamanager.php">datamanager.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">1325</span>
+    <span class="phpdocumentor-element-found-in__line">1319</span>
 
     </aside>
 
@@ -2968,6 +2695,8 @@ and attempts to correct errors in the supplied data.</p>
     <span class="phpdocumentor-signature__visibility">public</span>
                     <span class="phpdocumentor-signature__name">verify_username</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__reference-operator">&amp;</span><span class="phpdocumentor-signature__argument__name">$username</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">bool</span></code>
 
+    <div class="phpdocumentor-label-line">
+        </div>
     
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
     <dl class="phpdocumentor-argument-list">
@@ -2976,87 +2705,195 @@ and attempts to correct errors in the supplied data.</p>
                 : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
                             </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
+                
             </dd>
             </dl>
 
     
 
+            <section>
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">bool</span>
-            &mdash;
-            <section class="phpdocumentor-description"><p>Returns true if the username is valid, or has been corrected to be valid</p>
+        <span class="phpdocumentor-signature__response_type">bool</span>
+                    &mdash;
+                <section class="phpdocumentor-description"><p>Returns true if the username is valid, or has been corrected to be valid</p>
 </section>
 
-    
+            </section>
+
 </article>
             </section>
 
-        
+        <div class="phpdocumentor-modal" id="source-view">
+    <div class="phpdocumentor-modal-bg" data-exit-button></div>
+    <div class="phpdocumentor-modal-container">
+        <div class="phpdocumentor-modal-content">
+            <pre style="max-height: 500px; overflow-y: scroll" data-src="files/vb/datamanager/admin.php.txt" class="language-php line-numbers linkable-line-numbers"></pre>
+        </div>
+        <button data-exit-button class="phpdocumentor-modal__close">&times;</button>
+    </div>
+</div>
+
     <script type="text/javascript">
-        function loadExternalCodeSnippets(line) {
-            Array.prototype.slice.call(document.querySelectorAll('pre[data-src]')).forEach((pre) => {
-                var src = pre.getAttribute('data-src').replace( /\\/g, '/');
-                var extension = (src.match(/\.(\w+)$/) || [, ''])[1];
-                var language = 'php';
+        (function () {
+            function loadExternalCodeSnippet(el, url, line) {
+                Array.prototype.slice.call(el.querySelectorAll('pre[data-src]')).forEach((pre) => {
+                    const src = url || pre.getAttribute('data-src').replace(/\\/g, '/');
+                    const language = 'php';
 
-                var code = document.createElement('code');
-                code.className = 'language-' + language;
+                    const code = document.createElement('code');
+                    code.className = 'language-' + language;
+                    pre.textContent = '';
+                    pre.setAttribute('data-line', line)
+                    code.textContent = 'Loading…';
+                    pre.appendChild(code);
 
-                pre.textContent = '';
+                    var xhr = new XMLHttpRequest();
 
-                pre.setAttribute('data-line', line)
-                code.textContent = 'Loading…';
+                    xhr.open('GET', src, true);
 
-                pre.appendChild(code);
-
-                var xhr = new XMLHttpRequest();
-
-                xhr.open('GET', src, true);
-
-                xhr.onreadystatechange = function () {
-                    if (xhr.readyState == 4) {
+                    xhr.onreadystatechange = function () {
+                        if (xhr.readyState !== 4) {
+                            return;
+                        }
 
                         if (xhr.status < 400 && xhr.responseText) {
                             code.textContent = xhr.responseText;
-
                             Prism.highlightElement(code);
+                            return;
                         }
-                        else if (xhr.status >= 400) {
+
+                        if (xhr.status === 404) {
+                            code.textContent = '✖ Error: File could not be found';
+                            return;
+                        }
+
+                        if (xhr.status >= 400) {
                             code.textContent = '✖ Error ' + xhr.status + ' while fetching file: ' + xhr.statusText;
+                            return;
                         }
-                        else {
-                            code.textContent = '✖ Error: File does not exist, is empty or trying to view from localhost';
-                        }
+
+                        code.textContent = '✖ Error: An unknown error occurred';
+                    };
+
+                    xhr.send(null);
+                });
+            }
+
+            const modalButtons = document.querySelectorAll("[data-modal]");
+            const openedAsLocalFile = window.location.protocol === 'file:';
+            if (modalButtons.length > 0 && openedAsLocalFile) {
+                console.warn(
+                    'Viewing the source code is unavailable because you are opening this page from the file:// scheme; ' +
+                    'browsers block XHR requests when a page is opened this way'
+                );
+            }
+
+            modalButtons.forEach(function (trigger) {
+                if (openedAsLocalFile) {
+                    trigger.setAttribute("hidden", "hidden");
+                }
+
+                trigger.addEventListener("click", function (event) {
+                    event.preventDefault();
+                    const modal = document.getElementById(trigger.dataset.modal);
+                    if (!modal) {
+                        console.error(`Modal with id "${trigger.dataset.modal}" could not be found`);
+                        return;
                     }
-                };
+                    modal.classList.add("phpdocumentor-modal__open");
 
-                xhr.send(null);
-            });
-        }
-
-        var modals = document.querySelectorAll("[data-modal]");
-
-        modals.forEach(function (trigger) {
-            trigger.addEventListener("click", function (event) {
-                //event.preventDefault();
-                const modal = document.getElementById(trigger.dataset.modal);
-                modal.classList.add("phpdocumentor-modal__open");
-                loadExternalCodeSnippets(trigger.dataset.line)
-                const exits = modal.querySelectorAll("[data-exit-button]");
-                exits.forEach(function (exit) {
-                    exit.addEventListener("click", function (event) {
-                        event.preventDefault();
-                        modal.classList.remove("phpdocumentor-modal__open");
+                    loadExternalCodeSnippet(modal, trigger.dataset.src || null, trigger.dataset.line)
+                    const exits = modal.querySelectorAll("[data-exit-button]");
+                    exits.forEach(function (exit) {
+                        exit.addEventListener("click", function (event) {
+                            event.preventDefault();
+                            modal.classList.remove("phpdocumentor-modal__open");
+                        });
                     });
                 });
             });
-        });
+        })();
     </script>
 
     </article>
-                <section data-search-results class="phpdocumentor-search-results phpdocumentor-search-results--hidden">
+                                </section>
+                <section class="phpdocumentor-on-this-page__sidebar">
+                                
+    <section class="phpdocumentor-on-this-page__content">
+        <strong class="phpdocumentor-on-this-page__title">On this page</strong>
+
+        <ul class="phpdocumentor-list -clean">
+            <li class="phpdocumentor-on-this-page-section__title">Table Of Contents</li>
+            <li>
+                <ul class="phpdocumentor-list -clean">
+                                                            <li><a href="classes/vB-DataManager-Admin.html#toc-properties">Properties</a></li>
+                                                            <li><a href="classes/vB-DataManager-Admin.html#toc-methods">Methods</a></li>
+                                    </ul>
+            </li>
+            
+                            <li class="phpdocumentor-on-this-page-section__title">Properties</li>
+                <li>
+                    <ul class="phpdocumentor-list -clean">
+                                                    <li><a href="classes/vB-DataManager.html#property_condition">$condition<a href="classes/vB-DataManager-Admin.html"></li>
+                                                    <li><a href="classes/vB-DataManager.html#property_error_handler">$error_handler<a href="classes/vB-DataManager-Admin.html"></li>
+                                                    <li><a href="classes/vB-DataManager.html#property_errors">$errors<a href="classes/vB-DataManager-Admin.html"></li>
+                                                    <li><a href="classes/vB-DataManager.html#property_existing">$existing<a href="classes/vB-DataManager-Admin.html"></li>
+                                                    <li><a href="classes/vB-DataManager.html#property_info">$info<a href="classes/vB-DataManager-Admin.html"></li>
+                                                    <li><a href="classes/vB-DataManager-Admin.html#property_keyField">$keyField<a href="classes/vB-DataManager-Admin.html"></li>
+                                                    <li><a href="classes/vB-DataManager-Admin.html#property_validfields">$validfields<a href="classes/vB-DataManager-Admin.html"></li>
+                                            </ul>
+                </li>
+            
+                        <li class="phpdocumentor-on-this-page-section__title">Methods</li>
+            <li>
+                <ul class="phpdocumentor-list -clean">
+                                            <li><a href="classes/vB-DataManager.html#method___construct">__construct()</a></li>
+                                            <li><a href="classes/vB-Trait-NoSerialize.html#method___serialize">__serialize()</a></li>
+                                            <li><a href="classes/vB-Trait-NoSerialize.html#method___sleep">__sleep()</a></li>
+                                            <li><a href="classes/vB-Trait-NoSerialize.html#method___unserialize">__unserialize()</a></li>
+                                            <li><a href="classes/vB-Trait-NoSerialize.html#method___wakeup">__wakeup()</a></li>
+                                            <li><a href="classes/vB-DataManager.html#method_check_required">check_required()</a></li>
+                                            <li><a href="classes/vB-DataManager.html#method_db_insert">db_insert()</a></li>
+                                            <li><a href="classes/vB-DataManager.html#method_db_update">db_update()</a></li>
+                                            <li><a href="classes/vB-DataManager.html#method_delete">delete()</a></li>
+                                            <li><a href="classes/vB-DataManager.html#method_do_set">do_set()</a></li>
+                                            <li><a href="classes/vB-DataManager.html#method_do_unset">do_unset()</a></li>
+                                            <li><a href="classes/vB-DataManager.html#method_error">error()</a></li>
+                                            <li><a href="classes/vB-DataManager.html#method_fetch_field">fetch_field()</a></li>
+                                            <li><a href="classes/vB-DataManager.html#method_get_errors">get_errors()</a></li>
+                                            <li><a href="classes/vB-DataManager.html#method_get_exception">get_exception()</a></li>
+                                            <li><a href="classes/vB-DataManager.html#method_has_errors">has_errors()</a></li>
+                                            <li><a href="classes/vB-DataManager.html#method_is_bitfield_set">is_bitfield_set()</a></li>
+                                            <li><a href="classes/vB-DataManager.html#method_is_field_defined">is_field_defined()</a></li>
+                                            <li><a href="classes/vB-DataManager.html#method_is_field_set">is_field_set()</a></li>
+                                            <li><a href="classes/vB-DataManager-Admin.html#method_post_delete">post_delete()</a></li>
+                                            <li><a href="classes/vB-DataManager-Admin.html#method_post_save_each">post_save_each()</a></li>
+                                            <li><a href="classes/vB-DataManager.html#method_post_save_once">post_save_once()</a></li>
+                                            <li><a href="classes/vB-DataManager-Admin.html#method_pre_save">pre_save()</a></li>
+                                            <li><a href="classes/vB-DataManager.html#method_save">save()</a></li>
+                                            <li><a href="classes/vB-DataManager.html#method_set">set()</a></li>
+                                            <li><a href="classes/vB-DataManager-Admin.html#method_set_bitfield">set_bitfield()</a></li>
+                                            <li><a href="classes/vB-DataManager.html#method_set_condition">set_condition()</a></li>
+                                            <li><a href="classes/vB-DataManager.html#method_set_existing">set_existing()</a></li>
+                                            <li><a href="classes/vB-DataManager.html#method_set_info">set_info()</a></li>
+                                            <li><a href="classes/vB-DataManager.html#method_setr">setr()</a></li>
+                                            <li><a href="classes/vB-DataManager.html#method_setr_info">setr_info()</a></li>
+                                            <li><a href="classes/vB-DataManager.html#method_verify">verify()</a></li>
+                                            <li><a href="classes/vB-DataManager-Admin.html#method_verify_cssprefs">verify_cssprefs()</a></li>
+                                            <li><a href="classes/vB-DataManager.html#method_verify_date_array">verify_date_array()</a></li>
+                                            <li><a href="classes/vB-DataManager.html#method_verify_email">verify_email()</a></li>
+                                            <li><a href="classes/vB-DataManager.html#method_verify_link">verify_link()</a></li>
+                                            <li><a href="classes/vB-DataManager.html#method_verify_md5">verify_md5()</a></li>
+                                            <li><a href="classes/vB-DataManager-Admin.html#method_verify_navprefs">verify_navprefs()</a></li>
+                                            <li><a href="classes/vB-DataManager.html#method_verify_username">verify_username()</a></li>
+                                    </ul>
+            </li>
+                    </ul>
+    </section>
+
+                </section>
+                            </div>
+            <section data-search-results class="phpdocumentor-search-results phpdocumentor-search-results--hidden">
     <section class="phpdocumentor-search-results__dialog">
         <header class="phpdocumentor-search-results__header">
             <h2 class="phpdocumentor-search-results__title">Search results</h2>
@@ -3067,7 +2904,6 @@ and attempts to correct errors in the supplied data.</p>
         </section>
     </section>
 </section>
-            </div>
         </div>
         <a href="classes/vB-DataManager-Admin.html#top" class="phpdocumentor-back-to-top"><i class="fas fa-chevron-circle-up"></i></a>
 

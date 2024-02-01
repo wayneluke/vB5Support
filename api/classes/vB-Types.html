@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-            <title>vBulletin v5.7.2</title>
+            <title>vBulletin v6.0.4</title>
     
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <base href="../">
@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="css/normalize.css">
     <link rel="stylesheet" href="css/base.css">
             <link rel="preconnect" href="https://fonts.gstatic.com">
-        <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@400;600;700&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@100;200;300;400;600;700&display=swap" rel="stylesheet">
         <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@400;600;700&display=swap" rel="stylesheet">
         <link rel="stylesheet" href="css/template.css">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.0/css/all.min.css" integrity="sha256-ybRkN9dBjhcS2qrW1z+hfCxq+1aBdwyQM5wlQoQVt/0=" crossorigin="anonymous" />
@@ -19,12 +19,13 @@
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.23.0/plugins/line-highlight/prism-line-highlight.css">
                 <script src="https://cdn.jsdelivr.net/npm/fuse.js@3.4.6"></script>
         <script src="https://cdn.jsdelivr.net/npm/css-vars-ponyfill@2"></script>
+        <script src="js/template.js"></script>
         <script src="js/search.js"></script>
         <script defer src="js/searchIndex.js"></script>
     </head>
 <body id="top">
     <header class="phpdocumentor-header phpdocumentor-section">
-    <h1 class="phpdocumentor-title"><a href="" class="phpdocumentor-title__link">vBulletin v5.7.2</a></h1>
+    <h1 class="phpdocumentor-title"><a href="" class="phpdocumentor-title__link">vBulletin v6.0.4</a></h1>
     <input class="phpdocumentor-header__menu-button" type="checkbox" id="menu-button" name="menu-button" />
     <label class="phpdocumentor-header__menu-icon" for="menu-button">
         <i class="fas fa-bars"></i>
@@ -52,7 +53,7 @@
 <label class="phpdocumentor-sidebar__menu-icon" for="sidebar-button">
     Menu
 </label>
-<aside class="phpdocumentor-column -four phpdocumentor-sidebar">
+<aside class="phpdocumentor-column -three phpdocumentor-sidebar">
                     <section class="phpdocumentor-sidebar__category">
             <h2 class="phpdocumentor-sidebar__category-header">Packages</h2>
                                     <h4 class="phpdocumentor-sidebar__root-namespace">
@@ -98,8 +99,9 @@
     </section>
 </aside>
 
-            <div class="phpdocumentor-column -eight phpdocumentor-content">
-                    <ul class="phpdocumentor-breadcrumbs">
+            <div class="phpdocumentor-column -nine phpdocumentor-content">
+                                <section>
+                                        <ul class="phpdocumentor-breadcrumbs">
             <li class="phpdocumentor-breadcrumb"><a href="packages/vBulletin.html">vBulletin</a></li>
     </ul>
 
@@ -121,6 +123,11 @@
                             <a href="classes/vB-Trait-NoSerialize.html"><abbr title="\vB_Trait_NoSerialize">vB_Trait_NoSerialize</abbr></a>                    </span>
     </h2>
 
+<div class="phpdocumentor-label-line">
+
+
+</div>
+
         <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/types.php"><a href="files/vb-types.html"><abbr title="vb/types.php">types.php</abbr></a></abbr>
     :
@@ -140,42 +147,50 @@ together.</p>
 
 
 
-
-
-
 <h3 id="toc">
     Table of Contents
-    <a href="#toc" class="headerlink"><i class="fas fa-link"></i></a>
+    <a href="classes/vB-Types.html#toc" class="headerlink"><i class="fas fa-link"></i></a>
+
 </h3>
 
+
+
+
+
+
+
+
+
+
+<h4 id="toc-methods">
+    Methods
+    <a href="classes/vB-Types.html#toc-methods" class="headerlink"><i class="fas fa-link"></i></a>
+
+</h4>
 <dl class="phpdocumentor-table-of-contents">
-                        <dt class="phpdocumentor-table-of-contents__entry -method -public">
+            <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a href="classes/vB-Trait-NoSerialize.html#method___serialize">__serialize()</a>
     <span>
                                 &nbsp;: array&lt;string|int, mixed&gt;    </span>
 </dt>
-<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a href="classes/vB-Trait-NoSerialize.html#method___sleep">__sleep()</a>
     <span>
                                 &nbsp;: array&lt;string|int, mixed&gt;    </span>
 </dt>
-<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a href="classes/vB-Trait-NoSerialize.html#method___unserialize">__unserialize()</a>
     <span>
                                 &nbsp;: void    </span>
 </dt>
-<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a href="classes/vB-Trait-NoSerialize.html#method___wakeup">__wakeup()</a>
     <span>
                                 &nbsp;: void    </span>
 </dt>
-<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a href="classes/vB-Types.html#method_assertContentType">assertContentType()</a>
@@ -360,7 +375,8 @@ and class.</dd>
 </dt>
 <dd>This should only be called while in a</dd>
 
-        </dl>
+    </dl>
+
 
 
 
@@ -372,6 +388,7 @@ and class.</dd>
         <h3 class="phpdocumentor-elements__header" id="methods">
             Methods
             <a href="classes/vB-Types.html#methods" class="headerlink"><i class="fas fa-link"></i></a>
+
         </h3>
                     <article
         class="phpdocumentor-element
@@ -382,6 +399,7 @@ and class.</dd>
     <h4 class="phpdocumentor-element__name" id="method___serialize">
         __serialize()
         <a href="classes/vB-Trait-NoSerialize.html#method___serialize" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/trait/noserialize.php"><a href="files/vb-trait-noserialize.html"><abbr title="vb/trait/noserialize.php">noserialize.php</abbr></a></abbr>
@@ -395,16 +413,17 @@ and class.</dd>
     <span class="phpdocumentor-signature__visibility">public</span>
                     <span class="phpdocumentor-signature__name">__serialize</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">array&lt;string|int, mixed&gt;</span></code>
 
-        <section class="phpdocumentor-description"></section>
-
+    <div class="phpdocumentor-label-line">
+        </div>
     
     
+    
 
+            <section>
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">array&lt;string|int, mixed&gt;</span>
-            &mdash;
-        
-    
+        <span class="phpdocumentor-signature__response_type">array&lt;string|int, mixed&gt;</span>
+            </section>
+
 </article>
                     <article
         class="phpdocumentor-element
@@ -415,6 +434,7 @@ and class.</dd>
     <h4 class="phpdocumentor-element__name" id="method___sleep">
         __sleep()
         <a href="classes/vB-Trait-NoSerialize.html#method___sleep" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/trait/noserialize.php"><a href="files/vb-trait-noserialize.html"><abbr title="vb/trait/noserialize.php">noserialize.php</abbr></a></abbr>
@@ -428,16 +448,17 @@ and class.</dd>
     <span class="phpdocumentor-signature__visibility">public</span>
                     <span class="phpdocumentor-signature__name">__sleep</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">array&lt;string|int, mixed&gt;</span></code>
 
-        <section class="phpdocumentor-description"></section>
-
+    <div class="phpdocumentor-label-line">
+        </div>
     
     
+    
 
+            <section>
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">array&lt;string|int, mixed&gt;</span>
-            &mdash;
-        
-    
+        <span class="phpdocumentor-signature__response_type">array&lt;string|int, mixed&gt;</span>
+            </section>
+
 </article>
                     <article
         class="phpdocumentor-element
@@ -448,6 +469,7 @@ and class.</dd>
     <h4 class="phpdocumentor-element__name" id="method___unserialize">
         __unserialize()
         <a href="classes/vB-Trait-NoSerialize.html#method___unserialize" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/trait/noserialize.php"><a href="files/vb-trait-noserialize.html"><abbr title="vb/trait/noserialize.php">noserialize.php</abbr></a></abbr>
@@ -461,8 +483,9 @@ and class.</dd>
     <span class="phpdocumentor-signature__visibility">public</span>
                     <span class="phpdocumentor-signature__name">__unserialize</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">array&lt;string|int, mixed&gt;&nbsp;</span><span class="phpdocumentor-signature__argument__name">$serialized</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">void</span></code>
 
-        <section class="phpdocumentor-description"></section>
-
+    <div class="phpdocumentor-label-line">
+        </div>
+    
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
     <dl class="phpdocumentor-argument-list">
                     <dt class="phpdocumentor-argument-list__entry">
@@ -470,17 +493,12 @@ and class.</dd>
                 : <span class="phpdocumentor-signature__argument__return-type">array&lt;string|int, mixed&gt;</span>
                             </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
+                
             </dd>
             </dl>
 
     
 
-        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">void</span>
-            &mdash;
-        
     
 </article>
                     <article
@@ -492,6 +510,7 @@ and class.</dd>
     <h4 class="phpdocumentor-element__name" id="method___wakeup">
         __wakeup()
         <a href="classes/vB-Trait-NoSerialize.html#method___wakeup" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/trait/noserialize.php"><a href="files/vb-trait-noserialize.html"><abbr title="vb/trait/noserialize.php">noserialize.php</abbr></a></abbr>
@@ -505,15 +524,12 @@ and class.</dd>
     <span class="phpdocumentor-signature__visibility">public</span>
                     <span class="phpdocumentor-signature__name">__wakeup</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">void</span></code>
 
-        <section class="phpdocumentor-description"></section>
-
+    <div class="phpdocumentor-label-line">
+        </div>
     
     
+    
 
-        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">void</span>
-            &mdash;
-        
     
 </article>
                     <article
@@ -525,11 +541,12 @@ and class.</dd>
     <h4 class="phpdocumentor-element__name" id="method_assertContentType">
         assertContentType()
         <a href="classes/vB-Types.html#method_assertContentType" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/types.php"><a href="files/vb-types.html"><abbr title="vb/types.php">types.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">604</span>
+    <span class="phpdocumentor-element-found-in__line">599</span>
 
     </aside>
 
@@ -539,6 +556,8 @@ and class.</dd>
     <span class="phpdocumentor-signature__visibility">public</span>
                     <span class="phpdocumentor-signature__name">assertContentType</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$contenttype</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type"><a href="classes/vB-Exception.html"><abbr title="\vB_Exception">vB_Exception</abbr></a>&nbsp;</span><span class="phpdocumentor-signature__argument__name">$e</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">null</span><span> ]</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
 
+    <div class="phpdocumentor-label-line">
+        </div>
     
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
     <dl class="phpdocumentor-argument-list">
@@ -548,7 +567,7 @@ and class.</dd>
                             </dt>
             <dd class="phpdocumentor-argument-list__definition">
                     <section class="phpdocumentor-description"><ul>
-<li>Key, array(package, class) or numeric id of the contenttype</li>
+<li>Key, [package, class] or numeric id of the contenttype</li>
 </ul>
 </section>
 
@@ -569,7 +588,8 @@ and class.</dd>
     
     <h5 class="phpdocumentor-tag-list__heading" id="tags">
         Tags
-        <a href="#tags" class="headerlink"><i class="fas fa-link"></i></a>
+        <a href="classes/vB-Types.html#method_assertContentType#tags" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h5>
     <dl class="phpdocumentor-tag-list">
                                     <dt class="phpdocumentor-tag-list__entry">
@@ -584,12 +604,8 @@ and class.</dd>
 </section>
 
                                     </dd>
-                        </dl>
+                                            </dl>
 
-        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">mixed</span>
-            &mdash;
-        
     
 </article>
                     <article
@@ -601,11 +617,12 @@ and class.</dd>
     <h4 class="phpdocumentor-element__name" id="method_assertPackage">
         assertPackage()
         <a href="classes/vB-Types.html#method_assertPackage" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/types.php"><a href="files/vb-types.html"><abbr title="vb/types.php">types.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">394</span>
+    <span class="phpdocumentor-element-found-in__line">389</span>
 
     </aside>
 
@@ -615,6 +632,8 @@ and class.</dd>
     <span class="phpdocumentor-signature__visibility">public</span>
                     <span class="phpdocumentor-signature__name">assertPackage</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$package</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type"><a href="classes/vB-Exception.html"><abbr title="\vB_Exception">vB_Exception</abbr></a>&nbsp;</span><span class="phpdocumentor-signature__argument__name">$e</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">null</span><span> ]</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
 
+    <div class="phpdocumentor-label-line">
+        </div>
     
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
     <dl class="phpdocumentor-argument-list">
@@ -645,7 +664,8 @@ and class.</dd>
     
     <h5 class="phpdocumentor-tag-list__heading" id="tags">
         Tags
-        <a href="#tags" class="headerlink"><i class="fas fa-link"></i></a>
+        <a href="classes/vB-Types.html#method_assertPackage#tags" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h5>
     <dl class="phpdocumentor-tag-list">
                                     <dt class="phpdocumentor-tag-list__entry">
@@ -660,12 +680,8 @@ and class.</dd>
 </section>
 
                                     </dd>
-                        </dl>
+                                            </dl>
 
-        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">mixed</span>
-            &mdash;
-        
     
 </article>
                     <article
@@ -677,11 +693,12 @@ and class.</dd>
     <h4 class="phpdocumentor-element__name" id="method_contentTypeEnabled">
         contentTypeEnabled()
         <a href="classes/vB-Types.html#method_contentTypeEnabled" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/types.php"><a href="files/vb-types.html"><abbr title="vb/types.php">types.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">725</span>
+    <span class="phpdocumentor-element-found-in__line">720</span>
 
     </aside>
 
@@ -691,6 +708,8 @@ and class.</dd>
     <span class="phpdocumentor-signature__visibility">public</span>
                     <span class="phpdocumentor-signature__name">contentTypeEnabled</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$contenttype</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">bool</span></code>
 
+    <div class="phpdocumentor-label-line">
+        </div>
         <section class="phpdocumentor-description"><p>A contenttype is disabled if it's package is disabled.</p>
 </section>
 
@@ -711,11 +730,11 @@ and class.</dd>
 
     
 
+            <section>
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">bool</span>
-            &mdash;
-        
-    
+        <span class="phpdocumentor-signature__response_type">bool</span>
+            </section>
+
 </article>
                     <article
         class="phpdocumentor-element
@@ -726,11 +745,12 @@ and class.</dd>
     <h4 class="phpdocumentor-element__name" id="method_getAggregatorTypeIds">
         getAggregatorTypeIds()
         <a href="classes/vB-Types.html#method_getAggregatorTypeIds" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/types.php"><a href="files/vb-types.html"><abbr title="vb/types.php">types.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">230</span>
+    <span class="phpdocumentor-element-found-in__line">225</span>
 
     </aside>
 
@@ -740,17 +760,21 @@ and class.</dd>
     <span class="phpdocumentor-signature__visibility">public</span>
                     <span class="phpdocumentor-signature__name">getAggregatorTypeIds</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">array&lt;string|int, mixed&gt;</span></code>
 
+    <div class="phpdocumentor-label-line">
+        </div>
     
     
     
 
+            <section>
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">array&lt;string|int, mixed&gt;</span>
-            &mdash;
-            <section class="phpdocumentor-description"><p>of ID</p>
+        <span class="phpdocumentor-signature__response_type">array&lt;string|int, mixed&gt;</span>
+                    &mdash;
+                <section class="phpdocumentor-description"><p>of ID</p>
 </section>
 
-    
+            </section>
+
 </article>
                     <article
         class="phpdocumentor-element
@@ -761,11 +785,12 @@ and class.</dd>
     <h4 class="phpdocumentor-element__name" id="method_getAttachableContentTypes">
         getAttachableContentTypes()
         <a href="classes/vB-Types.html#method_getAttachableContentTypes" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/types.php"><a href="files/vb-types.html"><abbr title="vb/types.php">types.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">767</span>
+    <span class="phpdocumentor-element-found-in__line">762</span>
 
     </aside>
 
@@ -775,17 +800,21 @@ and class.</dd>
     <span class="phpdocumentor-signature__visibility">public</span>
                     <span class="phpdocumentor-signature__name">getAttachableContentTypes</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">array&lt;string|int, mixed&gt;</span></code>
 
+    <div class="phpdocumentor-label-line">
+        </div>
     
     
     
 
+            <section>
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">array&lt;string|int, mixed&gt;</span>
-            &mdash;
-            <section class="phpdocumentor-description"><p>Content types.</p>
+        <span class="phpdocumentor-signature__response_type">array&lt;string|int, mixed&gt;</span>
+                    &mdash;
+                <section class="phpdocumentor-description"><p>Content types.</p>
 </section>
 
-    
+            </section>
+
 </article>
                     <article
         class="phpdocumentor-element
@@ -796,11 +825,12 @@ and class.</dd>
     <h4 class="phpdocumentor-element__name" id="method_getContentClassFromId">
         getContentClassFromId()
         <a href="classes/vB-Types.html#method_getContentClassFromId" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/types.php"><a href="files/vb-types.html"><abbr title="vb/types.php">types.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">711</span>
+    <span class="phpdocumentor-element-found-in__line">706</span>
 
     </aside>
 
@@ -810,6 +840,8 @@ and class.</dd>
     <span class="phpdocumentor-signature__visibility">public</span>
                     <span class="phpdocumentor-signature__name">getContentClassFromId</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$contenttypeid</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
 
+    <div class="phpdocumentor-label-line">
+        </div>
         <section class="phpdocumentor-description"><p>Note: The title is not stored as part of the contenttype and is instead a
 phrase that is evaluated from the contenttype's package and class.</p>
 </section>
@@ -821,17 +853,12 @@ phrase that is evaluated from the contenttype's package and class.</p>
                 : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
                             </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
+                
             </dd>
             </dl>
 
     
 
-        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">mixed</span>
-            &mdash;
-        
     
 </article>
                     <article
@@ -843,11 +870,12 @@ phrase that is evaluated from the contenttype's package and class.</p>
     <h4 class="phpdocumentor-element__name" id="method_getContentTypeCacheEvents">
         getContentTypeCacheEvents()
         <a href="classes/vB-Types.html#method_getContentTypeCacheEvents" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/types.php"><a href="files/vb-types.html"><abbr title="vb/types.php">types.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">740</span>
+    <span class="phpdocumentor-element-found-in__line">735</span>
 
     </aside>
 
@@ -857,17 +885,21 @@ phrase that is evaluated from the contenttype's package and class.</p>
     <span class="phpdocumentor-signature__visibility">public</span>
                     <span class="phpdocumentor-signature__name">getContentTypeCacheEvents</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">array&lt;string|int, mixed&gt;</span></code>
 
+    <div class="phpdocumentor-label-line">
+        </div>
     
     
     
 
+            <section>
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">array&lt;string|int, mixed&gt;</span>
-            &mdash;
-            <section class="phpdocumentor-description"><p>string</p>
+        <span class="phpdocumentor-signature__response_type">array&lt;string|int, mixed&gt;</span>
+                    &mdash;
+                <section class="phpdocumentor-description"><p>string</p>
 </section>
 
-    
+            </section>
+
 </article>
                     <article
         class="phpdocumentor-element
@@ -878,11 +910,12 @@ phrase that is evaluated from the contenttype's package and class.</p>
     <h4 class="phpdocumentor-element__name" id="method_getContentTypeClass">
         getContentTypeClass()
         <a href="classes/vB-Types.html#method_getContentTypeClass" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/types.php"><a href="files/vb-types.html"><abbr title="vb/types.php">types.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">658</span>
+    <span class="phpdocumentor-element-found-in__line">653</span>
 
     </aside>
 
@@ -892,6 +925,8 @@ phrase that is evaluated from the contenttype's package and class.</p>
     <span class="phpdocumentor-signature__visibility">public</span>
                     <span class="phpdocumentor-signature__name">getContentTypeClass</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$contenttype</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">string</span></code>
 
+    <div class="phpdocumentor-label-line">
+        </div>
     
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
     <dl class="phpdocumentor-argument-list">
@@ -910,15 +945,17 @@ phrase that is evaluated from the contenttype's package and class.</p>
 
     
 
+            <section>
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">string</span>
-            &mdash;
-            <section class="phpdocumentor-description"><ul>
+        <span class="phpdocumentor-signature__response_type">string</span>
+                    &mdash;
+                <section class="phpdocumentor-description"><ul>
 <li>The class string identifier of the given contenttype</li>
 </ul>
 </section>
 
-    
+            </section>
+
 </article>
                     <article
         class="phpdocumentor-element
@@ -929,11 +966,12 @@ phrase that is evaluated from the contenttype's package and class.</p>
     <h4 class="phpdocumentor-element__name" id="method_getContentTypeClasses">
         getContentTypeClasses()
         <a href="classes/vB-Types.html#method_getContentTypeClasses" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/types.php"><a href="files/vb-types.html"><abbr title="vb/types.php">types.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">577</span>
+    <span class="phpdocumentor-element-found-in__line">572</span>
 
     </aside>
 
@@ -943,6 +981,8 @@ phrase that is evaluated from the contenttype's package and class.</p>
     <span class="phpdocumentor-signature__visibility">public</span>
                     <span class="phpdocumentor-signature__name">getContentTypeClasses</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$contenttypes</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">array&lt;string|int, mixed&gt;</span></code>
 
+    <div class="phpdocumentor-label-line">
+        </div>
         <section class="phpdocumentor-description"><p>Note: This will also accept content type namesso the function
 can be used for normalisation and validation.</p>
 </section>
@@ -954,20 +994,21 @@ can be used for normalisation and validation.</p>
                 : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
                             </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
+                
             </dd>
             </dl>
 
     
 
+            <section>
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">array&lt;string|int, mixed&gt;</span>
-            &mdash;
-            <section class="phpdocumentor-description"><p>of conten type classes</p>
+        <span class="phpdocumentor-signature__response_type">array&lt;string|int, mixed&gt;</span>
+                    &mdash;
+                <section class="phpdocumentor-description"><p>of conten type classes</p>
 </section>
 
-    
+            </section>
+
 </article>
                     <article
         class="phpdocumentor-element
@@ -978,11 +1019,12 @@ can be used for normalisation and validation.</p>
     <h4 class="phpdocumentor-element__name" id="method_getContentTypeID">
         getContentTypeID()
         <a href="classes/vB-Types.html#method_getContentTypeID" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/types.php"><a href="files/vb-types.html"><abbr title="vb/types.php">types.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">545</span>
+    <span class="phpdocumentor-element-found-in__line">540</span>
 
     </aside>
 
@@ -992,6 +1034,8 @@ can be used for normalisation and validation.</p>
     <span class="phpdocumentor-signature__visibility">public</span>
                     <span class="phpdocumentor-signature__name">getContentTypeID</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$contenttype</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">int</span></code>
 
+    <div class="phpdocumentor-label-line">
+        </div>
         <section class="phpdocumentor-description"><p>Note: This will also return the numeric id if one is given, allowing the
 function to be used for normalisation and validation.</p>
 <p>If the contenttype is given as an array, it must be in the form
@@ -1015,13 +1059,15 @@ array('package' =&gt; package class string, 'class' =&gt; contenttype class stri
 
     
 
+            <section>
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">int</span>
-            &mdash;
-            <section class="phpdocumentor-description"><p>| false</p>
+        <span class="phpdocumentor-signature__response_type">int</span>
+                    &mdash;
+                <section class="phpdocumentor-description"><p>| false</p>
 </section>
 
-    
+            </section>
+
 </article>
                     <article
         class="phpdocumentor-element
@@ -1032,11 +1078,12 @@ array('package' =&gt; package class string, 'class' =&gt; contenttype class stri
     <h4 class="phpdocumentor-element__name" id="method_getContentTypePackage">
         getContentTypePackage()
         <a href="classes/vB-Types.html#method_getContentTypePackage" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/types.php"><a href="files/vb-types.html"><abbr title="vb/types.php">types.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">623</span>
+    <span class="phpdocumentor-element-found-in__line">618</span>
 
     </aside>
 
@@ -1046,6 +1093,8 @@ array('package' =&gt; package class string, 'class' =&gt; contenttype class stri
     <span class="phpdocumentor-signature__visibility">public</span>
                     <span class="phpdocumentor-signature__name">getContentTypePackage</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$contenttype</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">string</span></code>
 
+    <div class="phpdocumentor-label-line">
+        </div>
     
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
     <dl class="phpdocumentor-argument-list">
@@ -1064,15 +1113,17 @@ array('package' =&gt; package class string, 'class' =&gt; contenttype class stri
 
     
 
+            <section>
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">string</span>
-            &mdash;
-            <section class="phpdocumentor-description"><ul>
+        <span class="phpdocumentor-signature__response_type">string</span>
+                    &mdash;
+                <section class="phpdocumentor-description"><ul>
 <li>The class string of the package</li>
 </ul>
 </section>
 
-    
+            </section>
+
 </article>
                     <article
         class="phpdocumentor-element
@@ -1083,11 +1134,12 @@ array('package' =&gt; package class string, 'class' =&gt; contenttype class stri
     <h4 class="phpdocumentor-element__name" id="method_getContentTypePackageID">
         getContentTypePackageID()
         <a href="classes/vB-Types.html#method_getContentTypePackageID" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/types.php"><a href="files/vb-types.html"><abbr title="vb/types.php">types.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">642</span>
+    <span class="phpdocumentor-element-found-in__line">637</span>
 
     </aside>
 
@@ -1097,6 +1149,8 @@ array('package' =&gt; package class string, 'class' =&gt; contenttype class stri
     <span class="phpdocumentor-signature__visibility">public</span>
                     <span class="phpdocumentor-signature__name">getContentTypePackageID</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$contenttype</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">int</span></code>
 
+    <div class="phpdocumentor-label-line">
+        </div>
     
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
     <dl class="phpdocumentor-argument-list">
@@ -1115,15 +1169,17 @@ array('package' =&gt; package class string, 'class' =&gt; contenttype class stri
 
     
 
+            <section>
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">int</span>
-            &mdash;
-            <section class="phpdocumentor-description"><ul>
+        <span class="phpdocumentor-signature__response_type">int</span>
+                    &mdash;
+                <section class="phpdocumentor-description"><ul>
 <li>The integer id of the package that the contenttype belongs to</li>
 </ul>
 </section>
 
-    
+            </section>
+
 </article>
                     <article
         class="phpdocumentor-element
@@ -1134,11 +1190,12 @@ array('package' =&gt; package class string, 'class' =&gt; contenttype class stri
     <h4 class="phpdocumentor-element__name" id="method_getContentTypes">
         getContentTypes()
         <a href="classes/vB-Types.html#method_getContentTypes" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/types.php"><a href="files/vb-types.html"><abbr title="vb/types.php">types.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">749</span>
+    <span class="phpdocumentor-element-found-in__line">744</span>
 
     </aside>
 
@@ -1148,17 +1205,21 @@ array('package' =&gt; package class string, 'class' =&gt; contenttype class stri
     <span class="phpdocumentor-signature__visibility">public</span>
                     <span class="phpdocumentor-signature__name">getContentTypes</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">array&lt;string|int, mixed&gt;</span></code>
 
+    <div class="phpdocumentor-label-line">
+        </div>
     
     
     
 
+            <section>
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">array&lt;string|int, mixed&gt;</span>
-            &mdash;
-            <section class="phpdocumentor-description"><p>Content types.</p>
+        <span class="phpdocumentor-signature__response_type">array&lt;string|int, mixed&gt;</span>
+                    &mdash;
+                <section class="phpdocumentor-description"><p>Content types.</p>
 </section>
 
-    
+            </section>
+
 </article>
                     <article
         class="phpdocumentor-element
@@ -1169,11 +1230,12 @@ array('package' =&gt; package class string, 'class' =&gt; contenttype class stri
     <h4 class="phpdocumentor-element__name" id="method_getContentTypeTitle">
         getContentTypeTitle()
         <a href="classes/vB-Types.html#method_getContentTypeTitle" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/types.php"><a href="files/vb-types.html"><abbr title="vb/types.php">types.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">676</span>
+    <span class="phpdocumentor-element-found-in__line">671</span>
 
     </aside>
 
@@ -1183,6 +1245,8 @@ array('package' =&gt; package class string, 'class' =&gt; contenttype class stri
     <span class="phpdocumentor-signature__visibility">public</span>
                     <span class="phpdocumentor-signature__name">getContentTypeTitle</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$contenttype</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">string</span></code>
 
+    <div class="phpdocumentor-label-line">
+        </div>
         <section class="phpdocumentor-description"><p>Note: The title is not stored as part of the contenttype and is instead a
 phrase that is evaluated from the contenttype's package and class.</p>
 </section>
@@ -1200,11 +1264,11 @@ phrase that is evaluated from the contenttype's package and class.</p>
 
     
 
+            <section>
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">string</span>
-            &mdash;
-        
-    
+        <span class="phpdocumentor-signature__response_type">string</span>
+            </section>
+
 </article>
                     <article
         class="phpdocumentor-element
@@ -1215,11 +1279,12 @@ phrase that is evaluated from the contenttype's package and class.</p>
     <h4 class="phpdocumentor-element__name" id="method_getForumCommentContentTypeClasses">
         getForumCommentContentTypeClasses()
         <a href="classes/vB-Types.html#method_getForumCommentContentTypeClasses" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/types.php"><a href="files/vb-types.html"><abbr title="vb/types.php">types.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">800</span>
+    <span class="phpdocumentor-element-found-in__line">795</span>
 
     </aside>
 
@@ -1229,19 +1294,23 @@ phrase that is evaluated from the contenttype's package and class.</p>
     <span class="phpdocumentor-signature__visibility">public</span>
                     <span class="phpdocumentor-signature__name">getForumCommentContentTypeClasses</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">array&lt;string|int, mixed&gt;</span></code>
 
+    <div class="phpdocumentor-label-line">
+        </div>
         <section class="phpdocumentor-description"><p>Note that array_flip()/isset() etc can be used for contenttypeid checks/operations.</p>
 </section>
 
     
     
 
+            <section>
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">array&lt;string|int, mixed&gt;</span>
-            &mdash;
-            <section class="phpdocumentor-description"><p>[contenttypeid =&gt; classname]</p>
+        <span class="phpdocumentor-signature__response_type">array&lt;string|int, mixed&gt;</span>
+                    &mdash;
+                <section class="phpdocumentor-description"><p>[contenttypeid =&gt; classname]</p>
 </section>
 
-    
+            </section>
+
 </article>
                     <article
         class="phpdocumentor-element
@@ -1252,11 +1321,12 @@ phrase that is evaluated from the contenttype's package and class.</p>
     <h4 class="phpdocumentor-element__name" id="method_getForumReplyContentTypeClasses">
         getForumReplyContentTypeClasses()
         <a href="classes/vB-Types.html#method_getForumReplyContentTypeClasses" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/types.php"><a href="files/vb-types.html"><abbr title="vb/types.php">types.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">789</span>
+    <span class="phpdocumentor-element-found-in__line">784</span>
 
     </aside>
 
@@ -1266,19 +1336,23 @@ phrase that is evaluated from the contenttype's package and class.</p>
     <span class="phpdocumentor-signature__visibility">public</span>
                     <span class="phpdocumentor-signature__name">getForumReplyContentTypeClasses</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">array&lt;string|int, mixed&gt;</span></code>
 
+    <div class="phpdocumentor-label-line">
+        </div>
         <section class="phpdocumentor-description"><p>Note that array_flip()/isset() etc can be used for contenttypeid checks/operations.</p>
 </section>
 
     
     
 
+            <section>
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">array&lt;string|int, mixed&gt;</span>
-            &mdash;
-            <section class="phpdocumentor-description"><p>[contenttypeid =&gt; classname]</p>
+        <span class="phpdocumentor-signature__response_type">array&lt;string|int, mixed&gt;</span>
+                    &mdash;
+                <section class="phpdocumentor-description"><p>[contenttypeid =&gt; classname]</p>
 </section>
 
-    
+            </section>
+
 </article>
                     <article
         class="phpdocumentor-element
@@ -1289,11 +1363,12 @@ phrase that is evaluated from the contenttype's package and class.</p>
     <h4 class="phpdocumentor-element__name" id="method_getForumStarterContentTypeClasses">
         getForumStarterContentTypeClasses()
         <a href="classes/vB-Types.html#method_getForumStarterContentTypeClasses" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/types.php"><a href="files/vb-types.html"><abbr title="vb/types.php">types.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">778</span>
+    <span class="phpdocumentor-element-found-in__line">773</span>
 
     </aside>
 
@@ -1303,19 +1378,23 @@ phrase that is evaluated from the contenttype's package and class.</p>
     <span class="phpdocumentor-signature__visibility">public</span>
                     <span class="phpdocumentor-signature__name">getForumStarterContentTypeClasses</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">array&lt;string|int, mixed&gt;</span></code>
 
+    <div class="phpdocumentor-label-line">
+        </div>
         <section class="phpdocumentor-description"><p>Note that array_flip()/isset() etc can be used for contenttypeid checks/operations.</p>
 </section>
 
     
     
 
+            <section>
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">array&lt;string|int, mixed&gt;</span>
-            &mdash;
-            <section class="phpdocumentor-description"><p>[contenttypeid =&gt; classname]</p>
+        <span class="phpdocumentor-signature__response_type">array&lt;string|int, mixed&gt;</span>
+                    &mdash;
+                <section class="phpdocumentor-description"><p>[contenttypeid =&gt; classname]</p>
 </section>
 
-    
+            </section>
+
 </article>
                     <article
         class="phpdocumentor-element
@@ -1326,11 +1405,12 @@ phrase that is evaluated from the contenttype's package and class.</p>
     <h4 class="phpdocumentor-element__name" id="method_getNonAggregatorTypeIds">
         getNonAggregatorTypeIds()
         <a href="classes/vB-Types.html#method_getNonAggregatorTypeIds" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/types.php"><a href="files/vb-types.html"><abbr title="vb/types.php">types.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">266</span>
+    <span class="phpdocumentor-element-found-in__line">261</span>
 
     </aside>
 
@@ -1340,17 +1420,21 @@ phrase that is evaluated from the contenttype's package and class.</p>
     <span class="phpdocumentor-signature__visibility">public</span>
                     <span class="phpdocumentor-signature__name">getNonAggregatorTypeIds</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">array&lt;string|int, mixed&gt;</span></code>
 
+    <div class="phpdocumentor-label-line">
+        </div>
     
     
     
 
+            <section>
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">array&lt;string|int, mixed&gt;</span>
-            &mdash;
-            <section class="phpdocumentor-description"><p>of ID</p>
+        <span class="phpdocumentor-signature__response_type">array&lt;string|int, mixed&gt;</span>
+                    &mdash;
+                <section class="phpdocumentor-description"><p>of ID</p>
 </section>
 
-    
+            </section>
+
 </article>
                     <article
         class="phpdocumentor-element
@@ -1361,11 +1445,12 @@ phrase that is evaluated from the contenttype's package and class.</p>
     <h4 class="phpdocumentor-element__name" id="method_getPackageClass">
         getPackageClass()
         <a href="classes/vB-Types.html#method_getPackageClass" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/types.php"><a href="files/vb-types.html"><abbr title="vb/types.php">types.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">376</span>
+    <span class="phpdocumentor-element-found-in__line">371</span>
 
     </aside>
 
@@ -1375,6 +1460,8 @@ phrase that is evaluated from the contenttype's package and class.</p>
     <span class="phpdocumentor-signature__visibility">public</span>
                     <span class="phpdocumentor-signature__name">getPackageClass</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$package</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">string</span></code>
 
+    <div class="phpdocumentor-label-line">
+        </div>
     
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
     <dl class="phpdocumentor-argument-list">
@@ -1394,7 +1481,8 @@ phrase that is evaluated from the contenttype's package and class.</p>
     
     <h5 class="phpdocumentor-tag-list__heading" id="tags">
         Tags
-        <a href="#tags" class="headerlink"><i class="fas fa-link"></i></a>
+        <a href="classes/vB-Types.html#method_getPackageClass#tags" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h5>
     <dl class="phpdocumentor-tag-list">
                                     <dt class="phpdocumentor-tag-list__entry">
@@ -1409,13 +1497,13 @@ phrase that is evaluated from the contenttype's package and class.</p>
 </section>
 
                                     </dd>
-                        </dl>
+                                            </dl>
 
+            <section>
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">string</span>
-            &mdash;
-        
-    
+        <span class="phpdocumentor-signature__response_type">string</span>
+            </section>
+
 </article>
                     <article
         class="phpdocumentor-element
@@ -1426,11 +1514,12 @@ phrase that is evaluated from the contenttype's package and class.</p>
     <h4 class="phpdocumentor-element__name" id="method_getPackageID">
         getPackageID()
         <a href="classes/vB-Types.html#method_getPackageID" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/types.php"><a href="files/vb-types.html"><abbr title="vb/types.php">types.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">356</span>
+    <span class="phpdocumentor-element-found-in__line">351</span>
 
     </aside>
 
@@ -1440,6 +1529,8 @@ phrase that is evaluated from the contenttype's package and class.</p>
     <span class="phpdocumentor-signature__visibility">public</span>
                     <span class="phpdocumentor-signature__name">getPackageID</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$package</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">int</span></code>
 
+    <div class="phpdocumentor-label-line">
+        </div>
         <section class="phpdocumentor-description"><p>Note: This will also return a package id for a given package id after
 verification so the function can be used for normalisation.</p>
 </section>
@@ -1461,13 +1552,15 @@ verification so the function can be used for normalisation.</p>
 
     
 
+            <section>
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">int</span>
-            &mdash;
-            <section class="phpdocumentor-description"><p>| false</p>
+        <span class="phpdocumentor-signature__response_type">int</span>
+                    &mdash;
+                <section class="phpdocumentor-description"><p>| false</p>
 </section>
 
-    
+            </section>
+
 </article>
                     <article
         class="phpdocumentor-element
@@ -1478,11 +1571,12 @@ verification so the function can be used for normalisation.</p>
     <h4 class="phpdocumentor-element__name" id="method_getSearchableContentTypes">
         getSearchableContentTypes()
         <a href="classes/vB-Types.html#method_getSearchableContentTypes" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/types.php"><a href="files/vb-types.html"><abbr title="vb/types.php">types.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">758</span>
+    <span class="phpdocumentor-element-found-in__line">753</span>
 
     </aside>
 
@@ -1492,17 +1586,21 @@ verification so the function can be used for normalisation.</p>
     <span class="phpdocumentor-signature__visibility">public</span>
                     <span class="phpdocumentor-signature__name">getSearchableContentTypes</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">array&lt;string|int, mixed&gt;</span></code>
 
+    <div class="phpdocumentor-label-line">
+        </div>
     
     
     
 
+            <section>
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">array&lt;string|int, mixed&gt;</span>
-            &mdash;
-            <section class="phpdocumentor-description"><p>Content types.</p>
+        <span class="phpdocumentor-signature__response_type">array&lt;string|int, mixed&gt;</span>
+                    &mdash;
+                <section class="phpdocumentor-description"><p>Content types.</p>
 </section>
 
-    
+            </section>
+
 </article>
                     <article
         class="phpdocumentor-element
@@ -1513,11 +1611,12 @@ verification so the function can be used for normalisation.</p>
     <h4 class="phpdocumentor-element__name" id="method_getTypeKey">
         getTypeKey()
         <a href="classes/vB-Types.html#method_getTypeKey" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/types.php"><a href="files/vb-types.html"><abbr title="vb/types.php">types.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">306</span>
+    <span class="phpdocumentor-element-found-in__line">301</span>
 
     </aside>
 
@@ -1528,6 +1627,8 @@ and class.</p>
     <span class="phpdocumentor-signature__visibility">public</span>
                     <span class="phpdocumentor-signature__name">getTypeKey</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$package</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__return-type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$class</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">string</span></code>
 
+    <div class="phpdocumentor-label-line">
+        </div>
         <section class="phpdocumentor-description"><p>Note: The key is only unique per type (ie, unique for contenttypes).</p>
 </section>
 
@@ -1559,15 +1660,17 @@ and class.</p>
 
     
 
+            <section>
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">string</span>
-            &mdash;
-            <section class="phpdocumentor-description"><ul>
+        <span class="phpdocumentor-signature__response_type">string</span>
+                    &mdash;
+                <section class="phpdocumentor-description"><ul>
 <li>The resulting single string unique key identifier</li>
 </ul>
 </section>
 
-    
+            </section>
+
 </article>
                     <article
         class="phpdocumentor-element
@@ -1578,11 +1681,12 @@ and class.</p>
     <h4 class="phpdocumentor-element__name" id="method_getUntitledContentTypeTitle">
         getUntitledContentTypeTitle()
         <a href="classes/vB-Types.html#method_getUntitledContentTypeTitle" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/types.php"><a href="files/vb-types.html"><abbr title="vb/types.php">types.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">693</span>
+    <span class="phpdocumentor-element-found-in__line">688</span>
 
     </aside>
 
@@ -1592,6 +1696,8 @@ and class.</p>
     <span class="phpdocumentor-signature__visibility">public</span>
                     <span class="phpdocumentor-signature__name">getUntitledContentTypeTitle</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$contenttype</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">string</span></code>
 
+    <div class="phpdocumentor-label-line">
+        </div>
     
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
     <dl class="phpdocumentor-argument-list">
@@ -1606,11 +1712,11 @@ and class.</p>
 
     
 
+            <section>
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">string</span>
-            &mdash;
-        
-    
+        <span class="phpdocumentor-signature__response_type">string</span>
+            </section>
+
 </article>
                     <article
         class="phpdocumentor-element
@@ -1621,11 +1727,12 @@ and class.</p>
     <h4 class="phpdocumentor-element__name" id="method_instance">
         instance()
         <a href="classes/vB-Types.html#method_instance" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/types.php"><a href="files/vb-types.html"><abbr title="vb/types.php">types.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">169</span>
+    <span class="phpdocumentor-element-found-in__line">167</span>
 
     </aside>
 
@@ -1635,35 +1742,23 @@ and class.</p>
     <span class="phpdocumentor-signature__visibility">public</span>
             <span class="phpdocumentor-signature__static">static</span>        <span class="phpdocumentor-signature__name">instance</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type"><a href="classes/vB-Types.html"><abbr title="\vB_Types">vB_Types</abbr></a></span></code>
 
+    <div class="phpdocumentor-label-line">
+        </div>
     
     
     
-    <h5 class="phpdocumentor-tag-list__heading" id="tags">
-        Tags
-        <a href="#tags" class="headerlink"><i class="fas fa-link"></i></a>
-    </h5>
-    <dl class="phpdocumentor-tag-list">
-                                    <dt class="phpdocumentor-tag-list__entry">
-                    <span class="phpdocumentor-tag__name">todo</span>
-                </dt>
-                <dd class="phpdocumentor-tag-list__definition">
-                                                                                
-                                                 <section class="phpdocumentor-description"><p>This can be inherited once late static binding is available.  For now
-it has to be redefined in the child classes</p>
-</section>
 
-                                    </dd>
-                        </dl>
-
+            <section>
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type"><a href="classes/vB-Types.html"><abbr title="\vB_Types">vB_Types</abbr></a></span>
-            &mdash;
-            <section class="phpdocumentor-description"><ul>
+        <span class="phpdocumentor-signature__response_type"><a href="classes/vB-Types.html"><abbr title="\vB_Types">vB_Types</abbr></a></span>
+                    &mdash;
+                <section class="phpdocumentor-description"><ul>
 <li>Reference to singleton instance of the type handler</li>
 </ul>
 </section>
 
-    
+            </section>
+
 </article>
                     <article
         class="phpdocumentor-element
@@ -1674,11 +1769,12 @@ it has to be redefined in the child classes</p>
     <h4 class="phpdocumentor-element__name" id="method_packageEnabled">
         packageEnabled()
         <a href="classes/vB-Types.html#method_packageEnabled" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/types.php"><a href="files/vb-types.html"><abbr title="vb/types.php">types.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">410</span>
+    <span class="phpdocumentor-element-found-in__line">405</span>
 
     </aside>
 
@@ -1688,6 +1784,8 @@ it has to be redefined in the child classes</p>
     <span class="phpdocumentor-signature__visibility">public</span>
                     <span class="phpdocumentor-signature__name">packageEnabled</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$package</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
 
+    <div class="phpdocumentor-label-line">
+        </div>
     
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
     <dl class="phpdocumentor-argument-list">
@@ -1706,10 +1804,6 @@ it has to be redefined in the child classes</p>
 
     
 
-        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">mixed</span>
-            &mdash;
-        
     
 </article>
                     <article
@@ -1721,11 +1815,12 @@ it has to be redefined in the child classes</p>
     <h4 class="phpdocumentor-element__name" id="method_reloadTypes">
         reloadTypes()
         <a href="classes/vB-Types.html#method_reloadTypes" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/types.php"><a href="files/vb-types.html"><abbr title="vb/types.php">types.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">809</span>
+    <span class="phpdocumentor-element-found-in__line">804</span>
 
     </aside>
 
@@ -1735,82 +1830,165 @@ it has to be redefined in the child classes</p>
     <span class="phpdocumentor-signature__visibility">public</span>
                     <span class="phpdocumentor-signature__name">reloadTypes</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
 
+    <div class="phpdocumentor-label-line">
+        </div>
     
     
     
 
-        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">mixed</span>
-            &mdash;
-        
     
 </article>
             </section>
 
-        
+        <div class="phpdocumentor-modal" id="source-view">
+    <div class="phpdocumentor-modal-bg" data-exit-button></div>
+    <div class="phpdocumentor-modal-container">
+        <div class="phpdocumentor-modal-content">
+            <pre style="max-height: 500px; overflow-y: scroll" data-src="files/vb/types.php.txt" class="language-php line-numbers linkable-line-numbers"></pre>
+        </div>
+        <button data-exit-button class="phpdocumentor-modal__close">&times;</button>
+    </div>
+</div>
+
     <script type="text/javascript">
-        function loadExternalCodeSnippets(line) {
-            Array.prototype.slice.call(document.querySelectorAll('pre[data-src]')).forEach((pre) => {
-                var src = pre.getAttribute('data-src').replace( /\\/g, '/');
-                var extension = (src.match(/\.(\w+)$/) || [, ''])[1];
-                var language = 'php';
+        (function () {
+            function loadExternalCodeSnippet(el, url, line) {
+                Array.prototype.slice.call(el.querySelectorAll('pre[data-src]')).forEach((pre) => {
+                    const src = url || pre.getAttribute('data-src').replace(/\\/g, '/');
+                    const language = 'php';
 
-                var code = document.createElement('code');
-                code.className = 'language-' + language;
+                    const code = document.createElement('code');
+                    code.className = 'language-' + language;
+                    pre.textContent = '';
+                    pre.setAttribute('data-line', line)
+                    code.textContent = 'Loading…';
+                    pre.appendChild(code);
 
-                pre.textContent = '';
+                    var xhr = new XMLHttpRequest();
 
-                pre.setAttribute('data-line', line)
-                code.textContent = 'Loading…';
+                    xhr.open('GET', src, true);
 
-                pre.appendChild(code);
-
-                var xhr = new XMLHttpRequest();
-
-                xhr.open('GET', src, true);
-
-                xhr.onreadystatechange = function () {
-                    if (xhr.readyState == 4) {
+                    xhr.onreadystatechange = function () {
+                        if (xhr.readyState !== 4) {
+                            return;
+                        }
 
                         if (xhr.status < 400 && xhr.responseText) {
                             code.textContent = xhr.responseText;
-
                             Prism.highlightElement(code);
+                            return;
                         }
-                        else if (xhr.status >= 400) {
+
+                        if (xhr.status === 404) {
+                            code.textContent = '✖ Error: File could not be found';
+                            return;
+                        }
+
+                        if (xhr.status >= 400) {
                             code.textContent = '✖ Error ' + xhr.status + ' while fetching file: ' + xhr.statusText;
+                            return;
                         }
-                        else {
-                            code.textContent = '✖ Error: File does not exist, is empty or trying to view from localhost';
-                        }
+
+                        code.textContent = '✖ Error: An unknown error occurred';
+                    };
+
+                    xhr.send(null);
+                });
+            }
+
+            const modalButtons = document.querySelectorAll("[data-modal]");
+            const openedAsLocalFile = window.location.protocol === 'file:';
+            if (modalButtons.length > 0 && openedAsLocalFile) {
+                console.warn(
+                    'Viewing the source code is unavailable because you are opening this page from the file:// scheme; ' +
+                    'browsers block XHR requests when a page is opened this way'
+                );
+            }
+
+            modalButtons.forEach(function (trigger) {
+                if (openedAsLocalFile) {
+                    trigger.setAttribute("hidden", "hidden");
+                }
+
+                trigger.addEventListener("click", function (event) {
+                    event.preventDefault();
+                    const modal = document.getElementById(trigger.dataset.modal);
+                    if (!modal) {
+                        console.error(`Modal with id "${trigger.dataset.modal}" could not be found`);
+                        return;
                     }
-                };
+                    modal.classList.add("phpdocumentor-modal__open");
 
-                xhr.send(null);
-            });
-        }
-
-        var modals = document.querySelectorAll("[data-modal]");
-
-        modals.forEach(function (trigger) {
-            trigger.addEventListener("click", function (event) {
-                //event.preventDefault();
-                const modal = document.getElementById(trigger.dataset.modal);
-                modal.classList.add("phpdocumentor-modal__open");
-                loadExternalCodeSnippets(trigger.dataset.line)
-                const exits = modal.querySelectorAll("[data-exit-button]");
-                exits.forEach(function (exit) {
-                    exit.addEventListener("click", function (event) {
-                        event.preventDefault();
-                        modal.classList.remove("phpdocumentor-modal__open");
+                    loadExternalCodeSnippet(modal, trigger.dataset.src || null, trigger.dataset.line)
+                    const exits = modal.querySelectorAll("[data-exit-button]");
+                    exits.forEach(function (exit) {
+                        exit.addEventListener("click", function (event) {
+                            event.preventDefault();
+                            modal.classList.remove("phpdocumentor-modal__open");
+                        });
                     });
                 });
             });
-        });
+        })();
     </script>
 
     </article>
-                <section data-search-results class="phpdocumentor-search-results phpdocumentor-search-results--hidden">
+                                </section>
+                <section class="phpdocumentor-on-this-page__sidebar">
+                                
+    <section class="phpdocumentor-on-this-page__content">
+        <strong class="phpdocumentor-on-this-page__title">On this page</strong>
+
+        <ul class="phpdocumentor-list -clean">
+            <li class="phpdocumentor-on-this-page-section__title">Table Of Contents</li>
+            <li>
+                <ul class="phpdocumentor-list -clean">
+                                                                                <li><a href="classes/vB-Types.html#toc-methods">Methods</a></li>
+                                    </ul>
+            </li>
+            
+            
+                        <li class="phpdocumentor-on-this-page-section__title">Methods</li>
+            <li>
+                <ul class="phpdocumentor-list -clean">
+                                            <li><a href="classes/vB-Trait-NoSerialize.html#method___serialize">__serialize()</a></li>
+                                            <li><a href="classes/vB-Trait-NoSerialize.html#method___sleep">__sleep()</a></li>
+                                            <li><a href="classes/vB-Trait-NoSerialize.html#method___unserialize">__unserialize()</a></li>
+                                            <li><a href="classes/vB-Trait-NoSerialize.html#method___wakeup">__wakeup()</a></li>
+                                            <li><a href="classes/vB-Types.html#method_assertContentType">assertContentType()</a></li>
+                                            <li><a href="classes/vB-Types.html#method_assertPackage">assertPackage()</a></li>
+                                            <li><a href="classes/vB-Types.html#method_contentTypeEnabled">contentTypeEnabled()</a></li>
+                                            <li><a href="classes/vB-Types.html#method_getAggregatorTypeIds">getAggregatorTypeIds()</a></li>
+                                            <li><a href="classes/vB-Types.html#method_getAttachableContentTypes">getAttachableContentTypes()</a></li>
+                                            <li><a href="classes/vB-Types.html#method_getContentClassFromId">getContentClassFromId()</a></li>
+                                            <li><a href="classes/vB-Types.html#method_getContentTypeCacheEvents">getContentTypeCacheEvents()</a></li>
+                                            <li><a href="classes/vB-Types.html#method_getContentTypeClass">getContentTypeClass()</a></li>
+                                            <li><a href="classes/vB-Types.html#method_getContentTypeClasses">getContentTypeClasses()</a></li>
+                                            <li><a href="classes/vB-Types.html#method_getContentTypeID">getContentTypeID()</a></li>
+                                            <li><a href="classes/vB-Types.html#method_getContentTypePackage">getContentTypePackage()</a></li>
+                                            <li><a href="classes/vB-Types.html#method_getContentTypePackageID">getContentTypePackageID()</a></li>
+                                            <li><a href="classes/vB-Types.html#method_getContentTypes">getContentTypes()</a></li>
+                                            <li><a href="classes/vB-Types.html#method_getContentTypeTitle">getContentTypeTitle()</a></li>
+                                            <li><a href="classes/vB-Types.html#method_getForumCommentContentTypeClasses">getForumCommentContentTypeClasses()</a></li>
+                                            <li><a href="classes/vB-Types.html#method_getForumReplyContentTypeClasses">getForumReplyContentTypeClasses()</a></li>
+                                            <li><a href="classes/vB-Types.html#method_getForumStarterContentTypeClasses">getForumStarterContentTypeClasses()</a></li>
+                                            <li><a href="classes/vB-Types.html#method_getNonAggregatorTypeIds">getNonAggregatorTypeIds()</a></li>
+                                            <li><a href="classes/vB-Types.html#method_getPackageClass">getPackageClass()</a></li>
+                                            <li><a href="classes/vB-Types.html#method_getPackageID">getPackageID()</a></li>
+                                            <li><a href="classes/vB-Types.html#method_getSearchableContentTypes">getSearchableContentTypes()</a></li>
+                                            <li><a href="classes/vB-Types.html#method_getTypeKey">getTypeKey()</a></li>
+                                            <li><a href="classes/vB-Types.html#method_getUntitledContentTypeTitle">getUntitledContentTypeTitle()</a></li>
+                                            <li><a href="classes/vB-Types.html#method_instance">instance()</a></li>
+                                            <li><a href="classes/vB-Types.html#method_packageEnabled">packageEnabled()</a></li>
+                                            <li><a href="classes/vB-Types.html#method_reloadTypes">reloadTypes()</a></li>
+                                    </ul>
+            </li>
+                    </ul>
+    </section>
+
+                </section>
+                            </div>
+            <section data-search-results class="phpdocumentor-search-results phpdocumentor-search-results--hidden">
     <section class="phpdocumentor-search-results__dialog">
         <header class="phpdocumentor-search-results__header">
             <h2 class="phpdocumentor-search-results__title">Search results</h2>
@@ -1821,7 +1999,6 @@ it has to be redefined in the child classes</p>
         </section>
     </section>
 </section>
-            </div>
         </div>
         <a href="classes/vB-Types.html#top" class="phpdocumentor-back-to-top"><i class="fas fa-chevron-circle-up"></i></a>
 

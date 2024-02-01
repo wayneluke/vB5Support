@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-            <title>vBulletin v5.7.2</title>
+            <title>vBulletin v6.0.4</title>
     
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <base href="../">
@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="css/normalize.css">
     <link rel="stylesheet" href="css/base.css">
             <link rel="preconnect" href="https://fonts.gstatic.com">
-        <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@400;600;700&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@100;200;300;400;600;700&display=swap" rel="stylesheet">
         <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@400;600;700&display=swap" rel="stylesheet">
         <link rel="stylesheet" href="css/template.css">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.0/css/all.min.css" integrity="sha256-ybRkN9dBjhcS2qrW1z+hfCxq+1aBdwyQM5wlQoQVt/0=" crossorigin="anonymous" />
@@ -19,12 +19,13 @@
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.23.0/plugins/line-highlight/prism-line-highlight.css">
                 <script src="https://cdn.jsdelivr.net/npm/fuse.js@3.4.6"></script>
         <script src="https://cdn.jsdelivr.net/npm/css-vars-ponyfill@2"></script>
+        <script src="js/template.js"></script>
         <script src="js/search.js"></script>
         <script defer src="js/searchIndex.js"></script>
     </head>
 <body id="top">
     <header class="phpdocumentor-header phpdocumentor-section">
-    <h1 class="phpdocumentor-title"><a href="" class="phpdocumentor-title__link">vBulletin v5.7.2</a></h1>
+    <h1 class="phpdocumentor-title"><a href="" class="phpdocumentor-title__link">vBulletin v6.0.4</a></h1>
     <input class="phpdocumentor-header__menu-button" type="checkbox" id="menu-button" name="menu-button" />
     <label class="phpdocumentor-header__menu-icon" for="menu-button">
         <i class="fas fa-bars"></i>
@@ -52,7 +53,7 @@
 <label class="phpdocumentor-sidebar__menu-icon" for="sidebar-button">
     Menu
 </label>
-<aside class="phpdocumentor-column -four phpdocumentor-sidebar">
+<aside class="phpdocumentor-column -three phpdocumentor-sidebar">
                     <section class="phpdocumentor-sidebar__category">
             <h2 class="phpdocumentor-sidebar__category-header">Packages</h2>
                                     <h4 class="phpdocumentor-sidebar__root-namespace">
@@ -98,8 +99,9 @@
     </section>
 </aside>
 
-            <div class="phpdocumentor-column -eight phpdocumentor-content">
-                    <ul class="phpdocumentor-breadcrumbs">
+            <div class="phpdocumentor-column -nine phpdocumentor-content">
+                                <section>
+                                        <ul class="phpdocumentor-breadcrumbs">
             <li class="phpdocumentor-breadcrumb"><a href="packages/Application.html">Application</a></li>
     </ul>
 
@@ -121,6 +123,11 @@
                             <a href="classes/vB-Trait-NoSerialize.html"><abbr title="\vB_Trait_NoSerialize">vB_Trait_NoSerialize</abbr></a>                    </span>
     </h2>
 
+<div class="phpdocumentor-label-line">
+
+
+</div>
+
         <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/page.php"><a href="files/vb-page.html"><abbr title="vb/page.php">page.php</abbr></a></abbr>
     :
@@ -129,10 +136,6 @@
     </aside>
 
         
-    <section class="phpdocumentor-description"></section>
-
-
-
 
 
 
@@ -140,142 +143,135 @@
 
 <h3 id="toc">
     Table of Contents
-    <a href="#toc" class="headerlink"><i class="fas fa-link"></i></a>
+    <a href="classes/vB-Page.html#toc" class="headerlink"><i class="fas fa-link"></i></a>
+
 </h3>
 
+
+
+
+
+
+
+<h4 id="toc-constants">
+    Constants
+    <a href="classes/vB-Page.html#toc-constants" class="headerlink"><i class="fas fa-link"></i></a>
+
+</h4>
 <dl class="phpdocumentor-table-of-contents">
             <dt class="phpdocumentor-table-of-contents__entry -constant -public">
     <a href="classes/vB-Page.html#constant_PAGE_ARTICLE">PAGE_ARTICLE</a>
     <span>
         &nbsp;= &#039;vbulletin-p-cmshome5229f4e0c2ea71.91676461&#039;                            </span>
 </dt>
-<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -constant -public">
     <a href="classes/vB-Page.html#constant_PAGE_BLOG">PAGE_BLOG</a>
     <span>
         &nbsp;= &#039;vbulletin-4ecbdac82f2c27.60323366&#039;                            </span>
 </dt>
-<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -constant -public">
     <a href="classes/vB-Page.html#constant_PAGE_HOME">PAGE_HOME</a>
     <span>
         &nbsp;= &#039;vbulletin-4ecbdac82ef5d4.12817784&#039;                            </span>
 </dt>
-<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -constant -public">
     <a href="classes/vB-Page.html#constant_PAGE_MEMBERLIST">PAGE_MEMBERLIST</a>
     <span>
         &nbsp;= &#039;vbulletin-4ecbdac82f07a5.18983926&#039;                            </span>
 </dt>
-<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -constant -public">
     <a href="classes/vB-Page.html#constant_PAGE_ONLINE">PAGE_ONLINE</a>
     <span>
         &nbsp;= &#039;vbulletin-4ecbdac82f07a5.18983925&#039;                            </span>
 </dt>
-<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -constant -public">
     <a href="classes/vB-Page.html#constant_PAGE_SEARCH">PAGE_SEARCH</a>
     <span>
         &nbsp;= &#039;vbulletin-4ecbdac82efb61.17736147&#039;                            </span>
 </dt>
-<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -constant -public">
     <a href="classes/vB-Page.html#constant_PAGE_SEARCHRESULT">PAGE_SEARCHRESULT</a>
     <span>
         &nbsp;= &#039;vbulletin-4ecbdac82f2815.04471586&#039;                            </span>
 </dt>
-<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -constant -public">
     <a href="classes/vB-Page.html#constant_PAGE_SOCIALGROUP">PAGE_SOCIALGROUP</a>
     <span>
         &nbsp;= &#039;vbulletin-4ecbdac82f2c27.60323372&#039;                            </span>
 </dt>
-<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -constant -public">
     <a href="classes/vB-Page.html#constant_TEMPLATE_ARTICLE">TEMPLATE_ARTICLE</a>
     <span>
         &nbsp;= &#039;vbulletin-pt-cmsarticle5229fcffd5d428.54773744&#039;                            </span>
 </dt>
-<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -constant -public">
     <a href="classes/vB-Page.html#constant_TEMPLATE_ARTICLE_CATEGORY">TEMPLATE_ARTICLE_CATEGORY</a>
     <span>
         &nbsp;= &#039;vbulletin-pt-cmscatlist5229fcd0dd3da7.64934873&#039;                            </span>
 </dt>
-<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -constant -public">
     <a href="classes/vB-Page.html#constant_TEMPLATE_ARTICLE_HOME">TEMPLATE_ARTICLE_HOME</a>
     <span>
         &nbsp;= &#039;vbulletin-pt-cmshome5229f9fc6f78f2.75718106&#039;                            </span>
 </dt>
-<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -constant -public">
     <a href="classes/vB-Page.html#constant_TEMPLATE_BLOG">TEMPLATE_BLOG</a>
     <span>
         &nbsp;= &#039;vbulletin-4ecbdac93742a5.43676030&#039;                            </span>
 </dt>
-<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -constant -public">
     <a href="classes/vB-Page.html#constant_TEMPLATE_BLOGCONVERSATION">TEMPLATE_BLOGCONVERSATION</a>
     <span>
         &nbsp;= &#039;vbulletin-4ecbdac93716c4.69967191&#039;                            </span>
 </dt>
-<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -constant -public">
     <a href="classes/vB-Page.html#constant_TEMPLATE_CATEGORY">TEMPLATE_CATEGORY</a>
     <span>
         &nbsp;= &#039;vbulletin-4ecbdac9371313.62302701&#039;                            </span>
 </dt>
-<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -constant -public">
     <a href="classes/vB-Page.html#constant_TEMPLATE_CHANNEL">TEMPLATE_CHANNEL</a>
     <span>
         &nbsp;= &#039;vbulletin-4ecbdac9371313.62302700&#039;                            </span>
 </dt>
-<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -constant -public">
     <a href="classes/vB-Page.html#constant_TEMPLATE_CONVERSATION">TEMPLATE_CONVERSATION</a>
     <span>
         &nbsp;= &#039;vbulletin-4ecbdac93716c4.69967191&#039;                            </span>
 </dt>
-<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -constant -public">
     <a href="classes/vB-Page.html#constant_TEMPLATE_SOCIALGROUP">TEMPLATE_SOCIALGROUP</a>
     <span>
         &nbsp;= &#039;vbulletin-sgroups93742a5.43676038&#039;                            </span>
 </dt>
-<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -constant -public">
     <a href="classes/vB-Page.html#constant_TEMPLATE_SOCIALGROUP_CATEGORY">TEMPLATE_SOCIALGROUP_CATEGORY</a>
     <span>
         &nbsp;= &#039;vbulletin-sgcatlist93742a5.43676040&#039;                            </span>
 </dt>
-<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -constant -public">
     <a href="classes/vB-Page.html#constant_TEMPLATE_SOCIALGROUPCONVERSATION">TEMPLATE_SOCIALGROUPCONVERSATION</a>
     <span>
         &nbsp;= &#039;vbulletin-sgtopic93742a5.43676039&#039;                            </span>
 </dt>
-<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -constant -public">
     <a href="classes/vB-Page.html#constant_TYPE_CUSTOM">TYPE_CUSTOM</a>
@@ -291,33 +287,39 @@
 </dt>
 <dd>Used for generic pages such as default conversation page</dd>
 
-                        <dt class="phpdocumentor-table-of-contents__entry -method -public">
+    </dl>
+
+
+
+<h4 id="toc-methods">
+    Methods
+    <a href="classes/vB-Page.html#toc-methods" class="headerlink"><i class="fas fa-link"></i></a>
+
+</h4>
+<dl class="phpdocumentor-table-of-contents">
+            <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a href="classes/vB-Trait-NoSerialize.html#method___serialize">__serialize()</a>
     <span>
                                 &nbsp;: array&lt;string|int, mixed&gt;    </span>
 </dt>
-<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a href="classes/vB-Trait-NoSerialize.html#method___sleep">__sleep()</a>
     <span>
                                 &nbsp;: array&lt;string|int, mixed&gt;    </span>
 </dt>
-<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a href="classes/vB-Trait-NoSerialize.html#method___unserialize">__unserialize()</a>
     <span>
                                 &nbsp;: void    </span>
 </dt>
-<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a href="classes/vB-Trait-NoSerialize.html#method___wakeup">__wakeup()</a>
     <span>
                                 &nbsp;: void    </span>
 </dt>
-<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a href="classes/vB-Page.html#method_clonePageTemplate">clonePageTemplate()</a>
@@ -353,13 +355,6 @@
                                 &nbsp;: int    </span>
 </dt>
 <dd>Gets the page template for display of blog topics/conversations</dd>
-
-            <dt class="phpdocumentor-table-of-contents__entry -method -public">
-    <a href="classes/vB-Page.html#method_getBlogPageTemplates">getBlogPageTemplates()</a>
-    <span>
-                                &nbsp;: mixed    </span>
-</dt>
-<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a href="classes/vB-Page.html#method_getCategoryChannelPageTemplate">getCategoryChannelPageTemplate()</a>
@@ -417,7 +412,8 @@
 </dt>
 <dd>Gets the page template for display of social group  topics/conversations</dd>
 
-        </dl>
+    </dl>
+
 
 
 
@@ -426,11 +422,13 @@
         <h3 class="phpdocumentor-elements__header" id="constants">
             Constants
             <a href="classes/vB-Page.html#constants" class="headerlink"><i class="fas fa-link"></i></a>
+
         </h3>
                     <article class="phpdocumentor-element -constant -public ">
     <h4 class="phpdocumentor-element__name" id="constant_PAGE_ARTICLE">
         PAGE_ARTICLE
         <a href="classes/vB-Page.html#constant_PAGE_ARTICLE" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
 
     <aside class="phpdocumentor-element-found-in">
@@ -449,10 +447,8 @@
 </code>
 
 
-        <section class="phpdocumentor-description"></section>
-
-        <section class="phpdocumentor-description"></section>
-
+    
+    
     
 
 </article>
@@ -460,6 +456,7 @@
     <h4 class="phpdocumentor-element__name" id="constant_PAGE_BLOG">
         PAGE_BLOG
         <a href="classes/vB-Page.html#constant_PAGE_BLOG" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
 
     <aside class="phpdocumentor-element-found-in">
@@ -478,10 +475,8 @@
 </code>
 
 
-        <section class="phpdocumentor-description"></section>
-
-        <section class="phpdocumentor-description"></section>
-
+    
+    
     
 
 </article>
@@ -489,6 +484,7 @@
     <h4 class="phpdocumentor-element__name" id="constant_PAGE_HOME">
         PAGE_HOME
         <a href="classes/vB-Page.html#constant_PAGE_HOME" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
 
     <aside class="phpdocumentor-element-found-in">
@@ -507,10 +503,8 @@
 </code>
 
 
-        <section class="phpdocumentor-description"></section>
-
-        <section class="phpdocumentor-description"></section>
-
+    
+    
     
 
 </article>
@@ -518,6 +512,7 @@
     <h4 class="phpdocumentor-element__name" id="constant_PAGE_MEMBERLIST">
         PAGE_MEMBERLIST
         <a href="classes/vB-Page.html#constant_PAGE_MEMBERLIST" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
 
     <aside class="phpdocumentor-element-found-in">
@@ -536,10 +531,8 @@
 </code>
 
 
-        <section class="phpdocumentor-description"></section>
-
-        <section class="phpdocumentor-description"></section>
-
+    
+    
     
 
 </article>
@@ -547,6 +540,7 @@
     <h4 class="phpdocumentor-element__name" id="constant_PAGE_ONLINE">
         PAGE_ONLINE
         <a href="classes/vB-Page.html#constant_PAGE_ONLINE" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
 
     <aside class="phpdocumentor-element-found-in">
@@ -565,10 +559,8 @@
 </code>
 
 
-        <section class="phpdocumentor-description"></section>
-
-        <section class="phpdocumentor-description"></section>
-
+    
+    
     
 
 </article>
@@ -576,6 +568,7 @@
     <h4 class="phpdocumentor-element__name" id="constant_PAGE_SEARCH">
         PAGE_SEARCH
         <a href="classes/vB-Page.html#constant_PAGE_SEARCH" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
 
     <aside class="phpdocumentor-element-found-in">
@@ -594,10 +587,8 @@
 </code>
 
 
-        <section class="phpdocumentor-description"></section>
-
-        <section class="phpdocumentor-description"></section>
-
+    
+    
     
 
 </article>
@@ -605,6 +596,7 @@
     <h4 class="phpdocumentor-element__name" id="constant_PAGE_SEARCHRESULT">
         PAGE_SEARCHRESULT
         <a href="classes/vB-Page.html#constant_PAGE_SEARCHRESULT" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
 
     <aside class="phpdocumentor-element-found-in">
@@ -623,10 +615,8 @@
 </code>
 
 
-        <section class="phpdocumentor-description"></section>
-
-        <section class="phpdocumentor-description"></section>
-
+    
+    
     
 
 </article>
@@ -634,6 +624,7 @@
     <h4 class="phpdocumentor-element__name" id="constant_PAGE_SOCIALGROUP">
         PAGE_SOCIALGROUP
         <a href="classes/vB-Page.html#constant_PAGE_SOCIALGROUP" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
 
     <aside class="phpdocumentor-element-found-in">
@@ -652,10 +643,8 @@
 </code>
 
 
-        <section class="phpdocumentor-description"></section>
-
-        <section class="phpdocumentor-description"></section>
-
+    
+    
     
 
 </article>
@@ -663,6 +652,7 @@
     <h4 class="phpdocumentor-element__name" id="constant_TEMPLATE_ARTICLE">
         TEMPLATE_ARTICLE
         <a href="classes/vB-Page.html#constant_TEMPLATE_ARTICLE" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
 
     <aside class="phpdocumentor-element-found-in">
@@ -681,10 +671,8 @@
 </code>
 
 
-        <section class="phpdocumentor-description"></section>
-
-        <section class="phpdocumentor-description"></section>
-
+    
+    
     
 
 </article>
@@ -692,6 +680,7 @@
     <h4 class="phpdocumentor-element__name" id="constant_TEMPLATE_ARTICLE_CATEGORY">
         TEMPLATE_ARTICLE_CATEGORY
         <a href="classes/vB-Page.html#constant_TEMPLATE_ARTICLE_CATEGORY" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
 
     <aside class="phpdocumentor-element-found-in">
@@ -710,10 +699,8 @@
 </code>
 
 
-        <section class="phpdocumentor-description"></section>
-
-        <section class="phpdocumentor-description"></section>
-
+    
+    
     
 
 </article>
@@ -721,6 +708,7 @@
     <h4 class="phpdocumentor-element__name" id="constant_TEMPLATE_ARTICLE_HOME">
         TEMPLATE_ARTICLE_HOME
         <a href="classes/vB-Page.html#constant_TEMPLATE_ARTICLE_HOME" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
 
     <aside class="phpdocumentor-element-found-in">
@@ -739,10 +727,8 @@
 </code>
 
 
-        <section class="phpdocumentor-description"></section>
-
-        <section class="phpdocumentor-description"></section>
-
+    
+    
     
 
 </article>
@@ -750,6 +736,7 @@
     <h4 class="phpdocumentor-element__name" id="constant_TEMPLATE_BLOG">
         TEMPLATE_BLOG
         <a href="classes/vB-Page.html#constant_TEMPLATE_BLOG" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
 
     <aside class="phpdocumentor-element-found-in">
@@ -768,10 +755,8 @@
 </code>
 
 
-        <section class="phpdocumentor-description"></section>
-
-        <section class="phpdocumentor-description"></section>
-
+    
+    
     
 
 </article>
@@ -779,6 +764,7 @@
     <h4 class="phpdocumentor-element__name" id="constant_TEMPLATE_BLOGCONVERSATION">
         TEMPLATE_BLOGCONVERSATION
         <a href="classes/vB-Page.html#constant_TEMPLATE_BLOGCONVERSATION" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
 
     <aside class="phpdocumentor-element-found-in">
@@ -797,10 +783,8 @@
 </code>
 
 
-        <section class="phpdocumentor-description"></section>
-
-        <section class="phpdocumentor-description"></section>
-
+    
+    
     
 
 </article>
@@ -808,6 +792,7 @@
     <h4 class="phpdocumentor-element__name" id="constant_TEMPLATE_CATEGORY">
         TEMPLATE_CATEGORY
         <a href="classes/vB-Page.html#constant_TEMPLATE_CATEGORY" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
 
     <aside class="phpdocumentor-element-found-in">
@@ -826,10 +811,8 @@
 </code>
 
 
-        <section class="phpdocumentor-description"></section>
-
-        <section class="phpdocumentor-description"></section>
-
+    
+    
     
 
 </article>
@@ -837,6 +820,7 @@
     <h4 class="phpdocumentor-element__name" id="constant_TEMPLATE_CHANNEL">
         TEMPLATE_CHANNEL
         <a href="classes/vB-Page.html#constant_TEMPLATE_CHANNEL" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
 
     <aside class="phpdocumentor-element-found-in">
@@ -855,10 +839,8 @@
 </code>
 
 
-        <section class="phpdocumentor-description"></section>
-
-        <section class="phpdocumentor-description"></section>
-
+    
+    
     
 
 </article>
@@ -866,6 +848,7 @@
     <h4 class="phpdocumentor-element__name" id="constant_TEMPLATE_CONVERSATION">
         TEMPLATE_CONVERSATION
         <a href="classes/vB-Page.html#constant_TEMPLATE_CONVERSATION" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
 
     <aside class="phpdocumentor-element-found-in">
@@ -884,10 +867,8 @@
 </code>
 
 
-        <section class="phpdocumentor-description"></section>
-
-        <section class="phpdocumentor-description"></section>
-
+    
+    
     
 
 </article>
@@ -895,6 +876,7 @@
     <h4 class="phpdocumentor-element__name" id="constant_TEMPLATE_SOCIALGROUP">
         TEMPLATE_SOCIALGROUP
         <a href="classes/vB-Page.html#constant_TEMPLATE_SOCIALGROUP" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
 
     <aside class="phpdocumentor-element-found-in">
@@ -913,10 +895,8 @@
 </code>
 
 
-        <section class="phpdocumentor-description"></section>
-
-        <section class="phpdocumentor-description"></section>
-
+    
+    
     
 
 </article>
@@ -924,6 +904,7 @@
     <h4 class="phpdocumentor-element__name" id="constant_TEMPLATE_SOCIALGROUP_CATEGORY">
         TEMPLATE_SOCIALGROUP_CATEGORY
         <a href="classes/vB-Page.html#constant_TEMPLATE_SOCIALGROUP_CATEGORY" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
 
     <aside class="phpdocumentor-element-found-in">
@@ -942,10 +923,8 @@
 </code>
 
 
-        <section class="phpdocumentor-description"></section>
-
-        <section class="phpdocumentor-description"></section>
-
+    
+    
     
 
 </article>
@@ -953,6 +932,7 @@
     <h4 class="phpdocumentor-element__name" id="constant_TEMPLATE_SOCIALGROUPCONVERSATION">
         TEMPLATE_SOCIALGROUPCONVERSATION
         <a href="classes/vB-Page.html#constant_TEMPLATE_SOCIALGROUPCONVERSATION" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
 
     <aside class="phpdocumentor-element-found-in">
@@ -971,10 +951,8 @@
 </code>
 
 
-        <section class="phpdocumentor-description"></section>
-
-        <section class="phpdocumentor-description"></section>
-
+    
+    
     
 
 </article>
@@ -982,6 +960,7 @@
     <h4 class="phpdocumentor-element__name" id="constant_TYPE_CUSTOM">
         TYPE_CUSTOM
         <a href="classes/vB-Page.html#constant_TYPE_CUSTOM" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
 
     <aside class="phpdocumentor-element-found-in">
@@ -1002,8 +981,7 @@
 
 
     
-        <section class="phpdocumentor-description"></section>
-
+    
     
 
 </article>
@@ -1011,6 +989,7 @@
     <h4 class="phpdocumentor-element__name" id="constant_TYPE_DEFAULT">
         TYPE_DEFAULT
         <a href="classes/vB-Page.html#constant_TYPE_DEFAULT" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
 
     <aside class="phpdocumentor-element-found-in">
@@ -1031,8 +1010,7 @@
 
 
     
-        <section class="phpdocumentor-description"></section>
-
+    
     
 
 </article>
@@ -1044,6 +1022,7 @@
         <h3 class="phpdocumentor-elements__header" id="methods">
             Methods
             <a href="classes/vB-Page.html#methods" class="headerlink"><i class="fas fa-link"></i></a>
+
         </h3>
                     <article
         class="phpdocumentor-element
@@ -1054,6 +1033,7 @@
     <h4 class="phpdocumentor-element__name" id="method___serialize">
         __serialize()
         <a href="classes/vB-Trait-NoSerialize.html#method___serialize" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/trait/noserialize.php"><a href="files/vb-trait-noserialize.html"><abbr title="vb/trait/noserialize.php">noserialize.php</abbr></a></abbr>
@@ -1067,16 +1047,17 @@
     <span class="phpdocumentor-signature__visibility">public</span>
                     <span class="phpdocumentor-signature__name">__serialize</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">array&lt;string|int, mixed&gt;</span></code>
 
-        <section class="phpdocumentor-description"></section>
-
+    <div class="phpdocumentor-label-line">
+        </div>
     
     
+    
 
+            <section>
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">array&lt;string|int, mixed&gt;</span>
-            &mdash;
-        
-    
+        <span class="phpdocumentor-signature__response_type">array&lt;string|int, mixed&gt;</span>
+            </section>
+
 </article>
                     <article
         class="phpdocumentor-element
@@ -1087,6 +1068,7 @@
     <h4 class="phpdocumentor-element__name" id="method___sleep">
         __sleep()
         <a href="classes/vB-Trait-NoSerialize.html#method___sleep" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/trait/noserialize.php"><a href="files/vb-trait-noserialize.html"><abbr title="vb/trait/noserialize.php">noserialize.php</abbr></a></abbr>
@@ -1100,16 +1082,17 @@
     <span class="phpdocumentor-signature__visibility">public</span>
                     <span class="phpdocumentor-signature__name">__sleep</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">array&lt;string|int, mixed&gt;</span></code>
 
-        <section class="phpdocumentor-description"></section>
-
+    <div class="phpdocumentor-label-line">
+        </div>
     
     
+    
 
+            <section>
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">array&lt;string|int, mixed&gt;</span>
-            &mdash;
-        
-    
+        <span class="phpdocumentor-signature__response_type">array&lt;string|int, mixed&gt;</span>
+            </section>
+
 </article>
                     <article
         class="phpdocumentor-element
@@ -1120,6 +1103,7 @@
     <h4 class="phpdocumentor-element__name" id="method___unserialize">
         __unserialize()
         <a href="classes/vB-Trait-NoSerialize.html#method___unserialize" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/trait/noserialize.php"><a href="files/vb-trait-noserialize.html"><abbr title="vb/trait/noserialize.php">noserialize.php</abbr></a></abbr>
@@ -1133,8 +1117,9 @@
     <span class="phpdocumentor-signature__visibility">public</span>
                     <span class="phpdocumentor-signature__name">__unserialize</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">array&lt;string|int, mixed&gt;&nbsp;</span><span class="phpdocumentor-signature__argument__name">$serialized</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">void</span></code>
 
-        <section class="phpdocumentor-description"></section>
-
+    <div class="phpdocumentor-label-line">
+        </div>
+    
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
     <dl class="phpdocumentor-argument-list">
                     <dt class="phpdocumentor-argument-list__entry">
@@ -1142,17 +1127,12 @@
                 : <span class="phpdocumentor-signature__argument__return-type">array&lt;string|int, mixed&gt;</span>
                             </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
+                
             </dd>
             </dl>
 
     
 
-        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">void</span>
-            &mdash;
-        
     
 </article>
                     <article
@@ -1164,6 +1144,7 @@
     <h4 class="phpdocumentor-element__name" id="method___wakeup">
         __wakeup()
         <a href="classes/vB-Trait-NoSerialize.html#method___wakeup" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/trait/noserialize.php"><a href="files/vb-trait-noserialize.html"><abbr title="vb/trait/noserialize.php">noserialize.php</abbr></a></abbr>
@@ -1177,15 +1158,12 @@
     <span class="phpdocumentor-signature__visibility">public</span>
                     <span class="phpdocumentor-signature__name">__wakeup</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">void</span></code>
 
-        <section class="phpdocumentor-description"></section>
-
+    <div class="phpdocumentor-label-line">
+        </div>
     
     
+    
 
-        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">void</span>
-            &mdash;
-        
     
 </article>
                     <article
@@ -1197,6 +1175,7 @@
     <h4 class="phpdocumentor-element__name" id="method_clonePageTemplate">
         clonePageTemplate()
         <a href="classes/vB-Page.html#method_clonePageTemplate" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/page.php"><a href="files/vb-page.html"><abbr title="vb/page.php">page.php</abbr></a></abbr>
@@ -1211,6 +1190,8 @@
     <span class="phpdocumentor-signature__visibility">public</span>
             <span class="phpdocumentor-signature__static">static</span>        <span class="phpdocumentor-signature__name">clonePageTemplate</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">int&nbsp;</span><span class="phpdocumentor-signature__argument__name">$pageTemplateId</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">int</span></code>
 
+    <div class="phpdocumentor-label-line">
+        </div>
     
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
     <dl class="phpdocumentor-argument-list">
@@ -1225,11 +1206,11 @@
 
     
 
+            <section>
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">int</span>
-            &mdash;
-        
-    
+        <span class="phpdocumentor-signature__response_type">int</span>
+            </section>
+
 </article>
                     <article
         class="phpdocumentor-element
@@ -1240,11 +1221,12 @@
     <h4 class="phpdocumentor-element__name" id="method_getArticleChannelPageTemplate">
         getArticleChannelPageTemplate()
         <a href="classes/vB-Page.html#method_getArticleChannelPageTemplate" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/page.php"><a href="files/vb-page.html"><abbr title="vb/page.php">page.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">382</span>
+    <span class="phpdocumentor-element-found-in__line">252</span>
 
     </aside>
 
@@ -1254,15 +1236,17 @@
     <span class="phpdocumentor-signature__visibility">public</span>
             <span class="phpdocumentor-signature__static">static</span>        <span class="phpdocumentor-signature__name">getArticleChannelPageTemplate</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">int</span></code>
 
+    <div class="phpdocumentor-label-line">
+        </div>
     
     
     
 
+            <section>
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">int</span>
-            &mdash;
-        
-    
+        <span class="phpdocumentor-signature__response_type">int</span>
+            </section>
+
 </article>
                     <article
         class="phpdocumentor-element
@@ -1273,11 +1257,12 @@
     <h4 class="phpdocumentor-element__name" id="method_getArticleConversPageTemplate">
         getArticleConversPageTemplate()
         <a href="classes/vB-Page.html#method_getArticleConversPageTemplate" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/page.php"><a href="files/vb-page.html"><abbr title="vb/page.php">page.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">398</span>
+    <span class="phpdocumentor-element-found-in__line">262</span>
 
     </aside>
 
@@ -1287,15 +1272,17 @@
     <span class="phpdocumentor-signature__visibility">public</span>
             <span class="phpdocumentor-signature__static">static</span>        <span class="phpdocumentor-signature__name">getArticleConversPageTemplate</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">int</span></code>
 
+    <div class="phpdocumentor-label-line">
+        </div>
     
     
     
 
+            <section>
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">int</span>
-            &mdash;
-        
-    
+        <span class="phpdocumentor-signature__response_type">int</span>
+            </section>
+
 </article>
                     <article
         class="phpdocumentor-element
@@ -1306,11 +1293,12 @@
     <h4 class="phpdocumentor-element__name" id="method_getBlogChannelPageTemplate">
         getBlogChannelPageTemplate()
         <a href="classes/vB-Page.html#method_getBlogChannelPageTemplate" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/page.php"><a href="files/vb-page.html"><abbr title="vb/page.php">page.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">232</span>
+    <span class="phpdocumentor-element-found-in__line">192</span>
 
     </aside>
 
@@ -1320,15 +1308,17 @@
     <span class="phpdocumentor-signature__visibility">public</span>
             <span class="phpdocumentor-signature__static">static</span>        <span class="phpdocumentor-signature__name">getBlogChannelPageTemplate</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">int</span></code>
 
+    <div class="phpdocumentor-label-line">
+        </div>
     
     
     
 
+            <section>
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">int</span>
-            &mdash;
-        
-    
+        <span class="phpdocumentor-signature__response_type">int</span>
+            </section>
+
 </article>
                     <article
         class="phpdocumentor-element
@@ -1339,11 +1329,12 @@
     <h4 class="phpdocumentor-element__name" id="method_getBlogConversPageTemplate">
         getBlogConversPageTemplate()
         <a href="classes/vB-Page.html#method_getBlogConversPageTemplate" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/page.php"><a href="files/vb-page.html"><abbr title="vb/page.php">page.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">257</span>
+    <span class="phpdocumentor-element-found-in__line">202</span>
 
     </aside>
 
@@ -1353,48 +1344,17 @@
     <span class="phpdocumentor-signature__visibility">public</span>
             <span class="phpdocumentor-signature__static">static</span>        <span class="phpdocumentor-signature__name">getBlogConversPageTemplate</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">int</span></code>
 
+    <div class="phpdocumentor-label-line">
+        </div>
     
     
     
 
+            <section>
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">int</span>
-            &mdash;
-        
-    
-</article>
-                    <article
-        class="phpdocumentor-element
-            -method
-            -public
-                                    -static                    "
->
-    <h4 class="phpdocumentor-element__name" id="method_getBlogPageTemplates">
-        getBlogPageTemplates()
-        <a href="classes/vB-Page.html#method_getBlogPageTemplates" class="headerlink"><i class="fas fa-link"></i></a>
-    </h4>
-    <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="vb/page.php"><a href="files/vb-page.html"><abbr title="vb/page.php">page.php</abbr></a></abbr>
-    :
-    <span class="phpdocumentor-element-found-in__line">205</span>
+        <span class="phpdocumentor-signature__response_type">int</span>
+            </section>
 
-    </aside>
-
-    
-    <code class="phpdocumentor-code phpdocumentor-signature ">
-    <span class="phpdocumentor-signature__visibility">public</span>
-            <span class="phpdocumentor-signature__static">static</span>        <span class="phpdocumentor-signature__name">getBlogPageTemplates</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
-
-        <section class="phpdocumentor-description"></section>
-
-    
-    
-
-        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">mixed</span>
-            &mdash;
-        
-    
 </article>
                     <article
         class="phpdocumentor-element
@@ -1405,11 +1365,12 @@
     <h4 class="phpdocumentor-element__name" id="method_getCategoryChannelPageTemplate">
         getCategoryChannelPageTemplate()
         <a href="classes/vB-Page.html#method_getCategoryChannelPageTemplate" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/page.php"><a href="files/vb-page.html"><abbr title="vb/page.php">page.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">194</span>
+    <span class="phpdocumentor-element-found-in__line">182</span>
 
     </aside>
 
@@ -1419,15 +1380,17 @@
     <span class="phpdocumentor-signature__visibility">public</span>
             <span class="phpdocumentor-signature__static">static</span>        <span class="phpdocumentor-signature__name">getCategoryChannelPageTemplate</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">int</span></code>
 
+    <div class="phpdocumentor-label-line">
+        </div>
     
     
     
 
+            <section>
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">int</span>
-            &mdash;
-        
-    
+        <span class="phpdocumentor-signature__response_type">int</span>
+            </section>
+
 </article>
                     <article
         class="phpdocumentor-element
@@ -1438,6 +1401,7 @@
     <h4 class="phpdocumentor-element__name" id="method_getChannelPageTemplate">
         getChannelPageTemplate()
         <a href="classes/vB-Page.html#method_getChannelPageTemplate" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/page.php"><a href="files/vb-page.html"><abbr title="vb/page.php">page.php</abbr></a></abbr>
@@ -1452,15 +1416,17 @@
     <span class="phpdocumentor-signature__visibility">public</span>
             <span class="phpdocumentor-signature__static">static</span>        <span class="phpdocumentor-signature__name">getChannelPageTemplate</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">int</span></code>
 
+    <div class="phpdocumentor-label-line">
+        </div>
     
     
     
 
+            <section>
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">int</span>
-            &mdash;
-        
-    
+        <span class="phpdocumentor-signature__response_type">int</span>
+            </section>
+
 </article>
                     <article
         class="phpdocumentor-element
@@ -1471,11 +1437,12 @@
     <h4 class="phpdocumentor-element__name" id="method_getConversPageTemplate">
         getConversPageTemplate()
         <a href="classes/vB-Page.html#method_getConversPageTemplate" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/page.php"><a href="files/vb-page.html"><abbr title="vb/page.php">page.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">178</span>
+    <span class="phpdocumentor-element-found-in__line">172</span>
 
     </aside>
 
@@ -1485,15 +1452,17 @@
     <span class="phpdocumentor-signature__visibility">public</span>
             <span class="phpdocumentor-signature__static">static</span>        <span class="phpdocumentor-signature__name">getConversPageTemplate</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">int</span></code>
 
+    <div class="phpdocumentor-label-line">
+        </div>
     
     
     
 
+            <section>
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">int</span>
-            &mdash;
-        
-    
+        <span class="phpdocumentor-signature__response_type">int</span>
+            </section>
+
 </article>
                     <article
         class="phpdocumentor-element
@@ -1504,6 +1473,7 @@
     <h4 class="phpdocumentor-element__name" id="method_getDefaultPageTemplateGUIDs">
         getDefaultPageTemplateGUIDs()
         <a href="classes/vB-Page.html#method_getDefaultPageTemplateGUIDs" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/page.php"><a href="files/vb-page.html"><abbr title="vb/page.php">page.php</abbr></a></abbr>
@@ -1518,17 +1488,21 @@
     <span class="phpdocumentor-signature__visibility">public</span>
             <span class="phpdocumentor-signature__static">static</span>        <span class="phpdocumentor-signature__name">getDefaultPageTemplateGUIDs</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">array&lt;string|int, mixed&gt;</span></code>
 
+    <div class="phpdocumentor-label-line">
+        </div>
     
     
     
 
+            <section>
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">array&lt;string|int, mixed&gt;</span>
-            &mdash;
-            <section class="phpdocumentor-description"><p>Array of pagetemplate.guid values for default templates, keyed by guids.</p>
+        <span class="phpdocumentor-signature__response_type">array&lt;string|int, mixed&gt;</span>
+                    &mdash;
+                <section class="phpdocumentor-description"><p>Array of pagetemplate.guid values for default templates, keyed by guids.</p>
 </section>
 
-    
+            </section>
+
 </article>
                     <article
         class="phpdocumentor-element
@@ -1539,11 +1513,12 @@
     <h4 class="phpdocumentor-element__name" id="method_getSGCategoryConversPageTemplate">
         getSGCategoryConversPageTemplate()
         <a href="classes/vB-Page.html#method_getSGCategoryConversPageTemplate" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/page.php"><a href="files/vb-page.html"><abbr title="vb/page.php">page.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">357</span>
+    <span class="phpdocumentor-element-found-in__line">242</span>
 
     </aside>
 
@@ -1553,15 +1528,17 @@
     <span class="phpdocumentor-signature__visibility">public</span>
             <span class="phpdocumentor-signature__static">static</span>        <span class="phpdocumentor-signature__name">getSGCategoryConversPageTemplate</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">int</span></code>
 
+    <div class="phpdocumentor-label-line">
+        </div>
     
     
     
 
+            <section>
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">int</span>
-            &mdash;
-        
-    
+        <span class="phpdocumentor-signature__response_type">int</span>
+            </section>
+
 </article>
                     <article
         class="phpdocumentor-element
@@ -1572,11 +1549,12 @@
     <h4 class="phpdocumentor-element__name" id="method_getSGCategoryPageTemplate">
         getSGCategoryPageTemplate()
         <a href="classes/vB-Page.html#method_getSGCategoryPageTemplate" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/page.php"><a href="files/vb-page.html"><abbr title="vb/page.php">page.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">332</span>
+    <span class="phpdocumentor-element-found-in__line">232</span>
 
     </aside>
 
@@ -1586,15 +1564,17 @@
     <span class="phpdocumentor-signature__visibility">public</span>
             <span class="phpdocumentor-signature__static">static</span>        <span class="phpdocumentor-signature__name">getSGCategoryPageTemplate</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">int</span></code>
 
+    <div class="phpdocumentor-label-line">
+        </div>
     
     
     
 
+            <section>
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">int</span>
-            &mdash;
-        
-    
+        <span class="phpdocumentor-signature__response_type">int</span>
+            </section>
+
 </article>
                     <article
         class="phpdocumentor-element
@@ -1605,11 +1585,12 @@
     <h4 class="phpdocumentor-element__name" id="method_getSGChannelPageTemplate">
         getSGChannelPageTemplate()
         <a href="classes/vB-Page.html#method_getSGChannelPageTemplate" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/page.php"><a href="files/vb-page.html"><abbr title="vb/page.php">page.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">282</span>
+    <span class="phpdocumentor-element-found-in__line">212</span>
 
     </aside>
 
@@ -1619,15 +1600,17 @@
     <span class="phpdocumentor-signature__visibility">public</span>
             <span class="phpdocumentor-signature__static">static</span>        <span class="phpdocumentor-signature__name">getSGChannelPageTemplate</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">int</span></code>
 
+    <div class="phpdocumentor-label-line">
+        </div>
     
     
     
 
+            <section>
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">int</span>
-            &mdash;
-        
-    
+        <span class="phpdocumentor-signature__response_type">int</span>
+            </section>
+
 </article>
                     <article
         class="phpdocumentor-element
@@ -1638,11 +1621,12 @@
     <h4 class="phpdocumentor-element__name" id="method_getSGConversPageTemplate">
         getSGConversPageTemplate()
         <a href="classes/vB-Page.html#method_getSGConversPageTemplate" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/page.php"><a href="files/vb-page.html"><abbr title="vb/page.php">page.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">307</span>
+    <span class="phpdocumentor-element-found-in__line">222</span>
 
     </aside>
 
@@ -1652,82 +1636,183 @@
     <span class="phpdocumentor-signature__visibility">public</span>
             <span class="phpdocumentor-signature__static">static</span>        <span class="phpdocumentor-signature__name">getSGConversPageTemplate</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">int</span></code>
 
+    <div class="phpdocumentor-label-line">
+        </div>
     
     
     
 
+            <section>
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">int</span>
-            &mdash;
-        
-    
+        <span class="phpdocumentor-signature__response_type">int</span>
+            </section>
+
 </article>
             </section>
 
-        
+        <div class="phpdocumentor-modal" id="source-view">
+    <div class="phpdocumentor-modal-bg" data-exit-button></div>
+    <div class="phpdocumentor-modal-container">
+        <div class="phpdocumentor-modal-content">
+            <pre style="max-height: 500px; overflow-y: scroll" data-src="files/vb/page.php.txt" class="language-php line-numbers linkable-line-numbers"></pre>
+        </div>
+        <button data-exit-button class="phpdocumentor-modal__close">&times;</button>
+    </div>
+</div>
+
     <script type="text/javascript">
-        function loadExternalCodeSnippets(line) {
-            Array.prototype.slice.call(document.querySelectorAll('pre[data-src]')).forEach((pre) => {
-                var src = pre.getAttribute('data-src').replace( /\\/g, '/');
-                var extension = (src.match(/\.(\w+)$/) || [, ''])[1];
-                var language = 'php';
+        (function () {
+            function loadExternalCodeSnippet(el, url, line) {
+                Array.prototype.slice.call(el.querySelectorAll('pre[data-src]')).forEach((pre) => {
+                    const src = url || pre.getAttribute('data-src').replace(/\\/g, '/');
+                    const language = 'php';
 
-                var code = document.createElement('code');
-                code.className = 'language-' + language;
+                    const code = document.createElement('code');
+                    code.className = 'language-' + language;
+                    pre.textContent = '';
+                    pre.setAttribute('data-line', line)
+                    code.textContent = 'Loading…';
+                    pre.appendChild(code);
 
-                pre.textContent = '';
+                    var xhr = new XMLHttpRequest();
 
-                pre.setAttribute('data-line', line)
-                code.textContent = 'Loading…';
+                    xhr.open('GET', src, true);
 
-                pre.appendChild(code);
-
-                var xhr = new XMLHttpRequest();
-
-                xhr.open('GET', src, true);
-
-                xhr.onreadystatechange = function () {
-                    if (xhr.readyState == 4) {
+                    xhr.onreadystatechange = function () {
+                        if (xhr.readyState !== 4) {
+                            return;
+                        }
 
                         if (xhr.status < 400 && xhr.responseText) {
                             code.textContent = xhr.responseText;
-
                             Prism.highlightElement(code);
+                            return;
                         }
-                        else if (xhr.status >= 400) {
+
+                        if (xhr.status === 404) {
+                            code.textContent = '✖ Error: File could not be found';
+                            return;
+                        }
+
+                        if (xhr.status >= 400) {
                             code.textContent = '✖ Error ' + xhr.status + ' while fetching file: ' + xhr.statusText;
+                            return;
                         }
-                        else {
-                            code.textContent = '✖ Error: File does not exist, is empty or trying to view from localhost';
-                        }
+
+                        code.textContent = '✖ Error: An unknown error occurred';
+                    };
+
+                    xhr.send(null);
+                });
+            }
+
+            const modalButtons = document.querySelectorAll("[data-modal]");
+            const openedAsLocalFile = window.location.protocol === 'file:';
+            if (modalButtons.length > 0 && openedAsLocalFile) {
+                console.warn(
+                    'Viewing the source code is unavailable because you are opening this page from the file:// scheme; ' +
+                    'browsers block XHR requests when a page is opened this way'
+                );
+            }
+
+            modalButtons.forEach(function (trigger) {
+                if (openedAsLocalFile) {
+                    trigger.setAttribute("hidden", "hidden");
+                }
+
+                trigger.addEventListener("click", function (event) {
+                    event.preventDefault();
+                    const modal = document.getElementById(trigger.dataset.modal);
+                    if (!modal) {
+                        console.error(`Modal with id "${trigger.dataset.modal}" could not be found`);
+                        return;
                     }
-                };
+                    modal.classList.add("phpdocumentor-modal__open");
 
-                xhr.send(null);
-            });
-        }
-
-        var modals = document.querySelectorAll("[data-modal]");
-
-        modals.forEach(function (trigger) {
-            trigger.addEventListener("click", function (event) {
-                //event.preventDefault();
-                const modal = document.getElementById(trigger.dataset.modal);
-                modal.classList.add("phpdocumentor-modal__open");
-                loadExternalCodeSnippets(trigger.dataset.line)
-                const exits = modal.querySelectorAll("[data-exit-button]");
-                exits.forEach(function (exit) {
-                    exit.addEventListener("click", function (event) {
-                        event.preventDefault();
-                        modal.classList.remove("phpdocumentor-modal__open");
+                    loadExternalCodeSnippet(modal, trigger.dataset.src || null, trigger.dataset.line)
+                    const exits = modal.querySelectorAll("[data-exit-button]");
+                    exits.forEach(function (exit) {
+                        exit.addEventListener("click", function (event) {
+                            event.preventDefault();
+                            modal.classList.remove("phpdocumentor-modal__open");
+                        });
                     });
                 });
             });
-        });
+        })();
     </script>
 
     </article>
-                <section data-search-results class="phpdocumentor-search-results phpdocumentor-search-results--hidden">
+                                </section>
+                <section class="phpdocumentor-on-this-page__sidebar">
+                                
+    <section class="phpdocumentor-on-this-page__content">
+        <strong class="phpdocumentor-on-this-page__title">On this page</strong>
+
+        <ul class="phpdocumentor-list -clean">
+            <li class="phpdocumentor-on-this-page-section__title">Table Of Contents</li>
+            <li>
+                <ul class="phpdocumentor-list -clean">
+                                        <li><a href="classes/vB-Page.html#toc-constants">Constants</a></li>
+                                                                                <li><a href="classes/vB-Page.html#toc-methods">Methods</a></li>
+                                    </ul>
+            </li>
+                            <li class="phpdocumentor-on-this-page-section__title">Constants</li>
+                <li>
+                    <ul class="phpdocumentor-list -clean">
+                                                    <li><a href="classes/vB-Page.html#constant_PAGE_ARTICLE">PAGE_ARTICLE</a></li>
+                                                    <li><a href="classes/vB-Page.html#constant_PAGE_BLOG">PAGE_BLOG</a></li>
+                                                    <li><a href="classes/vB-Page.html#constant_PAGE_HOME">PAGE_HOME</a></li>
+                                                    <li><a href="classes/vB-Page.html#constant_PAGE_MEMBERLIST">PAGE_MEMBERLIST</a></li>
+                                                    <li><a href="classes/vB-Page.html#constant_PAGE_ONLINE">PAGE_ONLINE</a></li>
+                                                    <li><a href="classes/vB-Page.html#constant_PAGE_SEARCH">PAGE_SEARCH</a></li>
+                                                    <li><a href="classes/vB-Page.html#constant_PAGE_SEARCHRESULT">PAGE_SEARCHRESULT</a></li>
+                                                    <li><a href="classes/vB-Page.html#constant_PAGE_SOCIALGROUP">PAGE_SOCIALGROUP</a></li>
+                                                    <li><a href="classes/vB-Page.html#constant_TEMPLATE_ARTICLE">TEMPLATE_ARTICLE</a></li>
+                                                    <li><a href="classes/vB-Page.html#constant_TEMPLATE_ARTICLE_CATEGORY">TEMPLATE_ARTICLE_CATEGORY</a></li>
+                                                    <li><a href="classes/vB-Page.html#constant_TEMPLATE_ARTICLE_HOME">TEMPLATE_ARTICLE_HOME</a></li>
+                                                    <li><a href="classes/vB-Page.html#constant_TEMPLATE_BLOG">TEMPLATE_BLOG</a></li>
+                                                    <li><a href="classes/vB-Page.html#constant_TEMPLATE_BLOGCONVERSATION">TEMPLATE_BLOGCONVERSATION</a></li>
+                                                    <li><a href="classes/vB-Page.html#constant_TEMPLATE_CATEGORY">TEMPLATE_CATEGORY</a></li>
+                                                    <li><a href="classes/vB-Page.html#constant_TEMPLATE_CHANNEL">TEMPLATE_CHANNEL</a></li>
+                                                    <li><a href="classes/vB-Page.html#constant_TEMPLATE_CONVERSATION">TEMPLATE_CONVERSATION</a></li>
+                                                    <li><a href="classes/vB-Page.html#constant_TEMPLATE_SOCIALGROUP">TEMPLATE_SOCIALGROUP</a></li>
+                                                    <li><a href="classes/vB-Page.html#constant_TEMPLATE_SOCIALGROUP_CATEGORY">TEMPLATE_SOCIALGROUP_CATEGORY</a></li>
+                                                    <li><a href="classes/vB-Page.html#constant_TEMPLATE_SOCIALGROUPCONVERSATION">TEMPLATE_SOCIALGROUPCONVERSATION</a></li>
+                                                    <li><a href="classes/vB-Page.html#constant_TYPE_CUSTOM">TYPE_CUSTOM</a></li>
+                                                    <li><a href="classes/vB-Page.html#constant_TYPE_DEFAULT">TYPE_DEFAULT</a></li>
+                                            </ul>
+                </li>
+            
+            
+                        <li class="phpdocumentor-on-this-page-section__title">Methods</li>
+            <li>
+                <ul class="phpdocumentor-list -clean">
+                                            <li><a href="classes/vB-Trait-NoSerialize.html#method___serialize">__serialize()</a></li>
+                                            <li><a href="classes/vB-Trait-NoSerialize.html#method___sleep">__sleep()</a></li>
+                                            <li><a href="classes/vB-Trait-NoSerialize.html#method___unserialize">__unserialize()</a></li>
+                                            <li><a href="classes/vB-Trait-NoSerialize.html#method___wakeup">__wakeup()</a></li>
+                                            <li><a href="classes/vB-Page.html#method_clonePageTemplate">clonePageTemplate()</a></li>
+                                            <li><a href="classes/vB-Page.html#method_getArticleChannelPageTemplate">getArticleChannelPageTemplate()</a></li>
+                                            <li><a href="classes/vB-Page.html#method_getArticleConversPageTemplate">getArticleConversPageTemplate()</a></li>
+                                            <li><a href="classes/vB-Page.html#method_getBlogChannelPageTemplate">getBlogChannelPageTemplate()</a></li>
+                                            <li><a href="classes/vB-Page.html#method_getBlogConversPageTemplate">getBlogConversPageTemplate()</a></li>
+                                            <li><a href="classes/vB-Page.html#method_getCategoryChannelPageTemplate">getCategoryChannelPageTemplate()</a></li>
+                                            <li><a href="classes/vB-Page.html#method_getChannelPageTemplate">getChannelPageTemplate()</a></li>
+                                            <li><a href="classes/vB-Page.html#method_getConversPageTemplate">getConversPageTemplate()</a></li>
+                                            <li><a href="classes/vB-Page.html#method_getDefaultPageTemplateGUIDs">getDefaultPageTemplateGUIDs()</a></li>
+                                            <li><a href="classes/vB-Page.html#method_getSGCategoryConversPageTemplate">getSGCategoryConversPageTemplate()</a></li>
+                                            <li><a href="classes/vB-Page.html#method_getSGCategoryPageTemplate">getSGCategoryPageTemplate()</a></li>
+                                            <li><a href="classes/vB-Page.html#method_getSGChannelPageTemplate">getSGChannelPageTemplate()</a></li>
+                                            <li><a href="classes/vB-Page.html#method_getSGConversPageTemplate">getSGConversPageTemplate()</a></li>
+                                    </ul>
+            </li>
+                    </ul>
+    </section>
+
+                </section>
+                            </div>
+            <section data-search-results class="phpdocumentor-search-results phpdocumentor-search-results--hidden">
     <section class="phpdocumentor-search-results__dialog">
         <header class="phpdocumentor-search-results__header">
             <h2 class="phpdocumentor-search-results__title">Search results</h2>
@@ -1738,7 +1823,6 @@
         </section>
     </section>
 </section>
-            </div>
         </div>
         <a href="classes/vB-Page.html#top" class="phpdocumentor-back-to-top"><i class="fas fa-chevron-circle-up"></i></a>
 

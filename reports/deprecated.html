@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-            <title>    vBulletin v5.7.2 &raquo; Deprecated elements
+            <title>    vBulletin v6.0.4 &raquo; Deprecated elements
 </title>
     
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,7 +11,7 @@
     <link rel="stylesheet" href="css/normalize.css">
     <link rel="stylesheet" href="css/base.css">
             <link rel="preconnect" href="https://fonts.gstatic.com">
-        <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@400;600;700&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@100;200;300;400;600;700&display=swap" rel="stylesheet">
         <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@400;600;700&display=swap" rel="stylesheet">
         <link rel="stylesheet" href="css/template.css">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.0/css/all.min.css" integrity="sha256-ybRkN9dBjhcS2qrW1z+hfCxq+1aBdwyQM5wlQoQVt/0=" crossorigin="anonymous" />
@@ -20,12 +20,13 @@
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.23.0/plugins/line-highlight/prism-line-highlight.css">
                 <script src="https://cdn.jsdelivr.net/npm/fuse.js@3.4.6"></script>
         <script src="https://cdn.jsdelivr.net/npm/css-vars-ponyfill@2"></script>
+        <script src="js/template.js"></script>
         <script src="js/search.js"></script>
         <script defer src="js/searchIndex.js"></script>
     </head>
 <body id="top">
     <header class="phpdocumentor-header phpdocumentor-section">
-    <h1 class="phpdocumentor-title"><a href="" class="phpdocumentor-title__link">vBulletin v5.7.2</a></h1>
+    <h1 class="phpdocumentor-title"><a href="" class="phpdocumentor-title__link">vBulletin v6.0.4</a></h1>
     <input class="phpdocumentor-header__menu-button" type="checkbox" id="menu-button" name="menu-button" />
     <label class="phpdocumentor-header__menu-icon" for="menu-button">
         <i class="fas fa-bars"></i>
@@ -53,7 +54,7 @@
 <label class="phpdocumentor-sidebar__menu-icon" for="sidebar-button">
     Menu
 </label>
-<aside class="phpdocumentor-column -four phpdocumentor-sidebar">
+<aside class="phpdocumentor-column -three phpdocumentor-sidebar">
                     <section class="phpdocumentor-sidebar__category">
             <h2 class="phpdocumentor-sidebar__category-header">Packages</h2>
                                     <h4 class="phpdocumentor-sidebar__root-namespace">
@@ -99,443 +100,421 @@
     </section>
 </aside>
 
-            <div class="phpdocumentor-column -eight phpdocumentor-content">
-                    <ul class="phpdocumentor-breadcrumbs">
-        <li><a href="">Home</a></li>
-    </ul>
+            <div class="phpdocumentor-column -nine phpdocumentor-content">
+                                        <section>
+        <ul class="phpdocumentor-breadcrumbs">
+            <li><a href="">Home</a></li>
+        </ul>
 
-    <div class="phpdocumentor-row">
-        <h2 class="phpdocumentor-content__title">Deprecated</h2>
+        <div class="phpdocumentor-row">
+            <h2 class="phpdocumentor-content__title">Deprecated</h2>
 
-                <h3>Table of Contents</h3>
-        <table class="phpdocumentor-table_of_contents">
-                            <tr>
-                    <td class="phpdocumentor-cell"><a href="reports/deprecated.html#vb/api/bbcode.php">vb/api/bbcode.php</a></td>
-                </tr>
-                            <tr>
-                    <td class="phpdocumentor-cell"><a href="reports/deprecated.html#vb/api/content/attach.php">vb/api/content/attach.php</a></td>
-                </tr>
-                            <tr>
-                    <td class="phpdocumentor-cell"><a href="reports/deprecated.html#vb/api/content/privatemessage.php">vb/api/content/privatemessage.php</a></td>
-                </tr>
-                            <tr>
-                    <td class="phpdocumentor-cell"><a href="reports/deprecated.html#vb/api/content/text.php">vb/api/content/text.php</a></td>
-                </tr>
-                            <tr>
-                    <td class="phpdocumentor-cell"><a href="reports/deprecated.html#vb/api/follow.php">vb/api/follow.php</a></td>
-                </tr>
-                            <tr>
-                    <td class="phpdocumentor-cell"><a href="reports/deprecated.html#vb/api/language.php">vb/api/language.php</a></td>
-                </tr>
-                            <tr>
-                    <td class="phpdocumentor-cell"><a href="reports/deprecated.html#vb/api/node.php">vb/api/node.php</a></td>
-                </tr>
-                            <tr>
-                    <td class="phpdocumentor-cell"><a href="reports/deprecated.html#vb/api/phrase.php">vb/api/phrase.php</a></td>
-                </tr>
-                            <tr>
-                    <td class="phpdocumentor-cell"><a href="reports/deprecated.html#vb/api/reputation.php">vb/api/reputation.php</a></td>
-                </tr>
-                            <tr>
-                    <td class="phpdocumentor-cell"><a href="reports/deprecated.html#vb/api/user.php">vb/api/user.php</a></td>
-                </tr>
-                            <tr>
-                    <td class="phpdocumentor-cell"><a href="reports/deprecated.html#vb/database.php">vb/database.php</a></td>
-                </tr>
-                            <tr>
-                    <td class="phpdocumentor-cell"><a href="reports/deprecated.html#vb/datastore.php">vb/datastore.php</a></td>
-                </tr>
-                            <tr>
-                    <td class="phpdocumentor-cell"><a href="reports/deprecated.html#vb/db/assertor.php">vb/db/assertor.php</a></td>
-                </tr>
-                            <tr>
-                    <td class="phpdocumentor-cell"><a href="reports/deprecated.html#vb/db/query.php">vb/db/query.php</a></td>
-                </tr>
-                            <tr>
-                    <td class="phpdocumentor-cell"><a href="reports/deprecated.html#vb/library/content/privatemessage.php">vb/library/content/privatemessage.php</a></td>
-                </tr>
-                            <tr>
-                    <td class="phpdocumentor-cell"><a href="reports/deprecated.html#vb/library/content/text.php">vb/library/content/text.php</a></td>
-                </tr>
-                            <tr>
-                    <td class="phpdocumentor-cell"><a href="reports/deprecated.html#vb/library/node.php">vb/library/node.php</a></td>
-                </tr>
-                            <tr>
-                    <td class="phpdocumentor-cell"><a href="reports/deprecated.html#vb/library/style.php">vb/library/style.php</a></td>
-                </tr>
-                            <tr>
-                    <td class="phpdocumentor-cell"><a href="reports/deprecated.html#vb/library/user.php">vb/library/user.php</a></td>
-                </tr>
-                            <tr>
-                    <td class="phpdocumentor-cell"><a href="reports/deprecated.html#vb/mail.php">vb/mail.php</a></td>
-                </tr>
-                            <tr>
-                    <td class="phpdocumentor-cell"><a href="reports/deprecated.html#vb/node.php">vb/node.php</a></td>
-                </tr>
-                    </table>
-        
-                    <a id="vb/api/bbcode.php"></a>
-            <h3><abbr title="vb/api/bbcode.php">bbcode.php</abbr></h3>
-            <table>
-                <tr>
-                    <th class="phpdocumentor-heading">Line</th>
-                    <th class="phpdocumentor-heading">Element</th>
-                    <th class="phpdocumentor-heading">Reason</th>
-                </tr>
-                                                            <tr>
-                            <td class="phpdocumentor-cell">812</td>
-                            <td class="phpdocumentor-cell"><a href="classes/vB-Api-Bbcode.html#method_parseSignature"><abbr title="\vB_Api_Bbcode::parseSignature()">vB_Api_Bbcode::parseSignature()</abbr></a></td>
-                            <td class="phpdocumentor-cell"><p>Please use getSignatureInfo instead</p>
+                        <h3>Table of Contents</h3>
+            <table class="phpdocumentor-table_of_contents">
+                                    <tr>
+                        <td class="phpdocumentor-cell"><a href="reports/deprecated.html#vb/api/bbcode.php">vb/api/bbcode.php</a></td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"><a href="reports/deprecated.html#vb/api/content/attach.php">vb/api/content/attach.php</a></td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"><a href="reports/deprecated.html#vb/api/content/privatemessage.php">vb/api/content/privatemessage.php</a></td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"><a href="reports/deprecated.html#vb/api/content/text.php">vb/api/content/text.php</a></td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"><a href="reports/deprecated.html#vb/api/cron.php">vb/api/cron.php</a></td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"><a href="reports/deprecated.html#vb/api/follow.php">vb/api/follow.php</a></td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"><a href="reports/deprecated.html#vb/api/language.php">vb/api/language.php</a></td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"><a href="reports/deprecated.html#vb/api/phrase.php">vb/api/phrase.php</a></td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"><a href="reports/deprecated.html#vb/api/reputation.php">vb/api/reputation.php</a></td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"><a href="reports/deprecated.html#vb/database.php">vb/database.php</a></td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"><a href="reports/deprecated.html#vb/datastore.php">vb/datastore.php</a></td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"><a href="reports/deprecated.html#vb/db/assertor.php">vb/db/assertor.php</a></td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"><a href="reports/deprecated.html#vb/db/query.php">vb/db/query.php</a></td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"><a href="reports/deprecated.html#vb/library/content/privatemessage.php">vb/library/content/privatemessage.php</a></td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"><a href="reports/deprecated.html#vb/library/content/text.php">vb/library/content/text.php</a></td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"><a href="reports/deprecated.html#vb/library/style.php">vb/library/style.php</a></td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"><a href="reports/deprecated.html#vb/library/user.php">vb/library/user.php</a></td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"><a href="reports/deprecated.html#vb/library.php">vb/library.php</a></td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"><a href="reports/deprecated.html#vb/mail.php">vb/mail.php</a></td>
+                    </tr>
+                                    <tr>
+                        <td class="phpdocumentor-cell"><a href="reports/deprecated.html#vb/node.php">vb/node.php</a></td>
+                    </tr>
+                            </table>
+            
+                            <a id="vb/api/bbcode.php"></a>
+                <h3><abbr title="vb/api/bbcode.php">bbcode.php</abbr></h3>
+                <table>
+                    <tr>
+                        <th class="phpdocumentor-heading">Line</th>
+                        <th class="phpdocumentor-heading">Element</th>
+                        <th class="phpdocumentor-heading">Reason</th>
+                    </tr>
+                                                                        <tr>
+                                <td class="phpdocumentor-cell">820</td>
+                                <td class="phpdocumentor-cell"><a href="classes/vB-Api-Bbcode.html#method_parseSignature"><abbr title="\vB_Api_Bbcode::parseSignature()">vB_Api_Bbcode::parseSignature()</abbr></a></td>
+                                <td class="phpdocumentor-cell"><p>Please use getSignatureInfo instead</p>
 </td>
-                        </tr>
-                                                </table>
-                    <a id="vb/api/content/attach.php"></a>
-            <h3><abbr title="vb/api/content/attach.php">attach.php</abbr></h3>
-            <table>
-                <tr>
-                    <th class="phpdocumentor-heading">Line</th>
-                    <th class="phpdocumentor-heading">Element</th>
-                    <th class="phpdocumentor-heading">Reason</th>
-                </tr>
-                                                            <tr>
-                            <td class="phpdocumentor-cell">553</td>
-                            <td class="phpdocumentor-cell"><a href="classes/vB-Api-Content-Attach.html#method_fetchAttachByFiledataids"><abbr title="\vB_Api_Content_Attach::fetchAttachByFiledataids()">vB_Api_Content_Attach::fetchAttachByFiledataids()</abbr></a></td>
-                            <td class="phpdocumentor-cell"><p>This function returns incorrect results when more than one attachment exists
+                            </tr>
+                                                            </table>
+                            <a id="vb/api/content/attach.php"></a>
+                <h3><abbr title="vb/api/content/attach.php">attach.php</abbr></h3>
+                <table>
+                    <tr>
+                        <th class="phpdocumentor-heading">Line</th>
+                        <th class="phpdocumentor-heading">Element</th>
+                        <th class="phpdocumentor-heading">Reason</th>
+                    </tr>
+                                                                        <tr>
+                                <td class="phpdocumentor-cell">595</td>
+                                <td class="phpdocumentor-cell"><a href="classes/vB-Api-Content-Attach.html#method_fetchAttachByFiledataids"><abbr title="\vB_Api_Content_Attach::fetchAttachByFiledataids()">vB_Api_Content_Attach::fetchAttachByFiledataids()</abbr></a></td>
+                                <td class="phpdocumentor-cell"><p>This function returns incorrect results when more than one attachment exists
 for a given filedataid.  This can happen when a user loads the same file more than once
 (we only store a given attachment once to save space).</p>
 </td>
-                        </tr>
-                                                </table>
-                    <a id="vb/api/content/privatemessage.php"></a>
-            <h3><abbr title="vb/api/content/privatemessage.php">privatemessage.php</abbr></h3>
-            <table>
-                <tr>
-                    <th class="phpdocumentor-heading">Line</th>
-                    <th class="phpdocumentor-heading">Element</th>
-                    <th class="phpdocumentor-heading">Reason</th>
-                </tr>
-                                                            <tr>
-                            <td class="phpdocumentor-cell">1172</td>
-                            <td class="phpdocumentor-cell"><a href="classes/vB-Api-Content-Privatemessage.html#method_listNotifications"><abbr title="\vB_Api_Content_Privatemessage::listNotifications()">vB_Api_Content_Privatemessage::listNotifications()</abbr></a></td>
-                            <td class="phpdocumentor-cell"><p>Only used by unit tests</p>
+                            </tr>
+                                                            </table>
+                            <a id="vb/api/content/privatemessage.php"></a>
+                <h3><abbr title="vb/api/content/privatemessage.php">privatemessage.php</abbr></h3>
+                <table>
+                    <tr>
+                        <th class="phpdocumentor-heading">Line</th>
+                        <th class="phpdocumentor-heading">Element</th>
+                        <th class="phpdocumentor-heading">Reason</th>
+                    </tr>
+                                                                        <tr>
+                                <td class="phpdocumentor-cell">1174</td>
+                                <td class="phpdocumentor-cell"><a href="classes/vB-Api-Content-Privatemessage.html#method_listNotifications"><abbr title="\vB_Api_Content_Privatemessage::listNotifications()">vB_Api_Content_Privatemessage::listNotifications()</abbr></a></td>
+                                <td class="phpdocumentor-cell"><p>Only used by unit tests</p>
 </td>
-                        </tr>
-                                                </table>
-                    <a id="vb/api/content/text.php"></a>
-            <h3><abbr title="vb/api/content/text.php">text.php</abbr></h3>
-            <table>
-                <tr>
-                    <th class="phpdocumentor-heading">Line</th>
-                    <th class="phpdocumentor-heading">Element</th>
-                    <th class="phpdocumentor-heading">Reason</th>
-                </tr>
-                                                            <tr>
-                            <td class="phpdocumentor-cell">737</td>
-                            <td class="phpdocumentor-cell"><a href="classes/vB-Api-Content-Text.html#method_autoPopulatePreviewImage"><abbr title="\vB_Api_Content_Text::autoPopulatePreviewImage()">vB_Api_Content_Text::autoPopulatePreviewImage()</abbr></a></td>
-                            <td class="phpdocumentor-cell"><p>Superceded by getPreviewImage in the text library.</p>
+                            </tr>
+                                                            </table>
+                            <a id="vb/api/content/text.php"></a>
+                <h3><abbr title="vb/api/content/text.php">text.php</abbr></h3>
+                <table>
+                    <tr>
+                        <th class="phpdocumentor-heading">Line</th>
+                        <th class="phpdocumentor-heading">Element</th>
+                        <th class="phpdocumentor-heading">Reason</th>
+                    </tr>
+                                                                        <tr>
+                                <td class="phpdocumentor-cell">737</td>
+                                <td class="phpdocumentor-cell"><a href="classes/vB-Api-Content-Text.html#method_autoPopulatePreviewImage"><abbr title="\vB_Api_Content_Text::autoPopulatePreviewImage()">vB_Api_Content_Text::autoPopulatePreviewImage()</abbr></a></td>
+                                <td class="phpdocumentor-cell"><p>Superceded by getPreviewImage in the text library.</p>
 </td>
-                        </tr>
-                                                </table>
-                    <a id="vb/api/follow.php"></a>
-            <h3><abbr title="vb/api/follow.php">follow.php</abbr></h3>
-            <table>
-                <tr>
-                    <th class="phpdocumentor-heading">Line</th>
-                    <th class="phpdocumentor-heading">Element</th>
-                    <th class="phpdocumentor-heading">Reason</th>
-                </tr>
-                                                            <tr>
-                            <td class="phpdocumentor-cell">1319</td>
-                            <td class="phpdocumentor-cell"><a href="classes/vB-Api-Follow.html#method_removeFollower"><abbr title="\vB_Api_Follow::removeFollower()">vB_Api_Follow::removeFollower()</abbr></a></td>
-                            <td class="phpdocumentor-cell"><p>use delete</p>
+                            </tr>
+                                                            </table>
+                            <a id="vb/api/cron.php"></a>
+                <h3><abbr title="vb/api/cron.php">cron.php</abbr></h3>
+                <table>
+                    <tr>
+                        <th class="phpdocumentor-heading">Line</th>
+                        <th class="phpdocumentor-heading">Element</th>
+                        <th class="phpdocumentor-heading">Reason</th>
+                    </tr>
+                                                                        <tr>
+                                <td class="phpdocumentor-cell">35</td>
+                                <td class="phpdocumentor-cell"><a href="classes/vB-Api-Cron.html#method_run"><abbr title="\vB_Api_Cron::run()">vB_Api_Cron::run()</abbr></a></td>
+                                <td class="phpdocumentor-cell"></td>
+                            </tr>
+                                                            </table>
+                            <a id="vb/api/follow.php"></a>
+                <h3><abbr title="vb/api/follow.php">follow.php</abbr></h3>
+                <table>
+                    <tr>
+                        <th class="phpdocumentor-heading">Line</th>
+                        <th class="phpdocumentor-heading">Element</th>
+                        <th class="phpdocumentor-heading">Reason</th>
+                    </tr>
+                                                                        <tr>
+                                <td class="phpdocumentor-cell">1312</td>
+                                <td class="phpdocumentor-cell"><a href="classes/vB-Api-Follow.html#method_removeFollower"><abbr title="\vB_Api_Follow::removeFollower()">vB_Api_Follow::removeFollower()</abbr></a></td>
+                                <td class="phpdocumentor-cell"><p>use delete</p>
 </td>
-                        </tr>
-                                                                                <tr>
-                            <td class="phpdocumentor-cell">1367</td>
-                            <td class="phpdocumentor-cell"><a href="classes/vB-Api-Follow.html#method_addFollower"><abbr title="\vB_Api_Follow::addFollower()">vB_Api_Follow::addFollower()</abbr></a></td>
-                            <td class="phpdocumentor-cell"><p>use add</p>
+                            </tr>
+                                                                                                <tr>
+                                <td class="phpdocumentor-cell">1360</td>
+                                <td class="phpdocumentor-cell"><a href="classes/vB-Api-Follow.html#method_addFollower"><abbr title="\vB_Api_Follow::addFollower()">vB_Api_Follow::addFollower()</abbr></a></td>
+                                <td class="phpdocumentor-cell"><p>use add</p>
 </td>
-                        </tr>
-                                                                                <tr>
-                            <td class="phpdocumentor-cell">1511</td>
-                            <td class="phpdocumentor-cell"><a href="classes/vB-Api-Follow.html#method_denyFollowing"><abbr title="\vB_Api_Follow::denyFollowing()">vB_Api_Follow::denyFollowing()</abbr></a></td>
-                            <td class="phpdocumentor-cell"></td>
-                        </tr>
-                                                </table>
-                    <a id="vb/api/language.php"></a>
-            <h3><abbr title="vb/api/language.php">language.php</abbr></h3>
-            <table>
-                <tr>
-                    <th class="phpdocumentor-heading">Line</th>
-                    <th class="phpdocumentor-heading">Element</th>
-                    <th class="phpdocumentor-heading">Reason</th>
-                </tr>
-                                                            <tr>
-                            <td class="phpdocumentor-cell">83</td>
-                            <td class="phpdocumentor-cell"><a href="classes/vB-Api-Language.html#method_fetchLanguageSelector"><abbr title="\vB_Api_Language::fetchLanguageSelector()">vB_Api_Language::fetchLanguageSelector()</abbr></a></td>
-                            <td class="phpdocumentor-cell"><p>use getLanguageTitles</p>
+                            </tr>
+                                                                                                <tr>
+                                <td class="phpdocumentor-cell">1504</td>
+                                <td class="phpdocumentor-cell"><a href="classes/vB-Api-Follow.html#method_denyFollowing"><abbr title="\vB_Api_Follow::denyFollowing()">vB_Api_Follow::denyFollowing()</abbr></a></td>
+                                <td class="phpdocumentor-cell"></td>
+                            </tr>
+                                                            </table>
+                            <a id="vb/api/language.php"></a>
+                <h3><abbr title="vb/api/language.php">language.php</abbr></h3>
+                <table>
+                    <tr>
+                        <th class="phpdocumentor-heading">Line</th>
+                        <th class="phpdocumentor-heading">Element</th>
+                        <th class="phpdocumentor-heading">Reason</th>
+                    </tr>
+                                                                        <tr>
+                                <td class="phpdocumentor-cell">83</td>
+                                <td class="phpdocumentor-cell"><a href="classes/vB-Api-Language.html#method_fetchLanguageSelector"><abbr title="\vB_Api_Language::fetchLanguageSelector()">vB_Api_Language::fetchLanguageSelector()</abbr></a></td>
+                                <td class="phpdocumentor-cell"><p>use getLanguageTitles</p>
 </td>
-                        </tr>
-                                                </table>
-                    <a id="vb/api/node.php"></a>
-            <h3><abbr title="vb/api/node.php">node.php</abbr></h3>
-            <table>
-                <tr>
-                    <th class="phpdocumentor-heading">Line</th>
-                    <th class="phpdocumentor-heading">Element</th>
-                    <th class="phpdocumentor-heading">Reason</th>
-                </tr>
-                                                            <tr>
-                            <td class="phpdocumentor-cell">679</td>
-                            <td class="phpdocumentor-cell"><a href="classes/vB-Api-Node.html#method_movePosts"><abbr title="\vB_Api_Node::movePosts()">vB_Api_Node::movePosts()</abbr></a></td>
-                            <td class="phpdocumentor-cell"></td>
-                        </tr>
-                                                </table>
-                    <a id="vb/api/phrase.php"></a>
-            <h3><abbr title="vb/api/phrase.php">phrase.php</abbr></h3>
-            <table>
-                <tr>
-                    <th class="phpdocumentor-heading">Line</th>
-                    <th class="phpdocumentor-heading">Element</th>
-                    <th class="phpdocumentor-heading">Reason</th>
-                </tr>
-                                                            <tr>
-                            <td class="phpdocumentor-cell">143</td>
-                            <td class="phpdocumentor-cell"><a href="classes/vB-Api-Phrase.html#method_fetch"><abbr title="\vB_Api_Phrase::fetch()">vB_Api_Phrase::fetch()</abbr></a></td>
-                            <td class="phpdocumentor-cell"><p>-- use renderPhrases or getPhrases depending on if you</p>
+                            </tr>
+                                                            </table>
+                            <a id="vb/api/phrase.php"></a>
+                <h3><abbr title="vb/api/phrase.php">phrase.php</abbr></h3>
+                <table>
+                    <tr>
+                        <th class="phpdocumentor-heading">Line</th>
+                        <th class="phpdocumentor-heading">Element</th>
+                        <th class="phpdocumentor-heading">Reason</th>
+                    </tr>
+                                                                        <tr>
+                                <td class="phpdocumentor-cell">95</td>
+                                <td class="phpdocumentor-cell"><a href="classes/vB-Api-Phrase.html#method_fetch"><abbr title="\vB_Api_Phrase::fetch()">vB_Api_Phrase::fetch()</abbr></a></td>
+                                <td class="phpdocumentor-cell"><p>-- use renderPhrases or getPhrases depending on if you</p>
 </td>
-                        </tr>
-                                                </table>
-                    <a id="vb/api/reputation.php"></a>
-            <h3><abbr title="vb/api/reputation.php">reputation.php</abbr></h3>
-            <table>
-                <tr>
-                    <th class="phpdocumentor-heading">Line</th>
-                    <th class="phpdocumentor-heading">Element</th>
-                    <th class="phpdocumentor-heading">Reason</th>
-                </tr>
-                                                            <tr>
-                            <td class="phpdocumentor-cell">325</td>
-                            <td class="phpdocumentor-cell"><a href="classes/vB-Api-Reputation.html#method_fetchVotecount"><abbr title="\vB_Api_Reputation::fetchVotecount()">vB_Api_Reputation::fetchVotecount()</abbr></a></td>
-                            <td class="phpdocumentor-cell"></td>
-                        </tr>
-                                                </table>
-                    <a id="vb/api/user.php"></a>
-            <h3><abbr title="vb/api/user.php">user.php</abbr></h3>
-            <table>
-                <tr>
-                    <th class="phpdocumentor-heading">Line</th>
-                    <th class="phpdocumentor-heading">Element</th>
-                    <th class="phpdocumentor-heading">Reason</th>
-                </tr>
-                                                            <tr>
-                            <td class="phpdocumentor-cell">3539</td>
-                            <td class="phpdocumentor-cell"><a href="classes/vB-Api-User.html#method_fetchReferrers"><abbr title="\vB_Api_User::fetchReferrers()">vB_Api_User::fetchReferrers()</abbr></a></td>
-                            <td class="phpdocumentor-cell"><p>This function has been moved to the ReferUser API and will be
-removed from the User API in a future version.</p>
+                            </tr>
+                                                            </table>
+                            <a id="vb/api/reputation.php"></a>
+                <h3><abbr title="vb/api/reputation.php">reputation.php</abbr></h3>
+                <table>
+                    <tr>
+                        <th class="phpdocumentor-heading">Line</th>
+                        <th class="phpdocumentor-heading">Element</th>
+                        <th class="phpdocumentor-heading">Reason</th>
+                    </tr>
+                                                                        <tr>
+                                <td class="phpdocumentor-cell">42</td>
+                                <td class="phpdocumentor-cell"><a href="classes/vB-Api-Reputation.html#method_vote"><abbr title="\vB_Api_Reputation::vote()">vB_Api_Reputation::vote()</abbr></a></td>
+                                <td class="phpdocumentor-cell"></td>
+                            </tr>
+                                                                                                <tr>
+                                <td class="phpdocumentor-cell">68</td>
+                                <td class="phpdocumentor-cell"><a href="classes/vB-Api-Reputation.html#method_unvote"><abbr title="\vB_Api_Reputation::unvote()">vB_Api_Reputation::unvote()</abbr></a></td>
+                                <td class="phpdocumentor-cell"></td>
+                            </tr>
+                                                            </table>
+                            <a id="vb/database.php"></a>
+                <h3><abbr title="vb/database.php">database.php</abbr></h3>
+                <table>
+                    <tr>
+                        <th class="phpdocumentor-heading">Line</th>
+                        <th class="phpdocumentor-heading">Element</th>
+                        <th class="phpdocumentor-heading">Reason</th>
+                    </tr>
+                                                                        <tr>
+                                <td class="phpdocumentor-cell">628</td>
+                                <td class="phpdocumentor-cell"><a href="classes/vB-Database.html#method_query"><abbr title="\vB_Database::query()">vB_Database::query()</abbr></a></td>
+                                <td class="phpdocumentor-cell"><p>Deprecated as of 3.6. Use query_(read/write)</p>
 </td>
-                        </tr>
-                                                                                <tr>
-                            <td class="phpdocumentor-cell">3863</td>
-                            <td class="phpdocumentor-cell"><a href="classes/vB-Api-User.html#method_login"><abbr title="\vB_Api_User::login()">vB_Api_User::login()</abbr></a></td>
-                            <td class="phpdocumentor-cell"><p>use login2</p>
+                            </tr>
+                                                            </table>
+                            <a id="vb/datastore.php"></a>
+                <h3><abbr title="vb/datastore.php">datastore.php</abbr></h3>
+                <table>
+                    <tr>
+                        <th class="phpdocumentor-heading">Line</th>
+                        <th class="phpdocumentor-heading">Element</th>
+                        <th class="phpdocumentor-heading">Reason</th>
+                    </tr>
+                                                                        <tr>
+                                <td class="phpdocumentor-cell">150</td>
+                                <td class="phpdocumentor-cell"><a href="classes/vB-Datastore.html#method_get_value"><abbr title="\vB_Datastore::get_value()">vB_Datastore::get_value()</abbr></a></td>
+                                <td class="phpdocumentor-cell"></td>
+                            </tr>
+                                                                                                <tr>
+                                <td class="phpdocumentor-cell">357</td>
+                                <td class="phpdocumentor-cell"><a href="classes/vB-Datastore.html#method_init_registry"><abbr title="\vB_Datastore::init_registry()">vB_Datastore::init_registry()</abbr></a></td>
+                                <td class="phpdocumentor-cell"></td>
+                            </tr>
+                                                            </table>
+                            <a id="vb/db/assertor.php"></a>
+                <h3><abbr title="vb/db/assertor.php">assertor.php</abbr></h3>
+                <table>
+                    <tr>
+                        <th class="phpdocumentor-heading">Line</th>
+                        <th class="phpdocumentor-heading">Element</th>
+                        <th class="phpdocumentor-heading">Reason</th>
+                    </tr>
+                                                                        <tr>
+                                <td class="phpdocumentor-cell">168</td>
+                                <td class="phpdocumentor-cell"><a href="classes/vB-dB-Assertor.html#method_getDBConnection"><abbr title="\vB_dB_Assertor::getDBConnection()">vB_dB_Assertor::getDBConnection()</abbr></a></td>
+                                <td class="phpdocumentor-cell"></td>
+                            </tr>
+                                                                                                <tr>
+                                <td class="phpdocumentor-cell">249</td>
+                                <td class="phpdocumentor-cell"><a href="classes/vB-dB-Assertor.html#method_escape_string"><abbr title="\vB_dB_Assertor::escape_string()">vB_dB_Assertor::escape_string()</abbr></a></td>
+                                <td class="phpdocumentor-cell"></td>
+                            </tr>
+                                                            </table>
+                            <a id="vb/db/query.php"></a>
+                <h3><abbr title="vb/db/query.php">query.php</abbr></h3>
+                <table>
+                    <tr>
+                        <th class="phpdocumentor-heading">Line</th>
+                        <th class="phpdocumentor-heading">Element</th>
+                        <th class="phpdocumentor-heading">Reason</th>
+                    </tr>
+                                                                        <tr>
+                                <td class="phpdocumentor-cell">508</td>
+                                <td class="phpdocumentor-cell"><a href="classes/vB-dB-Query.html#method_debugDisplayNextQuerySql"><abbr title="\vB_dB_Query::debugDisplayNextQuerySql()">vB_dB_Query::debugDisplayNextQuerySql()</abbr></a></td>
+                                <td class="phpdocumentor-cell"><p>never worked quite right and now does nothing.</p>
 </td>
-                        </tr>
-                                                </table>
-                    <a id="vb/database.php"></a>
-            <h3><abbr title="vb/database.php">database.php</abbr></h3>
-            <table>
-                <tr>
-                    <th class="phpdocumentor-heading">Line</th>
-                    <th class="phpdocumentor-heading">Element</th>
-                    <th class="phpdocumentor-heading">Reason</th>
-                </tr>
-                                                            <tr>
-                            <td class="phpdocumentor-cell">629</td>
-                            <td class="phpdocumentor-cell"><a href="classes/vB-Database.html#method_query"><abbr title="\vB_Database::query()">vB_Database::query()</abbr></a></td>
-                            <td class="phpdocumentor-cell"><p>Deprecated as of 3.6. Use query_(read/write)</p>
-</td>
-                        </tr>
-                                                </table>
-                    <a id="vb/datastore.php"></a>
-            <h3><abbr title="vb/datastore.php">datastore.php</abbr></h3>
-            <table>
-                <tr>
-                    <th class="phpdocumentor-heading">Line</th>
-                    <th class="phpdocumentor-heading">Element</th>
-                    <th class="phpdocumentor-heading">Reason</th>
-                </tr>
-                                                            <tr>
-                            <td class="phpdocumentor-cell">150</td>
-                            <td class="phpdocumentor-cell"><a href="classes/vB-Datastore.html#method_get_value"><abbr title="\vB_Datastore::get_value()">vB_Datastore::get_value()</abbr></a></td>
-                            <td class="phpdocumentor-cell"></td>
-                        </tr>
-                                                                                <tr>
-                            <td class="phpdocumentor-cell">357</td>
-                            <td class="phpdocumentor-cell"><a href="classes/vB-Datastore.html#method_init_registry"><abbr title="\vB_Datastore::init_registry()">vB_Datastore::init_registry()</abbr></a></td>
-                            <td class="phpdocumentor-cell"></td>
-                        </tr>
-                                                </table>
-                    <a id="vb/db/assertor.php"></a>
-            <h3><abbr title="vb/db/assertor.php">assertor.php</abbr></h3>
-            <table>
-                <tr>
-                    <th class="phpdocumentor-heading">Line</th>
-                    <th class="phpdocumentor-heading">Element</th>
-                    <th class="phpdocumentor-heading">Reason</th>
-                </tr>
-                                                            <tr>
-                            <td class="phpdocumentor-cell">171</td>
-                            <td class="phpdocumentor-cell"><a href="classes/vB-dB-Assertor.html#method_getDBConnection"><abbr title="\vB_dB_Assertor::getDBConnection()">vB_dB_Assertor::getDBConnection()</abbr></a></td>
-                            <td class="phpdocumentor-cell"></td>
-                        </tr>
-                                                                                <tr>
-                            <td class="phpdocumentor-cell">252</td>
-                            <td class="phpdocumentor-cell"><a href="classes/vB-dB-Assertor.html#method_escape_string"><abbr title="\vB_dB_Assertor::escape_string()">vB_dB_Assertor::escape_string()</abbr></a></td>
-                            <td class="phpdocumentor-cell"></td>
-                        </tr>
-                                                </table>
-                    <a id="vb/db/query.php"></a>
-            <h3><abbr title="vb/db/query.php">query.php</abbr></h3>
-            <table>
-                <tr>
-                    <th class="phpdocumentor-heading">Line</th>
-                    <th class="phpdocumentor-heading">Element</th>
-                    <th class="phpdocumentor-heading">Reason</th>
-                </tr>
-                                                            <tr>
-                            <td class="phpdocumentor-cell">538</td>
-                            <td class="phpdocumentor-cell"><a href="classes/vB-dB-Query.html#method_debugDisplayNextQuerySql"><abbr title="\vB_dB_Query::debugDisplayNextQuerySql()">vB_dB_Query::debugDisplayNextQuerySql()</abbr></a></td>
-                            <td class="phpdocumentor-cell"><p>never worked quite right and now does nothing.</p>
-</td>
-                        </tr>
-                                                </table>
-                    <a id="vb/library/content/privatemessage.php"></a>
-            <h3><abbr title="vb/library/content/privatemessage.php">privatemessage.php</abbr></h3>
-            <table>
-                <tr>
-                    <th class="phpdocumentor-heading">Line</th>
-                    <th class="phpdocumentor-heading">Element</th>
-                    <th class="phpdocumentor-heading">Reason</th>
-                </tr>
-                                                            <tr>
-                            <td class="phpdocumentor-cell">1552</td>
-                            <td class="phpdocumentor-cell"><a href="classes/vB-Library-Content-Privatemessage.html#method_listNotifications"><abbr title="\vB_Library_Content_Privatemessage::listNotifications()">vB_Library_Content_Privatemessage::listNotifications()</abbr></a></td>
-                            <td class="phpdocumentor-cell"><p>Only used by unit tests</p>
+                            </tr>
+                                                            </table>
+                            <a id="vb/library/content/privatemessage.php"></a>
+                <h3><abbr title="vb/library/content/privatemessage.php">privatemessage.php</abbr></h3>
+                <table>
+                    <tr>
+                        <th class="phpdocumentor-heading">Line</th>
+                        <th class="phpdocumentor-heading">Element</th>
+                        <th class="phpdocumentor-heading">Reason</th>
+                    </tr>
+                                                                        <tr>
+                                <td class="phpdocumentor-cell">1555</td>
+                                <td class="phpdocumentor-cell"><a href="classes/vB-Library-Content-Privatemessage.html#method_listNotifications"><abbr title="\vB_Library_Content_Privatemessage::listNotifications()">vB_Library_Content_Privatemessage::listNotifications()</abbr></a></td>
+                                <td class="phpdocumentor-cell"><p>Only used by unit tests</p>
 <p>This lists notifications for current user</p>
 </td>
-                        </tr>
-                                                </table>
-                    <a id="vb/library/content/text.php"></a>
-            <h3><abbr title="vb/library/content/text.php">text.php</abbr></h3>
-            <table>
-                <tr>
-                    <th class="phpdocumentor-heading">Line</th>
-                    <th class="phpdocumentor-heading">Element</th>
-                    <th class="phpdocumentor-heading">Reason</th>
-                </tr>
-                                                            <tr>
-                            <td class="phpdocumentor-cell">1445</td>
-                            <td class="phpdocumentor-cell"><a href="classes/vB-Library-Content-Text.html#method_autoPopulatePreviewImage"><abbr title="\vB_Library_Content_Text::autoPopulatePreviewImage()">vB_Library_Content_Text::autoPopulatePreviewImage()</abbr></a></td>
-                            <td class="phpdocumentor-cell"><p>Superceded by getPreviewImage</p>
+                            </tr>
+                                                            </table>
+                            <a id="vb/library/content/text.php"></a>
+                <h3><abbr title="vb/library/content/text.php">text.php</abbr></h3>
+                <table>
+                    <tr>
+                        <th class="phpdocumentor-heading">Line</th>
+                        <th class="phpdocumentor-heading">Element</th>
+                        <th class="phpdocumentor-heading">Reason</th>
+                    </tr>
+                                                                        <tr>
+                                <td class="phpdocumentor-cell">1432</td>
+                                <td class="phpdocumentor-cell"><a href="classes/vB-Library-Content-Text.html#method_autoPopulatePreviewImage"><abbr title="\vB_Library_Content_Text::autoPopulatePreviewImage()">vB_Library_Content_Text::autoPopulatePreviewImage()</abbr></a></td>
+                                <td class="phpdocumentor-cell"><p>Superceded by getPreviewImage</p>
 </td>
-                        </tr>
-                                                </table>
-                    <a id="vb/library/node.php"></a>
-            <h3><abbr title="vb/library/node.php">node.php</abbr></h3>
-            <table>
-                <tr>
-                    <th class="phpdocumentor-heading">Line</th>
-                    <th class="phpdocumentor-heading">Element</th>
-                    <th class="phpdocumentor-heading">Reason</th>
-                </tr>
-                                                            <tr>
-                            <td class="phpdocumentor-cell">2540</td>
-                            <td class="phpdocumentor-cell"><a href="classes/vB-Library-Node.html#method_getNodeContent"><abbr title="\vB_Library_Node::getNodeContent()">vB_Library_Node::getNodeContent()</abbr></a></td>
-                            <td class="phpdocumentor-cell"><p>Use getNodeFullContent instead</p>
+                            </tr>
+                                                            </table>
+                            <a id="vb/library/style.php"></a>
+                <h3><abbr title="vb/library/style.php">style.php</abbr></h3>
+                <table>
+                    <tr>
+                        <th class="phpdocumentor-heading">Line</th>
+                        <th class="phpdocumentor-heading">Element</th>
+                        <th class="phpdocumentor-heading">Reason</th>
+                    </tr>
+                                                                        <tr>
+                                <td class="phpdocumentor-cell">795</td>
+                                <td class="phpdocumentor-cell"><a href="classes/vB-Library-Style.html#method_fetchStyleByID"><abbr title="\vB_Library_Style::fetchStyleByID()">vB_Library_Style::fetchStyleByID()</abbr></a></td>
+                                <td class="phpdocumentor-cell"><p>use getStyleById</p>
 </td>
-                        </tr>
-                                                                                <tr>
-                            <td class="phpdocumentor-cell">3353</td>
-                            <td class="phpdocumentor-cell"><a href="classes/vB-Library-Node.html#method_setApprovedPost"><abbr title="\vB_Library_Node::setApprovedPost()">vB_Library_Node::setApprovedPost()</abbr></a></td>
-                            <td class="phpdocumentor-cell"></td>
-                        </tr>
-                                                </table>
-                    <a id="vb/library/style.php"></a>
-            <h3><abbr title="vb/library/style.php">style.php</abbr></h3>
-            <table>
-                <tr>
-                    <th class="phpdocumentor-heading">Line</th>
-                    <th class="phpdocumentor-heading">Element</th>
-                    <th class="phpdocumentor-heading">Reason</th>
-                </tr>
-                                                            <tr>
-                            <td class="phpdocumentor-cell">696</td>
-                            <td class="phpdocumentor-cell"><a href="classes/vB-Library-Style.html#method_fetchStyleByID"><abbr title="\vB_Library_Style::fetchStyleByID()">vB_Library_Style::fetchStyleByID()</abbr></a></td>
-                            <td class="phpdocumentor-cell"><p>use getStyleById</p>
+                            </tr>
+                                                                                                <tr>
+                                <td class="phpdocumentor-cell">1649</td>
+                                <td class="phpdocumentor-cell"><a href="classes/vB-Library-Style.html#method_buildTemplateIdCache"><abbr title="\vB_Library_Style::buildTemplateIdCache()">vB_Library_Style::buildTemplateIdCache()</abbr></a></td>
+                                <td class="phpdocumentor-cell"></td>
+                            </tr>
+                                                            </table>
+                            <a id="vb/library/user.php"></a>
+                <h3><abbr title="vb/library/user.php">user.php</abbr></h3>
+                <table>
+                    <tr>
+                        <th class="phpdocumentor-heading">Line</th>
+                        <th class="phpdocumentor-heading">Element</th>
+                        <th class="phpdocumentor-heading">Reason</th>
+                    </tr>
+                                                                        <tr>
+                                <td class="phpdocumentor-cell">1371</td>
+                                <td class="phpdocumentor-cell"><a href="classes/vB-Library-User.html#method_preloadUserInfo"><abbr title="\vB_Library_User::preloadUserInfo()">vB_Library_User::preloadUserInfo()</abbr></a></td>
+                                <td class="phpdocumentor-cell"></td>
+                            </tr>
+                                                            </table>
+                            <a id="vb/library.php"></a>
+                <h3><abbr title="vb/library.php">library.php</abbr></h3>
+                <table>
+                    <tr>
+                        <th class="phpdocumentor-heading">Line</th>
+                        <th class="phpdocumentor-heading">Element</th>
+                        <th class="phpdocumentor-heading">Reason</th>
+                    </tr>
+                                                                        <tr>
+                                <td class="phpdocumentor-cell">113</td>
+                                <td class="phpdocumentor-cell"><a href="classes/vB-Library.html#method_monitorWords"><abbr title="\vB_Library::monitorWords()">vB_Library::monitorWords()</abbr></a></td>
+                                <td class="phpdocumentor-cell"><p>use the functions from the notification library directly.</p>
 </td>
-                        </tr>
-                                                                                <tr>
-                            <td class="phpdocumentor-cell">1401</td>
-                            <td class="phpdocumentor-cell"><a href="classes/vB-Library-Style.html#method_buildTemplateIdCache"><abbr title="\vB_Library_Style::buildTemplateIdCache()">vB_Library_Style::buildTemplateIdCache()</abbr></a></td>
-                            <td class="phpdocumentor-cell"></td>
-                        </tr>
-                                                </table>
-                    <a id="vb/library/user.php"></a>
-            <h3><abbr title="vb/library/user.php">user.php</abbr></h3>
-            <table>
-                <tr>
-                    <th class="phpdocumentor-heading">Line</th>
-                    <th class="phpdocumentor-heading">Element</th>
-                    <th class="phpdocumentor-heading">Reason</th>
-                </tr>
-                                                            <tr>
-                            <td class="phpdocumentor-cell">1384</td>
-                            <td class="phpdocumentor-cell"><a href="classes/vB-Library-User.html#method_preloadUserInfo"><abbr title="\vB_Library_User::preloadUserInfo()">vB_Library_User::preloadUserInfo()</abbr></a></td>
-                            <td class="phpdocumentor-cell"></td>
-                        </tr>
-                                                </table>
-                    <a id="vb/mail.php"></a>
-            <h3><abbr title="vb/mail.php">mail.php</abbr></h3>
-            <table>
-                <tr>
-                    <th class="phpdocumentor-heading">Line</th>
-                    <th class="phpdocumentor-heading">Element</th>
-                    <th class="phpdocumentor-heading">Reason</th>
-                </tr>
-                                                            <tr>
-                            <td class="phpdocumentor-cell">240</td>
-                            <td class="phpdocumentor-cell"><a href="classes/vB-Mail.html#method_vbmail"><abbr title="\vB_Mail::vbmail()">vB_Mail::vbmail()</abbr></a></td>
-                            <td class="phpdocumentor-cell"><p>use vbmail2() for html emails</p>
+                            </tr>
+                                                            </table>
+                            <a id="vb/mail.php"></a>
+                <h3><abbr title="vb/mail.php">mail.php</abbr></h3>
+                <table>
+                    <tr>
+                        <th class="phpdocumentor-heading">Line</th>
+                        <th class="phpdocumentor-heading">Element</th>
+                        <th class="phpdocumentor-heading">Reason</th>
+                    </tr>
+                                                                        <tr>
+                                <td class="phpdocumentor-cell">240</td>
+                                <td class="phpdocumentor-cell"><a href="classes/vB-Mail.html#method_vbmail"><abbr title="\vB_Mail::vbmail()">vB_Mail::vbmail()</abbr></a></td>
+                                <td class="phpdocumentor-cell"><p>use vbmail2() for html emails</p>
 </td>
-                        </tr>
-                                                                                <tr>
-                            <td class="phpdocumentor-cell">429</td>
-                            <td class="phpdocumentor-cell"><a href="classes/vB-Mail.html#method_start"><abbr title="\vB_Mail::start()">vB_Mail::start()</abbr></a></td>
-                            <td class="phpdocumentor-cell"><p>use start2() for html emails</p>
+                            </tr>
+                                                                                                <tr>
+                                <td class="phpdocumentor-cell">429</td>
+                                <td class="phpdocumentor-cell"><a href="classes/vB-Mail.html#method_start"><abbr title="\vB_Mail::start()">vB_Mail::start()</abbr></a></td>
+                                <td class="phpdocumentor-cell"><p>use start2() for html emails</p>
 </td>
-                        </tr>
-                                                </table>
-                    <a id="vb/node.php"></a>
-            <h3><abbr title="vb/node.php">node.php</abbr></h3>
-            <table>
-                <tr>
-                    <th class="phpdocumentor-heading">Line</th>
-                    <th class="phpdocumentor-heading">Element</th>
-                    <th class="phpdocumentor-heading">Reason</th>
-                </tr>
-                                                            <tr>
-                            <td class="phpdocumentor-cell">79</td>
-                            <td class="phpdocumentor-cell"><a href="classes/vB-Node.html#method_validateRecord"><abbr title="\vB_Node::validateRecord()">vB_Node::validateRecord()</abbr></a></td>
-                            <td class="phpdocumentor-cell"><p>This is currently only used by the unit tests and there is a replacement module
+                            </tr>
+                                                            </table>
+                            <a id="vb/node.php"></a>
+                <h3><abbr title="vb/node.php">node.php</abbr></h3>
+                <table>
+                    <tr>
+                        <th class="phpdocumentor-heading">Line</th>
+                        <th class="phpdocumentor-heading">Element</th>
+                        <th class="phpdocumentor-heading">Reason</th>
+                    </tr>
+                                                                        <tr>
+                                <td class="phpdocumentor-cell">79</td>
+                                <td class="phpdocumentor-cell"><a href="classes/vB-Node.html#method_validateRecord"><abbr title="\vB_Node::validateRecord()">vB_Node::validateRecord()</abbr></a></td>
+                                <td class="phpdocumentor-cell"><p>This is currently only used by the unit tests and there is a replacement module
 for that.  We are unlikely to need this as part of the app proper and if there is need for
 a standalone test we can adapt the test module (which is designed to not be tightly coupled
 to the test code).</p>
 </td>
-                        </tr>
-                                                </table>
-            </div>
-                <section data-search-results class="phpdocumentor-search-results phpdocumentor-search-results--hidden">
+                            </tr>
+                                                            </table>
+                    </div>
+    </section>
+                            </div>
+            <section data-search-results class="phpdocumentor-search-results phpdocumentor-search-results--hidden">
     <section class="phpdocumentor-search-results__dialog">
         <header class="phpdocumentor-search-results__header">
             <h2 class="phpdocumentor-search-results__title">Search results</h2>
@@ -546,7 +525,6 @@ to the test code).</p>
         </section>
     </section>
 </section>
-            </div>
         </div>
         <a href="reports/deprecated.html#top" class="phpdocumentor-back-to-top"><i class="fas fa-chevron-circle-up"></i></a>
 

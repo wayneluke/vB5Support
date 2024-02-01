@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-            <title>vBulletin v5.7.2</title>
+            <title>vBulletin v6.0.4</title>
     
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <base href="../">
@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="css/normalize.css">
     <link rel="stylesheet" href="css/base.css">
             <link rel="preconnect" href="https://fonts.gstatic.com">
-        <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@400;600;700&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@100;200;300;400;600;700&display=swap" rel="stylesheet">
         <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@400;600;700&display=swap" rel="stylesheet">
         <link rel="stylesheet" href="css/template.css">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.0/css/all.min.css" integrity="sha256-ybRkN9dBjhcS2qrW1z+hfCxq+1aBdwyQM5wlQoQVt/0=" crossorigin="anonymous" />
@@ -19,12 +19,13 @@
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.23.0/plugins/line-highlight/prism-line-highlight.css">
                 <script src="https://cdn.jsdelivr.net/npm/fuse.js@3.4.6"></script>
         <script src="https://cdn.jsdelivr.net/npm/css-vars-ponyfill@2"></script>
+        <script src="js/template.js"></script>
         <script src="js/search.js"></script>
         <script defer src="js/searchIndex.js"></script>
     </head>
 <body id="top">
     <header class="phpdocumentor-header phpdocumentor-section">
-    <h1 class="phpdocumentor-title"><a href="" class="phpdocumentor-title__link">vBulletin v5.7.2</a></h1>
+    <h1 class="phpdocumentor-title"><a href="" class="phpdocumentor-title__link">vBulletin v6.0.4</a></h1>
     <input class="phpdocumentor-header__menu-button" type="checkbox" id="menu-button" name="menu-button" />
     <label class="phpdocumentor-header__menu-icon" for="menu-button">
         <i class="fas fa-bars"></i>
@@ -52,7 +53,7 @@
 <label class="phpdocumentor-sidebar__menu-icon" for="sidebar-button">
     Menu
 </label>
-<aside class="phpdocumentor-column -four phpdocumentor-sidebar">
+<aside class="phpdocumentor-column -three phpdocumentor-sidebar">
                     <section class="phpdocumentor-sidebar__category">
             <h2 class="phpdocumentor-sidebar__category-header">Packages</h2>
                                     <h4 class="phpdocumentor-sidebar__root-namespace">
@@ -98,8 +99,9 @@
     </section>
 </aside>
 
-            <div class="phpdocumentor-column -eight phpdocumentor-content">
-                    <ul class="phpdocumentor-breadcrumbs">
+            <div class="phpdocumentor-column -nine phpdocumentor-content">
+                                <section>
+                                        <ul class="phpdocumentor-breadcrumbs">
             <li class="phpdocumentor-breadcrumb"><a href="packages/vBDatabase.html">vBDatabase</a></li>
     </ul>
 
@@ -121,6 +123,11 @@
     
     </h2>
 
+<div class="phpdocumentor-label-line">
+
+
+</div>
+
         <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/db/query/stored.php"><a href="files/vb-db-query-stored.html"><abbr title="vb/db/query/stored.php">stored.php</abbr></a></abbr>
     :
@@ -135,49 +142,53 @@
 
 
 
-
-
-
 <h3 id="toc">
     Table of Contents
-    <a href="#toc" class="headerlink"><i class="fas fa-link"></i></a>
+    <a href="classes/vB-dB-Query-Stored.html#toc" class="headerlink"><i class="fas fa-link"></i></a>
+
 </h3>
 
+
+
+
+
+
+
+<h4 id="toc-constants">
+    Constants
+    <a href="classes/vB-dB-Query-Stored.html#toc-constants" class="headerlink"><i class="fas fa-link"></i></a>
+
+</h4>
 <dl class="phpdocumentor-table-of-contents">
             <dt class="phpdocumentor-table-of-contents__entry -constant -public">
     <a href="classes/vB-dB-Query.html#constant_BITFIELDS_KEY">BITFIELDS_KEY</a>
     <span>
         &nbsp;= &#039;#bitfields&#039;                            </span>
 </dt>
-<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -constant -public">
     <a href="classes/vB-dB-Query.html#constant_BITFIELDS_SET">BITFIELDS_SET</a>
     <span>
         &nbsp;= &#039;#bitset&#039;                            </span>
 </dt>
-<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -constant -public">
     <a href="classes/vB-dB-Query.html#constant_BITFIELDS_UNSET">BITFIELDS_UNSET</a>
     <span>
         &nbsp;= &#039;#bitunset&#039;                            </span>
 </dt>
-<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -constant -public">
     <a href="classes/vB-dB-Query.html#constant_COLUMNS_KEY">COLUMNS_KEY</a>
     <span>
         &nbsp;= &#039;#columns&#039;                            </span>
 </dt>
-<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -constant -public">
     <a href="classes/vB-dB-Query.html#constant_CONDITION_ALL">CONDITION_ALL</a>
     <span>
         &nbsp;= &#039;#all&#039;                            </span>
 </dt>
-<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -constant -public">
     <a href="classes/vB-dB-Query.html#constant_CONDITIONS_KEY">CONDITIONS_KEY</a>
@@ -192,322 +203,298 @@ It does the actual execution. See the vB_dB_Assertor class for more information<
     <span>
         &nbsp;= &#039;#debug&#039;                            </span>
 </dt>
-<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -constant -public">
     <a href="classes/vB-dB-Query.html#constant_FIELDS_KEY">FIELDS_KEY</a>
     <span>
         &nbsp;= &#039;#fields&#039;                            </span>
 </dt>
-<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -constant -public">
     <a href="classes/vB-dB-Query.html#constant_OPERATOR_AND">OPERATOR_AND</a>
     <span>
         &nbsp;= &#039;#AND&#039;                            </span>
 </dt>
-<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -constant -public">
     <a href="classes/vB-dB-Query.html#constant_OPERATOR_BEGINS">OPERATOR_BEGINS</a>
     <span>
         &nbsp;= &#039;BEGINS&#039;                            </span>
 </dt>
-<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -constant -public">
     <a href="classes/vB-dB-Query.html#constant_OPERATOR_ENDS">OPERATOR_ENDS</a>
     <span>
         &nbsp;= &#039;ENDS&#039;                            </span>
 </dt>
-<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -constant -public">
     <a href="classes/vB-dB-Query.html#constant_OPERATOR_EQ">OPERATOR_EQ</a>
     <span>
         &nbsp;= &#039;EQ&#039;                            </span>
 </dt>
-<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -constant -public">
     <a href="classes/vB-dB-Query.html#constant_OPERATOR_FALSE">OPERATOR_FALSE</a>
     <span>
         &nbsp;= &#039;FALSE&#039;                            </span>
 </dt>
-<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -constant -public">
     <a href="classes/vB-dB-Query.html#constant_OPERATOR_GT">OPERATOR_GT</a>
     <span>
         &nbsp;= &#039;GT&#039;                            </span>
 </dt>
-<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -constant -public">
     <a href="classes/vB-dB-Query.html#constant_OPERATOR_GTE">OPERATOR_GTE</a>
     <span>
         &nbsp;= &#039;GTE&#039;                            </span>
 </dt>
-<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -constant -public">
     <a href="classes/vB-dB-Query.html#constant_OPERATOR_INCLUDES">OPERATOR_INCLUDES</a>
     <span>
         &nbsp;= &#039;INCLUDES&#039;                            </span>
 </dt>
-<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -constant -public">
     <a href="classes/vB-dB-Query.html#constant_OPERATOR_ISNOTNULL">OPERATOR_ISNOTNULL</a>
     <span>
         &nbsp;= &#039;IS NOT NULL&#039;                            </span>
 </dt>
-<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -constant -public">
     <a href="classes/vB-dB-Query.html#constant_OPERATOR_ISNULL">OPERATOR_ISNULL</a>
     <span>
         &nbsp;= &#039;IS NULL&#039;                            </span>
 </dt>
-<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -constant -public">
     <a href="classes/vB-dB-Query.html#constant_OPERATOR_KEY">OPERATOR_KEY</a>
     <span>
         &nbsp;= &#039;operator&#039;                            </span>
 </dt>
-<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -constant -public">
     <a href="classes/vB-dB-Query.html#constant_OPERATOR_LT">OPERATOR_LT</a>
     <span>
         &nbsp;= &#039;LT&#039;                            </span>
 </dt>
-<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -constant -public">
     <a href="classes/vB-dB-Query.html#constant_OPERATOR_LTE">OPERATOR_LTE</a>
     <span>
         &nbsp;= &#039;LTE&#039;                            </span>
 </dt>
-<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -constant -public">
     <a href="classes/vB-dB-Query.html#constant_OPERATOR_NAND">OPERATOR_NAND</a>
     <span>
         &nbsp;= &#039;#NAND&#039;                            </span>
 </dt>
-<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -constant -public">
     <a href="classes/vB-dB-Query.html#constant_OPERATOR_NE">OPERATOR_NE</a>
     <span>
         &nbsp;= &#039;NE&#039;                            </span>
 </dt>
-<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -constant -public">
     <a href="classes/vB-dB-Query.html#constant_OPERATOR_OR">OPERATOR_OR</a>
     <span>
         &nbsp;= &#039;#OR&#039;                            </span>
 </dt>
-<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -constant -public">
     <a href="classes/vB-dB-Query.html#constant_PARAM_LIMIT">PARAM_LIMIT</a>
     <span>
         &nbsp;= &#039;#limit&#039;                            </span>
 </dt>
-<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -constant -public">
     <a href="classes/vB-dB-Query.html#constant_PARAM_LIMITPAGE">PARAM_LIMITPAGE</a>
     <span>
         &nbsp;= &#039;#limit_page&#039;                            </span>
 </dt>
-<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -constant -public">
     <a href="classes/vB-dB-Query.html#constant_PARAM_LIMITSTART">PARAM_LIMITSTART</a>
     <span>
         &nbsp;= &#039;#limit_start&#039;                            </span>
 </dt>
-<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -constant -public">
     <a href="classes/vB-dB-Query.html#constant_PRIORITY_QUERY">PRIORITY_QUERY</a>
     <span>
         &nbsp;= &#039;#priority&#039;                            </span>
 </dt>
-<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -constant -public">
     <a href="classes/vB-dB-Query.html#constant_QUERY_ALTER">QUERY_ALTER</a>
     <span>
         &nbsp;= &#039;a&#039;                            </span>
 </dt>
-<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -constant -public">
     <a href="classes/vB-dB-Query.html#constant_QUERY_COUNT">QUERY_COUNT</a>
     <span>
         &nbsp;= &#039;co&#039;                            </span>
 </dt>
-<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -constant -public">
     <a href="classes/vB-dB-Query.html#constant_QUERY_CREATE">QUERY_CREATE</a>
     <span>
         &nbsp;= &#039;cr&#039;                            </span>
 </dt>
-<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -constant -public">
     <a href="classes/vB-dB-Query.html#constant_QUERY_DELETE">QUERY_DELETE</a>
     <span>
         &nbsp;= &#039;d&#039;                            </span>
 </dt>
-<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -constant -public">
     <a href="classes/vB-dB-Query.html#constant_QUERY_DROP">QUERY_DROP</a>
     <span>
         &nbsp;= &#039;dr&#039;                            </span>
 </dt>
-<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -constant -public">
     <a href="classes/vB-dB-Query.html#constant_QUERY_INSERT">QUERY_INSERT</a>
     <span>
         &nbsp;= &#039;i&#039;                            </span>
 </dt>
-<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -constant -public">
     <a href="classes/vB-dB-Query.html#constant_QUERY_INSERTIGNORE">QUERY_INSERTIGNORE</a>
     <span>
         &nbsp;= &#039;ig&#039;                            </span>
 </dt>
-<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -constant -public">
     <a href="classes/vB-dB-Query.html#constant_QUERY_METHOD">QUERY_METHOD</a>
     <span>
         &nbsp;= &#039;m&#039;                            </span>
 </dt>
-<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -constant -public">
     <a href="classes/vB-dB-Query.html#constant_QUERY_MULTIPLEINSERT">QUERY_MULTIPLEINSERT</a>
     <span>
         &nbsp;= &#039;mi&#039;                            </span>
 </dt>
-<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -constant -public">
     <a href="classes/vB-dB-Query.html#constant_QUERY_REPLACE">QUERY_REPLACE</a>
     <span>
         &nbsp;= &#039;r&#039;                            </span>
 </dt>
-<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -constant -public">
     <a href="classes/vB-dB-Query.html#constant_QUERY_SELECT">QUERY_SELECT</a>
     <span>
         &nbsp;= &#039;s&#039;                            </span>
 </dt>
-<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -constant -public">
     <a href="classes/vB-dB-Query.html#constant_QUERY_STORED">QUERY_STORED</a>
     <span>
         &nbsp;= &#039;st&#039;                            </span>
 </dt>
-<dd></dd>
+
+            <dt class="phpdocumentor-table-of-contents__entry -constant -public">
+    <a href="classes/vB-dB-Query.html#constant_QUERY_SUMMARY">QUERY_SUMMARY</a>
+    <span>
+        &nbsp;= &#039;sum&#039;                            </span>
+</dt>
 
             <dt class="phpdocumentor-table-of-contents__entry -constant -public">
     <a href="classes/vB-dB-Query.html#constant_QUERY_TABLE">QUERY_TABLE</a>
     <span>
         &nbsp;= &#039;t&#039;                            </span>
 </dt>
-<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -constant -public">
     <a href="classes/vB-dB-Query.html#constant_QUERY_UPDATE">QUERY_UPDATE</a>
     <span>
         &nbsp;= &#039;u&#039;                            </span>
 </dt>
-<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -constant -public">
     <a href="classes/vB-dB-Query.html#constant_QUERYTYPE_KEY">QUERYTYPE_KEY</a>
     <span>
         &nbsp;= &#039;#querytype&#039;                            </span>
 </dt>
-<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -constant -public">
     <a href="classes/vB-dB-Query.html#constant_SORT_ASC">SORT_ASC</a>
     <span>
         &nbsp;= &#039;ASC&#039;                            </span>
 </dt>
-<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -constant -public">
     <a href="classes/vB-dB-Query.html#constant_SORT_DESC">SORT_DESC</a>
     <span>
         &nbsp;= &#039;DESC&#039;                            </span>
 </dt>
-<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -constant -public">
     <a href="classes/vB-dB-Query.html#constant_TYPE_KEY">TYPE_KEY</a>
     <span>
         &nbsp;= &#039;#type&#039;                            </span>
 </dt>
-<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -constant -public">
     <a href="classes/vB-dB-Query.html#constant_VALUE_ISNULL">VALUE_ISNULL</a>
     <span>
         &nbsp;= &#039;#NULL&#039;                            </span>
 </dt>
-<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -constant -public">
     <a href="classes/vB-dB-Query.html#constant_VALUES_KEY">VALUES_KEY</a>
     <span>
         &nbsp;= &#039;#values&#039;                            </span>
 </dt>
-<dd></dd>
 
-                        <dt class="phpdocumentor-table-of-contents__entry -method -public">
+    </dl>
+
+
+
+<h4 id="toc-methods">
+    Methods
+    <a href="classes/vB-dB-Query-Stored.html#toc-methods" class="headerlink"><i class="fas fa-link"></i></a>
+
+</h4>
+<dl class="phpdocumentor-table-of-contents">
+            <dt class="phpdocumentor-table-of-contents__entry -method -public">
+    <a href="classes/vB-dB-Query-Stored.html#method___construct">__construct()</a>
+    <span>
+                                &nbsp;: mixed    </span>
+</dt>
+
+            <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a href="classes/vB-Trait-NoSerialize.html#method___serialize">__serialize()</a>
     <span>
                                 &nbsp;: array&lt;string|int, mixed&gt;    </span>
 </dt>
-<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a href="classes/vB-Trait-NoSerialize.html#method___sleep">__sleep()</a>
     <span>
                                 &nbsp;: array&lt;string|int, mixed&gt;    </span>
 </dt>
-<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a href="classes/vB-Trait-NoSerialize.html#method___unserialize">__unserialize()</a>
     <span>
                                 &nbsp;: void    </span>
 </dt>
-<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a href="classes/vB-Trait-NoSerialize.html#method___wakeup">__wakeup()</a>
     <span>
                                 &nbsp;: void    </span>
 </dt>
-<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a href="classes/vB-dB-Query.html#method_debugDisplayNextQuerySql">debugDisplayNextQuerySql()</a>
@@ -529,7 +516,6 @@ for debugging purposes. This only works if debug mode is turned on</dd>
     <span>
                                 &nbsp;: mixed    </span>
 </dt>
-<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a href="classes/vB-dB-Query-Stored.html#method_setQuery">setQuery()</a>
@@ -545,7 +531,8 @@ for debugging purposes. This only works if debug mode is turned on</dd>
 </dt>
 <dd>This loads and validates the data for a table. There&#039;s some extra work required</dd>
 
-        </dl>
+    </dl>
+
 
 
 
@@ -554,40 +541,13 @@ for debugging purposes. This only works if debug mode is turned on</dd>
         <h3 class="phpdocumentor-elements__header" id="constants">
             Constants
             <a href="classes/vB-dB-Query-Stored.html#constants" class="headerlink"><i class="fas fa-link"></i></a>
+
         </h3>
                     <article class="phpdocumentor-element -constant -public ">
     <h4 class="phpdocumentor-element__name" id="constant_BITFIELDS_KEY">
         BITFIELDS_KEY
         <a href="classes/vB-dB-Query.html#constant_BITFIELDS_KEY" class="headerlink"><i class="fas fa-link"></i></a>
-    </h4>
 
-    <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="vb/db/query.php"><a href="files/vb-db-query.html"><abbr title="vb/db/query.php">query.php</abbr></a></abbr>
-    :
-    <span class="phpdocumentor-element-found-in__line">117</span>
-
-    </aside>
-
-    
-    <code class="phpdocumentor-signature phpdocumentor-code ">
-    <span class="phpdocumentor-signature__visibility">public</span>
-        <span class="phpdocumentor-signature__type">mixed</span>
-    <span class="phpdocumentor-signature__name">BITFIELDS_KEY</span>
-    = <span class="phpdocumentor-signature__default-value">&#039;#bitfields&#039;</span>
-</code>
-
-
-        <section class="phpdocumentor-description"></section>
-
-        <section class="phpdocumentor-description"></section>
-
-    
-
-</article>
-                    <article class="phpdocumentor-element -constant -public ">
-    <h4 class="phpdocumentor-element__name" id="constant_BITFIELDS_SET">
-        BITFIELDS_SET
-        <a href="classes/vB-dB-Query.html#constant_BITFIELDS_SET" class="headerlink"><i class="fas fa-link"></i></a>
     </h4>
 
     <aside class="phpdocumentor-element-found-in">
@@ -601,22 +561,21 @@ for debugging purposes. This only works if debug mode is turned on</dd>
     <code class="phpdocumentor-signature phpdocumentor-code ">
     <span class="phpdocumentor-signature__visibility">public</span>
         <span class="phpdocumentor-signature__type">mixed</span>
-    <span class="phpdocumentor-signature__name">BITFIELDS_SET</span>
-    = <span class="phpdocumentor-signature__default-value">&#039;#bitset&#039;</span>
+    <span class="phpdocumentor-signature__name">BITFIELDS_KEY</span>
+    = <span class="phpdocumentor-signature__default-value">&#039;#bitfields&#039;</span>
 </code>
 
 
-        <section class="phpdocumentor-description"></section>
-
-        <section class="phpdocumentor-description"></section>
-
+    
+    
     
 
 </article>
                     <article class="phpdocumentor-element -constant -public ">
-    <h4 class="phpdocumentor-element__name" id="constant_BITFIELDS_UNSET">
-        BITFIELDS_UNSET
-        <a href="classes/vB-dB-Query.html#constant_BITFIELDS_UNSET" class="headerlink"><i class="fas fa-link"></i></a>
+    <h4 class="phpdocumentor-element__name" id="constant_BITFIELDS_SET">
+        BITFIELDS_SET
+        <a href="classes/vB-dB-Query.html#constant_BITFIELDS_SET" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
 
     <aside class="phpdocumentor-element-found-in">
@@ -630,15 +589,41 @@ for debugging purposes. This only works if debug mode is turned on</dd>
     <code class="phpdocumentor-signature phpdocumentor-code ">
     <span class="phpdocumentor-signature__visibility">public</span>
         <span class="phpdocumentor-signature__type">mixed</span>
+    <span class="phpdocumentor-signature__name">BITFIELDS_SET</span>
+    = <span class="phpdocumentor-signature__default-value">&#039;#bitset&#039;</span>
+</code>
+
+
+    
+    
+    
+
+</article>
+                    <article class="phpdocumentor-element -constant -public ">
+    <h4 class="phpdocumentor-element__name" id="constant_BITFIELDS_UNSET">
+        BITFIELDS_UNSET
+        <a href="classes/vB-dB-Query.html#constant_BITFIELDS_UNSET" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="vb/db/query.php"><a href="files/vb-db-query.html"><abbr title="vb/db/query.php">query.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">120</span>
+
+    </aside>
+
+    
+    <code class="phpdocumentor-signature phpdocumentor-code ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+        <span class="phpdocumentor-signature__type">mixed</span>
     <span class="phpdocumentor-signature__name">BITFIELDS_UNSET</span>
     = <span class="phpdocumentor-signature__default-value">&#039;#bitunset&#039;</span>
 </code>
 
 
-        <section class="phpdocumentor-description"></section>
-
-        <section class="phpdocumentor-description"></section>
-
+    
+    
     
 
 </article>
@@ -646,6 +631,7 @@ for debugging purposes. This only works if debug mode is turned on</dd>
     <h4 class="phpdocumentor-element__name" id="constant_COLUMNS_KEY">
         COLUMNS_KEY
         <a href="classes/vB-dB-Query.html#constant_COLUMNS_KEY" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
 
     <aside class="phpdocumentor-element-found-in">
@@ -664,10 +650,8 @@ for debugging purposes. This only works if debug mode is turned on</dd>
 </code>
 
 
-        <section class="phpdocumentor-description"></section>
-
-        <section class="phpdocumentor-description"></section>
-
+    
+    
     
 
 </article>
@@ -675,6 +659,7 @@ for debugging purposes. This only works if debug mode is turned on</dd>
     <h4 class="phpdocumentor-element__name" id="constant_CONDITION_ALL">
         CONDITION_ALL
         <a href="classes/vB-dB-Query.html#constant_CONDITION_ALL" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
 
     <aside class="phpdocumentor-element-found-in">
@@ -693,10 +678,8 @@ for debugging purposes. This only works if debug mode is turned on</dd>
 </code>
 
 
-        <section class="phpdocumentor-description"></section>
-
-        <section class="phpdocumentor-description"></section>
-
+    
+    
     
 
 </article>
@@ -704,6 +687,7 @@ for debugging purposes. This only works if debug mode is turned on</dd>
     <h4 class="phpdocumentor-element__name" id="constant_CONDITIONS_KEY">
         CONDITIONS_KEY
         <a href="classes/vB-dB-Query.html#constant_CONDITIONS_KEY" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
 
     <aside class="phpdocumentor-element-found-in">
@@ -748,8 +732,7 @@ If the query generates an error we return false, and otherwise we return either 
 or an inserted id, or a recordset.</p>
 </section>
 
-        <section class="phpdocumentor-description"></section>
-
+    
     
 
 </article>
@@ -757,6 +740,7 @@ or an inserted id, or a recordset.</p>
     <h4 class="phpdocumentor-element__name" id="constant_DEBUG_QUERY">
         DEBUG_QUERY
         <a href="classes/vB-dB-Query.html#constant_DEBUG_QUERY" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
 
     <aside class="phpdocumentor-element-found-in">
@@ -775,10 +759,8 @@ or an inserted id, or a recordset.</p>
 </code>
 
 
-        <section class="phpdocumentor-description"></section>
-
-        <section class="phpdocumentor-description"></section>
-
+    
+    
     
 
 </article>
@@ -786,6 +768,7 @@ or an inserted id, or a recordset.</p>
     <h4 class="phpdocumentor-element__name" id="constant_FIELDS_KEY">
         FIELDS_KEY
         <a href="classes/vB-dB-Query.html#constant_FIELDS_KEY" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
 
     <aside class="phpdocumentor-element-found-in">
@@ -804,10 +787,8 @@ or an inserted id, or a recordset.</p>
 </code>
 
 
-        <section class="phpdocumentor-description"></section>
-
-        <section class="phpdocumentor-description"></section>
-
+    
+    
     
 
 </article>
@@ -815,6 +796,7 @@ or an inserted id, or a recordset.</p>
     <h4 class="phpdocumentor-element__name" id="constant_OPERATOR_AND">
         OPERATOR_AND
         <a href="classes/vB-dB-Query.html#constant_OPERATOR_AND" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
 
     <aside class="phpdocumentor-element-found-in">
@@ -833,10 +815,8 @@ or an inserted id, or a recordset.</p>
 </code>
 
 
-        <section class="phpdocumentor-description"></section>
-
-        <section class="phpdocumentor-description"></section>
-
+    
+    
     
 
 </article>
@@ -844,6 +824,7 @@ or an inserted id, or a recordset.</p>
     <h4 class="phpdocumentor-element__name" id="constant_OPERATOR_BEGINS">
         OPERATOR_BEGINS
         <a href="classes/vB-dB-Query.html#constant_OPERATOR_BEGINS" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
 
     <aside class="phpdocumentor-element-found-in">
@@ -862,10 +843,8 @@ or an inserted id, or a recordset.</p>
 </code>
 
 
-        <section class="phpdocumentor-description"></section>
-
-        <section class="phpdocumentor-description"></section>
-
+    
+    
     
 
 </article>
@@ -873,6 +852,7 @@ or an inserted id, or a recordset.</p>
     <h4 class="phpdocumentor-element__name" id="constant_OPERATOR_ENDS">
         OPERATOR_ENDS
         <a href="classes/vB-dB-Query.html#constant_OPERATOR_ENDS" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
 
     <aside class="phpdocumentor-element-found-in">
@@ -891,10 +871,8 @@ or an inserted id, or a recordset.</p>
 </code>
 
 
-        <section class="phpdocumentor-description"></section>
-
-        <section class="phpdocumentor-description"></section>
-
+    
+    
     
 
 </article>
@@ -902,6 +880,7 @@ or an inserted id, or a recordset.</p>
     <h4 class="phpdocumentor-element__name" id="constant_OPERATOR_EQ">
         OPERATOR_EQ
         <a href="classes/vB-dB-Query.html#constant_OPERATOR_EQ" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
 
     <aside class="phpdocumentor-element-found-in">
@@ -920,10 +899,8 @@ or an inserted id, or a recordset.</p>
 </code>
 
 
-        <section class="phpdocumentor-description"></section>
-
-        <section class="phpdocumentor-description"></section>
-
+    
+    
     
 
 </article>
@@ -931,6 +908,7 @@ or an inserted id, or a recordset.</p>
     <h4 class="phpdocumentor-element__name" id="constant_OPERATOR_FALSE">
         OPERATOR_FALSE
         <a href="classes/vB-dB-Query.html#constant_OPERATOR_FALSE" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
 
     <aside class="phpdocumentor-element-found-in">
@@ -949,10 +927,8 @@ or an inserted id, or a recordset.</p>
 </code>
 
 
-        <section class="phpdocumentor-description"></section>
-
-        <section class="phpdocumentor-description"></section>
-
+    
+    
     
 
 </article>
@@ -960,6 +936,7 @@ or an inserted id, or a recordset.</p>
     <h4 class="phpdocumentor-element__name" id="constant_OPERATOR_GT">
         OPERATOR_GT
         <a href="classes/vB-dB-Query.html#constant_OPERATOR_GT" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
 
     <aside class="phpdocumentor-element-found-in">
@@ -978,10 +955,8 @@ or an inserted id, or a recordset.</p>
 </code>
 
 
-        <section class="phpdocumentor-description"></section>
-
-        <section class="phpdocumentor-description"></section>
-
+    
+    
     
 
 </article>
@@ -989,6 +964,7 @@ or an inserted id, or a recordset.</p>
     <h4 class="phpdocumentor-element__name" id="constant_OPERATOR_GTE">
         OPERATOR_GTE
         <a href="classes/vB-dB-Query.html#constant_OPERATOR_GTE" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
 
     <aside class="phpdocumentor-element-found-in">
@@ -1007,10 +983,8 @@ or an inserted id, or a recordset.</p>
 </code>
 
 
-        <section class="phpdocumentor-description"></section>
-
-        <section class="phpdocumentor-description"></section>
-
+    
+    
     
 
 </article>
@@ -1018,6 +992,7 @@ or an inserted id, or a recordset.</p>
     <h4 class="phpdocumentor-element__name" id="constant_OPERATOR_INCLUDES">
         OPERATOR_INCLUDES
         <a href="classes/vB-dB-Query.html#constant_OPERATOR_INCLUDES" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
 
     <aside class="phpdocumentor-element-found-in">
@@ -1036,10 +1011,8 @@ or an inserted id, or a recordset.</p>
 </code>
 
 
-        <section class="phpdocumentor-description"></section>
-
-        <section class="phpdocumentor-description"></section>
-
+    
+    
     
 
 </article>
@@ -1047,6 +1020,7 @@ or an inserted id, or a recordset.</p>
     <h4 class="phpdocumentor-element__name" id="constant_OPERATOR_ISNOTNULL">
         OPERATOR_ISNOTNULL
         <a href="classes/vB-dB-Query.html#constant_OPERATOR_ISNOTNULL" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
 
     <aside class="phpdocumentor-element-found-in">
@@ -1065,10 +1039,8 @@ or an inserted id, or a recordset.</p>
 </code>
 
 
-        <section class="phpdocumentor-description"></section>
-
-        <section class="phpdocumentor-description"></section>
-
+    
+    
     
 
 </article>
@@ -1076,6 +1048,7 @@ or an inserted id, or a recordset.</p>
     <h4 class="phpdocumentor-element__name" id="constant_OPERATOR_ISNULL">
         OPERATOR_ISNULL
         <a href="classes/vB-dB-Query.html#constant_OPERATOR_ISNULL" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
 
     <aside class="phpdocumentor-element-found-in">
@@ -1094,10 +1067,8 @@ or an inserted id, or a recordset.</p>
 </code>
 
 
-        <section class="phpdocumentor-description"></section>
-
-        <section class="phpdocumentor-description"></section>
-
+    
+    
     
 
 </article>
@@ -1105,6 +1076,7 @@ or an inserted id, or a recordset.</p>
     <h4 class="phpdocumentor-element__name" id="constant_OPERATOR_KEY">
         OPERATOR_KEY
         <a href="classes/vB-dB-Query.html#constant_OPERATOR_KEY" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
 
     <aside class="phpdocumentor-element-found-in">
@@ -1123,10 +1095,8 @@ or an inserted id, or a recordset.</p>
 </code>
 
 
-        <section class="phpdocumentor-description"></section>
-
-        <section class="phpdocumentor-description"></section>
-
+    
+    
     
 
 </article>
@@ -1134,6 +1104,7 @@ or an inserted id, or a recordset.</p>
     <h4 class="phpdocumentor-element__name" id="constant_OPERATOR_LT">
         OPERATOR_LT
         <a href="classes/vB-dB-Query.html#constant_OPERATOR_LT" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
 
     <aside class="phpdocumentor-element-found-in">
@@ -1152,10 +1123,8 @@ or an inserted id, or a recordset.</p>
 </code>
 
 
-        <section class="phpdocumentor-description"></section>
-
-        <section class="phpdocumentor-description"></section>
-
+    
+    
     
 
 </article>
@@ -1163,6 +1132,7 @@ or an inserted id, or a recordset.</p>
     <h4 class="phpdocumentor-element__name" id="constant_OPERATOR_LTE">
         OPERATOR_LTE
         <a href="classes/vB-dB-Query.html#constant_OPERATOR_LTE" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
 
     <aside class="phpdocumentor-element-found-in">
@@ -1181,10 +1151,8 @@ or an inserted id, or a recordset.</p>
 </code>
 
 
-        <section class="phpdocumentor-description"></section>
-
-        <section class="phpdocumentor-description"></section>
-
+    
+    
     
 
 </article>
@@ -1192,6 +1160,7 @@ or an inserted id, or a recordset.</p>
     <h4 class="phpdocumentor-element__name" id="constant_OPERATOR_NAND">
         OPERATOR_NAND
         <a href="classes/vB-dB-Query.html#constant_OPERATOR_NAND" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
 
     <aside class="phpdocumentor-element-found-in">
@@ -1210,10 +1179,8 @@ or an inserted id, or a recordset.</p>
 </code>
 
 
-        <section class="phpdocumentor-description"></section>
-
-        <section class="phpdocumentor-description"></section>
-
+    
+    
     
 
 </article>
@@ -1221,6 +1188,7 @@ or an inserted id, or a recordset.</p>
     <h4 class="phpdocumentor-element__name" id="constant_OPERATOR_NE">
         OPERATOR_NE
         <a href="classes/vB-dB-Query.html#constant_OPERATOR_NE" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
 
     <aside class="phpdocumentor-element-found-in">
@@ -1239,10 +1207,8 @@ or an inserted id, or a recordset.</p>
 </code>
 
 
-        <section class="phpdocumentor-description"></section>
-
-        <section class="phpdocumentor-description"></section>
-
+    
+    
     
 
 </article>
@@ -1250,6 +1216,7 @@ or an inserted id, or a recordset.</p>
     <h4 class="phpdocumentor-element__name" id="constant_OPERATOR_OR">
         OPERATOR_OR
         <a href="classes/vB-dB-Query.html#constant_OPERATOR_OR" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
 
     <aside class="phpdocumentor-element-found-in">
@@ -1268,10 +1235,8 @@ or an inserted id, or a recordset.</p>
 </code>
 
 
-        <section class="phpdocumentor-description"></section>
-
-        <section class="phpdocumentor-description"></section>
-
+    
+    
     
 
 </article>
@@ -1279,64 +1244,7 @@ or an inserted id, or a recordset.</p>
     <h4 class="phpdocumentor-element__name" id="constant_PARAM_LIMIT">
         PARAM_LIMIT
         <a href="classes/vB-dB-Query.html#constant_PARAM_LIMIT" class="headerlink"><i class="fas fa-link"></i></a>
-    </h4>
 
-    <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="vb/db/query.php"><a href="files/vb-db-query.html"><abbr title="vb/db/query.php">query.php</abbr></a></abbr>
-    :
-    <span class="phpdocumentor-element-found-in__line">113</span>
-
-    </aside>
-
-    
-    <code class="phpdocumentor-signature phpdocumentor-code ">
-    <span class="phpdocumentor-signature__visibility">public</span>
-        <span class="phpdocumentor-signature__type">mixed</span>
-    <span class="phpdocumentor-signature__name">PARAM_LIMIT</span>
-    = <span class="phpdocumentor-signature__default-value">&#039;#limit&#039;</span>
-</code>
-
-
-        <section class="phpdocumentor-description"></section>
-
-        <section class="phpdocumentor-description"></section>
-
-    
-
-</article>
-                    <article class="phpdocumentor-element -constant -public ">
-    <h4 class="phpdocumentor-element__name" id="constant_PARAM_LIMITPAGE">
-        PARAM_LIMITPAGE
-        <a href="classes/vB-dB-Query.html#constant_PARAM_LIMITPAGE" class="headerlink"><i class="fas fa-link"></i></a>
-    </h4>
-
-    <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="vb/db/query.php"><a href="files/vb-db-query.html"><abbr title="vb/db/query.php">query.php</abbr></a></abbr>
-    :
-    <span class="phpdocumentor-element-found-in__line">115</span>
-
-    </aside>
-
-    
-    <code class="phpdocumentor-signature phpdocumentor-code ">
-    <span class="phpdocumentor-signature__visibility">public</span>
-        <span class="phpdocumentor-signature__type">mixed</span>
-    <span class="phpdocumentor-signature__name">PARAM_LIMITPAGE</span>
-    = <span class="phpdocumentor-signature__default-value">&#039;#limit_page&#039;</span>
-</code>
-
-
-        <section class="phpdocumentor-description"></section>
-
-        <section class="phpdocumentor-description"></section>
-
-    
-
-</article>
-                    <article class="phpdocumentor-element -constant -public ">
-    <h4 class="phpdocumentor-element__name" id="constant_PARAM_LIMITSTART">
-        PARAM_LIMITSTART
-        <a href="classes/vB-dB-Query.html#constant_PARAM_LIMITSTART" class="headerlink"><i class="fas fa-link"></i></a>
     </h4>
 
     <aside class="phpdocumentor-element-found-in">
@@ -1350,15 +1258,69 @@ or an inserted id, or a recordset.</p>
     <code class="phpdocumentor-signature phpdocumentor-code ">
     <span class="phpdocumentor-signature__visibility">public</span>
         <span class="phpdocumentor-signature__type">mixed</span>
+    <span class="phpdocumentor-signature__name">PARAM_LIMIT</span>
+    = <span class="phpdocumentor-signature__default-value">&#039;#limit&#039;</span>
+</code>
+
+
+    
+    
+    
+
+</article>
+                    <article class="phpdocumentor-element -constant -public ">
+    <h4 class="phpdocumentor-element__name" id="constant_PARAM_LIMITPAGE">
+        PARAM_LIMITPAGE
+        <a href="classes/vB-dB-Query.html#constant_PARAM_LIMITPAGE" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="vb/db/query.php"><a href="files/vb-db-query.html"><abbr title="vb/db/query.php">query.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">116</span>
+
+    </aside>
+
+    
+    <code class="phpdocumentor-signature phpdocumentor-code ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+        <span class="phpdocumentor-signature__type">mixed</span>
+    <span class="phpdocumentor-signature__name">PARAM_LIMITPAGE</span>
+    = <span class="phpdocumentor-signature__default-value">&#039;#limit_page&#039;</span>
+</code>
+
+
+    
+    
+    
+
+</article>
+                    <article class="phpdocumentor-element -constant -public ">
+    <h4 class="phpdocumentor-element__name" id="constant_PARAM_LIMITSTART">
+        PARAM_LIMITSTART
+        <a href="classes/vB-dB-Query.html#constant_PARAM_LIMITSTART" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="vb/db/query.php"><a href="files/vb-db-query.html"><abbr title="vb/db/query.php">query.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">115</span>
+
+    </aside>
+
+    
+    <code class="phpdocumentor-signature phpdocumentor-code ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+        <span class="phpdocumentor-signature__type">mixed</span>
     <span class="phpdocumentor-signature__name">PARAM_LIMITSTART</span>
     = <span class="phpdocumentor-signature__default-value">&#039;#limit_start&#039;</span>
 </code>
 
 
-        <section class="phpdocumentor-description"></section>
-
-        <section class="phpdocumentor-description"></section>
-
+    
+    
     
 
 </article>
@@ -1366,6 +1328,7 @@ or an inserted id, or a recordset.</p>
     <h4 class="phpdocumentor-element__name" id="constant_PRIORITY_QUERY">
         PRIORITY_QUERY
         <a href="classes/vB-dB-Query.html#constant_PRIORITY_QUERY" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
 
     <aside class="phpdocumentor-element-found-in">
@@ -1384,10 +1347,8 @@ or an inserted id, or a recordset.</p>
 </code>
 
 
-        <section class="phpdocumentor-description"></section>
-
-        <section class="phpdocumentor-description"></section>
-
+    
+    
     
 
 </article>
@@ -1395,12 +1356,13 @@ or an inserted id, or a recordset.</p>
     <h4 class="phpdocumentor-element__name" id="constant_QUERY_ALTER">
         QUERY_ALTER
         <a href="classes/vB-dB-Query.html#constant_QUERY_ALTER" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
 
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/db/query.php"><a href="files/vb-db-query.html"><abbr title="vb/db/query.php">query.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">111</span>
+    <span class="phpdocumentor-element-found-in__line">112</span>
 
     </aside>
 
@@ -1413,10 +1375,8 @@ or an inserted id, or a recordset.</p>
 </code>
 
 
-        <section class="phpdocumentor-description"></section>
-
-        <section class="phpdocumentor-description"></section>
-
+    
+    
     
 
 </article>
@@ -1424,6 +1384,7 @@ or an inserted id, or a recordset.</p>
     <h4 class="phpdocumentor-element__name" id="constant_QUERY_COUNT">
         QUERY_COUNT
         <a href="classes/vB-dB-Query.html#constant_QUERY_COUNT" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
 
     <aside class="phpdocumentor-element-found-in">
@@ -1442,10 +1403,8 @@ or an inserted id, or a recordset.</p>
 </code>
 
 
-        <section class="phpdocumentor-description"></section>
-
-        <section class="phpdocumentor-description"></section>
-
+    
+    
     
 
 </article>
@@ -1453,12 +1412,13 @@ or an inserted id, or a recordset.</p>
     <h4 class="phpdocumentor-element__name" id="constant_QUERY_CREATE">
         QUERY_CREATE
         <a href="classes/vB-dB-Query.html#constant_QUERY_CREATE" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
 
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/db/query.php"><a href="files/vb-db-query.html"><abbr title="vb/db/query.php">query.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">110</span>
+    <span class="phpdocumentor-element-found-in__line">111</span>
 
     </aside>
 
@@ -1471,10 +1431,8 @@ or an inserted id, or a recordset.</p>
 </code>
 
 
-        <section class="phpdocumentor-description"></section>
-
-        <section class="phpdocumentor-description"></section>
-
+    
+    
     
 
 </article>
@@ -1482,122 +1440,7 @@ or an inserted id, or a recordset.</p>
     <h4 class="phpdocumentor-element__name" id="constant_QUERY_DELETE">
         QUERY_DELETE
         <a href="classes/vB-dB-Query.html#constant_QUERY_DELETE" class="headerlink"><i class="fas fa-link"></i></a>
-    </h4>
 
-    <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="vb/db/query.php"><a href="files/vb-db-query.html"><abbr title="vb/db/query.php">query.php</abbr></a></abbr>
-    :
-    <span class="phpdocumentor-element-found-in__line">107</span>
-
-    </aside>
-
-    
-    <code class="phpdocumentor-signature phpdocumentor-code ">
-    <span class="phpdocumentor-signature__visibility">public</span>
-        <span class="phpdocumentor-signature__type">mixed</span>
-    <span class="phpdocumentor-signature__name">QUERY_DELETE</span>
-    = <span class="phpdocumentor-signature__default-value">&#039;d&#039;</span>
-</code>
-
-
-        <section class="phpdocumentor-description"></section>
-
-        <section class="phpdocumentor-description"></section>
-
-    
-
-</article>
-                    <article class="phpdocumentor-element -constant -public ">
-    <h4 class="phpdocumentor-element__name" id="constant_QUERY_DROP">
-        QUERY_DROP
-        <a href="classes/vB-dB-Query.html#constant_QUERY_DROP" class="headerlink"><i class="fas fa-link"></i></a>
-    </h4>
-
-    <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="vb/db/query.php"><a href="files/vb-db-query.html"><abbr title="vb/db/query.php">query.php</abbr></a></abbr>
-    :
-    <span class="phpdocumentor-element-found-in__line">109</span>
-
-    </aside>
-
-    
-    <code class="phpdocumentor-signature phpdocumentor-code ">
-    <span class="phpdocumentor-signature__visibility">public</span>
-        <span class="phpdocumentor-signature__type">mixed</span>
-    <span class="phpdocumentor-signature__name">QUERY_DROP</span>
-    = <span class="phpdocumentor-signature__default-value">&#039;dr&#039;</span>
-</code>
-
-
-        <section class="phpdocumentor-description"></section>
-
-        <section class="phpdocumentor-description"></section>
-
-    
-
-</article>
-                    <article class="phpdocumentor-element -constant -public ">
-    <h4 class="phpdocumentor-element__name" id="constant_QUERY_INSERT">
-        QUERY_INSERT
-        <a href="classes/vB-dB-Query.html#constant_QUERY_INSERT" class="headerlink"><i class="fas fa-link"></i></a>
-    </h4>
-
-    <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="vb/db/query.php"><a href="files/vb-db-query.html"><abbr title="vb/db/query.php">query.php</abbr></a></abbr>
-    :
-    <span class="phpdocumentor-element-found-in__line">103</span>
-
-    </aside>
-
-    
-    <code class="phpdocumentor-signature phpdocumentor-code ">
-    <span class="phpdocumentor-signature__visibility">public</span>
-        <span class="phpdocumentor-signature__type">mixed</span>
-    <span class="phpdocumentor-signature__name">QUERY_INSERT</span>
-    = <span class="phpdocumentor-signature__default-value">&#039;i&#039;</span>
-</code>
-
-
-        <section class="phpdocumentor-description"></section>
-
-        <section class="phpdocumentor-description"></section>
-
-    
-
-</article>
-                    <article class="phpdocumentor-element -constant -public ">
-    <h4 class="phpdocumentor-element__name" id="constant_QUERY_INSERTIGNORE">
-        QUERY_INSERTIGNORE
-        <a href="classes/vB-dB-Query.html#constant_QUERY_INSERTIGNORE" class="headerlink"><i class="fas fa-link"></i></a>
-    </h4>
-
-    <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="vb/db/query.php"><a href="files/vb-db-query.html"><abbr title="vb/db/query.php">query.php</abbr></a></abbr>
-    :
-    <span class="phpdocumentor-element-found-in__line">104</span>
-
-    </aside>
-
-    
-    <code class="phpdocumentor-signature phpdocumentor-code ">
-    <span class="phpdocumentor-signature__visibility">public</span>
-        <span class="phpdocumentor-signature__type">mixed</span>
-    <span class="phpdocumentor-signature__name">QUERY_INSERTIGNORE</span>
-    = <span class="phpdocumentor-signature__default-value">&#039;ig&#039;</span>
-</code>
-
-
-        <section class="phpdocumentor-description"></section>
-
-        <section class="phpdocumentor-description"></section>
-
-    
-
-</article>
-                    <article class="phpdocumentor-element -constant -public ">
-    <h4 class="phpdocumentor-element__name" id="constant_QUERY_METHOD">
-        QUERY_METHOD
-        <a href="classes/vB-dB-Query.html#constant_QUERY_METHOD" class="headerlink"><i class="fas fa-link"></i></a>
     </h4>
 
     <aside class="phpdocumentor-element-found-in">
@@ -1611,28 +1454,27 @@ or an inserted id, or a recordset.</p>
     <code class="phpdocumentor-signature phpdocumentor-code ">
     <span class="phpdocumentor-signature__visibility">public</span>
         <span class="phpdocumentor-signature__type">mixed</span>
-    <span class="phpdocumentor-signature__name">QUERY_METHOD</span>
-    = <span class="phpdocumentor-signature__default-value">&#039;m&#039;</span>
+    <span class="phpdocumentor-signature__name">QUERY_DELETE</span>
+    = <span class="phpdocumentor-signature__default-value">&#039;d&#039;</span>
 </code>
 
 
-        <section class="phpdocumentor-description"></section>
-
-        <section class="phpdocumentor-description"></section>
-
+    
+    
     
 
 </article>
                     <article class="phpdocumentor-element -constant -public ">
-    <h4 class="phpdocumentor-element__name" id="constant_QUERY_MULTIPLEINSERT">
-        QUERY_MULTIPLEINSERT
-        <a href="classes/vB-dB-Query.html#constant_QUERY_MULTIPLEINSERT" class="headerlink"><i class="fas fa-link"></i></a>
+    <h4 class="phpdocumentor-element__name" id="constant_QUERY_DROP">
+        QUERY_DROP
+        <a href="classes/vB-dB-Query.html#constant_QUERY_DROP" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
 
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/db/query.php"><a href="files/vb-db-query.html"><abbr title="vb/db/query.php">query.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">106</span>
+    <span class="phpdocumentor-element-found-in__line">110</span>
 
     </aside>
 
@@ -1640,22 +1482,49 @@ or an inserted id, or a recordset.</p>
     <code class="phpdocumentor-signature phpdocumentor-code ">
     <span class="phpdocumentor-signature__visibility">public</span>
         <span class="phpdocumentor-signature__type">mixed</span>
-    <span class="phpdocumentor-signature__name">QUERY_MULTIPLEINSERT</span>
-    = <span class="phpdocumentor-signature__default-value">&#039;mi&#039;</span>
+    <span class="phpdocumentor-signature__name">QUERY_DROP</span>
+    = <span class="phpdocumentor-signature__default-value">&#039;dr&#039;</span>
 </code>
 
 
-        <section class="phpdocumentor-description"></section>
-
-        <section class="phpdocumentor-description"></section>
-
+    
+    
     
 
 </article>
                     <article class="phpdocumentor-element -constant -public ">
-    <h4 class="phpdocumentor-element__name" id="constant_QUERY_REPLACE">
-        QUERY_REPLACE
-        <a href="classes/vB-dB-Query.html#constant_QUERY_REPLACE" class="headerlink"><i class="fas fa-link"></i></a>
+    <h4 class="phpdocumentor-element__name" id="constant_QUERY_INSERT">
+        QUERY_INSERT
+        <a href="classes/vB-dB-Query.html#constant_QUERY_INSERT" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="vb/db/query.php"><a href="files/vb-db-query.html"><abbr title="vb/db/query.php">query.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">104</span>
+
+    </aside>
+
+    
+    <code class="phpdocumentor-signature phpdocumentor-code ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+        <span class="phpdocumentor-signature__type">mixed</span>
+    <span class="phpdocumentor-signature__name">QUERY_INSERT</span>
+    = <span class="phpdocumentor-signature__default-value">&#039;i&#039;</span>
+</code>
+
+
+    
+    
+    
+
+</article>
+                    <article class="phpdocumentor-element -constant -public ">
+    <h4 class="phpdocumentor-element__name" id="constant_QUERY_INSERTIGNORE">
+        QUERY_INSERTIGNORE
+        <a href="classes/vB-dB-Query.html#constant_QUERY_INSERTIGNORE" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
 
     <aside class="phpdocumentor-element-found-in">
@@ -1669,15 +1538,97 @@ or an inserted id, or a recordset.</p>
     <code class="phpdocumentor-signature phpdocumentor-code ">
     <span class="phpdocumentor-signature__visibility">public</span>
         <span class="phpdocumentor-signature__type">mixed</span>
+    <span class="phpdocumentor-signature__name">QUERY_INSERTIGNORE</span>
+    = <span class="phpdocumentor-signature__default-value">&#039;ig&#039;</span>
+</code>
+
+
+    
+    
+    
+
+</article>
+                    <article class="phpdocumentor-element -constant -public ">
+    <h4 class="phpdocumentor-element__name" id="constant_QUERY_METHOD">
+        QUERY_METHOD
+        <a href="classes/vB-dB-Query.html#constant_QUERY_METHOD" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="vb/db/query.php"><a href="files/vb-db-query.html"><abbr title="vb/db/query.php">query.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">109</span>
+
+    </aside>
+
+    
+    <code class="phpdocumentor-signature phpdocumentor-code ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+        <span class="phpdocumentor-signature__type">mixed</span>
+    <span class="phpdocumentor-signature__name">QUERY_METHOD</span>
+    = <span class="phpdocumentor-signature__default-value">&#039;m&#039;</span>
+</code>
+
+
+    
+    
+    
+
+</article>
+                    <article class="phpdocumentor-element -constant -public ">
+    <h4 class="phpdocumentor-element__name" id="constant_QUERY_MULTIPLEINSERT">
+        QUERY_MULTIPLEINSERT
+        <a href="classes/vB-dB-Query.html#constant_QUERY_MULTIPLEINSERT" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="vb/db/query.php"><a href="files/vb-db-query.html"><abbr title="vb/db/query.php">query.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">107</span>
+
+    </aside>
+
+    
+    <code class="phpdocumentor-signature phpdocumentor-code ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+        <span class="phpdocumentor-signature__type">mixed</span>
+    <span class="phpdocumentor-signature__name">QUERY_MULTIPLEINSERT</span>
+    = <span class="phpdocumentor-signature__default-value">&#039;mi&#039;</span>
+</code>
+
+
+    
+    
+    
+
+</article>
+                    <article class="phpdocumentor-element -constant -public ">
+    <h4 class="phpdocumentor-element__name" id="constant_QUERY_REPLACE">
+        QUERY_REPLACE
+        <a href="classes/vB-dB-Query.html#constant_QUERY_REPLACE" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="vb/db/query.php"><a href="files/vb-db-query.html"><abbr title="vb/db/query.php">query.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">106</span>
+
+    </aside>
+
+    
+    <code class="phpdocumentor-signature phpdocumentor-code ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+        <span class="phpdocumentor-signature__type">mixed</span>
     <span class="phpdocumentor-signature__name">QUERY_REPLACE</span>
     = <span class="phpdocumentor-signature__default-value">&#039;r&#039;</span>
 </code>
 
 
-        <section class="phpdocumentor-description"></section>
-
-        <section class="phpdocumentor-description"></section>
-
+    
+    
     
 
 </article>
@@ -1685,6 +1636,7 @@ or an inserted id, or a recordset.</p>
     <h4 class="phpdocumentor-element__name" id="constant_QUERY_SELECT">
         QUERY_SELECT
         <a href="classes/vB-dB-Query.html#constant_QUERY_SELECT" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
 
     <aside class="phpdocumentor-element-found-in">
@@ -1703,10 +1655,8 @@ or an inserted id, or a recordset.</p>
 </code>
 
 
-        <section class="phpdocumentor-description"></section>
-
-        <section class="phpdocumentor-description"></section>
-
+    
+    
     
 
 </article>
@@ -1714,64 +1664,7 @@ or an inserted id, or a recordset.</p>
     <h4 class="phpdocumentor-element__name" id="constant_QUERY_STORED">
         QUERY_STORED
         <a href="classes/vB-dB-Query.html#constant_QUERY_STORED" class="headerlink"><i class="fas fa-link"></i></a>
-    </h4>
 
-    <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="vb/db/query.php"><a href="files/vb-db-query.html"><abbr title="vb/db/query.php">query.php</abbr></a></abbr>
-    :
-    <span class="phpdocumentor-element-found-in__line">101</span>
-
-    </aside>
-
-    
-    <code class="phpdocumentor-signature phpdocumentor-code ">
-    <span class="phpdocumentor-signature__visibility">public</span>
-        <span class="phpdocumentor-signature__type">mixed</span>
-    <span class="phpdocumentor-signature__name">QUERY_STORED</span>
-    = <span class="phpdocumentor-signature__default-value">&#039;st&#039;</span>
-</code>
-
-
-        <section class="phpdocumentor-description"></section>
-
-        <section class="phpdocumentor-description"></section>
-
-    
-
-</article>
-                    <article class="phpdocumentor-element -constant -public ">
-    <h4 class="phpdocumentor-element__name" id="constant_QUERY_TABLE">
-        QUERY_TABLE
-        <a href="classes/vB-dB-Query.html#constant_QUERY_TABLE" class="headerlink"><i class="fas fa-link"></i></a>
-    </h4>
-
-    <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="vb/db/query.php"><a href="files/vb-db-query.html"><abbr title="vb/db/query.php">query.php</abbr></a></abbr>
-    :
-    <span class="phpdocumentor-element-found-in__line">124</span>
-
-    </aside>
-
-    
-    <code class="phpdocumentor-signature phpdocumentor-code ">
-    <span class="phpdocumentor-signature__visibility">public</span>
-        <span class="phpdocumentor-signature__type">mixed</span>
-    <span class="phpdocumentor-signature__name">QUERY_TABLE</span>
-    = <span class="phpdocumentor-signature__default-value">&#039;t&#039;</span>
-</code>
-
-
-        <section class="phpdocumentor-description"></section>
-
-        <section class="phpdocumentor-description"></section>
-
-    
-
-</article>
-                    <article class="phpdocumentor-element -constant -public ">
-    <h4 class="phpdocumentor-element__name" id="constant_QUERY_UPDATE">
-        QUERY_UPDATE
-        <a href="classes/vB-dB-Query.html#constant_QUERY_UPDATE" class="headerlink"><i class="fas fa-link"></i></a>
     </h4>
 
     <aside class="phpdocumentor-element-found-in">
@@ -1785,15 +1678,97 @@ or an inserted id, or a recordset.</p>
     <code class="phpdocumentor-signature phpdocumentor-code ">
     <span class="phpdocumentor-signature__visibility">public</span>
         <span class="phpdocumentor-signature__type">mixed</span>
+    <span class="phpdocumentor-signature__name">QUERY_STORED</span>
+    = <span class="phpdocumentor-signature__default-value">&#039;st&#039;</span>
+</code>
+
+
+    
+    
+    
+
+</article>
+                    <article class="phpdocumentor-element -constant -public ">
+    <h4 class="phpdocumentor-element__name" id="constant_QUERY_SUMMARY">
+        QUERY_SUMMARY
+        <a href="classes/vB-dB-Query.html#constant_QUERY_SUMMARY" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="vb/db/query.php"><a href="files/vb-db-query.html"><abbr title="vb/db/query.php">query.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">101</span>
+
+    </aside>
+
+    
+    <code class="phpdocumentor-signature phpdocumentor-code ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+        <span class="phpdocumentor-signature__type">mixed</span>
+    <span class="phpdocumentor-signature__name">QUERY_SUMMARY</span>
+    = <span class="phpdocumentor-signature__default-value">&#039;sum&#039;</span>
+</code>
+
+
+    
+    
+    
+
+</article>
+                    <article class="phpdocumentor-element -constant -public ">
+    <h4 class="phpdocumentor-element__name" id="constant_QUERY_TABLE">
+        QUERY_TABLE
+        <a href="classes/vB-dB-Query.html#constant_QUERY_TABLE" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="vb/db/query.php"><a href="files/vb-db-query.html"><abbr title="vb/db/query.php">query.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">125</span>
+
+    </aside>
+
+    
+    <code class="phpdocumentor-signature phpdocumentor-code ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+        <span class="phpdocumentor-signature__type">mixed</span>
+    <span class="phpdocumentor-signature__name">QUERY_TABLE</span>
+    = <span class="phpdocumentor-signature__default-value">&#039;t&#039;</span>
+</code>
+
+
+    
+    
+    
+
+</article>
+                    <article class="phpdocumentor-element -constant -public ">
+    <h4 class="phpdocumentor-element__name" id="constant_QUERY_UPDATE">
+        QUERY_UPDATE
+        <a href="classes/vB-dB-Query.html#constant_QUERY_UPDATE" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="vb/db/query.php"><a href="files/vb-db-query.html"><abbr title="vb/db/query.php">query.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">103</span>
+
+    </aside>
+
+    
+    <code class="phpdocumentor-signature phpdocumentor-code ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+        <span class="phpdocumentor-signature__type">mixed</span>
     <span class="phpdocumentor-signature__name">QUERY_UPDATE</span>
     = <span class="phpdocumentor-signature__default-value">&#039;u&#039;</span>
 </code>
 
 
-        <section class="phpdocumentor-description"></section>
-
-        <section class="phpdocumentor-description"></section>
-
+    
+    
     
 
 </article>
@@ -1801,6 +1776,7 @@ or an inserted id, or a recordset.</p>
     <h4 class="phpdocumentor-element__name" id="constant_QUERYTYPE_KEY">
         QUERYTYPE_KEY
         <a href="classes/vB-dB-Query.html#constant_QUERYTYPE_KEY" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
 
     <aside class="phpdocumentor-element-found-in">
@@ -1819,10 +1795,8 @@ or an inserted id, or a recordset.</p>
 </code>
 
 
-        <section class="phpdocumentor-description"></section>
-
-        <section class="phpdocumentor-description"></section>
-
+    
+    
     
 
 </article>
@@ -1830,35 +1804,7 @@ or an inserted id, or a recordset.</p>
     <h4 class="phpdocumentor-element__name" id="constant_SORT_ASC">
         SORT_ASC
         <a href="classes/vB-dB-Query.html#constant_SORT_ASC" class="headerlink"><i class="fas fa-link"></i></a>
-    </h4>
 
-    <aside class="phpdocumentor-element-found-in">
-    <abbr class="phpdocumentor-element-found-in__file" title="vb/db/query.php"><a href="files/vb-db-query.html"><abbr title="vb/db/query.php">query.php</abbr></a></abbr>
-    :
-    <span class="phpdocumentor-element-found-in__line">121</span>
-
-    </aside>
-
-    
-    <code class="phpdocumentor-signature phpdocumentor-code ">
-    <span class="phpdocumentor-signature__visibility">public</span>
-        <span class="phpdocumentor-signature__type">mixed</span>
-    <span class="phpdocumentor-signature__name">SORT_ASC</span>
-    = <span class="phpdocumentor-signature__default-value">&#039;ASC&#039;</span>
-</code>
-
-
-        <section class="phpdocumentor-description"></section>
-
-        <section class="phpdocumentor-description"></section>
-
-    
-
-</article>
-                    <article class="phpdocumentor-element -constant -public ">
-    <h4 class="phpdocumentor-element__name" id="constant_SORT_DESC">
-        SORT_DESC
-        <a href="classes/vB-dB-Query.html#constant_SORT_DESC" class="headerlink"><i class="fas fa-link"></i></a>
     </h4>
 
     <aside class="phpdocumentor-element-found-in">
@@ -1872,15 +1818,41 @@ or an inserted id, or a recordset.</p>
     <code class="phpdocumentor-signature phpdocumentor-code ">
     <span class="phpdocumentor-signature__visibility">public</span>
         <span class="phpdocumentor-signature__type">mixed</span>
+    <span class="phpdocumentor-signature__name">SORT_ASC</span>
+    = <span class="phpdocumentor-signature__default-value">&#039;ASC&#039;</span>
+</code>
+
+
+    
+    
+    
+
+</article>
+                    <article class="phpdocumentor-element -constant -public ">
+    <h4 class="phpdocumentor-element__name" id="constant_SORT_DESC">
+        SORT_DESC
+        <a href="classes/vB-dB-Query.html#constant_SORT_DESC" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="vb/db/query.php"><a href="files/vb-db-query.html"><abbr title="vb/db/query.php">query.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">123</span>
+
+    </aside>
+
+    
+    <code class="phpdocumentor-signature phpdocumentor-code ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+        <span class="phpdocumentor-signature__type">mixed</span>
     <span class="phpdocumentor-signature__name">SORT_DESC</span>
     = <span class="phpdocumentor-signature__default-value">&#039;DESC&#039;</span>
 </code>
 
 
-        <section class="phpdocumentor-description"></section>
-
-        <section class="phpdocumentor-description"></section>
-
+    
+    
     
 
 </article>
@@ -1888,6 +1860,7 @@ or an inserted id, or a recordset.</p>
     <h4 class="phpdocumentor-element__name" id="constant_TYPE_KEY">
         TYPE_KEY
         <a href="classes/vB-dB-Query.html#constant_TYPE_KEY" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
 
     <aside class="phpdocumentor-element-found-in">
@@ -1906,10 +1879,8 @@ or an inserted id, or a recordset.</p>
 </code>
 
 
-        <section class="phpdocumentor-description"></section>
-
-        <section class="phpdocumentor-description"></section>
-
+    
+    
     
 
 </article>
@@ -1917,6 +1888,7 @@ or an inserted id, or a recordset.</p>
     <h4 class="phpdocumentor-element__name" id="constant_VALUE_ISNULL">
         VALUE_ISNULL
         <a href="classes/vB-dB-Query.html#constant_VALUE_ISNULL" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
 
     <aside class="phpdocumentor-element-found-in">
@@ -1935,10 +1907,8 @@ or an inserted id, or a recordset.</p>
 </code>
 
 
-        <section class="phpdocumentor-description"></section>
-
-        <section class="phpdocumentor-description"></section>
-
+    
+    
     
 
 </article>
@@ -1946,6 +1916,7 @@ or an inserted id, or a recordset.</p>
     <h4 class="phpdocumentor-element__name" id="constant_VALUES_KEY">
         VALUES_KEY
         <a href="classes/vB-dB-Query.html#constant_VALUES_KEY" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
 
     <aside class="phpdocumentor-element-found-in">
@@ -1964,10 +1935,8 @@ or an inserted id, or a recordset.</p>
 </code>
 
 
-        <section class="phpdocumentor-description"></section>
-
-        <section class="phpdocumentor-description"></section>
-
+    
+    
     
 
 </article>
@@ -1979,7 +1948,63 @@ or an inserted id, or a recordset.</p>
         <h3 class="phpdocumentor-elements__header" id="methods">
             Methods
             <a href="classes/vB-dB-Query-Stored.html#methods" class="headerlink"><i class="fas fa-link"></i></a>
+
         </h3>
+                    <article
+        class="phpdocumentor-element
+            -method
+            -public
+                                                        "
+>
+    <h4 class="phpdocumentor-element__name" id="method___construct">
+        __construct()
+        <a href="classes/vB-dB-Query-Stored.html#method___construct" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="vb/db/query/stored.php"><a href="files/vb-db-query-stored.html"><abbr title="vb/db/query/stored.php">stored.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">20</span>
+
+    </aside>
+
+    
+    <code class="phpdocumentor-code phpdocumentor-signature ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+                    <span class="phpdocumentor-signature__name">__construct</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$queryid</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__reference-operator">&amp;</span><span class="phpdocumentor-signature__argument__name">$db</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$dbSlave</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
+
+    <div class="phpdocumentor-label-line">
+        </div>
+    
+        <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
+    <dl class="phpdocumentor-argument-list">
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-signature__argument__name">$queryid</span>
+                : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
+                            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                
+            </dd>
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-signature__argument__name">$db</span>
+                : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
+                            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                
+            </dd>
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-signature__argument__name">$dbSlave</span>
+                : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
+                            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                
+            </dd>
+            </dl>
+
+    
+
+    
+</article>
                     <article
         class="phpdocumentor-element
             -method
@@ -1989,6 +2014,7 @@ or an inserted id, or a recordset.</p>
     <h4 class="phpdocumentor-element__name" id="method___serialize">
         __serialize()
         <a href="classes/vB-Trait-NoSerialize.html#method___serialize" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/trait/noserialize.php"><a href="files/vb-trait-noserialize.html"><abbr title="vb/trait/noserialize.php">noserialize.php</abbr></a></abbr>
@@ -2002,16 +2028,17 @@ or an inserted id, or a recordset.</p>
     <span class="phpdocumentor-signature__visibility">public</span>
                     <span class="phpdocumentor-signature__name">__serialize</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">array&lt;string|int, mixed&gt;</span></code>
 
-        <section class="phpdocumentor-description"></section>
-
+    <div class="phpdocumentor-label-line">
+        </div>
     
     
+    
 
+            <section>
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">array&lt;string|int, mixed&gt;</span>
-            &mdash;
-        
-    
+        <span class="phpdocumentor-signature__response_type">array&lt;string|int, mixed&gt;</span>
+            </section>
+
 </article>
                     <article
         class="phpdocumentor-element
@@ -2022,6 +2049,7 @@ or an inserted id, or a recordset.</p>
     <h4 class="phpdocumentor-element__name" id="method___sleep">
         __sleep()
         <a href="classes/vB-Trait-NoSerialize.html#method___sleep" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/trait/noserialize.php"><a href="files/vb-trait-noserialize.html"><abbr title="vb/trait/noserialize.php">noserialize.php</abbr></a></abbr>
@@ -2035,16 +2063,17 @@ or an inserted id, or a recordset.</p>
     <span class="phpdocumentor-signature__visibility">public</span>
                     <span class="phpdocumentor-signature__name">__sleep</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">array&lt;string|int, mixed&gt;</span></code>
 
-        <section class="phpdocumentor-description"></section>
-
+    <div class="phpdocumentor-label-line">
+        </div>
     
     
+    
 
+            <section>
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">array&lt;string|int, mixed&gt;</span>
-            &mdash;
-        
-    
+        <span class="phpdocumentor-signature__response_type">array&lt;string|int, mixed&gt;</span>
+            </section>
+
 </article>
                     <article
         class="phpdocumentor-element
@@ -2055,6 +2084,7 @@ or an inserted id, or a recordset.</p>
     <h4 class="phpdocumentor-element__name" id="method___unserialize">
         __unserialize()
         <a href="classes/vB-Trait-NoSerialize.html#method___unserialize" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/trait/noserialize.php"><a href="files/vb-trait-noserialize.html"><abbr title="vb/trait/noserialize.php">noserialize.php</abbr></a></abbr>
@@ -2068,8 +2098,9 @@ or an inserted id, or a recordset.</p>
     <span class="phpdocumentor-signature__visibility">public</span>
                     <span class="phpdocumentor-signature__name">__unserialize</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">array&lt;string|int, mixed&gt;&nbsp;</span><span class="phpdocumentor-signature__argument__name">$serialized</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">void</span></code>
 
-        <section class="phpdocumentor-description"></section>
-
+    <div class="phpdocumentor-label-line">
+        </div>
+    
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
     <dl class="phpdocumentor-argument-list">
                     <dt class="phpdocumentor-argument-list__entry">
@@ -2077,17 +2108,12 @@ or an inserted id, or a recordset.</p>
                 : <span class="phpdocumentor-signature__argument__return-type">array&lt;string|int, mixed&gt;</span>
                             </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
+                
             </dd>
             </dl>
 
     
 
-        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">void</span>
-            &mdash;
-        
     
 </article>
                     <article
@@ -2099,6 +2125,7 @@ or an inserted id, or a recordset.</p>
     <h4 class="phpdocumentor-element__name" id="method___wakeup">
         __wakeup()
         <a href="classes/vB-Trait-NoSerialize.html#method___wakeup" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/trait/noserialize.php"><a href="files/vb-trait-noserialize.html"><abbr title="vb/trait/noserialize.php">noserialize.php</abbr></a></abbr>
@@ -2112,15 +2139,12 @@ or an inserted id, or a recordset.</p>
     <span class="phpdocumentor-signature__visibility">public</span>
                     <span class="phpdocumentor-signature__name">__wakeup</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">void</span></code>
 
-        <section class="phpdocumentor-description"></section>
-
+    <div class="phpdocumentor-label-line">
+        </div>
     
     
+    
 
-        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">void</span>
-            &mdash;
-        
     
 </article>
                     <article
@@ -2132,11 +2156,12 @@ or an inserted id, or a recordset.</p>
     <h4 class="phpdocumentor-element__name" id="method_debugDisplayNextQuerySql">
         debugDisplayNextQuerySql()
         <a href="classes/vB-dB-Query.html#method_debugDisplayNextQuerySql" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/db/query.php"><a href="files/vb-db-query.html"><abbr title="vb/db/query.php">query.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">538</span>
+    <span class="phpdocumentor-element-found-in__line">508</span>
 
     </aside>
 
@@ -2147,12 +2172,15 @@ for debugging purposes. This only works if debug mode is turned on</p>
     <span class="phpdocumentor-signature__visibility">public</span>
                     <span class="phpdocumentor-signature__name">debugDisplayNextQuerySql</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
 
+    <div class="phpdocumentor-label-line">
+        </div>
     
     
     
     <h5 class="phpdocumentor-tag-list__heading" id="tags">
         Tags
-        <a href="#tags" class="headerlink"><i class="fas fa-link"></i></a>
+        <a href="classes/vB-dB-Query.html#method_debugDisplayNextQuerySql#tags" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h5>
     <dl class="phpdocumentor-tag-list">
                                     <dt class="phpdocumentor-tag-list__entry">
@@ -2164,12 +2192,8 @@ for debugging purposes. This only works if debug mode is turned on</p>
 </section>
 
                                     </dd>
-                        </dl>
+                                            </dl>
 
-        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">mixed</span>
-            &mdash;
-        
     
 </article>
                     <article
@@ -2181,11 +2205,12 @@ for debugging purposes. This only works if debug mode is turned on</p>
     <h4 class="phpdocumentor-element__name" id="method_execSQL">
         execSQL()
         <a href="classes/vB-dB-Query-Stored.html#method_execSQL" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/db/query/stored.php"><a href="files/vb-db-query-stored.html"><abbr title="vb/db/query/stored.php">stored.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">85</span>
+    <span class="phpdocumentor-element-found-in__line">69</span>
 
     </aside>
 
@@ -2195,14 +2220,12 @@ for debugging purposes. This only works if debug mode is turned on</p>
     <span class="phpdocumentor-signature__visibility">public</span>
                     <span class="phpdocumentor-signature__name">execSQL</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
 
+    <div class="phpdocumentor-label-line">
+        </div>
     
     
     
 
-        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">mixed</span>
-            &mdash;
-        
     
 </article>
                     <article
@@ -2214,21 +2237,23 @@ for debugging purposes. This only works if debug mode is turned on</p>
     <h4 class="phpdocumentor-element__name" id="method_getQuery">
         getQuery()
         <a href="classes/vB-dB-Query.html#method_getQuery" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/db/query.php"><a href="files/vb-db-query.html"><abbr title="vb/db/query.php">query.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">213</span>
+    <span class="phpdocumentor-element-found-in__line">231</span>
 
     </aside>
 
     
     <code class="phpdocumentor-code phpdocumentor-signature ">
     <span class="phpdocumentor-signature__visibility">public</span>
-            <span class="phpdocumentor-signature__static">static</span>        <span class="phpdocumentor-signature__name">getQuery</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$queryid</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$params</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__reference-operator">&amp;</span><span class="phpdocumentor-signature__argument__name">$db</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$userinfo</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$dbtype</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$dbSlave</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
+            <span class="phpdocumentor-signature__static">static</span>        <span class="phpdocumentor-signature__name">getQuery</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$queryid</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$params</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__reference-operator">&amp;</span><span class="phpdocumentor-signature__argument__name">$db</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$dbtype</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$dbSlave</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
 
-        <section class="phpdocumentor-description"></section>
-
+    <div class="phpdocumentor-label-line">
+        </div>
+    
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
     <dl class="phpdocumentor-argument-list">
                     <dt class="phpdocumentor-argument-list__entry">
@@ -2236,57 +2261,40 @@ for debugging purposes. This only works if debug mode is turned on</p>
                 : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
                             </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
+                
             </dd>
                     <dt class="phpdocumentor-argument-list__entry">
                 <span class="phpdocumentor-signature__argument__name">$params</span>
                 : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
                             </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
+                
             </dd>
                     <dt class="phpdocumentor-argument-list__entry">
                 <span class="phpdocumentor-signature__argument__name">$db</span>
                 : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
                             </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
-            </dd>
-                    <dt class="phpdocumentor-argument-list__entry">
-                <span class="phpdocumentor-signature__argument__name">$userinfo</span>
-                : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
-                            </dt>
-            <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
+                
             </dd>
                     <dt class="phpdocumentor-argument-list__entry">
                 <span class="phpdocumentor-signature__argument__name">$dbtype</span>
                 : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
                             </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
+                
             </dd>
                     <dt class="phpdocumentor-argument-list__entry">
                 <span class="phpdocumentor-signature__argument__name">$dbSlave</span>
                 : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
                             </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
+                
             </dd>
             </dl>
 
     
 
-        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">mixed</span>
-            &mdash;
-        
     
 </article>
                     <article
@@ -2298,11 +2306,12 @@ for debugging purposes. This only works if debug mode is turned on</p>
     <h4 class="phpdocumentor-element__name" id="method_setQuery">
         setQuery()
         <a href="classes/vB-dB-Query-Stored.html#method_setQuery" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/db/query/stored.php"><a href="files/vb-db-query-stored.html"><abbr title="vb/db/query/stored.php">stored.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">38</span>
+    <span class="phpdocumentor-element-found-in__line">27</span>
 
     </aside>
 
@@ -2312,6 +2321,8 @@ for debugging purposes. This only works if debug mode is turned on</p>
     <span class="phpdocumentor-signature__visibility">public</span>
                     <span class="phpdocumentor-signature__name">setQuery</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$params</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$sortorder</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
 
+    <div class="phpdocumentor-label-line">
+        </div>
     
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
     <dl class="phpdocumentor-argument-list">
@@ -2320,25 +2331,19 @@ for debugging purposes. This only works if debug mode is turned on</p>
                 : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
                             </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
+                
             </dd>
                     <dt class="phpdocumentor-argument-list__entry">
                 <span class="phpdocumentor-signature__argument__name">$sortorder</span>
                 : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
                             </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
+                
             </dd>
             </dl>
 
     
 
-        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">mixed</span>
-            &mdash;
-        
     
 </article>
                     <article
@@ -2350,11 +2355,12 @@ for debugging purposes. This only works if debug mode is turned on</p>
     <h4 class="phpdocumentor-element__name" id="method_setTableQuery">
         setTableQuery()
         <a href="classes/vB-dB-Query.html#method_setTableQuery" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/db/query.php"><a href="files/vb-db-query.html"><abbr title="vb/db/query.php">query.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">388</span>
+    <span class="phpdocumentor-element-found-in__line">352</span>
 
     </aside>
 
@@ -2364,6 +2370,8 @@ for debugging purposes. This only works if debug mode is turned on</p>
     <span class="phpdocumentor-signature__visibility">public</span>
                     <span class="phpdocumentor-signature__name">setTableQuery</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$params</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$sortorder</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
 
+    <div class="phpdocumentor-label-line">
+        </div>
     
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
     <dl class="phpdocumentor-argument-list">
@@ -2372,93 +2380,207 @@ for debugging purposes. This only works if debug mode is turned on</p>
                 : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
                             </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
+                
             </dd>
                     <dt class="phpdocumentor-argument-list__entry">
                 <span class="phpdocumentor-signature__argument__name">$sortorder</span>
                 : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
                             </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
+                
             </dd>
             </dl>
 
     
 
-        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">mixed</span>
-            &mdash;
-        
     
 </article>
             </section>
 
-        
+        <div class="phpdocumentor-modal" id="source-view">
+    <div class="phpdocumentor-modal-bg" data-exit-button></div>
+    <div class="phpdocumentor-modal-container">
+        <div class="phpdocumentor-modal-content">
+            <pre style="max-height: 500px; overflow-y: scroll" data-src="files/vb/db/query/stored.php.txt" class="language-php line-numbers linkable-line-numbers"></pre>
+        </div>
+        <button data-exit-button class="phpdocumentor-modal__close">&times;</button>
+    </div>
+</div>
+
     <script type="text/javascript">
-        function loadExternalCodeSnippets(line) {
-            Array.prototype.slice.call(document.querySelectorAll('pre[data-src]')).forEach((pre) => {
-                var src = pre.getAttribute('data-src').replace( /\\/g, '/');
-                var extension = (src.match(/\.(\w+)$/) || [, ''])[1];
-                var language = 'php';
+        (function () {
+            function loadExternalCodeSnippet(el, url, line) {
+                Array.prototype.slice.call(el.querySelectorAll('pre[data-src]')).forEach((pre) => {
+                    const src = url || pre.getAttribute('data-src').replace(/\\/g, '/');
+                    const language = 'php';
 
-                var code = document.createElement('code');
-                code.className = 'language-' + language;
+                    const code = document.createElement('code');
+                    code.className = 'language-' + language;
+                    pre.textContent = '';
+                    pre.setAttribute('data-line', line)
+                    code.textContent = 'Loading…';
+                    pre.appendChild(code);
 
-                pre.textContent = '';
+                    var xhr = new XMLHttpRequest();
 
-                pre.setAttribute('data-line', line)
-                code.textContent = 'Loading…';
+                    xhr.open('GET', src, true);
 
-                pre.appendChild(code);
-
-                var xhr = new XMLHttpRequest();
-
-                xhr.open('GET', src, true);
-
-                xhr.onreadystatechange = function () {
-                    if (xhr.readyState == 4) {
+                    xhr.onreadystatechange = function () {
+                        if (xhr.readyState !== 4) {
+                            return;
+                        }
 
                         if (xhr.status < 400 && xhr.responseText) {
                             code.textContent = xhr.responseText;
-
                             Prism.highlightElement(code);
+                            return;
                         }
-                        else if (xhr.status >= 400) {
+
+                        if (xhr.status === 404) {
+                            code.textContent = '✖ Error: File could not be found';
+                            return;
+                        }
+
+                        if (xhr.status >= 400) {
                             code.textContent = '✖ Error ' + xhr.status + ' while fetching file: ' + xhr.statusText;
+                            return;
                         }
-                        else {
-                            code.textContent = '✖ Error: File does not exist, is empty or trying to view from localhost';
-                        }
+
+                        code.textContent = '✖ Error: An unknown error occurred';
+                    };
+
+                    xhr.send(null);
+                });
+            }
+
+            const modalButtons = document.querySelectorAll("[data-modal]");
+            const openedAsLocalFile = window.location.protocol === 'file:';
+            if (modalButtons.length > 0 && openedAsLocalFile) {
+                console.warn(
+                    'Viewing the source code is unavailable because you are opening this page from the file:// scheme; ' +
+                    'browsers block XHR requests when a page is opened this way'
+                );
+            }
+
+            modalButtons.forEach(function (trigger) {
+                if (openedAsLocalFile) {
+                    trigger.setAttribute("hidden", "hidden");
+                }
+
+                trigger.addEventListener("click", function (event) {
+                    event.preventDefault();
+                    const modal = document.getElementById(trigger.dataset.modal);
+                    if (!modal) {
+                        console.error(`Modal with id "${trigger.dataset.modal}" could not be found`);
+                        return;
                     }
-                };
+                    modal.classList.add("phpdocumentor-modal__open");
 
-                xhr.send(null);
-            });
-        }
-
-        var modals = document.querySelectorAll("[data-modal]");
-
-        modals.forEach(function (trigger) {
-            trigger.addEventListener("click", function (event) {
-                //event.preventDefault();
-                const modal = document.getElementById(trigger.dataset.modal);
-                modal.classList.add("phpdocumentor-modal__open");
-                loadExternalCodeSnippets(trigger.dataset.line)
-                const exits = modal.querySelectorAll("[data-exit-button]");
-                exits.forEach(function (exit) {
-                    exit.addEventListener("click", function (event) {
-                        event.preventDefault();
-                        modal.classList.remove("phpdocumentor-modal__open");
+                    loadExternalCodeSnippet(modal, trigger.dataset.src || null, trigger.dataset.line)
+                    const exits = modal.querySelectorAll("[data-exit-button]");
+                    exits.forEach(function (exit) {
+                        exit.addEventListener("click", function (event) {
+                            event.preventDefault();
+                            modal.classList.remove("phpdocumentor-modal__open");
+                        });
                     });
                 });
             });
-        });
+        })();
     </script>
 
     </article>
-                <section data-search-results class="phpdocumentor-search-results phpdocumentor-search-results--hidden">
+                                </section>
+                <section class="phpdocumentor-on-this-page__sidebar">
+                                
+    <section class="phpdocumentor-on-this-page__content">
+        <strong class="phpdocumentor-on-this-page__title">On this page</strong>
+
+        <ul class="phpdocumentor-list -clean">
+            <li class="phpdocumentor-on-this-page-section__title">Table Of Contents</li>
+            <li>
+                <ul class="phpdocumentor-list -clean">
+                                        <li><a href="classes/vB-dB-Query-Stored.html#toc-constants">Constants</a></li>
+                                                                                <li><a href="classes/vB-dB-Query-Stored.html#toc-methods">Methods</a></li>
+                                    </ul>
+            </li>
+                            <li class="phpdocumentor-on-this-page-section__title">Constants</li>
+                <li>
+                    <ul class="phpdocumentor-list -clean">
+                                                    <li><a href="classes/vB-dB-Query.html#constant_BITFIELDS_KEY">BITFIELDS_KEY</a></li>
+                                                    <li><a href="classes/vB-dB-Query.html#constant_BITFIELDS_SET">BITFIELDS_SET</a></li>
+                                                    <li><a href="classes/vB-dB-Query.html#constant_BITFIELDS_UNSET">BITFIELDS_UNSET</a></li>
+                                                    <li><a href="classes/vB-dB-Query.html#constant_COLUMNS_KEY">COLUMNS_KEY</a></li>
+                                                    <li><a href="classes/vB-dB-Query.html#constant_CONDITION_ALL">CONDITION_ALL</a></li>
+                                                    <li><a href="classes/vB-dB-Query.html#constant_CONDITIONS_KEY">CONDITIONS_KEY</a></li>
+                                                    <li><a href="classes/vB-dB-Query.html#constant_DEBUG_QUERY">DEBUG_QUERY</a></li>
+                                                    <li><a href="classes/vB-dB-Query.html#constant_FIELDS_KEY">FIELDS_KEY</a></li>
+                                                    <li><a href="classes/vB-dB-Query.html#constant_OPERATOR_AND">OPERATOR_AND</a></li>
+                                                    <li><a href="classes/vB-dB-Query.html#constant_OPERATOR_BEGINS">OPERATOR_BEGINS</a></li>
+                                                    <li><a href="classes/vB-dB-Query.html#constant_OPERATOR_ENDS">OPERATOR_ENDS</a></li>
+                                                    <li><a href="classes/vB-dB-Query.html#constant_OPERATOR_EQ">OPERATOR_EQ</a></li>
+                                                    <li><a href="classes/vB-dB-Query.html#constant_OPERATOR_FALSE">OPERATOR_FALSE</a></li>
+                                                    <li><a href="classes/vB-dB-Query.html#constant_OPERATOR_GT">OPERATOR_GT</a></li>
+                                                    <li><a href="classes/vB-dB-Query.html#constant_OPERATOR_GTE">OPERATOR_GTE</a></li>
+                                                    <li><a href="classes/vB-dB-Query.html#constant_OPERATOR_INCLUDES">OPERATOR_INCLUDES</a></li>
+                                                    <li><a href="classes/vB-dB-Query.html#constant_OPERATOR_ISNOTNULL">OPERATOR_ISNOTNULL</a></li>
+                                                    <li><a href="classes/vB-dB-Query.html#constant_OPERATOR_ISNULL">OPERATOR_ISNULL</a></li>
+                                                    <li><a href="classes/vB-dB-Query.html#constant_OPERATOR_KEY">OPERATOR_KEY</a></li>
+                                                    <li><a href="classes/vB-dB-Query.html#constant_OPERATOR_LT">OPERATOR_LT</a></li>
+                                                    <li><a href="classes/vB-dB-Query.html#constant_OPERATOR_LTE">OPERATOR_LTE</a></li>
+                                                    <li><a href="classes/vB-dB-Query.html#constant_OPERATOR_NAND">OPERATOR_NAND</a></li>
+                                                    <li><a href="classes/vB-dB-Query.html#constant_OPERATOR_NE">OPERATOR_NE</a></li>
+                                                    <li><a href="classes/vB-dB-Query.html#constant_OPERATOR_OR">OPERATOR_OR</a></li>
+                                                    <li><a href="classes/vB-dB-Query.html#constant_PARAM_LIMIT">PARAM_LIMIT</a></li>
+                                                    <li><a href="classes/vB-dB-Query.html#constant_PARAM_LIMITPAGE">PARAM_LIMITPAGE</a></li>
+                                                    <li><a href="classes/vB-dB-Query.html#constant_PARAM_LIMITSTART">PARAM_LIMITSTART</a></li>
+                                                    <li><a href="classes/vB-dB-Query.html#constant_PRIORITY_QUERY">PRIORITY_QUERY</a></li>
+                                                    <li><a href="classes/vB-dB-Query.html#constant_QUERY_ALTER">QUERY_ALTER</a></li>
+                                                    <li><a href="classes/vB-dB-Query.html#constant_QUERY_COUNT">QUERY_COUNT</a></li>
+                                                    <li><a href="classes/vB-dB-Query.html#constant_QUERY_CREATE">QUERY_CREATE</a></li>
+                                                    <li><a href="classes/vB-dB-Query.html#constant_QUERY_DELETE">QUERY_DELETE</a></li>
+                                                    <li><a href="classes/vB-dB-Query.html#constant_QUERY_DROP">QUERY_DROP</a></li>
+                                                    <li><a href="classes/vB-dB-Query.html#constant_QUERY_INSERT">QUERY_INSERT</a></li>
+                                                    <li><a href="classes/vB-dB-Query.html#constant_QUERY_INSERTIGNORE">QUERY_INSERTIGNORE</a></li>
+                                                    <li><a href="classes/vB-dB-Query.html#constant_QUERY_METHOD">QUERY_METHOD</a></li>
+                                                    <li><a href="classes/vB-dB-Query.html#constant_QUERY_MULTIPLEINSERT">QUERY_MULTIPLEINSERT</a></li>
+                                                    <li><a href="classes/vB-dB-Query.html#constant_QUERY_REPLACE">QUERY_REPLACE</a></li>
+                                                    <li><a href="classes/vB-dB-Query.html#constant_QUERY_SELECT">QUERY_SELECT</a></li>
+                                                    <li><a href="classes/vB-dB-Query.html#constant_QUERY_STORED">QUERY_STORED</a></li>
+                                                    <li><a href="classes/vB-dB-Query.html#constant_QUERY_SUMMARY">QUERY_SUMMARY</a></li>
+                                                    <li><a href="classes/vB-dB-Query.html#constant_QUERY_TABLE">QUERY_TABLE</a></li>
+                                                    <li><a href="classes/vB-dB-Query.html#constant_QUERY_UPDATE">QUERY_UPDATE</a></li>
+                                                    <li><a href="classes/vB-dB-Query.html#constant_QUERYTYPE_KEY">QUERYTYPE_KEY</a></li>
+                                                    <li><a href="classes/vB-dB-Query.html#constant_SORT_ASC">SORT_ASC</a></li>
+                                                    <li><a href="classes/vB-dB-Query.html#constant_SORT_DESC">SORT_DESC</a></li>
+                                                    <li><a href="classes/vB-dB-Query.html#constant_TYPE_KEY">TYPE_KEY</a></li>
+                                                    <li><a href="classes/vB-dB-Query.html#constant_VALUE_ISNULL">VALUE_ISNULL</a></li>
+                                                    <li><a href="classes/vB-dB-Query.html#constant_VALUES_KEY">VALUES_KEY</a></li>
+                                            </ul>
+                </li>
+            
+            
+                        <li class="phpdocumentor-on-this-page-section__title">Methods</li>
+            <li>
+                <ul class="phpdocumentor-list -clean">
+                                            <li><a href="classes/vB-dB-Query-Stored.html#method___construct">__construct()</a></li>
+                                            <li><a href="classes/vB-Trait-NoSerialize.html#method___serialize">__serialize()</a></li>
+                                            <li><a href="classes/vB-Trait-NoSerialize.html#method___sleep">__sleep()</a></li>
+                                            <li><a href="classes/vB-Trait-NoSerialize.html#method___unserialize">__unserialize()</a></li>
+                                            <li><a href="classes/vB-Trait-NoSerialize.html#method___wakeup">__wakeup()</a></li>
+                                            <li><a href="classes/vB-dB-Query.html#method_debugDisplayNextQuerySql">debugDisplayNextQuerySql()</a></li>
+                                            <li><a href="classes/vB-dB-Query-Stored.html#method_execSQL">execSQL()</a></li>
+                                            <li><a href="classes/vB-dB-Query.html#method_getQuery">getQuery()</a></li>
+                                            <li><a href="classes/vB-dB-Query-Stored.html#method_setQuery">setQuery()</a></li>
+                                            <li><a href="classes/vB-dB-Query.html#method_setTableQuery">setTableQuery()</a></li>
+                                    </ul>
+            </li>
+                    </ul>
+    </section>
+
+                </section>
+                            </div>
+            <section data-search-results class="phpdocumentor-search-results phpdocumentor-search-results--hidden">
     <section class="phpdocumentor-search-results__dialog">
         <header class="phpdocumentor-search-results__header">
             <h2 class="phpdocumentor-search-results__title">Search results</h2>
@@ -2469,7 +2591,6 @@ for debugging purposes. This only works if debug mode is turned on</p>
         </section>
     </section>
 </section>
-            </div>
         </div>
         <a href="classes/vB-dB-Query-Stored.html#top" class="phpdocumentor-back-to-top"><i class="fas fa-chevron-circle-up"></i></a>
 

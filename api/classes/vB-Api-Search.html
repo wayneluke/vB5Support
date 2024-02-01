@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-            <title>vBulletin v5.7.2</title>
+            <title>vBulletin v6.0.4</title>
     
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <base href="../">
@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="css/normalize.css">
     <link rel="stylesheet" href="css/base.css">
             <link rel="preconnect" href="https://fonts.gstatic.com">
-        <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@400;600;700&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@100;200;300;400;600;700&display=swap" rel="stylesheet">
         <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@400;600;700&display=swap" rel="stylesheet">
         <link rel="stylesheet" href="css/template.css">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.0/css/all.min.css" integrity="sha256-ybRkN9dBjhcS2qrW1z+hfCxq+1aBdwyQM5wlQoQVt/0=" crossorigin="anonymous" />
@@ -19,12 +19,13 @@
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.23.0/plugins/line-highlight/prism-line-highlight.css">
                 <script src="https://cdn.jsdelivr.net/npm/fuse.js@3.4.6"></script>
         <script src="https://cdn.jsdelivr.net/npm/css-vars-ponyfill@2"></script>
+        <script src="js/template.js"></script>
         <script src="js/search.js"></script>
         <script defer src="js/searchIndex.js"></script>
     </head>
 <body id="top">
     <header class="phpdocumentor-header phpdocumentor-section">
-    <h1 class="phpdocumentor-title"><a href="" class="phpdocumentor-title__link">vBulletin v5.7.2</a></h1>
+    <h1 class="phpdocumentor-title"><a href="" class="phpdocumentor-title__link">vBulletin v6.0.4</a></h1>
     <input class="phpdocumentor-header__menu-button" type="checkbox" id="menu-button" name="menu-button" />
     <label class="phpdocumentor-header__menu-icon" for="menu-button">
         <i class="fas fa-bars"></i>
@@ -52,7 +53,7 @@
 <label class="phpdocumentor-sidebar__menu-icon" for="sidebar-button">
     Menu
 </label>
-<aside class="phpdocumentor-column -four phpdocumentor-sidebar">
+<aside class="phpdocumentor-column -three phpdocumentor-sidebar">
                     <section class="phpdocumentor-sidebar__category">
             <h2 class="phpdocumentor-sidebar__category-header">Packages</h2>
                                     <h4 class="phpdocumentor-sidebar__root-namespace">
@@ -98,8 +99,9 @@
     </section>
 </aside>
 
-            <div class="phpdocumentor-column -eight phpdocumentor-content">
-                    <ul class="phpdocumentor-breadcrumbs">
+            <div class="phpdocumentor-column -nine phpdocumentor-content">
+                                <section>
+                                        <ul class="phpdocumentor-breadcrumbs">
             <li class="phpdocumentor-breadcrumb"><a href="packages/vBApi.html">vBApi</a></li>
     </ul>
 
@@ -121,6 +123,11 @@
     
     </h2>
 
+<div class="phpdocumentor-label-line">
+
+
+</div>
+
         <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/api/search.php"><a href="files/vb-api-search.html"><abbr title="vb/api/search.php">search.php</abbr></a></abbr>
     :
@@ -134,7 +141,8 @@
 
     <h5 class="phpdocumentor-tag-list__heading" id="tags">
         Tags
-        <a href="#tags" class="headerlink"><i class="fas fa-link"></i></a>
+        <a href="classes/vB-Api-Search.html#tags" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h5>
     <dl class="phpdocumentor-tag-list">
                                     <dt class="phpdocumentor-tag-list__entry">
@@ -146,263 +154,247 @@
 </section>
 
                                     </dd>
-                        </dl>
-
-
-
+                                            </dl>
 
 
 
 <h3 id="toc">
     Table of Contents
-    <a href="#toc" class="headerlink"><i class="fas fa-link"></i></a>
+    <a href="classes/vB-Api-Search.html#toc" class="headerlink"><i class="fas fa-link"></i></a>
+
 </h3>
 
+
+
+
+
+
+
+<h4 id="toc-constants">
+    Constants
+    <a href="classes/vB-Api-Search.html#toc-constants" class="headerlink"><i class="fas fa-link"></i></a>
+
+</h4>
 <dl class="phpdocumentor-table-of-contents">
             <dt class="phpdocumentor-table-of-contents__entry -constant -public">
     <a href="classes/vB-Api-Search.html#constant_FILTER_CHANNELAGE">FILTER_CHANNELAGE</a>
     <span>
         &nbsp;= &#039;channelAge&#039;                            </span>
 </dt>
-<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -constant -public">
     <a href="classes/vB-Api-Search.html#constant_FILTER_DATEALL">FILTER_DATEALL</a>
     <span>
         &nbsp;= &#039;all&#039;                            </span>
 </dt>
-<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -constant -public">
     <a href="classes/vB-Api-Search.html#constant_FILTER_FOLLOW">FILTER_FOLLOW</a>
     <span>
         &nbsp;= &#039;follow&#039;                            </span>
 </dt>
-<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -constant -public">
     <a href="classes/vB-Api-Search.html#constant_FILTER_FOLLOWING_ALL">FILTER_FOLLOWING_ALL</a>
     <span>
         &nbsp;= &#039;followAll&#039;                            </span>
 </dt>
-<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -constant -public">
     <a href="classes/vB-Api-Search.html#constant_FILTER_FOLLOWING_BOTH">FILTER_FOLLOWING_BOTH</a>
     <span>
         &nbsp;= &#039;followBoth&#039;                            </span>
 </dt>
-<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -constant -public">
     <a href="classes/vB-Api-Search.html#constant_FILTER_FOLLOWING_CHANNEL">FILTER_FOLLOWING_CHANNEL</a>
     <span>
         &nbsp;= &#039;followChannel&#039;                            </span>
 </dt>
-<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -constant -public">
     <a href="classes/vB-Api-Search.html#constant_FILTER_FOLLOWING_CONTENT">FILTER_FOLLOWING_CONTENT</a>
     <span>
         &nbsp;= &#039;followContent&#039;                            </span>
 </dt>
-<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -constant -public">
     <a href="classes/vB-Api-Search.html#constant_FILTER_FOLLOWING_USERS">FILTER_FOLLOWING_USERS</a>
     <span>
         &nbsp;= &#039;followMembers&#039;                            </span>
 </dt>
-<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -constant -public">
     <a href="classes/vB-Api-Search.html#constant_FILTER_LASTDAY">FILTER_LASTDAY</a>
     <span>
         &nbsp;= &#039;lastDay&#039;                            </span>
 </dt>
-<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -constant -public">
     <a href="classes/vB-Api-Search.html#constant_FILTER_LASTMONTH">FILTER_LASTMONTH</a>
     <span>
         &nbsp;= &#039;lastMonth&#039;                            </span>
 </dt>
-<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -constant -public">
     <a href="classes/vB-Api-Search.html#constant_FILTER_LASTVISIT">FILTER_LASTVISIT</a>
     <span>
         &nbsp;= &#039;lastVisit&#039;                            </span>
 </dt>
-<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -constant -public">
     <a href="classes/vB-Api-Search.html#constant_FILTER_LASTWEEK">FILTER_LASTWEEK</a>
     <span>
         &nbsp;= &#039;lastWeek&#039;                            </span>
 </dt>
-<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -constant -public">
     <a href="classes/vB-Api-Search.html#constant_FILTER_LASTYEAR">FILTER_LASTYEAR</a>
     <span>
         &nbsp;= &#039;lastYear&#039;                            </span>
 </dt>
-<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -constant -public">
     <a href="classes/vB-Api-Search.html#constant_FILTER_MARKED_READ">FILTER_MARKED_READ</a>
     <span>
         &nbsp;= &#039;read&#039;                            </span>
 </dt>
-<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -constant -public">
     <a href="classes/vB-Api-Search.html#constant_FILTER_MARKED_UNREAD">FILTER_MARKED_UNREAD</a>
     <span>
         &nbsp;= &#039;unread&#039;                            </span>
 </dt>
-<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -constant -public">
     <a href="classes/vB-Api-Search.html#constant_FILTER_SHOW_EVENT">FILTER_SHOW_EVENT</a>
     <span>
         &nbsp;= &#039;vBForum_Event&#039;                            </span>
 </dt>
-<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -constant -public">
     <a href="classes/vB-Api-Search.html#constant_FILTER_SHOW_GALLERY">FILTER_SHOW_GALLERY</a>
     <span>
         &nbsp;= &#039;vBForum_Gallery&#039;                            </span>
 </dt>
-<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -constant -public">
     <a href="classes/vB-Api-Search.html#constant_FILTER_SHOW_LINK">FILTER_SHOW_LINK</a>
     <span>
         &nbsp;= &#039;vBForum_Link&#039;                            </span>
 </dt>
-<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -constant -public">
     <a href="classes/vB-Api-Search.html#constant_FILTER_SHOW_POLL">FILTER_SHOW_POLL</a>
     <span>
         &nbsp;= &#039;vBForum_Poll&#039;                            </span>
 </dt>
-<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -constant -public">
     <a href="classes/vB-Api-Search.html#constant_FILTER_SHOW_TEXT">FILTER_SHOW_TEXT</a>
     <span>
         &nbsp;= &#039;vBForum_Text&#039;                            </span>
 </dt>
-<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -constant -public">
     <a href="classes/vB-Api-Search.html#constant_FILTER_SHOW_VIDEO">FILTER_SHOW_VIDEO</a>
     <span>
         &nbsp;= &#039;vBForum_Video&#039;                            </span>
 </dt>
-<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -constant -public">
     <a href="classes/vB-Api-Search.html#constant_FILTER_STARTER_ONLY">FILTER_STARTER_ONLY</a>
     <span>
         &nbsp;= &#039;starter_only&#039;                            </span>
 </dt>
-<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -constant -public">
     <a href="classes/vB-Api-Search.html#constant_FILTER_TOPICAGE">FILTER_TOPICAGE</a>
     <span>
         &nbsp;= &#039;topicAge&#039;                            </span>
 </dt>
-<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -constant -public">
     <a href="classes/vB-Api-Search.html#constant_FILTER_VIEW_ACTIVITY">FILTER_VIEW_ACTIVITY</a>
     <span>
         &nbsp;= &#039;activity&#039;                            </span>
 </dt>
-<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -constant -public">
     <a href="classes/vB-Api-Search.html#constant_FILTER_VIEW_CONVERSATION_STREAM">FILTER_VIEW_CONVERSATION_STREAM</a>
     <span>
         &nbsp;= &#039;conversation_stream&#039;                            </span>
 </dt>
-<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -constant -public">
     <a href="classes/vB-Api-Search.html#constant_FILTER_VIEW_CONVERSATION_THREAD">FILTER_VIEW_CONVERSATION_THREAD</a>
     <span>
         &nbsp;= &#039;conversation_thread&#039;                            </span>
 </dt>
-<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -constant -public">
     <a href="classes/vB-Api-Search.html#constant_FILTER_VIEW_CONVERSATION_THREAD_SEARCH">FILTER_VIEW_CONVERSATION_THREAD_SEARCH</a>
     <span>
         &nbsp;= &#039;conversation_thread_search&#039;                            </span>
 </dt>
-<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -constant -public">
     <a href="classes/vB-Api-Search.html#constant_FILTER_VIEW_TOPIC">FILTER_VIEW_TOPIC</a>
     <span>
         &nbsp;= &#039;topic&#039;                            </span>
 </dt>
-<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -constant -public">
     <a href="classes/vB-Api-Search.html#constant_IGNORE_CACHE">IGNORE_CACHE</a>
     <span>
         &nbsp;= \false                            </span>
 </dt>
-<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -constant -public">
     <a href="classes/vB-Api-Search.html#constant_SEARCH_TYPE_SYSTEM">SEARCH_TYPE_SYSTEM</a>
     <span>
         &nbsp;= 0                            </span>
 </dt>
-<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -constant -public">
     <a href="classes/vB-Api-Search.html#constant_SEARCH_TYPE_USER">SEARCH_TYPE_USER</a>
     <span>
         &nbsp;= 1                            </span>
 </dt>
-<dd></dd>
 
-                        <dt class="phpdocumentor-table-of-contents__entry -method -public">
+    </dl>
+
+
+
+<h4 id="toc-methods">
+    Methods
+    <a href="classes/vB-Api-Search.html#toc-methods" class="headerlink"><i class="fas fa-link"></i></a>
+
+</h4>
+<dl class="phpdocumentor-table-of-contents">
+            <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a href="classes/vB-Trait-NoSerialize.html#method___serialize">__serialize()</a>
     <span>
                                 &nbsp;: array&lt;string|int, mixed&gt;    </span>
 </dt>
-<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a href="classes/vB-Trait-NoSerialize.html#method___sleep">__sleep()</a>
     <span>
                                 &nbsp;: array&lt;string|int, mixed&gt;    </span>
 </dt>
-<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a href="classes/vB-Trait-NoSerialize.html#method___unserialize">__unserialize()</a>
     <span>
                                 &nbsp;: void    </span>
 </dt>
-<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a href="classes/vB-Trait-NoSerialize.html#method___wakeup">__wakeup()</a>
     <span>
                                 &nbsp;: void    </span>
 </dt>
-<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a href="classes/vB-Api.html#method_callNamed">callNamed()</a>
@@ -430,28 +422,24 @@
     <span>
                                 &nbsp;: mixed    </span>
 </dt>
-<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a href="classes/vB-Api-Search.html#method_get_bad_words">get_bad_words()</a>
     <span>
                                 &nbsp;: mixed    </span>
 </dt>
-<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a href="classes/vB-Api-Search.html#method_get_good_words">get_good_words()</a>
     <span>
                                 &nbsp;: mixed    </span>
 </dt>
-<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a href="classes/vB-Api.html#method_getApiClassName">getApiClassName()</a>
     <span>
                                 &nbsp;: mixed    </span>
 </dt>
-<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a href="classes/vB-Api-Search.html#method_getCacheTTL">getCacheTTL()</a>
@@ -479,7 +467,6 @@
     <span>
                                 &nbsp;: mixed    </span>
 </dt>
-<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a href="classes/vB-Api-Search.html#method_getInitialNodes">getInitialNodes()</a>
@@ -521,7 +508,6 @@
     <span>
                                 &nbsp;: mixed    </span>
 </dt>
-<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a href="classes/vB-Api-Search.html#method_getSearchResult">getSearchResult()</a>
@@ -551,7 +537,6 @@ This should only be used in other API objects, not for clients of the API</dd>
     <span>
                                 &nbsp;: mixed    </span>
 </dt>
-<dd></dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -public">
     <a href="classes/vB-Api.html#method_map_vb4_input_to_vb5">map_vb4_input_to_vb5()</a>
@@ -575,7 +560,8 @@ This should only be used in other API objects, not for clients of the API</dd>
 <dd>Alters the output array in any way necessary to interface correctly
 with vb4.</dd>
 
-        </dl>
+    </dl>
+
 
 
 
@@ -584,11 +570,13 @@ with vb4.</dd>
         <h3 class="phpdocumentor-elements__header" id="constants">
             Constants
             <a href="classes/vB-Api-Search.html#constants" class="headerlink"><i class="fas fa-link"></i></a>
+
         </h3>
                     <article class="phpdocumentor-element -constant -public ">
     <h4 class="phpdocumentor-element__name" id="constant_FILTER_CHANNELAGE">
         FILTER_CHANNELAGE
         <a href="classes/vB-Api-Search.html#constant_FILTER_CHANNELAGE" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
 
     <aside class="phpdocumentor-element-found-in">
@@ -607,10 +595,8 @@ with vb4.</dd>
 </code>
 
 
-        <section class="phpdocumentor-description"></section>
-
-        <section class="phpdocumentor-description"></section>
-
+    
+    
     
 
 </article>
@@ -618,6 +604,7 @@ with vb4.</dd>
     <h4 class="phpdocumentor-element__name" id="constant_FILTER_DATEALL">
         FILTER_DATEALL
         <a href="classes/vB-Api-Search.html#constant_FILTER_DATEALL" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
 
     <aside class="phpdocumentor-element-found-in">
@@ -636,10 +623,8 @@ with vb4.</dd>
 </code>
 
 
-        <section class="phpdocumentor-description"></section>
-
-        <section class="phpdocumentor-description"></section>
-
+    
+    
     
 
 </article>
@@ -647,6 +632,7 @@ with vb4.</dd>
     <h4 class="phpdocumentor-element__name" id="constant_FILTER_FOLLOW">
         FILTER_FOLLOW
         <a href="classes/vB-Api-Search.html#constant_FILTER_FOLLOW" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
 
     <aside class="phpdocumentor-element-found-in">
@@ -665,10 +651,8 @@ with vb4.</dd>
 </code>
 
 
-        <section class="phpdocumentor-description"></section>
-
-        <section class="phpdocumentor-description"></section>
-
+    
+    
     
 
 </article>
@@ -676,6 +660,7 @@ with vb4.</dd>
     <h4 class="phpdocumentor-element__name" id="constant_FILTER_FOLLOWING_ALL">
         FILTER_FOLLOWING_ALL
         <a href="classes/vB-Api-Search.html#constant_FILTER_FOLLOWING_ALL" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
 
     <aside class="phpdocumentor-element-found-in">
@@ -694,10 +679,8 @@ with vb4.</dd>
 </code>
 
 
-        <section class="phpdocumentor-description"></section>
-
-        <section class="phpdocumentor-description"></section>
-
+    
+    
     
 
 </article>
@@ -705,6 +688,7 @@ with vb4.</dd>
     <h4 class="phpdocumentor-element__name" id="constant_FILTER_FOLLOWING_BOTH">
         FILTER_FOLLOWING_BOTH
         <a href="classes/vB-Api-Search.html#constant_FILTER_FOLLOWING_BOTH" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
 
     <aside class="phpdocumentor-element-found-in">
@@ -723,10 +707,8 @@ with vb4.</dd>
 </code>
 
 
-        <section class="phpdocumentor-description"></section>
-
-        <section class="phpdocumentor-description"></section>
-
+    
+    
     
 
 </article>
@@ -734,6 +716,7 @@ with vb4.</dd>
     <h4 class="phpdocumentor-element__name" id="constant_FILTER_FOLLOWING_CHANNEL">
         FILTER_FOLLOWING_CHANNEL
         <a href="classes/vB-Api-Search.html#constant_FILTER_FOLLOWING_CHANNEL" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
 
     <aside class="phpdocumentor-element-found-in">
@@ -752,10 +735,8 @@ with vb4.</dd>
 </code>
 
 
-        <section class="phpdocumentor-description"></section>
-
-        <section class="phpdocumentor-description"></section>
-
+    
+    
     
 
 </article>
@@ -763,6 +744,7 @@ with vb4.</dd>
     <h4 class="phpdocumentor-element__name" id="constant_FILTER_FOLLOWING_CONTENT">
         FILTER_FOLLOWING_CONTENT
         <a href="classes/vB-Api-Search.html#constant_FILTER_FOLLOWING_CONTENT" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
 
     <aside class="phpdocumentor-element-found-in">
@@ -781,10 +763,8 @@ with vb4.</dd>
 </code>
 
 
-        <section class="phpdocumentor-description"></section>
-
-        <section class="phpdocumentor-description"></section>
-
+    
+    
     
 
 </article>
@@ -792,6 +772,7 @@ with vb4.</dd>
     <h4 class="phpdocumentor-element__name" id="constant_FILTER_FOLLOWING_USERS">
         FILTER_FOLLOWING_USERS
         <a href="classes/vB-Api-Search.html#constant_FILTER_FOLLOWING_USERS" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
 
     <aside class="phpdocumentor-element-found-in">
@@ -810,10 +791,8 @@ with vb4.</dd>
 </code>
 
 
-        <section class="phpdocumentor-description"></section>
-
-        <section class="phpdocumentor-description"></section>
-
+    
+    
     
 
 </article>
@@ -821,6 +800,7 @@ with vb4.</dd>
     <h4 class="phpdocumentor-element__name" id="constant_FILTER_LASTDAY">
         FILTER_LASTDAY
         <a href="classes/vB-Api-Search.html#constant_FILTER_LASTDAY" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
 
     <aside class="phpdocumentor-element-found-in">
@@ -839,10 +819,8 @@ with vb4.</dd>
 </code>
 
 
-        <section class="phpdocumentor-description"></section>
-
-        <section class="phpdocumentor-description"></section>
-
+    
+    
     
 
 </article>
@@ -850,6 +828,7 @@ with vb4.</dd>
     <h4 class="phpdocumentor-element__name" id="constant_FILTER_LASTMONTH">
         FILTER_LASTMONTH
         <a href="classes/vB-Api-Search.html#constant_FILTER_LASTMONTH" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
 
     <aside class="phpdocumentor-element-found-in">
@@ -868,10 +847,8 @@ with vb4.</dd>
 </code>
 
 
-        <section class="phpdocumentor-description"></section>
-
-        <section class="phpdocumentor-description"></section>
-
+    
+    
     
 
 </article>
@@ -879,6 +856,7 @@ with vb4.</dd>
     <h4 class="phpdocumentor-element__name" id="constant_FILTER_LASTVISIT">
         FILTER_LASTVISIT
         <a href="classes/vB-Api-Search.html#constant_FILTER_LASTVISIT" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
 
     <aside class="phpdocumentor-element-found-in">
@@ -897,10 +875,8 @@ with vb4.</dd>
 </code>
 
 
-        <section class="phpdocumentor-description"></section>
-
-        <section class="phpdocumentor-description"></section>
-
+    
+    
     
 
 </article>
@@ -908,6 +884,7 @@ with vb4.</dd>
     <h4 class="phpdocumentor-element__name" id="constant_FILTER_LASTWEEK">
         FILTER_LASTWEEK
         <a href="classes/vB-Api-Search.html#constant_FILTER_LASTWEEK" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
 
     <aside class="phpdocumentor-element-found-in">
@@ -926,10 +903,8 @@ with vb4.</dd>
 </code>
 
 
-        <section class="phpdocumentor-description"></section>
-
-        <section class="phpdocumentor-description"></section>
-
+    
+    
     
 
 </article>
@@ -937,6 +912,7 @@ with vb4.</dd>
     <h4 class="phpdocumentor-element__name" id="constant_FILTER_LASTYEAR">
         FILTER_LASTYEAR
         <a href="classes/vB-Api-Search.html#constant_FILTER_LASTYEAR" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
 
     <aside class="phpdocumentor-element-found-in">
@@ -955,10 +931,8 @@ with vb4.</dd>
 </code>
 
 
-        <section class="phpdocumentor-description"></section>
-
-        <section class="phpdocumentor-description"></section>
-
+    
+    
     
 
 </article>
@@ -966,6 +940,7 @@ with vb4.</dd>
     <h4 class="phpdocumentor-element__name" id="constant_FILTER_MARKED_READ">
         FILTER_MARKED_READ
         <a href="classes/vB-Api-Search.html#constant_FILTER_MARKED_READ" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
 
     <aside class="phpdocumentor-element-found-in">
@@ -984,10 +959,8 @@ with vb4.</dd>
 </code>
 
 
-        <section class="phpdocumentor-description"></section>
-
-        <section class="phpdocumentor-description"></section>
-
+    
+    
     
 
 </article>
@@ -995,6 +968,7 @@ with vb4.</dd>
     <h4 class="phpdocumentor-element__name" id="constant_FILTER_MARKED_UNREAD">
         FILTER_MARKED_UNREAD
         <a href="classes/vB-Api-Search.html#constant_FILTER_MARKED_UNREAD" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
 
     <aside class="phpdocumentor-element-found-in">
@@ -1013,10 +987,8 @@ with vb4.</dd>
 </code>
 
 
-        <section class="phpdocumentor-description"></section>
-
-        <section class="phpdocumentor-description"></section>
-
+    
+    
     
 
 </article>
@@ -1024,6 +996,7 @@ with vb4.</dd>
     <h4 class="phpdocumentor-element__name" id="constant_FILTER_SHOW_EVENT">
         FILTER_SHOW_EVENT
         <a href="classes/vB-Api-Search.html#constant_FILTER_SHOW_EVENT" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
 
     <aside class="phpdocumentor-element-found-in">
@@ -1042,10 +1015,8 @@ with vb4.</dd>
 </code>
 
 
-        <section class="phpdocumentor-description"></section>
-
-        <section class="phpdocumentor-description"></section>
-
+    
+    
     
 
 </article>
@@ -1053,6 +1024,7 @@ with vb4.</dd>
     <h4 class="phpdocumentor-element__name" id="constant_FILTER_SHOW_GALLERY">
         FILTER_SHOW_GALLERY
         <a href="classes/vB-Api-Search.html#constant_FILTER_SHOW_GALLERY" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
 
     <aside class="phpdocumentor-element-found-in">
@@ -1071,10 +1043,8 @@ with vb4.</dd>
 </code>
 
 
-        <section class="phpdocumentor-description"></section>
-
-        <section class="phpdocumentor-description"></section>
-
+    
+    
     
 
 </article>
@@ -1082,6 +1052,7 @@ with vb4.</dd>
     <h4 class="phpdocumentor-element__name" id="constant_FILTER_SHOW_LINK">
         FILTER_SHOW_LINK
         <a href="classes/vB-Api-Search.html#constant_FILTER_SHOW_LINK" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
 
     <aside class="phpdocumentor-element-found-in">
@@ -1100,10 +1071,8 @@ with vb4.</dd>
 </code>
 
 
-        <section class="phpdocumentor-description"></section>
-
-        <section class="phpdocumentor-description"></section>
-
+    
+    
     
 
 </article>
@@ -1111,6 +1080,7 @@ with vb4.</dd>
     <h4 class="phpdocumentor-element__name" id="constant_FILTER_SHOW_POLL">
         FILTER_SHOW_POLL
         <a href="classes/vB-Api-Search.html#constant_FILTER_SHOW_POLL" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
 
     <aside class="phpdocumentor-element-found-in">
@@ -1129,10 +1099,8 @@ with vb4.</dd>
 </code>
 
 
-        <section class="phpdocumentor-description"></section>
-
-        <section class="phpdocumentor-description"></section>
-
+    
+    
     
 
 </article>
@@ -1140,6 +1108,7 @@ with vb4.</dd>
     <h4 class="phpdocumentor-element__name" id="constant_FILTER_SHOW_TEXT">
         FILTER_SHOW_TEXT
         <a href="classes/vB-Api-Search.html#constant_FILTER_SHOW_TEXT" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
 
     <aside class="phpdocumentor-element-found-in">
@@ -1158,10 +1127,8 @@ with vb4.</dd>
 </code>
 
 
-        <section class="phpdocumentor-description"></section>
-
-        <section class="phpdocumentor-description"></section>
-
+    
+    
     
 
 </article>
@@ -1169,6 +1136,7 @@ with vb4.</dd>
     <h4 class="phpdocumentor-element__name" id="constant_FILTER_SHOW_VIDEO">
         FILTER_SHOW_VIDEO
         <a href="classes/vB-Api-Search.html#constant_FILTER_SHOW_VIDEO" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
 
     <aside class="phpdocumentor-element-found-in">
@@ -1187,10 +1155,8 @@ with vb4.</dd>
 </code>
 
 
-        <section class="phpdocumentor-description"></section>
-
-        <section class="phpdocumentor-description"></section>
-
+    
+    
     
 
 </article>
@@ -1198,6 +1164,7 @@ with vb4.</dd>
     <h4 class="phpdocumentor-element__name" id="constant_FILTER_STARTER_ONLY">
         FILTER_STARTER_ONLY
         <a href="classes/vB-Api-Search.html#constant_FILTER_STARTER_ONLY" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
 
     <aside class="phpdocumentor-element-found-in">
@@ -1216,10 +1183,8 @@ with vb4.</dd>
 </code>
 
 
-        <section class="phpdocumentor-description"></section>
-
-        <section class="phpdocumentor-description"></section>
-
+    
+    
     
 
 </article>
@@ -1227,6 +1192,7 @@ with vb4.</dd>
     <h4 class="phpdocumentor-element__name" id="constant_FILTER_TOPICAGE">
         FILTER_TOPICAGE
         <a href="classes/vB-Api-Search.html#constant_FILTER_TOPICAGE" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
 
     <aside class="phpdocumentor-element-found-in">
@@ -1245,10 +1211,8 @@ with vb4.</dd>
 </code>
 
 
-        <section class="phpdocumentor-description"></section>
-
-        <section class="phpdocumentor-description"></section>
-
+    
+    
     
 
 </article>
@@ -1256,6 +1220,7 @@ with vb4.</dd>
     <h4 class="phpdocumentor-element__name" id="constant_FILTER_VIEW_ACTIVITY">
         FILTER_VIEW_ACTIVITY
         <a href="classes/vB-Api-Search.html#constant_FILTER_VIEW_ACTIVITY" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
 
     <aside class="phpdocumentor-element-found-in">
@@ -1274,10 +1239,8 @@ with vb4.</dd>
 </code>
 
 
-        <section class="phpdocumentor-description"></section>
-
-        <section class="phpdocumentor-description"></section>
-
+    
+    
     
 
 </article>
@@ -1285,6 +1248,7 @@ with vb4.</dd>
     <h4 class="phpdocumentor-element__name" id="constant_FILTER_VIEW_CONVERSATION_STREAM">
         FILTER_VIEW_CONVERSATION_STREAM
         <a href="classes/vB-Api-Search.html#constant_FILTER_VIEW_CONVERSATION_STREAM" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
 
     <aside class="phpdocumentor-element-found-in">
@@ -1303,10 +1267,8 @@ with vb4.</dd>
 </code>
 
 
-        <section class="phpdocumentor-description"></section>
-
-        <section class="phpdocumentor-description"></section>
-
+    
+    
     
 
 </article>
@@ -1314,6 +1276,7 @@ with vb4.</dd>
     <h4 class="phpdocumentor-element__name" id="constant_FILTER_VIEW_CONVERSATION_THREAD">
         FILTER_VIEW_CONVERSATION_THREAD
         <a href="classes/vB-Api-Search.html#constant_FILTER_VIEW_CONVERSATION_THREAD" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
 
     <aside class="phpdocumentor-element-found-in">
@@ -1332,10 +1295,8 @@ with vb4.</dd>
 </code>
 
 
-        <section class="phpdocumentor-description"></section>
-
-        <section class="phpdocumentor-description"></section>
-
+    
+    
     
 
 </article>
@@ -1343,6 +1304,7 @@ with vb4.</dd>
     <h4 class="phpdocumentor-element__name" id="constant_FILTER_VIEW_CONVERSATION_THREAD_SEARCH">
         FILTER_VIEW_CONVERSATION_THREAD_SEARCH
         <a href="classes/vB-Api-Search.html#constant_FILTER_VIEW_CONVERSATION_THREAD_SEARCH" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
 
     <aside class="phpdocumentor-element-found-in">
@@ -1361,10 +1323,8 @@ with vb4.</dd>
 </code>
 
 
-        <section class="phpdocumentor-description"></section>
-
-        <section class="phpdocumentor-description"></section>
-
+    
+    
     
 
 </article>
@@ -1372,6 +1332,7 @@ with vb4.</dd>
     <h4 class="phpdocumentor-element__name" id="constant_FILTER_VIEW_TOPIC">
         FILTER_VIEW_TOPIC
         <a href="classes/vB-Api-Search.html#constant_FILTER_VIEW_TOPIC" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
 
     <aside class="phpdocumentor-element-found-in">
@@ -1390,10 +1351,8 @@ with vb4.</dd>
 </code>
 
 
-        <section class="phpdocumentor-description"></section>
-
-        <section class="phpdocumentor-description"></section>
-
+    
+    
     
 
 </article>
@@ -1401,6 +1360,7 @@ with vb4.</dd>
     <h4 class="phpdocumentor-element__name" id="constant_IGNORE_CACHE">
         IGNORE_CACHE
         <a href="classes/vB-Api-Search.html#constant_IGNORE_CACHE" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
 
     <aside class="phpdocumentor-element-found-in">
@@ -1419,10 +1379,8 @@ with vb4.</dd>
 </code>
 
 
-        <section class="phpdocumentor-description"></section>
-
-        <section class="phpdocumentor-description"></section>
-
+    
+    
     
 
 </article>
@@ -1430,6 +1388,7 @@ with vb4.</dd>
     <h4 class="phpdocumentor-element__name" id="constant_SEARCH_TYPE_SYSTEM">
         SEARCH_TYPE_SYSTEM
         <a href="classes/vB-Api-Search.html#constant_SEARCH_TYPE_SYSTEM" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
 
     <aside class="phpdocumentor-element-found-in">
@@ -1448,10 +1407,8 @@ with vb4.</dd>
 </code>
 
 
-        <section class="phpdocumentor-description"></section>
-
-        <section class="phpdocumentor-description"></section>
-
+    
+    
     
 
 </article>
@@ -1459,6 +1416,7 @@ with vb4.</dd>
     <h4 class="phpdocumentor-element__name" id="constant_SEARCH_TYPE_USER">
         SEARCH_TYPE_USER
         <a href="classes/vB-Api-Search.html#constant_SEARCH_TYPE_USER" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
 
     <aside class="phpdocumentor-element-found-in">
@@ -1477,10 +1435,8 @@ with vb4.</dd>
 </code>
 
 
-        <section class="phpdocumentor-description"></section>
-
-        <section class="phpdocumentor-description"></section>
-
+    
+    
     
 
 </article>
@@ -1492,6 +1448,7 @@ with vb4.</dd>
         <h3 class="phpdocumentor-elements__header" id="methods">
             Methods
             <a href="classes/vB-Api-Search.html#methods" class="headerlink"><i class="fas fa-link"></i></a>
+
         </h3>
                     <article
         class="phpdocumentor-element
@@ -1502,6 +1459,7 @@ with vb4.</dd>
     <h4 class="phpdocumentor-element__name" id="method___serialize">
         __serialize()
         <a href="classes/vB-Trait-NoSerialize.html#method___serialize" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/trait/noserialize.php"><a href="files/vb-trait-noserialize.html"><abbr title="vb/trait/noserialize.php">noserialize.php</abbr></a></abbr>
@@ -1515,16 +1473,17 @@ with vb4.</dd>
     <span class="phpdocumentor-signature__visibility">public</span>
                     <span class="phpdocumentor-signature__name">__serialize</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">array&lt;string|int, mixed&gt;</span></code>
 
-        <section class="phpdocumentor-description"></section>
-
+    <div class="phpdocumentor-label-line">
+        </div>
     
     
+    
 
+            <section>
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">array&lt;string|int, mixed&gt;</span>
-            &mdash;
-        
-    
+        <span class="phpdocumentor-signature__response_type">array&lt;string|int, mixed&gt;</span>
+            </section>
+
 </article>
                     <article
         class="phpdocumentor-element
@@ -1535,6 +1494,7 @@ with vb4.</dd>
     <h4 class="phpdocumentor-element__name" id="method___sleep">
         __sleep()
         <a href="classes/vB-Trait-NoSerialize.html#method___sleep" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/trait/noserialize.php"><a href="files/vb-trait-noserialize.html"><abbr title="vb/trait/noserialize.php">noserialize.php</abbr></a></abbr>
@@ -1548,16 +1508,17 @@ with vb4.</dd>
     <span class="phpdocumentor-signature__visibility">public</span>
                     <span class="phpdocumentor-signature__name">__sleep</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">array&lt;string|int, mixed&gt;</span></code>
 
-        <section class="phpdocumentor-description"></section>
-
+    <div class="phpdocumentor-label-line">
+        </div>
     
     
+    
 
+            <section>
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">array&lt;string|int, mixed&gt;</span>
-            &mdash;
-        
-    
+        <span class="phpdocumentor-signature__response_type">array&lt;string|int, mixed&gt;</span>
+            </section>
+
 </article>
                     <article
         class="phpdocumentor-element
@@ -1568,6 +1529,7 @@ with vb4.</dd>
     <h4 class="phpdocumentor-element__name" id="method___unserialize">
         __unserialize()
         <a href="classes/vB-Trait-NoSerialize.html#method___unserialize" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/trait/noserialize.php"><a href="files/vb-trait-noserialize.html"><abbr title="vb/trait/noserialize.php">noserialize.php</abbr></a></abbr>
@@ -1581,8 +1543,9 @@ with vb4.</dd>
     <span class="phpdocumentor-signature__visibility">public</span>
                     <span class="phpdocumentor-signature__name">__unserialize</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">array&lt;string|int, mixed&gt;&nbsp;</span><span class="phpdocumentor-signature__argument__name">$serialized</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">void</span></code>
 
-        <section class="phpdocumentor-description"></section>
-
+    <div class="phpdocumentor-label-line">
+        </div>
+    
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
     <dl class="phpdocumentor-argument-list">
                     <dt class="phpdocumentor-argument-list__entry">
@@ -1590,17 +1553,12 @@ with vb4.</dd>
                 : <span class="phpdocumentor-signature__argument__return-type">array&lt;string|int, mixed&gt;</span>
                             </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
+                
             </dd>
             </dl>
 
     
 
-        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">void</span>
-            &mdash;
-        
     
 </article>
                     <article
@@ -1612,6 +1570,7 @@ with vb4.</dd>
     <h4 class="phpdocumentor-element__name" id="method___wakeup">
         __wakeup()
         <a href="classes/vB-Trait-NoSerialize.html#method___wakeup" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/trait/noserialize.php"><a href="files/vb-trait-noserialize.html"><abbr title="vb/trait/noserialize.php">noserialize.php</abbr></a></abbr>
@@ -1625,15 +1584,12 @@ with vb4.</dd>
     <span class="phpdocumentor-signature__visibility">public</span>
                     <span class="phpdocumentor-signature__name">__wakeup</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">void</span></code>
 
-        <section class="phpdocumentor-description"></section>
-
+    <div class="phpdocumentor-label-line">
+        </div>
     
     
+    
 
-        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">void</span>
-            &mdash;
-        
     
 </article>
                     <article
@@ -1645,6 +1601,7 @@ with vb4.</dd>
     <h4 class="phpdocumentor-element__name" id="method_callNamed">
         callNamed()
         <a href="classes/vB-Api.html#method_callNamed" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/api.php"><a href="files/vb-api.html"><abbr title="vb/api.php">api.php</abbr></a></abbr>
@@ -1659,22 +1616,26 @@ with vb4.</dd>
     <span class="phpdocumentor-signature__visibility">public</span>
                     <span class="phpdocumentor-signature__name">callNamed</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type"><abbr title="\The">The</abbr></span></code>
 
+    <div class="phpdocumentor-label-line">
+        </div>
         <section class="phpdocumentor-description"><p>Used primarily to translate REST requests into API calls.</p>
 </section>
 
     
     
 
+            <section>
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type"><abbr title="\The">The</abbr></span>
-            &mdash;
-            <section class="phpdocumentor-description"><p>return of the method or an error if the method doesn't exist, or is
+        <span class="phpdocumentor-signature__response_type"><abbr title="\The">The</abbr></span>
+                    &mdash;
+                <section class="phpdocumentor-description"><p>return of the method or an error if the method doesn't exist, or is
 static, a constructor or destructor, or otherwise shouldn't be callable as
 and API method.  It is also an error if the value of a paramater is not provided
 and that parameter doesn't have a default value.</p>
 </section>
 
-    
+            </section>
+
 </article>
                     <article
         class="phpdocumentor-element
@@ -1685,6 +1646,7 @@ and that parameter doesn't have a default value.</p>
     <h4 class="phpdocumentor-element__name" id="method_checkApiState">
         checkApiState()
         <a href="classes/vB-Api.html#method_checkApiState" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/api.php"><a href="files/vb-api.html"><abbr title="vb/api.php">api.php</abbr></a></abbr>
@@ -1699,6 +1661,8 @@ and that parameter doesn't have a default value.</p>
     <span class="phpdocumentor-signature__visibility">public</span>
                     <span class="phpdocumentor-signature__name">checkApiState</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$method</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
 
+    <div class="phpdocumentor-label-line">
+        </div>
         <section class="phpdocumentor-description"><p>For extensions check make sure $controller property is already set.</p>
 </section>
 
@@ -1709,17 +1673,12 @@ and that parameter doesn't have a default value.</p>
                 : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
                             </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
+                
             </dd>
             </dl>
 
     
 
-        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">mixed</span>
-            &mdash;
-        
     
 </article>
                     <article
@@ -1731,6 +1690,7 @@ and that parameter doesn't have a default value.</p>
     <h4 class="phpdocumentor-element__name" id="method_clearCache">
         clearCache()
         <a href="classes/vB-Api.html#method_clearCache" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/api.php"><a href="files/vb-api.html"><abbr title="vb/api.php">api.php</abbr></a></abbr>
@@ -1745,6 +1705,8 @@ and that parameter doesn't have a default value.</p>
     <span class="phpdocumentor-signature__visibility">public</span>
             <span class="phpdocumentor-signature__static">static</span>        <span class="phpdocumentor-signature__name">clearCache</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
 
+    <div class="phpdocumentor-label-line">
+        </div>
         <section class="phpdocumentor-description"><p>Intended for use in tests where the loading pattern can cause issues
 with objects that cache thier own data.</p>
 </section>
@@ -1752,10 +1714,6 @@ with objects that cache thier own data.</p>
     
     
 
-        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">mixed</span>
-            &mdash;
-        
     
 </article>
                     <article
@@ -1767,11 +1725,12 @@ with objects that cache thier own data.</p>
     <h4 class="phpdocumentor-element__name" id="method_get_all_bad_words">
         get_all_bad_words()
         <a href="classes/vB-Api-Search.html#method_get_all_bad_words" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/api/search.php"><a href="files/vb-api-search.html"><abbr title="vb/api/search.php">search.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">2448</span>
+    <span class="phpdocumentor-element-found-in__line">2500</span>
 
     </aside>
 
@@ -1780,15 +1739,12 @@ with objects that cache thier own data.</p>
     <span class="phpdocumentor-signature__visibility">public</span>
             <span class="phpdocumentor-signature__static">static</span>        <span class="phpdocumentor-signature__name">get_all_bad_words</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
 
-        <section class="phpdocumentor-description"></section>
-
+    <div class="phpdocumentor-label-line">
+        </div>
     
     
+    
 
-        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">mixed</span>
-            &mdash;
-        
     
 </article>
                     <article
@@ -1800,11 +1756,12 @@ with objects that cache thier own data.</p>
     <h4 class="phpdocumentor-element__name" id="method_get_bad_words">
         get_bad_words()
         <a href="classes/vB-Api-Search.html#method_get_bad_words" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/api/search.php"><a href="files/vb-api-search.html"><abbr title="vb/api/search.php">search.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">2458</span>
+    <span class="phpdocumentor-element-found-in__line">2510</span>
 
     </aside>
 
@@ -1813,15 +1770,12 @@ with objects that cache thier own data.</p>
     <span class="phpdocumentor-signature__visibility">public</span>
             <span class="phpdocumentor-signature__static">static</span>        <span class="phpdocumentor-signature__name">get_bad_words</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
 
-        <section class="phpdocumentor-description"></section>
-
+    <div class="phpdocumentor-label-line">
+        </div>
     
     
+    
 
-        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">mixed</span>
-            &mdash;
-        
     
 </article>
                     <article
@@ -1833,11 +1787,12 @@ with objects that cache thier own data.</p>
     <h4 class="phpdocumentor-element__name" id="method_get_good_words">
         get_good_words()
         <a href="classes/vB-Api-Search.html#method_get_good_words" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/api/search.php"><a href="files/vb-api-search.html"><abbr title="vb/api/search.php">search.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">2430</span>
+    <span class="phpdocumentor-element-found-in__line">2482</span>
 
     </aside>
 
@@ -1846,15 +1801,12 @@ with objects that cache thier own data.</p>
     <span class="phpdocumentor-signature__visibility">public</span>
             <span class="phpdocumentor-signature__static">static</span>        <span class="phpdocumentor-signature__name">get_good_words</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
 
-        <section class="phpdocumentor-description"></section>
-
+    <div class="phpdocumentor-label-line">
+        </div>
     
     
+    
 
-        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">mixed</span>
-            &mdash;
-        
     
 </article>
                     <article
@@ -1866,6 +1818,7 @@ with objects that cache thier own data.</p>
     <h4 class="phpdocumentor-element__name" id="method_getApiClassName">
         getApiClassName()
         <a href="classes/vB-Api.html#method_getApiClassName" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/api.php"><a href="files/vb-api.html"><abbr title="vb/api.php">api.php</abbr></a></abbr>
@@ -1879,8 +1832,9 @@ with objects that cache thier own data.</p>
     <span class="phpdocumentor-signature__visibility">public</span>
             <span class="phpdocumentor-signature__static">static</span>        <span class="phpdocumentor-signature__name">getApiClassName</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$controller</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
 
-        <section class="phpdocumentor-description"></section>
-
+    <div class="phpdocumentor-label-line">
+        </div>
+    
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
     <dl class="phpdocumentor-argument-list">
                     <dt class="phpdocumentor-argument-list__entry">
@@ -1888,17 +1842,12 @@ with objects that cache thier own data.</p>
                 : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
                             </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
+                
             </dd>
             </dl>
 
     
 
-        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">mixed</span>
-            &mdash;
-        
     
 </article>
                     <article
@@ -1910,6 +1859,7 @@ with objects that cache thier own data.</p>
     <h4 class="phpdocumentor-element__name" id="method_getCacheTTL">
         getCacheTTL()
         <a href="classes/vB-Api-Search.html#method_getCacheTTL" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/api/search.php"><a href="files/vb-api-search.html"><abbr title="vb/api/search.php">search.php</abbr></a></abbr>
@@ -1924,17 +1874,21 @@ with objects that cache thier own data.</p>
     <span class="phpdocumentor-signature__visibility">public</span>
             <span class="phpdocumentor-signature__static">static</span>        <span class="phpdocumentor-signature__name">getCacheTTL</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">int</span></code>
 
+    <div class="phpdocumentor-label-line">
+        </div>
     
     
     
 
+            <section>
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">int</span>
-            &mdash;
-            <section class="phpdocumentor-description"><p>time in seconds</p>
+        <span class="phpdocumentor-signature__response_type">int</span>
+                    &mdash;
+                <section class="phpdocumentor-description"><p>time in seconds</p>
 </section>
 
-    
+            </section>
+
 </article>
                     <article
         class="phpdocumentor-element
@@ -1945,6 +1899,7 @@ with objects that cache thier own data.</p>
     <h4 class="phpdocumentor-element__name" id="method_getChannels">
         getChannels()
         <a href="classes/vB-Api-Search.html#method_getChannels" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/api/search.php"><a href="files/vb-api-search.html"><abbr title="vb/api/search.php">search.php</abbr></a></abbr>
@@ -1957,8 +1912,10 @@ with objects that cache thier own data.</p>
 
     <code class="phpdocumentor-code phpdocumentor-signature ">
     <span class="phpdocumentor-signature__visibility">public</span>
-                    <span class="phpdocumentor-signature__name">getChannels</span><span>(</span><span class="phpdocumentor-signature__argument"><span>[</span><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$flat</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">false</span><span> ]</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$queryOptions</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">[&#039;exclude_categories&#039; =&gt; false, &#039;include_protected&#039; =&gt; false, &#039;exclude_subtrees&#039; =&gt; []]</span><span> ]</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$skipcache</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">false</span><span> ]</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$topLevelChannel</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">array&lt;string|int, mixed&gt;</span></code>
+                    <span class="phpdocumentor-signature__name">getChannels</span><span>(</span><span class="phpdocumentor-signature__argument"><span>[</span><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$flat</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">false</span><span> ]</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$queryOptions</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">[&#039;exclude_categories&#039; =&gt; false, &#039;include_protected&#039; =&gt; false, &#039;exclude_subtrees&#039; =&gt; []]</span><span> ]</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$skipcache</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">false</span><span> ]</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$topLevelChannel</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">0</span><span> ]</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">array&lt;string|int, mixed&gt;</span></code>
 
+    <div class="phpdocumentor-label-line">
+        </div>
     
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
     <dl class="phpdocumentor-argument-list">
@@ -1967,44 +1924,42 @@ with objects that cache thier own data.</p>
                 : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
                  = <span class="phpdocumentor-signature__argument__default-value">false</span>            </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
+                
             </dd>
                     <dt class="phpdocumentor-argument-list__entry">
                 <span class="phpdocumentor-signature__argument__name">$queryOptions</span>
                 : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
                  = <span class="phpdocumentor-signature__argument__default-value">[&#039;exclude_categories&#039; =&gt; false, &#039;include_protected&#039; =&gt; false, &#039;exclude_subtrees&#039; =&gt; []]</span>            </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
+                
             </dd>
                     <dt class="phpdocumentor-argument-list__entry">
                 <span class="phpdocumentor-signature__argument__name">$skipcache</span>
                 : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
                  = <span class="phpdocumentor-signature__argument__default-value">false</span>            </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
+                
             </dd>
                     <dt class="phpdocumentor-argument-list__entry">
                 <span class="phpdocumentor-signature__argument__name">$topLevelChannel</span>
                 : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
-                            </dt>
+                 = <span class="phpdocumentor-signature__argument__default-value">0</span>            </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
+                
             </dd>
             </dl>
 
     
 
+            <section>
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">array&lt;string|int, mixed&gt;</span>
-            &mdash;
-            <section class="phpdocumentor-description"><p>channel structure</p>
+        <span class="phpdocumentor-signature__response_type">array&lt;string|int, mixed&gt;</span>
+                    &mdash;
+                <section class="phpdocumentor-description"><p>channel structure</p>
 </section>
 
-    
+            </section>
+
 </article>
                     <article
         class="phpdocumentor-element
@@ -2015,6 +1970,7 @@ with objects that cache thier own data.</p>
     <h4 class="phpdocumentor-element__name" id="method_getChannelTopics">
         getChannelTopics()
         <a href="classes/vB-Api-Search.html#method_getChannelTopics" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/api/search.php"><a href="files/vb-api-search.html"><abbr title="vb/api/search.php">search.php</abbr></a></abbr>
@@ -2029,6 +1985,8 @@ with objects that cache thier own data.</p>
     <span class="phpdocumentor-signature__visibility">public</span>
                     <span class="phpdocumentor-signature__name">getChannelTopics</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">string|array&lt;string|int, mixed&gt;&nbsp;</span><span class="phpdocumentor-signature__argument__name">$search_json</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">int&nbsp;</span><span class="phpdocumentor-signature__argument__name">$perpage</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">false</span><span> ]</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">int&nbsp;</span><span class="phpdocumentor-signature__argument__name">$pagenumber</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">false</span><span> ]</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">bool&nbsp;</span><span class="phpdocumentor-signature__argument__name">$skipCount</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">false</span><span> ]</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">array&lt;string|int, mixed&gt;</span></code>
 
+    <div class="phpdocumentor-label-line">
+        </div>
         <section class="phpdocumentor-description"><p>Handles pagination differently and skips two-pass cache.</p>
 </section>
 
@@ -2072,14 +2030,16 @@ with objects that cache thier own data.</p>
 
     
 
+            <section>
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">array&lt;string|int, mixed&gt;</span>
-            &mdash;
-            <section class="phpdocumentor-description"><p>results	array of node information for $pagenumber
+        <span class="phpdocumentor-signature__response_type">array&lt;string|int, mixed&gt;</span>
+                    &mdash;
+                <section class="phpdocumentor-description"><p>results	array of node information for $pagenumber
 totalcount integer total (not just $pagenumber) number of topics</p>
 </section>
 
-    
+            </section>
+
 </article>
                     <article
         class="phpdocumentor-element
@@ -2090,6 +2050,7 @@ totalcount integer total (not just $pagenumber) number of topics</p>
     <h4 class="phpdocumentor-element__name" id="method_getInfo">
         getInfo()
         <a href="classes/vB-Api-Search.html#method_getInfo" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/api/search.php"><a href="files/vb-api-search.html"><abbr title="vb/api/search.php">search.php</abbr></a></abbr>
@@ -2103,8 +2064,9 @@ totalcount integer total (not just $pagenumber) number of topics</p>
     <span class="phpdocumentor-signature__visibility">public</span>
                     <span class="phpdocumentor-signature__name">getInfo</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$resultId</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
 
-        <section class="phpdocumentor-description"></section>
-
+    <div class="phpdocumentor-label-line">
+        </div>
+    
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
     <dl class="phpdocumentor-argument-list">
                     <dt class="phpdocumentor-argument-list__entry">
@@ -2112,17 +2074,12 @@ totalcount integer total (not just $pagenumber) number of topics</p>
                 : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
                             </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
+                
             </dd>
             </dl>
 
     
 
-        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">mixed</span>
-            &mdash;
-        
     
 </article>
                     <article
@@ -2134,6 +2091,7 @@ totalcount integer total (not just $pagenumber) number of topics</p>
     <h4 class="phpdocumentor-element__name" id="method_getInitialNodes">
         getInitialNodes()
         <a href="classes/vB-Api-Search.html#method_getInitialNodes" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/api/search.php"><a href="files/vb-api-search.html"><abbr title="vb/api/search.php">search.php</abbr></a></abbr>
@@ -2148,6 +2106,8 @@ totalcount integer total (not just $pagenumber) number of topics</p>
     <span class="phpdocumentor-signature__visibility">public</span>
                     <span class="phpdocumentor-signature__name">getInitialNodes</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">string|array&lt;string|int, mixed&gt;|object&nbsp;</span><span class="phpdocumentor-signature__argument__name">$search_json</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">int&nbsp;</span><span class="phpdocumentor-signature__argument__name">$perpage</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">false</span><span> ]</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">int&nbsp;</span><span class="phpdocumentor-signature__argument__name">$pagenumber</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">false</span><span> ]</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$getStarterInfo</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">false</span><span> ]</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">array&lt;string|int, mixed&gt;</span></code>
 
+    <div class="phpdocumentor-label-line">
+        </div>
         <section class="phpdocumentor-description"><p>(avoids having to make a call for the resultid and immediately make another to fetch the page value)</p>
 </section>
 
@@ -2185,20 +2145,21 @@ totalcount integer total (not just $pagenumber) number of topics</p>
                 : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
                  = <span class="phpdocumentor-signature__argument__default-value">false</span>            </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
+                
             </dd>
             </dl>
 
     
 
+            <section>
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">array&lt;string|int, mixed&gt;</span>
-            &mdash;
-            <section class="phpdocumentor-description"><p>node_ids</p>
+        <span class="phpdocumentor-signature__response_type">array&lt;string|int, mixed&gt;</span>
+                    &mdash;
+                <section class="phpdocumentor-description"><p>node_ids</p>
 </section>
 
-    
+            </section>
+
 </article>
                     <article
         class="phpdocumentor-element
@@ -2209,6 +2170,7 @@ totalcount integer total (not just $pagenumber) number of topics</p>
     <h4 class="phpdocumentor-element__name" id="method_getInitialResults">
         getInitialResults()
         <a href="classes/vB-Api-Search.html#method_getInitialResults" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/api/search.php"><a href="files/vb-api-search.html"><abbr title="vb/api/search.php">search.php</abbr></a></abbr>
@@ -2221,8 +2183,10 @@ totalcount integer total (not just $pagenumber) number of topics</p>
 
     <code class="phpdocumentor-code phpdocumentor-signature ">
     <span class="phpdocumentor-signature__visibility">public</span>
-                    <span class="phpdocumentor-signature__name">getInitialResults</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">string|array&lt;string|int, mixed&gt;|object&nbsp;</span><span class="phpdocumentor-signature__argument__name">$search_json</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">int&nbsp;</span><span class="phpdocumentor-signature__argument__name">$perpage</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">false</span><span> ]</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">int&nbsp;</span><span class="phpdocumentor-signature__argument__name">$pagenumber</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">false</span><span> ]</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">bool&nbsp;</span><span class="phpdocumentor-signature__argument__name">$getStarterInfo</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">false</span><span> ]</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__return-type">int&nbsp;</span><span class="phpdocumentor-signature__argument__name">$searchType</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">array&lt;string|int, mixed&gt;</span></code>
+                    <span class="phpdocumentor-signature__name">getInitialResults</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">string|array&lt;string|int, mixed&gt;|object&nbsp;</span><span class="phpdocumentor-signature__argument__name">$search_json</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">int&nbsp;</span><span class="phpdocumentor-signature__argument__name">$perpage</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">false</span><span> ]</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">int&nbsp;</span><span class="phpdocumentor-signature__argument__name">$pagenumber</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">false</span><span> ]</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">bool&nbsp;</span><span class="phpdocumentor-signature__argument__name">$getStarterInfo</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">false</span><span> ]</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">int&nbsp;</span><span class="phpdocumentor-signature__argument__name">$searchType</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">0</span><span> ]</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">array&lt;string|int, mixed&gt;</span></code>
 
+    <div class="phpdocumentor-label-line">
+        </div>
         <section class="phpdocumentor-description"><p>(avoids having to make a call for the resultid and immediately make another to fetch the page value)</p>
 </section>
 
@@ -2265,7 +2229,7 @@ totalcount integer total (not just $pagenumber) number of topics</p>
                     <dt class="phpdocumentor-argument-list__entry">
                 <span class="phpdocumentor-signature__argument__name">$searchType</span>
                 : <span class="phpdocumentor-signature__argument__return-type">int</span>
-                            </dt>
+                 = <span class="phpdocumentor-signature__argument__default-value">0</span>            </dt>
             <dd class="phpdocumentor-argument-list__definition">
                 
             </dd>
@@ -2273,13 +2237,15 @@ totalcount integer total (not just $pagenumber) number of topics</p>
 
     
 
+            <section>
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">array&lt;string|int, mixed&gt;</span>
-            &mdash;
-            <section class="phpdocumentor-description"><p>search_result_structure</p>
+        <span class="phpdocumentor-signature__response_type">array&lt;string|int, mixed&gt;</span>
+                    &mdash;
+                <section class="phpdocumentor-description"><p>search_result_structure</p>
 </section>
 
-    
+            </section>
+
 </article>
                     <article
         class="phpdocumentor-element
@@ -2290,6 +2256,7 @@ totalcount integer total (not just $pagenumber) number of topics</p>
     <h4 class="phpdocumentor-element__name" id="method_getMoreNodes">
         getMoreNodes()
         <a href="classes/vB-Api-Search.html#method_getMoreNodes" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/api/search.php"><a href="files/vb-api-search.html"><abbr title="vb/api/search.php">search.php</abbr></a></abbr>
@@ -2304,6 +2271,8 @@ totalcount integer total (not just $pagenumber) number of topics</p>
     <span class="phpdocumentor-signature__visibility">public</span>
                     <span class="phpdocumentor-signature__name">getMoreNodes</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">int&nbsp;</span><span class="phpdocumentor-signature__argument__name">$resultId</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">int&nbsp;</span><span class="phpdocumentor-signature__argument__name">$perpage</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">false</span><span> ]</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">int&nbsp;</span><span class="phpdocumentor-signature__argument__name">$pagenumber</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">false</span><span> ]</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">array&lt;string|int, mixed&gt;</span></code>
 
+    <div class="phpdocumentor-label-line">
+        </div>
     
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
     <dl class="phpdocumentor-argument-list">
@@ -2338,13 +2307,15 @@ totalcount integer total (not just $pagenumber) number of topics</p>
 
     
 
+            <section>
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">array&lt;string|int, mixed&gt;</span>
-            &mdash;
-            <section class="phpdocumentor-description"><p>result structure without node content (only nodeids)</p>
+        <span class="phpdocumentor-signature__response_type">array&lt;string|int, mixed&gt;</span>
+                    &mdash;
+                <section class="phpdocumentor-description"><p>result structure without node content (only nodeids)</p>
 </section>
 
-    
+            </section>
+
 </article>
                     <article
         class="phpdocumentor-element
@@ -2355,6 +2326,7 @@ totalcount integer total (not just $pagenumber) number of topics</p>
     <h4 class="phpdocumentor-element__name" id="method_getMoreResults">
         getMoreResults()
         <a href="classes/vB-Api-Search.html#method_getMoreResults" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/api/search.php"><a href="files/vb-api-search.html"><abbr title="vb/api/search.php">search.php</abbr></a></abbr>
@@ -2369,6 +2341,8 @@ totalcount integer total (not just $pagenumber) number of topics</p>
     <span class="phpdocumentor-signature__visibility">public</span>
                     <span class="phpdocumentor-signature__name">getMoreResults</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">int&nbsp;</span><span class="phpdocumentor-signature__argument__name">$resultId</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">int&nbsp;</span><span class="phpdocumentor-signature__argument__name">$perpage</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">false</span><span> ]</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">int&nbsp;</span><span class="phpdocumentor-signature__argument__name">$pagenumber</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">false</span><span> ]</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$getStarterInfo</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">false</span><span> ]</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">array&lt;string|int, mixed&gt;</span></code>
 
+    <div class="phpdocumentor-label-line">
+        </div>
     
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
     <dl class="phpdocumentor-argument-list">
@@ -2404,20 +2378,21 @@ totalcount integer total (not just $pagenumber) number of topics</p>
                 : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
                  = <span class="phpdocumentor-signature__argument__default-value">false</span>            </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
+                
             </dd>
             </dl>
 
     
 
+            <section>
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">array&lt;string|int, mixed&gt;</span>
-            &mdash;
-            <section class="phpdocumentor-description"><p>List of nodes in the resultId</p>
+        <span class="phpdocumentor-signature__response_type">array&lt;string|int, mixed&gt;</span>
+                    &mdash;
+                <section class="phpdocumentor-description"><p>List of nodes in the resultId</p>
 </section>
 
-    
+            </section>
+
 </article>
                     <article
         class="phpdocumentor-element
@@ -2428,6 +2403,7 @@ totalcount integer total (not just $pagenumber) number of topics</p>
     <h4 class="phpdocumentor-element__name" id="method_getPageNumber">
         getPageNumber()
         <a href="classes/vB-Api-Search.html#method_getPageNumber" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/api/search.php"><a href="files/vb-api-search.html"><abbr title="vb/api/search.php">search.php</abbr></a></abbr>
@@ -2440,8 +2416,10 @@ totalcount integer total (not just $pagenumber) number of topics</p>
 
     <code class="phpdocumentor-code phpdocumentor-signature ">
     <span class="phpdocumentor-signature__visibility">public</span>
-                    <span class="phpdocumentor-signature__name">getPageNumber</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">int&nbsp;</span><span class="phpdocumentor-signature__argument__name">$nodeid</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__return-type">array&lt;string|int, mixed&gt;&nbsp;</span><span class="phpdocumentor-signature__argument__name">$starter</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">int&nbsp;</span><span class="phpdocumentor-signature__argument__name">$perpage</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">20</span><span> ]</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__return-type">int&nbsp;</span><span class="phpdocumentor-signature__argument__name">$depth</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$sort</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">&#039;asc&#039;</span><span> ]</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">bool&nbsp;</span><span class="phpdocumentor-signature__argument__name">$include_starter</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">true</span><span> ]</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$type</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">&#039;&#039;</span><span> ]</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">int</span></code>
+                    <span class="phpdocumentor-signature__name">getPageNumber</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">int&nbsp;</span><span class="phpdocumentor-signature__argument__name">$nodeid</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__return-type">array&lt;string|int, mixed&gt;&nbsp;</span><span class="phpdocumentor-signature__argument__name">$starter</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">int&nbsp;</span><span class="phpdocumentor-signature__argument__name">$perpage</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">20</span><span> ]</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">int&nbsp;</span><span class="phpdocumentor-signature__argument__name">$depth</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">0</span><span> ]</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$sort</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">&#039;asc&#039;</span><span> ]</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">bool&nbsp;</span><span class="phpdocumentor-signature__argument__name">$include_starter</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">true</span><span> ]</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$type</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">&#039;&#039;</span><span> ]</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">int</span></code>
 
+    <div class="phpdocumentor-label-line">
+        </div>
     
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
     <dl class="phpdocumentor-argument-list">
@@ -2475,7 +2453,7 @@ totalcount integer total (not just $pagenumber) number of topics</p>
                     <dt class="phpdocumentor-argument-list__entry">
                 <span class="phpdocumentor-signature__argument__name">$depth</span>
                 : <span class="phpdocumentor-signature__argument__return-type">int</span>
-                            </dt>
+                 = <span class="phpdocumentor-signature__argument__default-value">0</span>            </dt>
             <dd class="phpdocumentor-argument-list__definition">
                     <section class="phpdocumentor-description"><p>The depth - 0 means no stopping, otherwise 1= direct child, 2= grandchild, etc</p>
 </section>
@@ -2512,13 +2490,15 @@ totalcount integer total (not just $pagenumber) number of topics</p>
 
     
 
+            <section>
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">int</span>
-            &mdash;
-            <section class="phpdocumentor-description"><p>The page number of the specified node. 0 means the node was not found.</p>
+        <span class="phpdocumentor-signature__response_type">int</span>
+                    &mdash;
+                <section class="phpdocumentor-description"><p>The page number of the specified node. 0 means the node was not found.</p>
 </section>
 
-    
+            </section>
+
 </article>
                     <article
         class="phpdocumentor-element
@@ -2529,6 +2509,7 @@ totalcount integer total (not just $pagenumber) number of topics</p>
     <h4 class="phpdocumentor-element__name" id="method_getSearchableContentTypes">
         getSearchableContentTypes()
         <a href="classes/vB-Api-Search.html#method_getSearchableContentTypes" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/api/search.php"><a href="files/vb-api-search.html"><abbr title="vb/api/search.php">search.php</abbr></a></abbr>
@@ -2542,15 +2523,12 @@ totalcount integer total (not just $pagenumber) number of topics</p>
     <span class="phpdocumentor-signature__visibility">public</span>
                     <span class="phpdocumentor-signature__name">getSearchableContentTypes</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
 
-        <section class="phpdocumentor-description"></section>
-
+    <div class="phpdocumentor-label-line">
+        </div>
     
     
+    
 
-        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">mixed</span>
-            &mdash;
-        
     
 </article>
                     <article
@@ -2562,6 +2540,7 @@ totalcount integer total (not just $pagenumber) number of topics</p>
     <h4 class="phpdocumentor-element__name" id="method_getSearchResult">
         getSearchResult()
         <a href="classes/vB-Api-Search.html#method_getSearchResult" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/api/search.php"><a href="files/vb-api-search.html"><abbr title="vb/api/search.php">search.php</abbr></a></abbr>
@@ -2574,8 +2553,10 @@ totalcount integer total (not just $pagenumber) number of topics</p>
 
     <code class="phpdocumentor-code phpdocumentor-signature ">
     <span class="phpdocumentor-signature__visibility">public</span>
-                    <span class="phpdocumentor-signature__name">getSearchResult</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">string|array&lt;string|int, mixed&gt;|object&nbsp;</span><span class="phpdocumentor-signature__argument__name">$search_json</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__return-type">int&nbsp;</span><span class="phpdocumentor-signature__argument__name">$searchType</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">int</span></code>
+                    <span class="phpdocumentor-signature__name">getSearchResult</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">string|array&lt;string|int, mixed&gt;|object&nbsp;</span><span class="phpdocumentor-signature__argument__name">$search_json</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">int&nbsp;</span><span class="phpdocumentor-signature__argument__name">$searchType</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">0</span><span> ]</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">int</span></code>
 
+    <div class="phpdocumentor-label-line">
+        </div>
     
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
     <dl class="phpdocumentor-argument-list">
@@ -2591,7 +2572,7 @@ totalcount integer total (not just $pagenumber) number of topics</p>
                     <dt class="phpdocumentor-argument-list__entry">
                 <span class="phpdocumentor-signature__argument__name">$searchType</span>
                 : <span class="phpdocumentor-signature__argument__return-type">int</span>
-                            </dt>
+                 = <span class="phpdocumentor-signature__argument__default-value">0</span>            </dt>
             <dd class="phpdocumentor-argument-list__definition">
                 
             </dd>
@@ -2599,13 +2580,15 @@ totalcount integer total (not just $pagenumber) number of topics</p>
 
     
 
+            <section>
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">int</span>
-            &mdash;
-            <section class="phpdocumentor-description"><p>result_id</p>
+        <span class="phpdocumentor-signature__response_type">int</span>
+                    &mdash;
+                <section class="phpdocumentor-description"><p>result_id</p>
 </section>
 
-    
+            </section>
+
 </article>
                     <article
         class="phpdocumentor-element
@@ -2616,6 +2599,7 @@ totalcount integer total (not just $pagenumber) number of topics</p>
     <h4 class="phpdocumentor-element__name" id="method_instance">
         instance()
         <a href="classes/vB-Api.html#method_instance" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/api.php"><a href="files/vb-api.html"><abbr title="vb/api.php">api.php</abbr></a></abbr>
@@ -2631,6 +2615,8 @@ Use this method for API clients.</p>
     <span class="phpdocumentor-signature__visibility">public</span>
             <span class="phpdocumentor-signature__static">static</span>        <span class="phpdocumentor-signature__name">instance</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$controller</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">bool&nbsp;</span><span class="phpdocumentor-signature__argument__name">$refresh_cache</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">false</span><span> ]</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type"><a href="classes/vB-Api.html"><abbr title="\vB_Api">vB_Api</abbr></a></span></code>
 
+    <div class="phpdocumentor-label-line">
+        </div>
     
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
     <dl class="phpdocumentor-argument-list">
@@ -2657,11 +2643,11 @@ primarily intended for testing</p>
 
     
 
+            <section>
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type"><a href="classes/vB-Api.html"><abbr title="\vB_Api">vB_Api</abbr></a></span>
-            &mdash;
-        
-    
+        <span class="phpdocumentor-signature__response_type"><a href="classes/vB-Api.html"><abbr title="\vB_Api">vB_Api</abbr></a></span>
+            </section>
+
 </article>
                     <article
         class="phpdocumentor-element
@@ -2672,6 +2658,7 @@ primarily intended for testing</p>
     <h4 class="phpdocumentor-element__name" id="method_instanceInternal">
         instanceInternal()
         <a href="classes/vB-Api.html#method_instanceInternal" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/api.php"><a href="files/vb-api.html"><abbr title="vb/api.php">api.php</abbr></a></abbr>
@@ -2687,6 +2674,8 @@ This should only be used in other API objects, not for clients of the API</p>
     <span class="phpdocumentor-signature__visibility">public</span>
             <span class="phpdocumentor-signature__static">static</span>        <span class="phpdocumentor-signature__name">instanceInternal</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$controller</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">bool&nbsp;</span><span class="phpdocumentor-signature__argument__name">$refresh_cache</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">false</span><span> ]</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type"><a href="classes/vB-Api.html"><abbr title="\vB_Api">vB_Api</abbr></a></span></code>
 
+    <div class="phpdocumentor-label-line">
+        </div>
     
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
     <dl class="phpdocumentor-argument-list">
@@ -2713,11 +2702,11 @@ primarily intended for testing</p>
 
     
 
+            <section>
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type"><a href="classes/vB-Api.html"><abbr title="\vB_Api">vB_Api</abbr></a></span>
-            &mdash;
-        
-    
+        <span class="phpdocumentor-signature__response_type"><a href="classes/vB-Api.html"><abbr title="\vB_Api">vB_Api</abbr></a></span>
+            </section>
+
 </article>
                     <article
         class="phpdocumentor-element
@@ -2728,11 +2717,12 @@ primarily intended for testing</p>
     <h4 class="phpdocumentor-element__name" id="method_is_index_word">
         is_index_word()
         <a href="classes/vB-Api-Search.html#method_is_index_word" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/api/search.php"><a href="files/vb-api-search.html"><abbr title="vb/api/search.php">search.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">2394</span>
+    <span class="phpdocumentor-element-found-in__line">2446</span>
 
     </aside>
 
@@ -2741,8 +2731,9 @@ primarily intended for testing</p>
     <span class="phpdocumentor-signature__visibility">public</span>
             <span class="phpdocumentor-signature__static">static</span>        <span class="phpdocumentor-signature__name">is_index_word</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$word</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$isLower</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">false</span><span> ]</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
 
-        <section class="phpdocumentor-description"></section>
-
+    <div class="phpdocumentor-label-line">
+        </div>
+    
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
     <dl class="phpdocumentor-argument-list">
                     <dt class="phpdocumentor-argument-list__entry">
@@ -2750,25 +2741,19 @@ primarily intended for testing</p>
                 : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
                             </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
+                
             </dd>
                     <dt class="phpdocumentor-argument-list__entry">
                 <span class="phpdocumentor-signature__argument__name">$isLower</span>
                 : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
                  = <span class="phpdocumentor-signature__argument__default-value">false</span>            </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                    <section class="phpdocumentor-description"></section>
-
+                
             </dd>
             </dl>
 
     
 
-        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">mixed</span>
-            &mdash;
-        
     
 </article>
                     <article
@@ -2780,6 +2765,7 @@ primarily intended for testing</p>
     <h4 class="phpdocumentor-element__name" id="method_map_vb4_input_to_vb5">
         map_vb4_input_to_vb5()
         <a href="classes/vB-Api.html#method_map_vb4_input_to_vb5" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/api.php"><a href="files/vb-api.html"><abbr title="vb/api.php">api.php</abbr></a></abbr>
@@ -2794,6 +2780,8 @@ primarily intended for testing</p>
     <span class="phpdocumentor-signature__visibility">public</span>
             <span class="phpdocumentor-signature__static">static</span>        <span class="phpdocumentor-signature__name">map_vb4_input_to_vb5</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$method</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__return-type">array&lt;string|int, mixed&gt;&nbsp;</span><span class="phpdocumentor-signature__argument__reference-operator">&amp;</span><span class="phpdocumentor-signature__argument__name">$request</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">string</span></code>
 
+    <div class="phpdocumentor-label-line">
+        </div>
         <section class="phpdocumentor-description"><p>May alter request array.</p>
 </section>
 
@@ -2821,11 +2809,11 @@ primarily intended for testing</p>
 
     
 
+            <section>
         <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">string</span>
-            &mdash;
-        
-    
+        <span class="phpdocumentor-signature__response_type">string</span>
+            </section>
+
 </article>
                     <article
         class="phpdocumentor-element
@@ -2836,6 +2824,7 @@ primarily intended for testing</p>
     <h4 class="phpdocumentor-element__name" id="method_map_vb5_errors_to_vb4">
         map_vb5_errors_to_vb4()
         <a href="classes/vB-Api.html#method_map_vb5_errors_to_vb4" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/api.php"><a href="files/vb-api.html"><abbr title="vb/api.php">api.php</abbr></a></abbr>
@@ -2850,6 +2839,8 @@ primarily intended for testing</p>
     <span class="phpdocumentor-signature__visibility">public</span>
             <span class="phpdocumentor-signature__static">static</span>        <span class="phpdocumentor-signature__name">map_vb5_errors_to_vb4</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$method</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__return-type">array&lt;string|int, mixed&gt;&nbsp;</span><span class="phpdocumentor-signature__argument__reference-operator">&amp;</span><span class="phpdocumentor-signature__argument__name">$data</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
 
+    <div class="phpdocumentor-label-line">
+        </div>
     
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
     <dl class="phpdocumentor-argument-list">
@@ -2875,10 +2866,6 @@ primarily intended for testing</p>
 
     
 
-        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">mixed</span>
-            &mdash;
-        
     
 </article>
                     <article
@@ -2890,6 +2877,7 @@ primarily intended for testing</p>
     <h4 class="phpdocumentor-element__name" id="method_map_vb5_output_to_vb4">
         map_vb5_output_to_vb4()
         <a href="classes/vB-Api.html#method_map_vb5_output_to_vb4" class="headerlink"><i class="fas fa-link"></i></a>
+
     </h4>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="vb/api.php"><a href="files/vb-api.html"><abbr title="vb/api.php">api.php</abbr></a></abbr>
@@ -2905,6 +2893,8 @@ with vb4.</p>
     <span class="phpdocumentor-signature__visibility">public</span>
             <span class="phpdocumentor-signature__static">static</span>        <span class="phpdocumentor-signature__name">map_vb5_output_to_vb4</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$method</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__return-type">array&lt;string|int, mixed&gt;&nbsp;</span><span class="phpdocumentor-signature__argument__reference-operator">&amp;</span><span class="phpdocumentor-signature__argument__name">$data</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
 
+    <div class="phpdocumentor-label-line">
+        </div>
     
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
     <dl class="phpdocumentor-argument-list">
@@ -2930,78 +2920,194 @@ with vb4.</p>
 
     
 
-        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
-    <span class="phpdocumentor-signature__response_type">mixed</span>
-            &mdash;
-        
     
 </article>
             </section>
 
-        
+        <div class="phpdocumentor-modal" id="source-view">
+    <div class="phpdocumentor-modal-bg" data-exit-button></div>
+    <div class="phpdocumentor-modal-container">
+        <div class="phpdocumentor-modal-content">
+            <pre style="max-height: 500px; overflow-y: scroll" data-src="files/vb/api/search.php.txt" class="language-php line-numbers linkable-line-numbers"></pre>
+        </div>
+        <button data-exit-button class="phpdocumentor-modal__close">&times;</button>
+    </div>
+</div>
+
     <script type="text/javascript">
-        function loadExternalCodeSnippets(line) {
-            Array.prototype.slice.call(document.querySelectorAll('pre[data-src]')).forEach((pre) => {
-                var src = pre.getAttribute('data-src').replace( /\\/g, '/');
-                var extension = (src.match(/\.(\w+)$/) || [, ''])[1];
-                var language = 'php';
+        (function () {
+            function loadExternalCodeSnippet(el, url, line) {
+                Array.prototype.slice.call(el.querySelectorAll('pre[data-src]')).forEach((pre) => {
+                    const src = url || pre.getAttribute('data-src').replace(/\\/g, '/');
+                    const language = 'php';
 
-                var code = document.createElement('code');
-                code.className = 'language-' + language;
+                    const code = document.createElement('code');
+                    code.className = 'language-' + language;
+                    pre.textContent = '';
+                    pre.setAttribute('data-line', line)
+                    code.textContent = 'Loading…';
+                    pre.appendChild(code);
 
-                pre.textContent = '';
+                    var xhr = new XMLHttpRequest();
 
-                pre.setAttribute('data-line', line)
-                code.textContent = 'Loading…';
+                    xhr.open('GET', src, true);
 
-                pre.appendChild(code);
-
-                var xhr = new XMLHttpRequest();
-
-                xhr.open('GET', src, true);
-
-                xhr.onreadystatechange = function () {
-                    if (xhr.readyState == 4) {
+                    xhr.onreadystatechange = function () {
+                        if (xhr.readyState !== 4) {
+                            return;
+                        }
 
                         if (xhr.status < 400 && xhr.responseText) {
                             code.textContent = xhr.responseText;
-
                             Prism.highlightElement(code);
+                            return;
                         }
-                        else if (xhr.status >= 400) {
+
+                        if (xhr.status === 404) {
+                            code.textContent = '✖ Error: File could not be found';
+                            return;
+                        }
+
+                        if (xhr.status >= 400) {
                             code.textContent = '✖ Error ' + xhr.status + ' while fetching file: ' + xhr.statusText;
+                            return;
                         }
-                        else {
-                            code.textContent = '✖ Error: File does not exist, is empty or trying to view from localhost';
-                        }
+
+                        code.textContent = '✖ Error: An unknown error occurred';
+                    };
+
+                    xhr.send(null);
+                });
+            }
+
+            const modalButtons = document.querySelectorAll("[data-modal]");
+            const openedAsLocalFile = window.location.protocol === 'file:';
+            if (modalButtons.length > 0 && openedAsLocalFile) {
+                console.warn(
+                    'Viewing the source code is unavailable because you are opening this page from the file:// scheme; ' +
+                    'browsers block XHR requests when a page is opened this way'
+                );
+            }
+
+            modalButtons.forEach(function (trigger) {
+                if (openedAsLocalFile) {
+                    trigger.setAttribute("hidden", "hidden");
+                }
+
+                trigger.addEventListener("click", function (event) {
+                    event.preventDefault();
+                    const modal = document.getElementById(trigger.dataset.modal);
+                    if (!modal) {
+                        console.error(`Modal with id "${trigger.dataset.modal}" could not be found`);
+                        return;
                     }
-                };
+                    modal.classList.add("phpdocumentor-modal__open");
 
-                xhr.send(null);
-            });
-        }
-
-        var modals = document.querySelectorAll("[data-modal]");
-
-        modals.forEach(function (trigger) {
-            trigger.addEventListener("click", function (event) {
-                //event.preventDefault();
-                const modal = document.getElementById(trigger.dataset.modal);
-                modal.classList.add("phpdocumentor-modal__open");
-                loadExternalCodeSnippets(trigger.dataset.line)
-                const exits = modal.querySelectorAll("[data-exit-button]");
-                exits.forEach(function (exit) {
-                    exit.addEventListener("click", function (event) {
-                        event.preventDefault();
-                        modal.classList.remove("phpdocumentor-modal__open");
+                    loadExternalCodeSnippet(modal, trigger.dataset.src || null, trigger.dataset.line)
+                    const exits = modal.querySelectorAll("[data-exit-button]");
+                    exits.forEach(function (exit) {
+                        exit.addEventListener("click", function (event) {
+                            event.preventDefault();
+                            modal.classList.remove("phpdocumentor-modal__open");
+                        });
                     });
                 });
             });
-        });
+        })();
     </script>
 
     </article>
-                <section data-search-results class="phpdocumentor-search-results phpdocumentor-search-results--hidden">
+                                </section>
+                <section class="phpdocumentor-on-this-page__sidebar">
+                                
+    <section class="phpdocumentor-on-this-page__content">
+        <strong class="phpdocumentor-on-this-page__title">On this page</strong>
+
+        <ul class="phpdocumentor-list -clean">
+            <li class="phpdocumentor-on-this-page-section__title">Table Of Contents</li>
+            <li>
+                <ul class="phpdocumentor-list -clean">
+                                        <li><a href="classes/vB-Api-Search.html#toc-constants">Constants</a></li>
+                                                                                <li><a href="classes/vB-Api-Search.html#toc-methods">Methods</a></li>
+                                    </ul>
+            </li>
+                            <li class="phpdocumentor-on-this-page-section__title">Constants</li>
+                <li>
+                    <ul class="phpdocumentor-list -clean">
+                                                    <li><a href="classes/vB-Api-Search.html#constant_FILTER_CHANNELAGE">FILTER_CHANNELAGE</a></li>
+                                                    <li><a href="classes/vB-Api-Search.html#constant_FILTER_DATEALL">FILTER_DATEALL</a></li>
+                                                    <li><a href="classes/vB-Api-Search.html#constant_FILTER_FOLLOW">FILTER_FOLLOW</a></li>
+                                                    <li><a href="classes/vB-Api-Search.html#constant_FILTER_FOLLOWING_ALL">FILTER_FOLLOWING_ALL</a></li>
+                                                    <li><a href="classes/vB-Api-Search.html#constant_FILTER_FOLLOWING_BOTH">FILTER_FOLLOWING_BOTH</a></li>
+                                                    <li><a href="classes/vB-Api-Search.html#constant_FILTER_FOLLOWING_CHANNEL">FILTER_FOLLOWING_CHANNEL</a></li>
+                                                    <li><a href="classes/vB-Api-Search.html#constant_FILTER_FOLLOWING_CONTENT">FILTER_FOLLOWING_CONTENT</a></li>
+                                                    <li><a href="classes/vB-Api-Search.html#constant_FILTER_FOLLOWING_USERS">FILTER_FOLLOWING_USERS</a></li>
+                                                    <li><a href="classes/vB-Api-Search.html#constant_FILTER_LASTDAY">FILTER_LASTDAY</a></li>
+                                                    <li><a href="classes/vB-Api-Search.html#constant_FILTER_LASTMONTH">FILTER_LASTMONTH</a></li>
+                                                    <li><a href="classes/vB-Api-Search.html#constant_FILTER_LASTVISIT">FILTER_LASTVISIT</a></li>
+                                                    <li><a href="classes/vB-Api-Search.html#constant_FILTER_LASTWEEK">FILTER_LASTWEEK</a></li>
+                                                    <li><a href="classes/vB-Api-Search.html#constant_FILTER_LASTYEAR">FILTER_LASTYEAR</a></li>
+                                                    <li><a href="classes/vB-Api-Search.html#constant_FILTER_MARKED_READ">FILTER_MARKED_READ</a></li>
+                                                    <li><a href="classes/vB-Api-Search.html#constant_FILTER_MARKED_UNREAD">FILTER_MARKED_UNREAD</a></li>
+                                                    <li><a href="classes/vB-Api-Search.html#constant_FILTER_SHOW_EVENT">FILTER_SHOW_EVENT</a></li>
+                                                    <li><a href="classes/vB-Api-Search.html#constant_FILTER_SHOW_GALLERY">FILTER_SHOW_GALLERY</a></li>
+                                                    <li><a href="classes/vB-Api-Search.html#constant_FILTER_SHOW_LINK">FILTER_SHOW_LINK</a></li>
+                                                    <li><a href="classes/vB-Api-Search.html#constant_FILTER_SHOW_POLL">FILTER_SHOW_POLL</a></li>
+                                                    <li><a href="classes/vB-Api-Search.html#constant_FILTER_SHOW_TEXT">FILTER_SHOW_TEXT</a></li>
+                                                    <li><a href="classes/vB-Api-Search.html#constant_FILTER_SHOW_VIDEO">FILTER_SHOW_VIDEO</a></li>
+                                                    <li><a href="classes/vB-Api-Search.html#constant_FILTER_STARTER_ONLY">FILTER_STARTER_ONLY</a></li>
+                                                    <li><a href="classes/vB-Api-Search.html#constant_FILTER_TOPICAGE">FILTER_TOPICAGE</a></li>
+                                                    <li><a href="classes/vB-Api-Search.html#constant_FILTER_VIEW_ACTIVITY">FILTER_VIEW_ACTIVITY</a></li>
+                                                    <li><a href="classes/vB-Api-Search.html#constant_FILTER_VIEW_CONVERSATION_STREAM">FILTER_VIEW_CONVERSATION_STREAM</a></li>
+                                                    <li><a href="classes/vB-Api-Search.html#constant_FILTER_VIEW_CONVERSATION_THREAD">FILTER_VIEW_CONVERSATION_THREAD</a></li>
+                                                    <li><a href="classes/vB-Api-Search.html#constant_FILTER_VIEW_CONVERSATION_THREAD_SEARCH">FILTER_VIEW_CONVERSATION_THREAD_SEARCH</a></li>
+                                                    <li><a href="classes/vB-Api-Search.html#constant_FILTER_VIEW_TOPIC">FILTER_VIEW_TOPIC</a></li>
+                                                    <li><a href="classes/vB-Api-Search.html#constant_IGNORE_CACHE">IGNORE_CACHE</a></li>
+                                                    <li><a href="classes/vB-Api-Search.html#constant_SEARCH_TYPE_SYSTEM">SEARCH_TYPE_SYSTEM</a></li>
+                                                    <li><a href="classes/vB-Api-Search.html#constant_SEARCH_TYPE_USER">SEARCH_TYPE_USER</a></li>
+                                            </ul>
+                </li>
+            
+            
+                        <li class="phpdocumentor-on-this-page-section__title">Methods</li>
+            <li>
+                <ul class="phpdocumentor-list -clean">
+                                            <li><a href="classes/vB-Trait-NoSerialize.html#method___serialize">__serialize()</a></li>
+                                            <li><a href="classes/vB-Trait-NoSerialize.html#method___sleep">__sleep()</a></li>
+                                            <li><a href="classes/vB-Trait-NoSerialize.html#method___unserialize">__unserialize()</a></li>
+                                            <li><a href="classes/vB-Trait-NoSerialize.html#method___wakeup">__wakeup()</a></li>
+                                            <li><a href="classes/vB-Api.html#method_callNamed">callNamed()</a></li>
+                                            <li><a href="classes/vB-Api.html#method_checkApiState">checkApiState()</a></li>
+                                            <li><a href="classes/vB-Api.html#method_clearCache">clearCache()</a></li>
+                                            <li><a href="classes/vB-Api-Search.html#method_get_all_bad_words">get_all_bad_words()</a></li>
+                                            <li><a href="classes/vB-Api-Search.html#method_get_bad_words">get_bad_words()</a></li>
+                                            <li><a href="classes/vB-Api-Search.html#method_get_good_words">get_good_words()</a></li>
+                                            <li><a href="classes/vB-Api.html#method_getApiClassName">getApiClassName()</a></li>
+                                            <li><a href="classes/vB-Api-Search.html#method_getCacheTTL">getCacheTTL()</a></li>
+                                            <li><a href="classes/vB-Api-Search.html#method_getChannels">getChannels()</a></li>
+                                            <li><a href="classes/vB-Api-Search.html#method_getChannelTopics">getChannelTopics()</a></li>
+                                            <li><a href="classes/vB-Api-Search.html#method_getInfo">getInfo()</a></li>
+                                            <li><a href="classes/vB-Api-Search.html#method_getInitialNodes">getInitialNodes()</a></li>
+                                            <li><a href="classes/vB-Api-Search.html#method_getInitialResults">getInitialResults()</a></li>
+                                            <li><a href="classes/vB-Api-Search.html#method_getMoreNodes">getMoreNodes()</a></li>
+                                            <li><a href="classes/vB-Api-Search.html#method_getMoreResults">getMoreResults()</a></li>
+                                            <li><a href="classes/vB-Api-Search.html#method_getPageNumber">getPageNumber()</a></li>
+                                            <li><a href="classes/vB-Api-Search.html#method_getSearchableContentTypes">getSearchableContentTypes()</a></li>
+                                            <li><a href="classes/vB-Api-Search.html#method_getSearchResult">getSearchResult()</a></li>
+                                            <li><a href="classes/vB-Api.html#method_instance">instance()</a></li>
+                                            <li><a href="classes/vB-Api.html#method_instanceInternal">instanceInternal()</a></li>
+                                            <li><a href="classes/vB-Api-Search.html#method_is_index_word">is_index_word()</a></li>
+                                            <li><a href="classes/vB-Api.html#method_map_vb4_input_to_vb5">map_vb4_input_to_vb5()</a></li>
+                                            <li><a href="classes/vB-Api.html#method_map_vb5_errors_to_vb4">map_vb5_errors_to_vb4()</a></li>
+                                            <li><a href="classes/vB-Api.html#method_map_vb5_output_to_vb4">map_vb5_output_to_vb4()</a></li>
+                                    </ul>
+            </li>
+                    </ul>
+    </section>
+
+                </section>
+                            </div>
+            <section data-search-results class="phpdocumentor-search-results phpdocumentor-search-results--hidden">
     <section class="phpdocumentor-search-results__dialog">
         <header class="phpdocumentor-search-results__header">
             <h2 class="phpdocumentor-search-results__title">Search results</h2>
@@ -3012,7 +3118,6 @@ with vb4.</p>
         </section>
     </section>
 </section>
-            </div>
         </div>
         <a href="classes/vB-Api-Search.html#top" class="phpdocumentor-back-to-top"><i class="fas fa-chevron-circle-up"></i></a>
 
