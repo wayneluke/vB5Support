@@ -1,68 +1,0 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
-  <channel>
-    <title>vBulletin Cloud on vB5 Manual and API Documentation</title>
-    <link>http://vb5support.com/vbulletin_cloud/</link>
-    <description>Recent content in vBulletin Cloud on vB5 Manual and API Documentation</description>
-    <generator>Hugo -- gohugo.io</generator><atom:link href="http://vb5support.com/vbulletin_cloud/index.xml" rel="self" type="application/rss+xml" />
-    <item>
-      <title>Cloud Backups</title>
-      <link>http://vb5support.com/vbulletin_cloud/data_backups/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      
-      <guid>http://vb5support.com/vbulletin_cloud/data_backups/</guid>
-      <description>Automatic Backups The cloud system will automatically back up your database nightly. We retain 30 days of backup. If you need a backup restored, contact vBulletin Support. Restoring a backup will undo any changes made after the backup was created.
-Off-site Backups. You can request a backup of your site data. This includes the database, attachments, avatars, smilies, and other customized data. To request a backup, visit your Member&amp;rsquo;s Area and click the link to the right of your license information.</description>
-    </item>
-    
-    <item>
-      <title>Custom Domain Names.</title>
-      <link>http://vb5support.com/vbulletin_cloud/custom_domain_names/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      
-      <guid>http://vb5support.com/vbulletin_cloud/custom_domain_names/</guid>
-      <description>Obtaining a domain name for your site When you create your vBulletin Cloud account, you can register a personal custom domain name to use with your site. When asked, enter your choice of domain name and the system will perform a search of available domain names and similar domain names. Make your choice from the resulting list. Once you make your choice, we cannot change it. Make sure that you are happy with the choice you make.</description>
-    </item>
-    
-    <item>
-      <title>Feature Comparison</title>
-      <link>http://vb5support.com/vbulletin_cloud/feature_comparison/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      
-      <guid>http://vb5support.com/vbulletin_cloud/feature_comparison/</guid>
-      <description>FeaturevBulletin ConnectvBulletin Cloud- Available
-- Not Available
-Note – The above is not a comprehensive list of differences, but are the most likely differences you will notice. In general vBCloud has all features of VB5 except those that could pose a danger to overall system security.Forums, Articles, Blogs, GroupsPosts, Photo Albums, Links, PollsUsergroups Based PermissionsResponsive DesignSite BuilderQuick Setup FeatureBuilt In Ad LocationsPaid SubscriptionsSupport for Google AnalyticsMobile Suite CompatibilityCustom SmiliesMultiple Language SupportCustom User Profile FieldsFile AttachmentsHuman Verification SystemLikes SystemStyle Variables AccessMultiple Built-In ThemesCan Import 3rd Party StylesPartialDirect access to TemplatesText Only TemplatesCan Use Template HooksText Only TemplatesCan Use 3rd Party AddonsCustom PHPOutgoing RSS FeedsIncoming RSS FeedsCustom SMTP Email SupportVaries by planAutomatic BackupsAutomatic UpgradesTicket Support30 daysVaries by planForum Support</description>
-    </item>
-    
-    <item>
-      <title>Frequently Asked Questions</title>
-      <link>http://vb5support.com/vbulletin_cloud/frequent_questions/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      
-      <guid>http://vb5support.com/vbulletin_cloud/frequent_questions/</guid>
-      <description>Common Q&amp;amp;A Can I migrate my current vBulletin site into your Cloud Platform? Yes, we can import any version of vBulletin from 3.6 and higher into the vBCloud platform. Please contact sales to get started with the migration process. What version does vBulletin cloud run on? vBulletin Cloud runs on vBulletin 5 connect, with a few specialized features for Cloud Users. Cloud customers will always be on the latest version of the vBulletin 5 connect software.</description>
-    </item>
-    
-    <item>
-      <title>Migrating Existing Site.</title>
-      <link>http://vb5support.com/vbulletin_cloud/migrate_to_cloud/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      
-      <guid>http://vb5support.com/vbulletin_cloud/migrate_to_cloud/</guid>
-      <description>We can migrate your existing vBulletin site to vBulletin Cloud. This service is available for vBulletin 3, vBulletin 4, and vBulletin 5. When we migrate your site, we will also update it to the latest version of vBulletin currently available. The migration includes users, all user data, forums/channels, topics and replies. Once migration is completed, you will be able to select one of the provided themes or design your own.</description>
-    </item>
-    
-    <item>
-      <title>Using the Cloud Console</title>
-      <link>http://vb5support.com/vbulletin_cloud/cloud_console/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      
-      <guid>http://vb5support.com/vbulletin_cloud/cloud_console/</guid>
-      <description>The Cloud Console is where you control your vBulletin Cloud Account.
-Dashboard The dashboard is the main point of entry into your cloud console. There are two things available on this screen, your domain name control and bandwidth used. The screen also tells you how to enable Google Analytics.
-Domain name This will tell you if your custom domain name is currently active. You can activate or deactivate your custom domain in this area.</description>
-    </item>
-    
-  </channel>
-</rss>

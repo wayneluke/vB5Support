@@ -1,47 +1,0 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
-  <channel>
-    <title>Managing Blogs on vB5 Manual and API Documentation</title>
-    <link>http://vb5support.com/end_user_guide/managing_blogs/</link>
-    <description>Recent content in Managing Blogs on vB5 Manual and API Documentation</description>
-    <generator>Hugo -- gohugo.io</generator><atom:link href="http://vb5support.com/end_user_guide/managing_blogs/index.xml" rel="self" type="application/rss+xml" />
-    <item>
-      <title>How do I create a new blog?</title>
-      <link>http://vb5support.com/end_user_guide/managing_blogs/how-do-i-create-a-new-blog/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      
-      <guid>http://vb5support.com/end_user_guide/managing_blogs/how-do-i-create-a-new-blog/</guid>
-      <description>To create a new blog, just go to the Blogs tab and right underneath the Blogs tab in the main navigation is the option to Create a New Blog. Once you click that link, you will be on the General Settings page and be able to set some options for your new Blog:
-Title - your Blog title. Create as fancy of a title that you want.Description - a short description of your Blog.</description>
-    </item>
-    
-    <item>
-      <title>How do I add additional owners to my blog?</title>
-      <link>http://vb5support.com/end_user_guide/managing_blogs/how-do-i-add-additional-owners-to-my-blog/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      
-      <guid>http://vb5support.com/end_user_guide/managing_blogs/how-do-i-add-additional-owners-to-my-blog/</guid>
-      <description>If you wish to share ownership of your Blog, you would go to the main Blog page and on the right side under Blog Summary there is anAdministrative dropdown menu. Go to that menu and select Manage Contributors. On the right side of that page is a text area next tothe heading &#34;Add Moderator&#34;. You may enter the other user&#39;s username, hit tag to get it accepted and then click Add.</description>
-    </item>
-    
-    <item>
-      <title>How do I manage Blog Members?</title>
-      <link>http://vb5support.com/end_user_guide/managing_blogs/how-do-i-manage-blog-members/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      
-      <guid>http://vb5support.com/end_user_guide/managing_blogs/how-do-i-manage-blog-members/</guid>
-      <description>If you wish to invite members to subscribe to your Blog, you would go to the main Blog page and on the right side under Blog Summary is an Administrative dropdown menu. Go to that menu and select Invite Members. On the right side of that page is a text area next to theheading &#34;Enter User Names&#34;. You may enter other user&#39;s usernames separated by a comma and then hit the Save and Publish button on thebottom.</description>
-    </item>
-    
-    <item>
-      <title>Managing Permissions and Privacy for your Blog</title>
-      <link>http://vb5support.com/end_user_guide/managing_blogs/managing-permissions-and-privacy-for-your-blog/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      
-      <guid>http://vb5support.com/end_user_guide/managing_blogs/managing-permissions-and-privacy-for-your-blog/</guid>
-      <description>To decide who may view and comment on your Blog, you would go to the main Blog page and on the right side under Blog Summary is anAdministrative dropdown menu. Go to that menu and select Permissions&amp; Privacy. On this page, you may set the following:
-Default Entry Options - you may set whether Comments are allowed by default (you may change this per each entry when it is created) and whether you wish to Moderate the CommentsSubscriber requests - set whether to auto-accept subscribers or require approval.</description>
-    </item>
-    
-  </channel>
-</rss>
