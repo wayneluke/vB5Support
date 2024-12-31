@@ -1,0 +1,270 @@
+<?php if (!defined('VB_ENTRY')) die('Access denied.');
+/*========================================================================*\
+|| ###################################################################### ||
+|| # vBulletin 6.1.0 Alpha 4 Week 2 - Licence Number VBCW2VFT7A
+|| # ------------------------------------------------------------------ # ||
+|| # Copyright 2000-2024 MH Sub I, LLC dba vBulletin. All Rights Reserved.  # ||
+|| # This file may not be redistributed in whole or significant part.   # ||
+|| # ----------------- VBULLETIN IS NOT FREE SOFTWARE ----------------- # ||
+|| # http://www.vbulletin.com | http://www.vbulletin.com/license.html   # ||
+|| ###################################################################### ||
+\*========================================================================*/
+
+/**
+* Mail queueing class. This class should be accessed as a singleton via fetchInstance()!
+* This class does not actually send emails, but rather queues them to be sent later in a batch.
+*
+* @package 		vBulletin
+* @date 		$Date: 2010-05-29 02:50:59 +0800
+*/
+class vB_Mail_Queue extends vB_Mail
+{
+	/**
+	* The data to insert into the mail queue
+	*
+	* @var	array
+	*/
+	protected $mailsql = [];
+
+	/**
+	* The number of mails being inserted into the queue
+	*
+	* @var	string
+	*/
+	protected $mailcounter = 0;
+
+	/**
+	* Whether to do bulk inserts into the database.
+	* Never set this option directly!
+	*
+	* @var	boolean
+	*/
+	protected $bulk = false;
+
+	protected function __construct()
+	{
+		// Register shutdown function here
+		$useCron = vB::getDatastore()->getOption('mailqueue');
+
+		if (empty($useCron))
+		{
+			vB_Shutdown::instance()->add(['vB_Mail', 'execMailQueue']);
+		}
+	}
+
+	/**
+	* Inserts the message into the queue instead of sending it.
+	*
+	* @return	string	True on success, false on failure
+	*/
+	protected function execSend()
+	{
+		if (!$this->toemail)
+		{
+			return false;
+		}
+
+		$data = [
+			'dateline' => vB::getRequest()->getTimeNow(),
+			'toemail' => $this->toemail,
+			'fromemail' => $this->fromemail,
+			'subject' => $this->subject,
+			'message' => $this->message,
+			'header' => $this->headers,
+		];
+
+		if ($this->bulk)
+		{
+			$this->mailsql[] = $data;
+
+			$this->mailcounter++;
+
+			// current insert exceeds half megabyte, insert it and start over
+			if ($this->arraySize($this->mailsql) > 524288)
+			{
+				$this->setBulk(false);
+				$this->setBulk(true);
+			}
+		}
+		else
+		{
+			/*insert query*/
+			$db = vB::getDbAssertor();
+			$db->insert('mailqueue', $data);
+
+
+			/**
+			 *	This is more of a general comment about the mailqueue datastore items.  Updating the datastore
+			 *	table directly via queries is bad mojo.  We should be going through the class because
+			 *	as the older comments note if we are using alternative datastore implementations then things
+			 *	are going to get wierd. This code appear to, in it's origin, predate the alternative datastore
+			 *	implementations and appears to be a hack to keep them working.  However we aren't consistent about
+			 *	how we update (the bulk below reads from the datatsore and updates without a direct query.  But
+			 *	there seems to be some concern about counts potentially getting off here because of atomicity
+			 *	(which the db should handle but the memcache datastore won't).
+			 *
+			 *	We only use the count to determine if we should attempt to run the queue.  Literally we never care
+			 *	what the count is, only if it's greater than 0.  We can't query the table	directly because it may
+			 *	be locked and there isn't a good way to check if it's locked.  Though in practice I'm not sure how
+			 *	much value we really gain there since we most likely have a non zero count when the table is locked
+			 *	so we're likely to plow through the check and hang on the lock *anyway*.
+			 *
+			 *	In any event making changes here is going to require a great deal of hard to do testing that will
+			 *	need to be it's own mini project.
+			 */
+			$db->assertQuery('mailqueue_updatecount', ['counter' => 1]);
+
+			// if we're using a alternate datastore, we need to give it an integer value
+			// this may not be atomic
+			$mailqueue_db = $db->getRow('datastore', ['title' => 'mailqueue']);
+			vB::getDatastore()->build('mailqueue', intval($mailqueue_db['data']));
+		}
+
+		return true;
+	}
+
+	protected function arraySize($a)
+	{
+	    $size = 0;
+	    foreach($a as $v)
+	    {
+	        $size += is_array($v) ? $this->arraySize($v) : strlen($v);
+	    }
+	    return $size;
+	}
+
+	/**
+	* Sets the bulk option. If disabling the option, this also flushes
+	* the cache into the database.
+	*
+	* @param boolean $bulk
+	*/
+	function setBulk($bulk)
+	{
+		if ($bulk)
+		{
+			$this->bulk = true;
+			$this->mailcounter = 0;
+			$this->mailsql = '';
+		}
+		else if ($this->mailcounter AND $this->mailsql)
+		{
+			// turning off bulk sending, so save all the mails
+
+			/*insert query*/
+			$insertdata = [];
+			foreach ($this->mailsql as $sql)
+			{
+				$insertdata[] = array_values($sql);
+			}
+
+			vB::getDbAssertor()->insertMultiple('mailqueue', array_keys($this->mailsql[0]), $insertdata);
+
+			$currentcount = vB::getDatastore()->getValue('mailqueue');
+
+			// if we're using a alternate datastore, we need to give it an integer value
+			// this may not be atomic
+			vB::getDatastore()->build('mailqueue', intval($currentcount) + $this->mailcounter);
+		}
+
+		$this->bulk = true;
+		$this->mailsql = [];
+		$this->mailcounter = 0;
+	}
+
+	/**
+	* Singleton emulator. Fetches the instance if it doesn't exist.
+	* Be sure to accept a reference if using this function!
+	*
+	* @return	vB_QueueMail	Reference to the instance
+	*/
+	public static function fetchInstance()
+	{
+		static $instance = null;
+
+		if ($instance === null)
+		{
+			$instance = new vB_Mail_Queue();
+		}
+
+		return $instance;
+	}
+
+	/**
+	* The only part of this class which actually sends an email.
+	* Sends mail from the queue.
+	*/
+	public function execQueue()
+	{
+		$db = vB::getDbAssertor();
+
+		$vboptions = vB::getDatastore()->getValue('options');
+		if ($vboptions['usemailqueue'] == 2)
+		{
+			// Lock mailqueue table so that only one process can
+			// send a batch of emails and then delete them
+			$db->assertQuery('mailqueue_locktable');
+		}
+
+		$emails = $db->getRows('mailqueue_fetch', array(
+			'limit' => intval($vboptions['emailsendnum'])
+		));
+
+		$mailqueueids = [];
+		$newmail = 0;
+		$emailarray = [];
+		foreach ($emails as $email)
+		{
+			// count up number of mails about to send
+			$mailqueueids[] = $email['mailqueueid'];
+			$newmail++;
+			$emailarray[] = $email;
+		}
+		if (!empty($mailqueueids))
+		{
+			// remove mails from queue - to stop duplicates being sent
+			$db->delete('mailqueue', ['mailqueueid' => $mailqueueids]);
+
+			if ($vboptions['usemailqueue'] == 2)
+			{
+				$db->assertQuery('unlock_tables');
+			}
+
+			$prototype = vB_Mail::fetchLibrary();
+
+			foreach ($emailarray AS $email)
+			{
+				// send those mails
+				$mail = clone($prototype);
+				$mail->quickSet($email['toemail'], $email['subject'], $email['message'], $email['header'], $email['fromemail']);
+				$mail->send();
+			}
+
+			$newmail = 'data - ' . intval($newmail);
+		}
+		else
+		{
+			if ($vboptions['usemailqueue'] == 2)
+			{
+				$db->assertQuery('unlock_tables');
+			}
+
+			$newmail = 0;
+		}
+
+		// update number of mails remaining
+		$db->assertQuery('mailqueue_updatecount2', ['newmail' => $newmail]);
+
+		// if we're using a alternate datastore, we need to give it an integer value
+		// this may not be atomic
+		$mailqueue_db = $db->getRow('datastore', ['title' => 'mailqueue']);
+		vB::getDatastore()->build('mailqueue', intval($mailqueue_db['data']));
+	}
+}
+
+/*=========================================================================*\
+|| #######################################################################
+|| # Downloaded: 12:50, Tue Dec 24th 2024
+|| # CVS: $RCSfile$ - $Revision: 107312 $
+|| #######################################################################
+\*=========================================================================*/

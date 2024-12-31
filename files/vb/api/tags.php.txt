@@ -1,0 +1,913 @@
+<?php
+/*========================================================================*\
+|| ###################################################################### ||
+|| # vBulletin 6.1.0 Alpha 4 Week 2 - Licence Number VBCW2VFT7A
+|| # ------------------------------------------------------------------ # ||
+|| # Copyright 2000-2024 MH Sub I, LLC dba vBulletin. All Rights Reserved.  # ||
+|| # This file may not be redistributed in whole or significant part.   # ||
+|| # ----------------- VBULLETIN IS NOT FREE SOFTWARE ----------------- # ||
+|| # http://www.vbulletin.com | http://www.vbulletin.com/license.html   # ||
+|| ###################################################################### ||
+\*========================================================================*/
+
+/**
+ * vB_Api_Tags
+ *
+ * @package vBApi
+ */
+class vB_Api_Tags extends vB_Api
+{
+	protected $tagsObj = [];
+	protected $errors = null;
+	protected $library = null;
+
+	public function __construct()
+	{
+		parent::__construct();
+
+		$this->library = vB_Library::instance('tags');
+	}
+
+	/**
+	 * Adds new tags and/or deletes tags (added by the current user) if they have removed them from the list
+	 *
+	 * @param	int	Node ID
+	 * @param	array	List of tags
+	 *
+	 * @return array -- tag information for the tags on the node. See getNodeTags
+	 */
+	public function updateUserTags($nodeid, array $taglist = [])
+	{
+		$nodeid = (int) $nodeid;
+		$userid = (int) vB::getUserContext()->fetchUserId();
+
+		if (empty($this->tagsObj[$nodeid]))
+		{
+			$this->tagsObj[$nodeid] = new vB_Tags($nodeid);
+		}
+
+		$nodeTagInfo = $this->getNodeTags($nodeid);
+		$nodeTags = $nodeTagInfo['tags'];
+
+		$canManageTags = $this->tagsObj[$nodeid]->canManageTag();
+
+		$remove = [];
+		foreach ($nodeTags AS $tag)
+		{
+			if ($tag['userid'] == $userid OR $canManageTags)
+			{
+				if (!in_array($tag['tagtext'], $taglist))
+				{
+					$remove[] = $tag['tagtext'];
+				}
+			}
+		}
+
+		if (count($remove) > 0)
+		{
+			$this->removeTags($nodeid, $remove);
+		}
+
+		if (count($taglist))
+		{
+			$return = $this->addTags($nodeid, $taglist);
+		}
+		else
+		{
+			$return = $this->getNodeTags($nodeid);
+		}
+
+		// Note, node reindex is done as part of removeTags() & addTags()
+
+		return $return;
+	}
+
+	/**
+	 * Add tags to the current item
+	 *
+	 * @param int $nodeid
+	 * @param string|array $taglist
+	 *
+	 * @return array -- tag information for the tags on the node. See getNodeTags
+	 */
+	public function addTags($nodeid, $taglist)
+	{
+		$nodeid = (int) $nodeid;
+
+		if ($nodeid < 1)
+		{
+			throw new vB_Exception_Api('invalid_data_w_x_y_z', [$nodeid, '$nodeid', __CLASS__, __FUNCTION__]);
+		}
+
+		if (empty($this->tagsObj[$nodeid]))
+		{
+			$this->tagsObj[$nodeid] = new vB_Tags($nodeid);
+		}
+
+		// Note, addTagsToContent() checks canAddTag()
+		$errors = $this->tagsObj[$nodeid]->addTagsToContent($taglist);
+		if (sizeof($errors) > 0)
+		{
+			throw $this->getExceptionFromErrors($errors);
+		}
+
+		vB_Library::instance('search')->index($nodeid);
+		$tags = $this->getNodeTags($nodeid);
+
+		// addTags() is called by both add (calls addTags) and update (calls updateUserTags, which calls addTags)
+		$this->monitorWordsInTags($nodeid, $tags);
+
+		return $tags;
+	}
+
+	protected function monitorWordsInTags($nodeid, $nodeTagInfo = false)
+	{
+		if (!$nodeTagInfo)
+		{
+			$nodeTagInfo = $this->getNodeTags($nodeid);
+		}
+
+		if (!$nodeTagInfo)
+		{
+			return;
+		}
+
+		$tags = [];
+		foreach ($nodeTagInfo['tags'] AS $tag)
+		{
+			$tags[] = $tag['tagtext'];
+		}
+
+		// Check for monitored words and send notifications
+		if (!empty($tags))
+		{
+			$this->library->monitorWords(implode(' ', $tags), 'node-tags', $nodeid);
+		}
+	}
+
+	/**
+	 * Checks if the taglist contains invalid tags
+	 *
+	 * @param  [string|array]  $taglist [Comma separated string or an array with the tags]
+	 * @param  integer $nodeid  		[The nodeid of the node the tags belong. If 0 this is done on node entry]
+	 * @return bool -- returns true on success, otherwise throws an exception.
+	 * @throws vB_Exception_Api
+	 */
+	public function validTags($taglist, $nodeid = 0)
+	{
+		/*
+			Only used internally. Should move to library?
+		 */
+		if (empty($this->tagsObj[$nodeid]))
+		{
+			$this->tagsObj[$nodeid] = new vB_Tags($nodeid);
+		}
+
+		$errorArray = [];
+		$this->library->filterTagList($taglist, $errorArray);
+
+		if (sizeof($errorArray) > 0)
+		{
+			throw $this->getExceptionFromErrors($errorArray);
+		}
+
+		return true;
+	}
+
+	/**
+	 * Inserts new tags to database
+	 *
+	 * @param $tagtext
+	 * @return array
+	 */
+	public function insertTags($tagtext)
+	{
+		if (!vB::getUserContext()->hasPermission('genericpermissions', 'cancreatetag'))
+		{
+			throw new vB_Exception_Api('tag_no_create');
+		}
+
+		$response = [];
+		$exception = new vB_Exception_Api();
+
+		if ($tagtext AND is_string($tagtext))
+		{
+			$tagdm = new vB_DataManager_Tag(vB_DataManager_Constants::ERRTYPE_ARRAY);
+			if ($tagdm->fetch_by_tagtext($tagtext))
+			{
+				$exception->add_error('tag_exists', []);
+			}
+
+			$errors = [];
+			$valid = $this->library->filterTagList([$tagtext], $errors);
+			if ($valid)
+			{
+				$tagdm->set('tagtext', $valid[0]);
+				$tagdm->set('dateline', vB::getRequest()->getTimeNow());
+				if ($tagdm->errors)
+				{
+					$exception->add_error($tagdm->errors, []);
+				}
+				$tagdm->save();
+				$response['result'] = true;
+			}
+			else
+			{
+				if (count($errors) > 0)
+				{
+					$exception->add_errors($errors);
+				}
+				else
+				{
+					$exception->add_error('invalid_tag_value', []);
+				}
+			}
+		}
+		else
+		{
+			$exception->add_error('invalid_tag_value', []);
+		}
+
+		//Exception Handling
+		if ($exception->has_errors())
+		{
+			throw $exception;
+		}
+
+		return $response;
+	}
+
+	/**
+	 * Sets the tag matching tag text (case insensitive) to the exact text given
+	 * Used to fix letter-case when merging tags via adminCP
+	 *
+	 * @param    String    $tagtext
+	 * @return   array     'result'
+	 */
+	public function updateTags($tagtext)
+	{
+		$this->checkHasAdminPermission('canadmintags');
+
+		$response = [];
+		$exception = new vB_Exception_Api();
+		$tagdm = new vB_DataManager_Tag(vB_DataManager_Constants::ERRTYPE_ARRAY);
+		if (!$tagdm->fetch_by_tagtext($tagtext))
+		{
+			$exception->add_error("tag_not_exist", []);
+		}
+		else
+		{
+			$tagdm->set('tagtext', $tagtext);
+			$tagdm->set('dateline', vB::getRequest()->getTimeNow());
+			if ($tagdm->errors)
+			{
+				$exception->add_error($tagdm->errors, []);
+			}
+			$response['result'] = $tagdm->save();
+		}
+
+		//Exception Handling
+		if ($exception->has_errors())
+		{
+			throw $exception;
+		}
+
+		/*
+		At the moment we are not rebuilding any affect nodes' taglists nor reindexing
+		those nodes for search. The only thing this function changes is the letter-case
+		of the tagtext, and AFAIK letter-casing is irrelevant to keyword searches. If
+		situations or locales where this affects search results are found, we will have
+		to revisit this.
+		 */
+
+		return $response;
+	}
+
+	/**
+	 * @uses	Create new tag for synonim tags
+	 * @param	Array, Array of tags to merge
+	 * @param	Integer, Id of canonical tag
+	 * @return	Mixed response
+	 */
+	public function createSynonyms($tagList, $targetid)
+	{
+		$this->checkHasAdminPermission('canadmintags');
+
+		$exception = new vB_Exception_Api();
+		$mergetagdm = new vB_DataManager_Tag(vB_DataManager_Constants::ERRTYPE_ARRAY);
+
+		//clear existing because they may be changed here.
+		$this->tagsObj = [];
+
+		$target = new vB_DataManager_Tag(vB_DataManager_Constants::ERRTYPE_ARRAY);
+		if (!$x= $target->fetch_by_id($targetid))
+		{
+			throw new vB_Exception_Api('tag_not_exist');
+		}
+
+		//if our targe is a synonym, make sure that we merge to its canonical tag
+		if ($target->is_synonym())
+		{
+			$targetid = $target->fetch_field('canonicaltagid');
+		}
+
+		//Make synonym for every tag in the list
+		foreach ($tagList AS $mergetagid)
+		{
+			if ($mergetagid == $targetid)
+			{
+				//making a tag a synonym of itself will cause bad things to happen.
+				continue;
+			}
+			if ($mergetagdm->fetch_by_id($mergetagid))
+			{
+				$mergetagdm->make_synonym($targetid);
+			}
+			else
+			{
+				$exception->add_error("tag_not_exist", []);
+			}
+		}
+
+		if ($mergetagdm->errors)
+		{
+			throw $mergetagdm->get_exception();
+		}
+		else
+		{
+			$response['result'] = true;
+		}
+
+		//Exception Handling
+		if ($exception->has_errors())
+		{
+			throw $exception;
+		}
+
+		/*
+		We may need to rebuild node.taglist & reindex nodes in bulk. VBV-20420
+		 */
+
+		return $response;
+	}
+
+	/**
+	 * @uses	Promote tags
+	 * @param	int|array     Tag id or array of tag ids
+	 *
+	 * @return	True if success
+	 */
+	public function promoteTags($taglist)
+	{
+		$this->checkHasAdminPermission('canadmintags');
+		$exception = new vB_Exception_Api();
+
+		if (!is_array($taglist))
+		{
+			$taglist = [$taglist];
+		}
+
+		//Check that tags exist and they are synonyms
+		$target = vB::getDbAssertor()->assertQuery('vBForum:tag', ['tagid' => $taglist]);
+
+		if ($target->valid())
+		{
+			$existTag = [];
+			foreach ($target AS $tag)
+			{
+				if ($tag['canonicaltagid'] == 0)
+				{
+					$existTag[] = $tag['tagid'];
+				}
+			}
+
+			$taglist = array_diff($taglist, $existTag);
+
+			if (!empty($taglist))
+			{
+				foreach ($taglist as $tagid)
+				{
+					$tagdm = new vB_DataManager_Tag(vB_DataManager_Constants::ERRTYPE_ARRAY);
+					if ($tagdm->fetch_by_id($tagid))
+					{
+						$tagdm->make_independent();
+					}
+					if ($tagdm->errors)
+					{
+						throw $tagdm->get_exception();
+					}
+				}
+				if (!$tagdm->errors)
+				{
+					$response['result'] = true;
+				}
+			}
+			else
+			{
+				$exception->add_error('cant_promote_tag_to_tag', []);
+			}
+		}
+		else
+		{
+			$exception->add_error('tag_not_exist', []);
+		}
+
+		//Exception Handling
+		if ($exception->has_errors())
+		{
+			throw $exception;
+		}
+
+		/*
+		TODO: We may need to rebuild node.taglist & reindex nodes in bulk.
+		Test and fix when synonym taglist issues are fixed. VBV-20420
+		 */
+
+		return $response;
+	}
+
+	/**
+	 * Get synonyms of a given tag
+	 * @param integer $tagid
+	 * @return array 'tags' => array of $tagid => $tagtext for the synonyms of $tagid
+	 */
+	public function getTagSynonyms($tagid)
+	{
+		$db = vB::getDbAssertor();
+		$exists = $db->getRow('vBForum:tag', [
+			vB_dB_Query::COLUMNS_KEY => ['tagid'],
+			'tagid' => $tagid,
+		]);
+
+		if (!$exists)
+		{
+			throw new vB_Exception_Api('tag_not_exist');
+		}
+
+		$set = $db->assertQuery('vBForum:tag',
+			[
+				vB_dB_Query::COLUMNS_KEY => ['tagid', 'tagtext'],
+				'canonicaltagid' => $tagid,
+			],
+			['field' => 'tagtext', 'direction' => vB_dB_Query::SORT_ASC]
+		);
+
+		$tags = [];
+		foreach ($set AS $tag)
+		{
+			$tags[$tag['tagid']] = $tag['tagtext'];
+		}
+
+		return ['tags' => $tags];
+	}
+
+	/**
+	 * Remove tags from an item
+	 *
+	 * @param	int $nodeid
+	 * @param	string|array $tags -- Tags to delete (if not specified it will delete all tags from node).
+	 * @return array -- standard success array
+	 */
+	public function removeTags($nodeid, $tags = [])
+	{
+		/*
+			Note, this is only used internally by updateUserTags().
+			The createcontent controller & JS seem to only call updateUserTags() & addTags()
+			never removeTags().
+			We may want to make this a private function or move it to the library.
+	 */
+		$nodeid = (int) $nodeid;
+
+		if ($nodeid < 1)
+		{
+			throw new vB_Exception_Api(
+				'invalid_data_w_x_y_z',
+				[$nodeid, '$nodeid', __CLASS__, __FUNCTION__]
+			);
+		}
+
+		if (empty($this->tagsObj[$nodeid]))
+		{
+			$this->tagsObj[$nodeid] = new vB_Tags($nodeid);
+		}
+
+		$errors = $this->tagsObj[$nodeid]->deleteTags($tags);
+		if (sizeof($errors))
+		{
+			throw $this->getExceptionFromErrors($errors);
+		}
+
+		vB_Library::instance('search')->index($nodeid);
+
+		return ['success' => true];
+	}
+
+	/**
+	 * Dissociates nodes from the specified tags, reindex the
+	 * affected nodes, then finally deletes the specified tags.
+	 * Node processing works in batches and tag deletion will
+	 * not happen until all nodes are unlinked from the tags.
+	 * Caller may need to re-call this function to finish
+	 * deleting tags based on return value.
+	 *
+	 * @param Int|Int[]   $killTagList   Tag id or ids to delete
+	 * @param Int         $perpage       Nodes to process perpage
+	 *
+	 * @return Array    bool   'success'     true if done
+	 *                  int    'remaining'   remaining node count
+	 */
+	public function killTags($killTagList, $perpage = 1000)
+	{
+		$this->checkHasAdminPermission('canadmintags');
+		// Set a minimum perpage value.
+		// Timing notes: 1000 perpage took about 3.5s per iteration during testing.
+		$perpage = max(10, intval($perpage));
+
+		if (!is_array($killTagList))
+		{
+			$killTagList = [$killTagList];
+		}
+		$killTagList = array_map('intval', $killTagList);
+
+		$exception = new vB_Exception_Api();
+		$killtagdm = new vB_DataManager_Tag(vB_DataManager_Constants::ERRTYPE_ARRAY);
+		$assertor = vB::getDbAssertor();
+
+		//clear existing because they may be changed here.
+		$this->tagsObj = [];
+
+		// todo: check if tagid is a synonym??
+		$tagtexts = $assertor->getColumn(
+			'vBForum:tag',
+			'tagtext',
+			['tagid' => $killTagList],
+			false,
+			'tagid'
+		);
+
+		$nodesToUnlink = $assertor->getColumn(
+			'vBForum:getDistinctNodesForTagids',
+			'nodeid',
+			['tagids' => $killTagList, 'perpage' => $perpage]
+		);
+
+		if (!empty($nodesToUnlink))
+		{
+			$assertor->assertQuery('vBForum:tagnode',[
+				vB_dB_Query::TYPE_KEY => vB_dB_Query::QUERY_DELETE,
+				'tagid' => $killTagList,
+				'nodeid' => $nodesToUnlink,
+			]);
+			/*
+			Rebuilding each node's tags fully via querying tagnode & tag tables
+			and updating one by one is probably going to take a while.
+			Let's assume that the existing taglist is correct (it may not be
+			especially when synonyms are involved) and do a string replacement
+			instead.
+			 */
+			foreach ($tagtexts AS $__tagid => $__tagtext)
+			{
+				$assertor->assertQuery('vBForum:removeTagtextFromTaglist',[
+					'tagtext' => $__tagtext,
+					'nodeids' => $nodesToUnlink,
+				]);
+			}
+
+			// taglist is now part of search keywords so we have to reindex these.
+			vB_Library::instance('search')->indexNodeList($nodesToUnlink);
+		}
+
+		// Grab remaining node count
+		$remaining = $assertor->getRow(
+			'vBForum:getDistinctNodesCountForTagids',
+			['tagids' => $killTagList]
+		);
+		if (!empty($remaining['count']))
+		{
+			return [
+				'success' => false,
+				'remaining' => $remaining['count'],
+				'processed' => count($nodesToUnlink),
+			];
+		}
+
+		//Check that tags exist and they are synonyms
+		$target = $assertor->assertQuery('vBForum:tag', ['tagid' => $killTagList]);
+		if ($target AND $target->valid())
+		{
+			foreach ($killTagList AS $killtagid)
+			{
+				if ($killtagdm->fetch_by_id($killtagid))
+				{
+					$killtagdm->delete();
+				}
+			}
+		}
+		else
+		{
+			$exception->add_error("tag_not_exist", []);
+		}
+
+		//Exception Handling
+		if ($exception->has_errors())
+		{
+			throw $exception;
+		}
+
+
+		return ['success' => true, 'remaining' => 0];
+	}
+
+	/**
+	 * Gets the tag list from an specific node.
+	 * Implements vB_Tags::fetchExistingTagList
+	 *
+	 * @param	NodeId
+	 *
+	 * @return	The taglist from node
+	 */
+	public function getTagsList($nodeid)
+	{
+		if (empty($this->tagsObj[$nodeid]))
+		{
+			$this->tagsObj[$nodeid] = new vB_Tags($nodeid);
+		}
+		return $this->tagsObj[$nodeid]->fetchExistingTagList();
+	}
+
+	/**
+	 * Get tags with full info (userid, tagid, tagtext) from node.
+	 *
+	 * @param	int $nodeid
+	 * @return array
+	 * 	 'tags' -- tags on the node
+	 * 	 'displaytags' -- list of tag text for the tags
+	 * 	 'userid' -- current user
+	 * 	 'maxtags' -- max tags for the node
+	 * 	 'maxusertags' -- max tags for the current user on this node
+	 * 	 'canmanagetags' -- can the current user manage tags on this node
+	 */
+	public function getNodeTags($nodeid)
+	{
+		if (empty($this->tagsObj[$nodeid]))
+		{
+			$this->tagsObj[$nodeid] = new vB_Tags($nodeid);
+		}
+
+		$userid = vB::getUserContext()->fetchUserId();
+		$limits = $this->tagsObj[$nodeid]->fetchTagLimits();
+
+		$tags = $this->tagsObj[$nodeid]->getNodeTags();
+
+		$displaytags = [];
+		if (!empty($tags))
+		{
+			foreach ($tags AS $k => $tag)
+			{
+				$displaytags[] = $tag['tagtext'];
+
+				$tags[$k]['searchurl'] = vB5_Route::buildUrl(
+					'search|fullurl',
+					[],
+					[
+						'searchJSON' => json_encode(['tag' => $tag['tagtext']]),
+					]
+				);
+			}
+		}
+		$displaytags = implode(', ', $displaytags);
+
+		return [
+			'tags' => $tags,
+			'displaytags' => $displaytags,
+			'userid' => $userid,
+			'nodeid' => $nodeid,
+			'maxtags' => $limits['content_limit'],
+			'maxusertags' => $limits['user_limit'],
+			'canmanagetags' => $this->tagsObj[$nodeid]->canManageTag(),
+		];
+	}
+
+	public function getSuggestedTagsForNode($nodeid)
+	{
+		$node = vB_Library::instance('node')->getNodeFullContent($nodeid);
+		$node = reset($node);
+
+		$tags = $this->library->matchAllTagsForNodeText($node['rawtext']);
+		return ['tags' => array_values($tags)];
+	}
+
+	public function getSuggestedTagsForNodeText($text)
+	{
+		$tags = $this->library->matchAllTagsForNodeText($text);
+		return ['tags' => array_values($tags)];
+	}
+
+	public function getAutocomplete($searchStr, $limitstart = 0, $limitnumber = 25)
+	{
+		// This function is used for tag autocomplete -- see tag-editor.js & autocomplete.js
+		$query = vB::getDbAssertor()->assertQuery(
+			'vBForum:getPopularTags',
+			[
+				'searchStr' => $searchStr,
+				 vB_dB_Query::PARAM_LIMIT => $limitnumber,
+				'offset' => $limitstart
+			]
+		);
+		$popular_tags = [];
+
+		foreach ($query AS $tag)
+		{
+			$popular_tags[] = [
+				'title' => $tag['tagtext'],
+				'value' => $tag['userid'],
+				'id' => $tag['tagid'],
+			];
+		}
+		return ['suggestions' => $popular_tags];
+	}
+
+	/**
+	 * Get an array of tags for building tag cloud
+	 *
+	 * @param int $levels Tag cloud levels
+	 * @param int $limit How many tags to be fetched
+	 * @param string $type The type of tag cloud
+	 * @return array
+	 */
+	public function fetchTagsForCloud($taglevels = 5, $limit = 20, $type = 'nodes', $tagsonly = false)
+	{
+		if ($type == 'search')
+		{
+			$query = 'fetchSearchTagsForCloud';
+		}
+		// only "nodes" is expected here but if we have something unexpected default to that.
+		else
+		{
+			$query = 'fetchTagsForCloud';
+		}
+
+		$tags = vB::getDbAssertor()->getRows($query, [
+			vB_dB_Query::PARAM_LIMIT => intval($limit)
+		]);
+
+		$totals = [];
+		foreach ($tags AS $currenttag)
+		{
+			$totals[$currenttag['tagid']] = $currenttag['searchcount'];
+		}
+
+		// fetch the stddev levels
+		$levels = fetch_standard_deviated_levels($totals, $taglevels);
+
+		// assign the levels back to the tags
+		foreach ($tags AS $k => $tag)
+		{
+			$tags[$k]['level'] = $levels[$tag['tagid']];
+			$tags[$k]['tagtext_url'] = urlencode(unhtmlspecialchars($tag['tagtext']));
+		}
+
+		// sort the tags by tagtext
+		$this->sortTagsByTagText($tags);
+
+		if ($tagsonly)
+		{
+			$tags = array_column($tags, 'tagtext');
+		}
+
+		return ['tags' => $tags];
+	}
+
+	/**
+	 * Returns an array of tags for the tag navigation widget
+	 *
+	 * @param	int	Channel ID for the root channel for this tag navigation module
+	 * @param	int	Maximum number of tags to return
+	 * @param	bool	If true, it will add the information to display as a cloud (instead of a list)
+	 * @param	int	The number of levels of tags (sizes for cloud)
+	 *
+	 * @return	array	Tag information
+	 */
+	public function fetchTagsForTagNavigation($channelId, $limit = 25, $addCloudInfo = false, $levels = 5)
+	{
+		$channelId = (int) $channelId;
+		$channelId = $channelId < 1 ? 1 : $channelId;
+
+		$limit = (int) $limit;
+		$limit = $limit < 1 ? 1 : ($limit > 500 ? 500 : $limit);
+
+		$tags = vB::getDbAssertor()->getRows('fetchTagsForTagNavigation', [
+			vB_dB_Query::PARAM_LIMIT => $limit,
+			'root_channel' => $channelId,
+		]);
+
+		if ($addCloudInfo)
+		{
+			// assign levels to tags for tag cloud display
+			$counts = [];
+			foreach ($tags AS $tag)
+			{
+				$counts[$tag['tagid']] = $tag['count'];
+			}
+
+			$stddevlevels = fetch_standard_deviated_levels($counts, $levels);
+
+			foreach ($tags AS $k => $tag)
+			{
+				$tags[$k]['level'] = $stddevlevels[$tag['tagid']];
+			}
+		}
+
+		$this->sortTagsByTagText($tags);
+		return $tags;
+	}
+
+	private function sortTagsByTagText(array &$tags) : void
+	{
+		usort($tags, function(array $a, array $b) : int
+		{
+			return strnatcasecmp($a['tagtext'], $b['tagtext']);
+		});
+	}
+
+	/**
+	 * Fetch tag by label
+	 * @param	string $tagtext
+	 * @return	array -- tag record
+	 */
+	public function fetchTagByText($tagtext)
+	{
+		$response = [];
+		$tag = vB::getDbAssertor()->getRow('vBForum:tag', [
+			'tagtext' => vB_String::vBStrToLower($tagtext)
+		]);
+		if ($tag)
+		{
+			$response['tag'] = $tag;
+		}
+		else
+		{
+			throw new vB_Exception_Api("tag_not_exist");
+		}
+
+		return $response;
+	}
+
+	/**
+	 * Get the tags
+	 *	@param int|array $tagid
+	 *	return array 'tags' => [tagid => tag record]
+	 */
+	public function getTags($tagids)
+	{
+		$tags = vB::getDbAssertor()->getRows('vBForum:tag', ['tagid' => $tagids], false, 'tagid');
+		return ['tags' => $tags];
+	}
+
+	/**
+	 * Delete the associations between nodes and tags created by a user
+	 * @param $userid
+	 */
+	public function deleteUserTagAssociations($userid)
+	{
+		$this->checkHasAdminPermission('canadmintags');
+		$this->library->deleteUserTagAssociations($userid);
+		return ['success' => true];
+	}
+
+/*
+ 	Not Currently used but we'll need this as we consolidate the tags class
+	private function canAddTag(int $nodeid, int $authorid) : bool
+	{
+		$usercontext = vB::getUserContext();
+		$permission = (($usercontext->fetchUserId() == $authorid) ? 'cantagown' : 'cantagothers');
+		return $usercontext->getChannelPermission('forumpermissions', $permission, $nodeid);
+	}
+ */
+
+	private function getExceptionFromErrors($errors)
+	{
+		$e = new vB_Exception_Api();
+		foreach ($errors AS $error)
+		{
+			if (is_array($error))
+			{
+				$phraseid = array_shift($error);
+				$e->add_error($phraseid, $error);
+			}
+			else
+			{
+				$e->add_error($error, []);
+			}
+		}
+
+		return $e;
+	}
+}
+
+/*=========================================================================*\
+|| #######################################################################
+|| # Downloaded: 12:50, Tue Dec 24th 2024
+|| # CVS: $RCSfile$ - $Revision: 117669 $
+|| #######################################################################
+\*=========================================================================*/

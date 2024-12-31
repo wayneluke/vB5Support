@@ -1,0 +1,1275 @@
+<?php
+/*========================================================================*\
+|| ###################################################################### ||
+|| # vBulletin 6.1.0 Alpha 4 Week 2 - Licence Number VBCW2VFT7A
+|| # ------------------------------------------------------------------ # ||
+|| # Copyright 2000-2024 MH Sub I, LLC dba vBulletin. All Rights Reserved.  # ||
+|| # This file may not be redistributed in whole or significant part.   # ||
+|| # ----------------- VBULLETIN IS NOT FREE SOFTWARE ----------------- # ||
+|| # http://www.vbulletin.com | http://www.vbulletin.com/license.html   # ||
+|| ###################################################################### ||
+\*========================================================================*/
+
+/**
+ * @package vBulletin
+ */
+
+/**
+ * @package vBulletin
+ */
+class vB_BbCodeHelper
+{
+	use vB_Trait_NoSerialize;
+
+	public const STRIP_TAG_REMOVE = 'r';
+	public const STRIP_TAG_CONTENT = 'c';
+	public const STRIP_TAG_CONTENTOPTION = 'co';
+
+	private array $tag_list = [];
+	private array $smilies_find_replace = [];
+	private array $smilies_find_replace_do_html = [];
+
+	/**
+	 * @var array $dbrecord  `bbcode_data` record to instantiate this from
+	 */
+	public function __construct(array $tag_list, array $smilies)
+	{
+		$this->tag_list = $tag_list;
+		$this->setSmiliesCache($smilies);
+	}
+
+	/**
+	 * Generate an instance of vB_BbCodeHelper with defaults
+	 * @var bool $appendCustomTags
+	 *
+	 * @return vB_BbCodeHelper
+	 */
+	public static function instance($appendCustomTags = true, $force_all = false)
+	{
+		/** @var vB_Api_BbCode */
+		$bbcodeApi = vB_Api::instance('bbcode');
+		$info = $bbcodeApi->initInfo();
+
+		// How we fetch these items needs to be substantially refactored.  They should be on the
+		// library and not the API class.  We shouldn't need to call the "info" function to get the
+		// custom tags and smilies.  It's not clear why we seperate the custom tags from the default
+		// tags for the standard response anyway.  But that's a problem for another day.
+		if ($force_all)
+		{
+			$tag_list = $bbcodeApi->fetchTagList('', $info['defaultTags']);
+		}
+		else
+		{
+			$tag_list = $info['defaultTags'];
+		}
+
+		if ($appendCustomTags)
+		{
+			$tag_list = array_replace_recursive($tag_list, $info['customTags']);
+		}
+
+		// Maybe bbcode API isn't the best place for fetchSmilies()...
+		$smilies = $bbcodeApi->fetchSmilies();
+
+		return new vB_BbCodeHelper($tag_list, $smilies);
+	}
+
+	/*
+	Bbcodes are usually in the format [BBCODE=option]data[/BBCODE] where option and/or data may be optional.
+	Furthermore, data may contain bbcodes of its own.
+
+	Problem with generating the bbcode data before render (e.g. during node save) in a general fashion is that
+	due to the possibility of nested bbcodes, we have to do the full render in order to figure out what the
+	actual data inside of the bbcode is going to be.
+
+	For bbcodes like URL, if we're missing the option, e.g. [URL]twitter.com[/URL], we need to retrieve the data
+	inside to know what link we need to read & cache. In most cases in this case, the data will just be a text node
+	with no nested bbcode, because if it does have bbcodes then it probably won't be a valid link. But who knows
+	what kind of data we'll get from user input, so we still will need to fully parse the contents before we can
+	be certain of what the url is going to be in that case.
+
+	Without knowing the data, the question then is how do we uniquely (or unique-enough) identify a bbcode instance
+	against a bbcode_data record, so that we can fetch the correct one to use later when we're rendering?
+
+
+	If we do it during render time, specifically at each bbcode's individual rendering, then we have to consider
+	the various contexts and modes it's rendering in. And we can't be 100% sure that an unused bbcode data was
+	actually deleted rather than happened to be skipped this render because it was during generate preview or
+	some other "non-standard" options, so we don't have a consistent or reliable way to clean up unused bbcodes
+	after a post edit.
+
+	So I think the only reliable way is use the preparse array, which will be consistent regardless of what render
+	mode or render options are set (their *consumption* may be different though), and use its keys to match it up
+	against each bbcode.
+
+	If we just cache links in general, we don't know which nodes have which links.
+
+
+	Cache info from link.
+	Pull cached info for a given node.
+
+	---
+
+	url data
+
+
+	 */
+
+	// Convert parsed bbcode array into bbcode data set
+	public function generateAndSaveBbCodeData($rawtext, $nodeid)
+	{
+		// This is very rudimentary. Technically, we should take each bbcode chunk and render
+		// the contents (which might contain nested bbcodes) in order to resolve the rendered
+		// data, and use that to resolve aspects of the data (e.g. the link for bbcode url),
+		// but the rendering itself may change depending on the user context & other contexts
+		// (e.g. rendering a preview, plaintext, etc).
+
+		// We want to do this data fetch during save, so that we can prefetch & cache any
+		// expensive operations, such as fetching & parsing a page data from a remote resource
+		// for URL and VIDEO bbcodes.
+
+		// For now, we're only processing url bbcodes, no other bbcodes and assuming that
+		// a url bbcode will only have a text node inside of it -- mainly because if it has
+		// real nested bbcodes, chances of it resolving/rendering into a valid link is probably
+		// not high.
+
+		// clean out any cached bbcode data before we start generating new ones.
+		$datacache = new vB_BbCodeDataCache($this);
+		$datacache->cleanExisting($nodeid);
+	}
+
+
+	// Access for frontend & library bbcode shared code
+
+	/**
+	 * This is meant to only be used with parseArray() and should be considered a subfunction, as
+	 * its logic is extremely coupled with parseArray()'s logic, and one cannot be modified without
+	 * the other.
+	 *
+	 * @var int   $openTagPosition     numeral index of $keys for the open tag for this bbcode node
+	 * @var int   $closeTagPosition    numeral index of $keys for the close tag for this bbcode node
+	 * @var array $keys                Numerically indexed array of keys of $preparsed -- this exists
+	 *                                 solely to ensure numeric incrementing keys with no gaps to allow
+	 *                                 easy referencing to "previous" or "next" nodes in $preparsed.
+	 * @var array $preparsed           The parsed "list" generated by buildParseArrayAndFixTags().
+	 *
+	 */
+	public function tagIsOnOwnLine($openTagPosition, $closeTagPosition, $keys, $preparsed) : bool
+	{
+		$maxIterations = 3;
+		$i = 0;
+		$prevCheck = false;
+		$prevNodePosition = $openTagPosition;
+		// Walk back from openTagPosition, ignoring any text nodes that's just whitespace (E.g. any spaces between
+		// the nearest linebreak and this bbcode).
+		// This is needed because currently the $preparsed list does NOT have sequential text nodes concatenated yet.
+		// When we refactor the preparsed list, we should probably glue adjacent text nodes together unless there's
+		// a reason to keep them separate (e.g. some kind of decorations on edges of text nodes?)...
+		// Limit it to only a few walk backs, though, as I currently don't think the nearest linebreak should be more
+		// than 2 text nodes away.
+		while ($i++ < $maxIterations AND --$prevNodePosition >= 0)
+		{
+			$node = $preparsed[$keys[$prevNodePosition]];
+			if ($node['type'] != 'text')
+			{
+				if (!$this->treatNodeAsWhitespace($node))
+				{
+					break;
+				}
+			}
+
+			$str = trim($node['data'] ?? '');
+			if (!empty($str))
+			{
+				// Found a non-space text node. Let the logic outside handle the rest.
+				break;
+			}
+			// If this text node was whitespace, keep walking
+		}
+
+		if ($prevNodePosition < 0)
+		{
+			// Open tag is effectively (either is exactly at or has only leading whitespace to) the start of post
+			$prevCheck = true;
+		}
+		else
+		{
+			// Check if previous was a break tag. This is assuming that our text was put to nl2br() first,
+			// which is true as long as doParse() wasn't called with $minimal = true... but it gets insane
+			// to try to check every case in this parser, so go with this assumption
+			$prevNode = $preparsed[$keys[$prevNodePosition]];
+			if ($prevNode['type'] == 'text')
+			{
+				// I think 'data' is defined for all text nodes, but is not defined for all types of nodes.
+				// Remove any trailing whitespace to simplify the regex...
+				// TODO: need a way to also remove trailing &nbsp; ... I think the only way &nbsp; can get in
+				// is if the post is htmlstate=on
+				$str = trim($prevNode['data'] ?? '');
+				// We probably need to test where linebreaks go in right-to-left languages.
+				// TODO ^-
+
+				// Note, we're allowing whitespaces between the linebreaks and our bbcode, but NOT punctuations.
+				// E.g. "something<br/>[url]https://www.php.net[/url]<br/>something" will pass, while
+				// "something<br/>[url]https://www.php.net[/url].<br/>something" will not due to the period.
+
+				// Test if ends with <br>, <br/>, <br /> ...
+				// NOT using m modifier because we do NOT want multiline matches, only exactly the end.
+				// Note, do not try to do .*<br ... instead, because 1) I don't think that gains us anything
+				// as long as we don't need to capture and 2) that increases steps/work with paragraph size,
+				// while removing the leading wildcard match keeps performance static against increasing
+				// paragraph size (at least as indicated per testing with regex101).
+				// Keep this regex in sync with the $nextCheck below.
+				//if (preg_match('@<br */?' . '>$@', $str))
+				// the php7_str_ends_with() is an attempt at short-circuting any obvious negatives
+				// ATM we're only comparing a single char, but keepign this in case we actually want to
+				// match whole words at the end
+				if ($this->php7_str_ends_with($str, '>') AND preg_match('@<br */?>$@', $str))
+				{
+					$prevCheck = true;
+				}
+			}
+			// Presumably, if we have bbcodes that always add line breaks after it, we could check if the
+			// prev node was one of those, and accept that here, but not doing it for now due to complexity.
+		}
+
+		// note, count(arr) is O(1)
+		$keys_count = count($keys);
+		$maxIterations = 3;
+		$i = 0;
+		$nextCheck = false;
+		$nextNodePosition = $closeTagPosition;
+		// Same as above, but walking forward from closeTagPosition.
+		while ($i++ < $maxIterations AND ++$nextNodePosition < $keys_count)
+		{
+			$node = $preparsed[$keys[$nextNodePosition]];
+			if ($node['type'] != 'text')
+			{
+				if (!$this->treatNodeAsWhitespace($node))
+				{
+					break;
+				}
+			}
+
+			$str = trim($node['data'] ?? '');
+			if (!empty($str))
+			{
+				// Found a non-space text node. Let the logic outside handle the rest.
+				break;
+			}
+			// If this text node was whitespace, keep walking
+		}
+
+		if ($nextNodePosition >= $keys_count)
+		{
+			// Close tag is effectively at the end of post
+			$nextCheck = true;
+		}
+		else
+		{
+			$nextNode = $preparsed[$keys[$nextNodePosition]];
+			if ($nextNode['type'] = 'text')
+			{
+				// Remove any leading whitespace to make the checks easier.
+				$str = trim($nextNode['data'] ?? '');
+
+				// Test if begins with <br>, <br/>, <br /> ...
+				// NOT using m modifier because we do NOT want multiline matches, only exactly the start.
+				// Keep this regex in sync with the $prevCheck above.
+				// the ? and > are split here because it was terminating the php tag when commented.
+				//if (preg_match('@^<br */?' . '>@', $str))
+				// the strpos is an attempt at short-circuting any obvious negatives
+				if (strpos($str, '<br') === 0 AND preg_match('@^<br */?>@', $str))
+				{
+					$nextCheck = true;
+				}
+			}
+			// Presumably, if we have bbcodes that always add line breaks before it, we could accept that
+			// here, but not doing it for now due to complexity.
+		}
+
+
+		return ($prevCheck AND $nextCheck);
+	}
+
+	private function treatNodeAsWhitespace(array $node) : bool
+	{
+		// If it's not a text node (i.e. this is another bbcode), do not walk any further
+		// Note, this means that any bbcode will block URL preview expansions (e.g. [b][url]... will not expand)
+		// We may change this later.
+		return false;
+	}
+
+	// str_ends_with() was added in PHP 8.
+	// https://www.php.net/manual/en/function.str-ends-with.php#126551
+	private function php7_str_ends_with(string $haystack, string $needle) : bool
+	{
+		$needle_len = strlen($needle);
+		return ($needle_len === 0 || 0 === substr_compare($haystack, $needle, - $needle_len));
+	}
+
+	/**
+	* Removes translated smilies from a string.
+	*
+	* @param	string	Text to search
+	*
+	* @return	string	Text with smilie HTML returned to smilie codes
+	*/
+	public function stripSmilies(string $text) : string
+	{
+		// $this->smilies_find_replace
+		$cache = $this->cacheSmilies(false);
+
+		// todo: use strtr() ?
+		// 'replace' refers to the <img> tag, so we want to remove that
+		return str_replace($cache, array_keys($cache), $text);
+	}
+
+	/**
+	* Caches the smilies in a form ready to be executed.
+	*
+	* @param	bool	Whether HTML parsing is enabled
+	*
+	* @return	array	Reference to smilie cache (key: find text; value: replace text)
+	*/
+	public function cacheSmilies(bool $do_html) : array
+	{
+		if ($do_html)
+		{
+			return $this->smilies_find_replace_do_html;
+		}
+		else
+		{
+			return $this->smilies_find_replace;
+		}
+	}
+
+	// Maybe we should stick stripSmilies(), cacheSmilies() & setSmiliesCache() into its own smilies handler class
+	// (or maybe the smilies library if there is one?)
+	// Copied and slightly refactored from vB5_Template_BbCode::cacheSmilies();
+	// If tests need to overwrite the smilies cache, use reflections and call this.
+	private function setSmiliesCache($smilies)
+	{
+		$bburl = vB::getDatastore()->getOption('bburl');
+
+		foreach ($smilies AS $smilie)
+		{
+			$find = vB_String::htmlSpecialCharsUni(trim($smilie['smilietext']));
+			$find_do_html = trim($smilie['smilietext']);
+
+			// skipping $this->escapeAttribute(<smiliepath>|<smilieid>), assuming smilie data is generated internally.
+			// if you change this HTML tag, make sure you change the smilie remover in code/php/html tag handlers!
+			$smiliepath = preg_match('#^https?://#si', $smilie['smiliepath']) ? $smilie['smiliepath'] : $bburl . '/' . $smilie['smiliepath'];
+			// TODO: do we need to escape smiliepath?
+			$replace = "<img src=\"{$smiliepath}\" border=\"0\" alt=\"\" title=\"" . vB_String::htmlSpecialCharsUni($smilie['title']) . "\" smilieid=\"{$smilie['smilieid']}\" class=\"inlineimg\" />";
+
+			$this->smilies_find_replace[$find] = $replace;
+			$this->smilies_find_replace_do_html[$find_do_html] = $replace;
+		}
+	}
+
+	/**
+	* Parses out specific white space before or after cetain tags and does nl2br
+	*
+	* @param	string	Text to process
+	* @param	bool	Whether to translate newlines to <br /> tags
+	*
+	* @return	string	Processed text
+	*/
+	public function parseWhitespaceNewlines($text, $do_nl2br = true)
+	{
+		// this replacement is equivalent to removing leading whitespace via this regex:
+		// '#(? >(\r\n|\n|\r)?( )+)(\[(\*\]|/?list|indent))#si'
+		// however, it's performance is much better! (because the tags occur less than the whitespace)
+		foreach (array('[*]', '[list', '[/list', '[indent') AS $search_string)
+		{
+			$start_pos = 0;
+			while (($tag_pos = vB_String::stripos($text, $search_string, $start_pos)) !== false)
+			{
+				$whitespace_pos = $tag_pos - 1;
+				while ($whitespace_pos >= 0 AND $text[$whitespace_pos] == ' ')
+				{
+					--$whitespace_pos;
+				}
+				if ($whitespace_pos >= 1 AND substr($text, $whitespace_pos - 1, 2) == "\r\n")
+				{
+					$whitespace_pos -= 2;
+				}
+				else if ($whitespace_pos >= 0 AND ($text[$whitespace_pos] == "\r" OR $text[$whitespace_pos] == "\n"))
+				{
+					--$whitespace_pos;
+				}
+
+				$length = $tag_pos - $whitespace_pos - 1;
+				if ($length > 0)
+				{
+					$text = substr_replace($text, '', $whitespace_pos + 1, $length);
+				}
+
+				$start_pos = $tag_pos + 1 - $length;
+			}
+		}
+		$text = preg_replace('#(/list\]|/indent\])(?' . '> *)#si', '$1', $text);
+
+		if ($do_nl2br)
+		{
+			$text = nl2br($text);
+		}
+
+		return $text;
+	}
+
+
+	/**
+	 * Convert $text to a bbcode parse array with fixed mismatched tags
+	 *
+	 * @var string $text
+	 * @var array $bbcodeInfo -- Output array. Contains information about bbcodes found in text.
+	 *                              'tagscount' => array<string tagname, int count>
+	 *
+	 * @return array
+	 */
+	public function buildParseArrayAndFixTags($text, array &$bbcodeInfo = [])
+	{
+		// This is going to be very rudimentary for now, due to limited usage.
+		// Ideally this should actually run during/after fixTags so we don't count
+		// any broken & removed tags.
+		$bbcodeInfo = [
+			'tagscount' => [
+				'url' => 0,
+			],
+		];
+		$array = $this->buildParseArray($text);
+		return $this->fixTags($array, $bbcodeInfo);
+	}
+
+	public function getTextFromParseArray(array $parsearray) : string
+	{
+		$text = '';
+		foreach ($parsearray AS $bbcodeitem)
+		{
+			if ($bbcodeitem['type'] == 'text')
+			{
+				$text .= $bbcodeitem['data'];
+			}
+			else if ($bbcodeitem['type'] == 'tag')
+			{
+				if ($bbcodeitem['closing'])
+				{
+					$text .= '[/' . $bbcodeitem['name_orig'] . ']';
+				}
+				else
+				{
+					$text .= '[' . $bbcodeitem['name_orig'];
+					if ($bbcodeitem['option'])
+					{
+						$text .= '=' . $bbcodeitem['delimiter'] . $bbcodeitem['option'] . $bbcodeitem['delimiter'];
+					}
+
+					$text .= ']';
+				}
+			}
+		}
+		return $text;
+	}
+
+	/**
+	 *	Strip bbcode and produce a plain text version of the bbcode text
+	 *
+	 *	This is similar to vB_String::stripBbCode but uses the bbcode parsing logic instead
+	 *	of regular expressions.  This results is some notable differences:
+	 *	1) We allow the caller more fine grained control about how to handle tags.
+	 *	2) We only strip actual bbcode tags so [bogus]some text[/bogus] will be unaffected.  In most
+	 *		cases this will be a more accurate representation because the rendered bbcode text will
+	 *		show invalid tags as literal text.
+	 *
+	 *	@param $text
+	 *	@param $defaultAction -- the action that will apply to tags not explicitly mentioned.
+	 * 		STRIP_TAG_REMOVE -- removes the tag and its contents entirely.
+	 *		STRIP_TAG_CONTENT -- removes the tag wrapper but leaves the contents intact (though the contents
+	 *			will similarly be stripped if it contains tags);
+	 *		STRIP_TAG_CONTENTOPTION -- removes the tag, leaves the contents, and appends the option in parens
+	 *			after.  If the tag does not have an option then acts as STRIP_TAG_CONTENT
+	 *	@param $tags -- tag => action.  Tags are of the form "tag" for tags without options and
+	 *		"tag=" for tags with options.  This is intended, for instance, to allow handling
+	 *		[url]http://someurlcom[/url] differently from [url=http://someurlcom]some title[/url]
+	 *		but there is no attempt to made to handle tags that only have options if only the
+	 *		bare tag name is provided.  Tag names should be provided in lowercase but will be matched
+	 *		in case insensitive fashion.
+	 */
+	public function stripTags(string $text, string $defaultAction, array $tags) : string
+	{
+		$tagstack = [];
+		$strippedItems = [];
+
+		$stripcontent = false;
+
+		$parsed = $this->buildParseArrayAndFixTags($text);
+		foreach ($parsed AS $key => $item)
+		{
+			// We don't want to fail because somebody used an invalid option -- we'll default to STRIP_TAG_CONTENT implicitly
+			// but might as well validation that everything is valid.
+
+			if ($item['type'] == 'text')
+			{
+				if (!$stripcontent)
+				{
+					$strippedItems[] = $item;
+				}
+			}
+			else if ($item['type'] == 'tag')
+			{
+				if ($item['closing'])
+				{
+					// The tags should always match and if not we'll take a first do no harm approach and skip the replace
+					// Add the assert so there is a hard fail if we hit this case in dev.
+					[$name, $stripcontent, $option] = array_pop($tagstack);
+					$tagmatch = ($name == $item['name']);
+					assert($tagmatch);
+					if (!$tagmatch)
+					{
+						return $text;
+					}
+
+					// We checked the action status for this tag when we added it to the stack.  If we don't want to
+					// append the option it won't have an option (even if the tag did).
+					if ($option)
+					{
+						// add a dummy text element with the option text
+						$strippedItems[] = ['type' => 'text', 'data' => ' (' . $option . ')'];
+					}
+				}
+				else
+				{
+					$action = $tags[$this->getTagKey($item)] ?? $defaultAction;
+					assert(in_array($action, [self::STRIP_TAG_REMOVE, self::STRIP_TAG_CONTENT, self::STRIP_TAG_CONTENTOPTION]));
+
+					// we store the previous strip content status in the stack and not the status for this tag.  That's what we'll
+					// restore to when we close the tag.
+					array_push($tagstack, [$item['name'], $stripcontent, ($action == self::STRIP_TAG_CONTENTOPTION ? $item['option'] : '')]);
+
+					// One we hit a "remove" tag we want the status to stay remove until we back out of that tag.  So we remove if this tag
+					// says remove or if the calculated value of the parent (the current value) says remove.  This avoids constantly iterating
+					// over the stack to see if there are any "remove" tags in it.
+					$stripcontent = ($stripcontent OR ($action == self::STRIP_TAG_REMOVE));
+				}
+			}
+		}
+
+		return $this->getTextFromParseArray($strippedItems);
+	}
+
+	/**
+	 * Does a find/replace in the bbcode text
+	 *
+	 * Note that unlike the standard find/replace this will match all find RE's against the original string and will
+	 * skip replacementst that would conflict with a previous replacement.
+	 * So a string of "a b c" with a find/replace of ["#a#", "#d#"] and ["d", "e"] will produce "d b c" and not "e b c"
+	 * like you would get from preg_replace.
+	 *
+	 * If two replacements overlap we will use the one that has the earliest offset in the string.  If two matches have
+	 * the same offset then we will use the match that appears first in the "find" array.
+	 *
+	 * @param string $text
+	 * @param array|string $find -- regular expression(s) to match against
+	 * @param array|string|callable $replacements -- If a string replace all matches with the string value.  If a callable then
+	 * 	the callback function will be called as $replacements($source, $matches) where $source is the key of the $find array
+	 * 	that produced the match and matches is the text matched per the preg library ($matches[0] is the matched string $matches[1]
+	 * 	is the first matched group etc).  If $find is a string then $source is 0.  If $replacements is an array it must have the same
+	 * 	keys as $find and the individual string or callable will be used for that match.  A value of false in the $replacements array
+	 * 	(or a return from the callback) indicates that the replacement should be skipped.
+	 * @param array $tags -- a list of tags to include or exclude from matching.  If a tag is excluded then none of it's contents will be altered.
+	 * @param bool $include -- if true the all tags not in the $tags list are excluded. If false then a tag in the $tag list is excluded but
+	 * 	all other tags are affected.
+	 */
+	// This implemenation has issues but while written generally (and it has a lot of potential as a general utility) it only
+	// currently has one use case (replacing text with a hashtag bbcode) and we need to avoid the tempation to overengineer an
+	// all things to all people solution ahead of requirements.  Some potential issues.
+	// 1) We don't allow differentiating between "tags with options" and "tags without options".  In some cases the same tag name
+	// 	can be on both lists and the behavior between the two can be *substantially* differnet. For instance [url]somesite.com[/url]
+	// 	vs [url=somesite.com]some label[/url].  We never want to replace something in the url but we might want to in the label string
+	// 	(we don't for tags because that would end up with a link embedded in a link which is bad).
+	// 2) We might want to push the limit on number of replacements into the core function.  Currently this is handled in the tags by
+	//	replacement callback (and it's 1/all flag not a numeric count).  It complicates the function signature so it might be best to
+	//	handle it that way anyway but it's not going to be clear until the are additional use cases.
+	// 3) We might want to define a default list of "safe to replace text in" tags that the caller can restrict further.  There are
+	// 	probably some tags that we *never* want to replace in and there isn't a point to allowing the caller to do something stupid.
+	// 4) We might want to generalize a "safe to replace in text" flag for bbcode tags.  This would allow extending that to custom tags
+	// 	which are largely being ignored here.
+	public function replaceInText(string $text, array|string $find, array|string|callable $replacements, array $tags, bool $include = true) : string
+	{
+		if (!is_array($find))
+		{
+			if (is_array($replacements) AND !is_array($find))
+			{
+				// internal error, not phrasing
+				throw new InvalidArgumentException('An array value for $replacements is only valid when $find is an array');
+			}
+
+			$find = [$find];
+		}
+
+		$excludestack = [];
+
+		$parsed = $this->buildParseArrayAndFixTags($text);
+		foreach ($parsed AS $key => &$item)
+		{
+			if ($item['type'] == 'text')
+			{
+				if (count($excludestack) == 0)
+				{
+					$item['data'] = $this->matchWithoutOverlap($item['data'], $find, $replacements);
+				}
+			}
+			else if ($item['type'] == 'tag')
+			{
+				$intagarray = in_array($item['name'], $tags);
+				if (($include AND !$intagarray) OR (!$include AND $intagarray))
+				{
+					if ($item['closing'])
+					{
+						// The tags should always match and if not we'll take a first do no harm approach and skip the replace
+						// Add the assert so there is a hard fail if we hit this case in dev.
+						$value = array_pop($excludestack);
+						assert($value == $item['name']);
+						if ($value != $item['name'])
+						{
+							return $text;
+						}
+					}
+					else
+					{
+						array_push($excludestack, $item['name']);
+					}
+				}
+			}
+		}
+
+		return $this->getTextFromParseArray($parsed);
+	}
+
+	private function getTagKey(array $item) : string
+	{
+		$tag = $item['name'];
+		if ($item['option'])
+		{
+			$tag .= '=';
+		}
+
+		return $tag;
+	}
+
+	private function matchWithoutOverlap(string $text, array $find, array|string|callable $replacements) : string
+	{
+		$allmatches = [];
+		foreach ($find AS $key => $re)
+		{
+			$matches = [];
+			$result = preg_match_all($re, $text, $matches, PREG_OFFSET_CAPTURE | PREG_SET_ORDER);
+			if ($result)
+			{
+				foreach ($matches AS $match)
+				{
+					// we only care about the offset of the main match though the caller may have included
+					// sub groups for thier own purposes.  We always replace the full matched text.
+					$allmatches[] = [
+						'source' => $key,
+						'matches' => array_column($match, 0),
+						'offset' => $match[0][1],
+					];
+				}
+			}
+		}
+
+		// This may be not be 100% general but for now it's not clear what else might be wanted.
+		// Order the replacements so that we'll replace items in the order they are found in the string.
+		// If two items match the same position (for instance one match is a prefix of the other) prefer
+		// the item that comes first in the find array.
+		$findindex = array_flip(array_keys($find));
+		usort($allmatches, function ($a, $b) use ($findindex)
+		{
+			// sort if offset order
+			$firstCompare = $a['offset'] <=> $b['offset'];
+			if ($firstCompare)
+			{
+				return $firstCompare;
+			}
+
+			// if two tags are at the same offset, try the longer match first.
+			return $findindex[$a['source']] <=> $findindex[$b['source']];
+		});
+
+		$actualreplacements = [];
+
+		$last = null;
+		foreach ($allmatches AS $key => $match)
+		{
+			// the last matched tag overlaps this one, we can't match both
+			if ($last AND (strlen($last['matches'][0]) + $last['offset'] >= $match['offset']))
+			{
+				unset($allmatches[$key]);
+				continue;
+			}
+
+			if (is_array($replacements))
+			{
+				$thisreplacement = $replacements[$match['source']];
+			}
+			else
+			{
+				$thisreplacement = $replacements;
+			}
+
+			if (is_callable($thisreplacement))
+			{
+				$thisreplacement = $thisreplacement($match['source'], $match['matches']);
+			}
+
+			// we've chosen not to match this item after all -- allows things like matching
+			// something only once (while also matching the second instance if the first one was blocked).
+			if ($thisreplacement === false)
+			{
+				unset($allmatches[$key]);
+				continue;
+			}
+
+			$actualreplacements[$key] = $thisreplacement;
+			$last = $match;
+		}
+
+		// Iterate backwards so that the replacement for a tag doesn't affect the offsets for
+		// tags not yet replaced. Test against key because the element is ambigous when we hit
+		// the beginning.
+		for ($match = end($allmatches), $key = key($allmatches); $key !== null; $match = prev($allmatches), $key = key($allmatches))
+		{
+			$text = substr_replace($text, $actualreplacements[$key], $match['offset'], strlen($match['matches'][0]));
+		}
+
+		return $text;
+	}
+
+	// BUILD PARSE ARRAY FUNCTIONS
+
+	/**
+	* BB code parser's start state. Looking for the next tag to start.
+	*/
+	const PARSER_START		= 1;
+
+	/**
+	* BB code parser's "this range is just text" state.
+	* Requires $internal_data to be set appropriately.
+	*/
+	const PARSER_TEXT		= 2;
+
+	/**
+	* Tag has been opened. Now parsing for option and closing ].
+	*/
+	const PARSER_TAG_OPENED	= 3;
+
+
+	/**
+	* Takes a raw string and builds an array of tokens for parsing.
+	*
+	* @param	string	Raw text input
+	*
+	* @return	array	List of tokens
+	*/
+	private function buildParseArray($text)
+	{
+		$start_pos = 0;
+		$strlen = strlen($text);
+		$output = [];
+		$state = self::PARSER_START;
+		$internal_data = [];
+
+		while ($start_pos < $strlen)
+		{
+			switch ($state)
+			{
+				case self::PARSER_START:
+					$tag_open_pos = strpos($text, '[', $start_pos);
+					if ($tag_open_pos === false)
+					{
+						$internal_data = ['start' => $start_pos, 'end' => $strlen];
+						$state = self::PARSER_TEXT;
+					}
+					else if ($tag_open_pos != $start_pos)
+					{
+						$internal_data = ['start' => $start_pos, 'end' => $tag_open_pos];
+						$state = self::PARSER_TEXT;
+					}
+					else
+					{
+						$start_pos = $tag_open_pos + 1;
+						if ($start_pos >= $strlen)
+						{
+							$internal_data = ['start' => $tag_open_pos, 'end' => $strlen];
+							$start_pos = $tag_open_pos;
+							$state = self::PARSER_TEXT;
+						}
+						else
+						{
+							$state = self::PARSER_TAG_OPENED;
+						}
+					}
+					break;
+
+				case self::PARSER_TEXT:
+					$end = end($output);
+					if ($end AND $end['type'] == 'text')
+					{
+						// our last element was text too, so let's join them
+						$key = key($output);
+						$output["$key"]['data'] .= substr($text, $internal_data['start'], $internal_data['end'] - $internal_data['start']);
+					}
+					else
+					{
+						$output[] = ['type' => 'text', 'data' => substr($text, $internal_data['start'], $internal_data['end'] - $internal_data['start'])];
+					}
+
+					$start_pos = $internal_data['end'];
+					$state = self::PARSER_START;
+					break;
+
+				case self::PARSER_TAG_OPENED:
+					$tag_close_pos = strpos($text, ']', $start_pos);
+					if ($tag_close_pos === false)
+					{
+						$internal_data = ['start' => $start_pos - 1, 'end' => $start_pos];
+						$state = self::PARSER_TEXT;
+						break;
+					}
+
+					// check to see if this is a closing tag, since behavior changes
+					$closing_tag = ($text[$start_pos] == '/');
+					if ($closing_tag)
+					{
+						// we don't want the / to be saved
+						++$start_pos;
+					}
+
+					// ok, we have a ], check for an option
+					$tag_opt_start_pos = strpos($text, '=', $start_pos);
+					if ($closing_tag OR $tag_opt_start_pos === false OR $tag_opt_start_pos > $tag_close_pos)
+					{
+						// no option, so the ] is the end of the tag
+						// check to see if this tag name is valid
+						$tag_name_orig = substr($text, $start_pos, $tag_close_pos - $start_pos);
+						$tag_name = strtolower($tag_name_orig);
+
+						// if this is a closing tag, we don't know whether we had an option
+						$has_option = $closing_tag ? null : false;
+
+						if ($this->isValidTag($tag_name, $has_option))
+						{
+							$output[] = [
+								'type' => 'tag',
+								'name' => $tag_name,
+								'name_orig' => $tag_name_orig,
+								'option' => false,
+								'closing' => $closing_tag
+							];
+
+							$start_pos = $tag_close_pos + 1;
+							$state = self::PARSER_START;
+						}
+						else
+						{
+							// this is an invalid tag, so it's just text
+							$internal_data = ['start' => $start_pos - 1 - ($closing_tag ? 1 : 0), 'end' => $start_pos];
+							$state = self::PARSER_TEXT;
+						}
+					}
+					else
+					{
+						// check to see if this tag name is valid
+						$tag_name_orig = substr($text, $start_pos, $tag_opt_start_pos - $start_pos);
+						$tag_name = strtolower($tag_name_orig);
+
+						if (!$this->isValidTag($tag_name, true))
+						{
+							// this isn't a valid tag name, so just consider it text
+							$internal_data = ['start' => $start_pos - 1, 'end' => $start_pos];
+							$state = self::PARSER_TEXT;
+							break;
+						}
+
+						// we have a = before a ], so we have an option
+						$delimiter = $text[$tag_opt_start_pos + 1];
+						if ($delimiter == '&' AND substr($text, $tag_opt_start_pos + 2, 5) == 'quot;')
+						{
+							$delimiter = '&quot;';
+							$delim_len = 7;
+						}
+						else if ($delimiter != '"' AND $delimiter != "'")
+						{
+							$delimiter = '';
+							$delim_len = 1;
+						}
+						else
+						{
+							$delim_len = 2;
+						}
+
+						if ($delimiter != '')
+						{
+							$close_delim = strpos($text, "$delimiter]", $tag_opt_start_pos + $delim_len);
+							if ($close_delim === false)
+							{
+								// assume no delimiter, and the delimiter was actually a character
+								$delimiter = '';
+								$delim_len = 1;
+							}
+							else
+							{
+								$tag_close_pos = $close_delim;
+							}
+						}
+
+						$tag_option = substr($text, $tag_opt_start_pos + $delim_len, $tag_close_pos - ($tag_opt_start_pos + $delim_len));
+						if ($this->isValidOption($tag_name, $tag_option))
+						{
+							$output[] = [
+								'type' => 'tag',
+								'name' => $tag_name,
+								'name_orig' => $tag_name_orig,
+								'option' => $tag_option,
+								'delimiter' => $delimiter,
+								'closing' => false
+							];
+
+							$start_pos = $tag_close_pos + $delim_len;
+							$state = self::PARSER_START;
+						}
+						else
+						{
+							// this is an invalid option, so consider it just text
+							$internal_data = ['start' => $start_pos - 1, 'end' => $start_pos];
+							$state = self::PARSER_TEXT;
+						}
+					}
+					break;
+			}
+		}
+		return $output;
+	}
+
+	/**
+	* Checks if the specified tag exists in the list of parsable tags
+	*
+	* @param	string		Name of the tag
+	* @param	bool/null	true = tag with option, false = tag without option, null = either
+	*
+	* @return	bool		Whether the tag is valid
+	*/
+	private function isValidTag($tagName, $hasOption = null)
+	{
+		if ($tagName === '')
+		{
+			// no tag name, so this definitely isn't a valid tag
+			return false;
+		}
+
+		if ($tagName[0] == '/')
+		{
+			$tagName = substr($tagName, 1);
+		}
+
+		if ($hasOption === null)
+		{
+			return (isset($this->tag_list['no_option'][$tagName]) OR isset($this->tag_list['option'][$tagName]));
+		}
+		else
+		{
+			$option = $hasOption ? 'option' : 'no_option';
+			return isset($this->tag_list[$option][$tagName]);
+		}
+	}
+
+	/**
+	* Checks if the specified tag option is valid (matches the regex if there is one)
+	*
+	* @param	string		Name of the tag
+	* @param	string		Value of the option
+	*
+	* @return	bool		Whether the option is valid
+	*/
+	private function isValidOption($tagName, $tagOption)
+	{
+		if (empty($this->tag_list['option'][$tagName]['option_regex']))
+		{
+			return true;
+		}
+		return preg_match($this->tag_list['option'][$tagName]['option_regex'], $tagOption);
+	}
+
+
+	// Fix Tags functions
+
+	/**
+	* Traverses parse array and fixes nesting and mismatched tags.
+	*
+	* @param	array	Parsed data array, such as one from buildParseArray
+	*
+	* @return	array	Parse array with specific data fixed
+	*/
+	private function fixTags($preparsed, array &$bbcodeInfo)
+	{
+		$output = [];
+		$stack = [];
+		$noparse = null;
+
+		foreach ($preparsed AS $node_key => $node)
+		{
+			if ($node['type'] == 'text')
+			{
+				$output[] = $node;
+			}
+			else if ($node['closing'] == false)
+			{
+				// opening a tag
+				if ($noparse !== null)
+				{
+					$output[] = [
+						'type' => 'text',
+						'data' => '[' . $node['name_orig'] . ($node['option'] !== false ? "=$node[delimiter]$node[option]$node[delimiter]" : '') . ']',
+					];
+					continue;
+				}
+
+				$output[] = $node;
+				end($output);
+
+				$node['added_list'] = [];
+				$node['my_key'] = key($output);
+				array_unshift($stack, $node);
+
+				if ($node['name'] == 'noparse')
+				{
+					$noparse = $node_key;
+				}
+			}
+			else
+			{
+				// closing tag
+				if ($noparse !== null AND $node['name'] != 'noparse')
+				{
+					// closing a tag but we're in a noparse - treat as text
+					$output[] = [
+						'type' => 'text',
+						'data' => '[/' . $node['name_orig'] . ']',
+					];
+				}
+				else if (($key = $this->findFirstTag($node['name'], $stack)) !== false)
+				{
+					if ($node['name'] == 'noparse')
+					{
+						// we're closing a noparse tag that we opened
+						if ($key != 0)
+						{
+							for ($i = 0; $i < $key; $i++)
+							{
+								$output[] = $stack[$i];
+								unset($stack[$i]);
+							}
+						}
+
+						$output[] = $node;
+						$bbcodeInfo['tagscount']['noparse'] ??= 0;
+						$bbcodeInfo['tagscount']['noparse']++;
+
+						unset($stack[$key]);
+						$stack = array_values($stack); // this is a tricky way to renumber the stack's keys
+
+						$noparse = null;
+
+						continue;
+					}
+
+					if ($key != 0)
+					{
+						end($output);
+						$max_key = key($output);
+
+						// we're trying to close a tag which wasn't the last one to be opened
+						// this is bad nesting, so fix it by closing tags early
+						for ($i = 0; $i < $key; $i++)
+						{
+							$__tagname = $stack[$i]['name'];
+							$output[] = [
+								'type' => 'tag',
+								'name' => $__tagname,
+								'name_orig' => $stack[$i]['name_orig'],
+								'closing' => true,
+							];
+							$bbcodeInfo['tagscount'][$__tagname] ??= 0;
+							$bbcodeInfo['tagscount'][$__tagname]++;
+							$max_key++;
+							$stack[$i]['added_list'][] = $max_key;
+						}
+					}
+
+					$output[] = $node;
+					$bbcodeInfo['tagscount'][$node['name']] ??= 0;
+					$bbcodeInfo['tagscount'][$node['name']]++;
+
+					if ($key != 0)
+					{
+						$max_key++; // for the node we just added
+
+						// ...and now reopen those tags in the same order
+						for ($i = $key - 1; $i >= 0; $i--)
+						{
+							$output[] = $stack[$i];
+							$max_key++;
+							$stack[$i]['added_list'][] = $max_key;
+						}
+					}
+
+					unset($stack[$key]);
+					$stack = array_values($stack); // this is a tricky way to renumber the stack's keys
+				}
+				else
+				{
+					// we tried to close a tag which wasn't open, to just make this text
+					$output[] = ['type' => 'text', 'data' => '[/' . $node['name_orig'] . ']'];
+				}
+			}
+		}
+
+		// These tags were never closed, so we want to display the literal BB code.
+		// Remove any nodes we might've added before, thinking this was valid,
+		// and make this node become text.
+		foreach ($stack AS $open)
+		{
+			foreach ($open['added_list'] AS $node_key)
+			{
+				unset($output[$node_key]);
+			}
+			$output[$open['my_key']] = [
+				'type' => 'text',
+				'data' => '[' . $open['name_orig'] . (!empty($open['option']) ? '=' . $open['delimiter'] . $open['option'] . $open['delimiter'] : '') . ']',
+			];
+		}
+
+		$output = $this->fixQuoteTags($output);
+
+		return $output;
+	}
+
+	/**
+	 * Fixes quote tags when a quoted user name contains "]"
+	 *
+	 * @param  array Array of bbcode
+	 *
+	 * @return array Fixed array of bbcode
+	 */
+	protected function fixQuoteTags($elements)
+	{
+		// Handle a case where the username gets cut off because it contains a closing
+		// square bracket ']'. In this case, the rest of the username and the node id
+		// is at the beginning of the quoted text. See VBV-19482. Decline to handle the case
+		// where someone manually enters a quote tag with a username containing a square
+		// bracket but without the nodeid, because of the potential for false positives.
+
+		// Example where the user name is: User[]Name
+		//         [QUOTE=User[]Name;n1234]Text here...[/QUOTE]
+		// Parsed: tag: quote
+		//         option: User[
+		//         text: Name;n1234]Text here...
+		// Fixed:  tag: quote
+		//         option: User[]Name;n1234
+		//         text: Text here...
+
+		// Conditions under which we'll apply this fix:
+		// 1. There is a quote tag element immediately followed by a text element.
+		// 2. The quote tag option does not contain a node id. Normally it's in the
+		//    format of "username;n1234" when it's auto generated. If the username contains
+		//    a ']' then the rest of the username and the ";n1234" bit will be cut off.
+		// 3. The text element that follows contains a ']' and subsequently a node ID
+		//    in the format of ";n1234" within the first X chars where X is calculated
+		//    username length limit (maxuserlength) and a fudge factor.
+
+		// There is also a fix very similar to this one in the Quote Content
+		// Notification class in addAdditionalRecipients()
+
+		$prevKey = null;
+		$options = vB::getDatastore()->getValue('options');
+		$defaultLimit = (int) $options['maxuserlength'];
+		foreach ($elements AS $key => $el)
+		{
+			// check conditions (see above) for the broken QUOTE tag that we want to handle
+
+			if ($prevKey !== null)
+			{
+				$prevEl = $elements[$prevKey];
+
+				// 1. Quote tag element followed by a text element
+				if ($prevEl['type'] == 'tag' AND $prevEl['name'] == 'quote' AND $el['type'] == 'text')
+				{
+					// 2. No nodeID in quote tag option
+					if (!preg_match('/^.*;n?\d+$/U', $prevEl['option'], $match))
+					{
+						// 3. check if the rest of the option value is at the beginning of the text
+
+						// limit how far we look in the text
+						$limit = $defaultLimit;
+						// subtract the part of the username we've already matched
+						$limit -= vB_String::vbStrlen($prevEl['option']);
+						// add a fudge factor for the node id part (";n123456789")
+						$limit += 20;
+
+						$text = vB_String::vbChop($el['data'], $limit);
+
+						// To limit false positives, when we are handling this particular
+						// edge case the nodeid bit ";n12345" at the end will be required.
+						// This will handle any quotes that are generated by clicking the
+						// quote button, but won't handle manually typed in quotes where
+						// the nodeid is missing. I think this is a fair trade off.
+						if (preg_match('/^(.*(?<!&#[0-9]{3}|&#[0-9]{4}|&#[0-9]{5});\s*n\d+\s*)\]/U', $text, $match))
+						{
+							// Reconstruct the proper option value before the username got chopped
+							// off at the ']' character.
+							$len = strlen($match[1]);
+							$elements[$prevKey]['option'] .= ']' . substr($el['data'], 0, $len);
+
+							// Remove the parts of the option that were prepended to the text
+							$len = strlen($match[0]);
+							$elements[$key]['data'] = substr($el['data'], $len);
+						}
+					}
+				}
+			}
+
+			$prevKey = $key;
+		}
+
+		return $elements;
+	}
+
+	/**
+	* Find the first instance of a tag in an array
+	*
+	* @param	string		Name of tag
+	* @param	array		Array to search
+	*
+	* @return	int|false	Array key of first instance; false if it does not exist
+	*/
+	private function findFirstTag($tagName, &$stack)
+	{
+		foreach ($stack AS $key => $node)
+		{
+			if ($node['name'] == $tagName)
+			{
+				return $key;
+			}
+		}
+		return false;
+	}
+}
+
+/*=========================================================================*\
+|| #######################################################################
+|| # Downloaded: 12:50, Tue Dec 24th 2024
+|| # CVS: $RCSfile$ - $Revision: 107965 $
+|| #######################################################################
+\*=========================================================================*/

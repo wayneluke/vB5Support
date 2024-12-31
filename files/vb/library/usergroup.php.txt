@@ -1,0 +1,755 @@
+<?php
+/*========================================================================*\
+|| ###################################################################### ||
+|| # vBulletin 6.1.0 Alpha 4 Week 2 - Licence Number VBCW2VFT7A
+|| # ------------------------------------------------------------------ # ||
+|| # Copyright 2000-2024 MH Sub I, LLC dba vBulletin. All Rights Reserved.  # ||
+|| # This file may not be redistributed in whole or significant part.   # ||
+|| # ----------------- VBULLETIN IS NOT FREE SOFTWARE ----------------- # ||
+|| # http://www.vbulletin.com | http://www.vbulletin.com/license.html   # ||
+|| ###################################################################### ||
+\*========================================================================*/
+
+/**
+ * vB_Library_Usergroup
+ *
+ * @package vBLibrary
+ * @access public
+ */
+class vB_Library_Usergroup extends vB_Library
+{
+	const PROMOTION_STRATEGY_DAYS_SINCE_LAST_POST = 19;
+
+	/**
+	 * Returns a list of all user groups.
+	 *
+	 * @return	array
+	 */
+	// TODO: This seems to only be used by the channel XML importer.
+	// Other places use the API's fetchUsergroupList() instead, which is nearly identical
+	// except it sanitizes the usergroup data. I'm not sure if that merits this lib function &
+	// its near duplicate tests, and maybe we should just push it into the channel importer code
+	// where it's used instead...
+	public function fetchUsergroupList()
+	{
+		$usergroups = $this->getCache();
+
+		// its not clear if the sort logic is needed since the datastore value is
+		// *usually* sorted by title already
+		usort($usergroups, function ($group1, $group2) {
+			return strcasecmp($group1['title'], $group2['title']);
+		});
+
+		return $usergroups;
+	}
+
+	public function fetchUsergroupByID($usergroupid)
+	{
+		$usergroups = $this->getCache();
+		if (isset($usergroups[$usergroupid]))
+		{
+			return $usergroups[$usergroupid];
+		}
+		else
+		{
+			throw new vB_Exception_Api('invalidid', ['usergroupid']);
+		}
+	}
+
+	/**
+	 * Returns the usergroupids for multiple specified SYSGROUPID constants
+	 *
+	 * @param array $groups -- int, the systemIDs to look up the db ids from
+	 * @return array -- usergroup ids -- NOTE: The usergroups in the return
+	 *                  array are in the same order as in the input array.
+	 *                  Some callers depend on this behavior.
+	 */
+	public function getMultipleGroupIds($groups)
+	{
+		if (empty($groups))
+		{
+			return [];
+		}
+
+		$usergroups = $this->getCache();
+
+		$invertGroups = array_fill_keys($groups, false);
+		foreach ($usergroups AS $usergroup)
+		{
+			if(isset($invertGroups[$usergroup['systemgroupid']]))
+			{
+				$invertGroups[$usergroup['systemgroupid']] = $usergroup['usergroupid'];
+			}
+		}
+
+		return array_values(array_filter($invertGroups));
+	}
+
+	/**
+	 *  Returns all of the user groups with ismoderator set
+	 *
+	 *  @return array usergroupids for each usergroup
+	 */
+	public function getSuperModGroups()
+	{
+		return $this->getGroupsWithPerm('adminpermissions', 'ismoderator');
+	}
+
+	public function getMemberlistGroups()
+	{
+		return $this->getGroupsWithPerm('genericoptions', 'showmemberlist');
+	}
+
+	public function getGroupsWithPerm($permgroup, $permname)
+	{
+		$datastore = vB::getDatastore();
+		$groups = $this->getCache();
+		$permissions = $datastore->getValue("bf_ugp_$permgroup");
+		$perm = $permissions[$permname];
+
+		$groupsWithPerm = [];
+		foreach($groups AS $ugid => $groupinfo)
+		{
+			if ($groupinfo[$permgroup] & $perm)
+			{
+				$groupsWithPerm[] = $ugid;
+			}
+		}
+		return $groupsWithPerm;
+	}
+
+	/**
+	 * Rebuilds the usergroup datastore cache from the database
+	 *
+	 * @return array{int:array} -- keyed by usergroupid
+	 */
+	public function buildDatastore() : array
+	{
+		//needed for get_disabled_perms
+		require_once(DIR . '/includes/adminfunctions.php');
+
+		$db = vB::getDbAssertor();
+		$cache = [];
+
+		$usergroups = $db->select('usergroup', [], 'title');
+		foreach ($usergroups AS $usergroup)
+		{
+			foreach ($usergroup AS $key => $val)
+			{
+				if (is_numeric($val))
+				{
+					$usergroup["$key"] += 0;
+				}
+			}
+			$cache[$usergroup['usergroupid']] = get_disabled_perms($usergroup) + $usergroup;
+		}
+
+		vB::getDatastore()->build('usergroupcache', serialize($cache), 1);
+		return $cache;
+	}
+
+	/**
+	 *	Get the usergroup cache.  Will rebuild the datastore if it is missing.
+	 *
+	 *	This is mostly public to allow the API class to call it.
+	 */
+	//logic that uses the usergroup cache should migrate to the this class to
+	//avoid the number of callers for this function.
+	public function getCache()
+	{
+		$usergroups = vB::getDatastore()->getValue('usergroupcache');
+		if(!$usergroups)
+		{
+			$usergroups = $this->buildDatastore();
+		}
+		return $usergroups;
+	}
+
+
+	/**
+	 * Fetch usergroup information by its SystemID
+	 *
+	 * @param int $systemgroupid
+	 * @return array|false Usergroup information -- returns usergroup array or false if it doesn't exist
+	 * @see fetchUsergroupList for fields
+	 */
+	public function getUsergroupBySystemID($systemgroupid)
+	{
+		$usergroupcache = $this->getCache();
+		foreach ($usergroupcache AS $usergroup)
+		{
+			if ($usergroup['systemgroupid'] == $systemgroupid)
+			{
+				return $usergroup;
+			}
+		}
+
+		return false;
+	}
+
+	// Note the OUTPUT param by reference $itemsToLog
+	private function processInactiveUserPromotions__DaysSinceLastPost(int $cutoff, array $usertitlecache, array &$itemsToLog) : void
+	{
+		// Note, "inactive" users in this case refers to users whose
+		// `lastactivity` < $cutoff.
+		// The basic requested workflow for days_since_lastpost is is contrary
+		// to the optimization we do which skips all users with lastactivity <
+		// $cutoff because we likely want to hit the inactive users for
+		// days_since_lastpost.. As such we're splitting this off into its own
+		// function.
+
+		// Unfortunately, just doing a once "catch-up" of all inactive users via
+		// a misc.php tool then doing the "active" cutoff does not cover all
+		// cases.
+		// E.g. a user was active 100 days ago, with lastpost at 100 days ago,
+		// and the cutoff is 99 days, and a promotion requires 101 days since
+		// last post. The initial inactive scan will skip this user since
+		// they're not eligible for that promotion yet, and the "active" scan
+		// will also skip them since they're past the cut off. 1 day later, when
+		// they *are* eligible for that promotion, the "active" scan will miss
+		// them due to the cutoff.
+		// As such whenever we run the cron we must scan all of the inactive
+		// eligible users.
+		// However, due to promotions not always updating the usergroupid (it
+		// can update the membergroupids instead), unless we filter the
+		// membergroupids as well (which is currently difficult and
+		// unperformant), we dont' actually have a way to fully filter out users
+		// we're going to end up skipping.
+		// As such we're going to put a bottom limit on the lastpost, as well,
+		// and rely on an initial run of misc.php's promoteusersByBatch() to
+		// catch the oldest inactive users that'll be missed by this range.
+
+		// Note that we're skipping the lastactivity >= $cutoff users because
+		// those should've been processed by the base promoteUsers() already.
+
+		// If $cutoff is <= 0, we can also skip this because the base
+		// promoteUsers() should've handled all users.
+		if ($cutoff <= 0)
+		{
+			return;
+		}
+
+		$assertor = vB::getDbAssertor();
+		// Get all promotions that uses DaysSinceLastPost
+		$userpromotions = $assertor->getRows('userpromotion', [
+			'strategy' => vB_Library_Usergroup::PROMOTION_STRATEGY_DAYS_SINCE_LAST_POST,
+			vB_dB_Query::COLUMNS_KEY => ['userpromotionid', 'usergroupid', 'days_since_lastpost'],
+		]);
+		// If we don't have any userpromotions that explicitly require looking
+		// up inactive users, there's nothing to do so we can skip this.
+		if (empty($userpromotions))
+		{
+			return;
+		}
+
+		$timenow = vB::getRequest()->getTimeNow();
+		foreach ($userpromotions AS $__userpromo)
+		{
+			$lastpostEnd = $timenow - ($__userpromo['days_since_lastpost'] * 86400);
+			// Let's do a 6 months lookback for the bottom cap on lastpost
+			$lastpostStart = max(0, $lastpostEnd - 6 * 30 * 86400);
+
+			$conditions = [
+				'lastactivity_cutoff' => $cutoff,
+				'lastpost_start' => $lastpostStart,
+				'lastpost_end' => $lastpostEnd,
+				'usergroupid' => $__userpromo['usergroupid'],
+				'userpromotionid' => $__userpromo['userpromotionid'],
+			];
+			$promotions = $assertor->assertQuery('fetchUsersForPromotion_ByLastPost', $conditions);
+
+			$this->doPromoteUsersInternal($promotions, $usertitlecache, $itemsToLog);
+		}
+	}
+
+	/**
+	 * Promote users by userids, ignoring lastactivity.
+	 *
+	 * @param int $batchStart
+	 * @param int $batchEnd
+	 *
+	 * @return array
+	 */
+	public function promoteUsersByBatch(int $batchStart, int $batchEnd) : array
+	{
+		$assertor = vB::getDbAssertor();
+
+		$conditions = [
+			'userstart' => $batchStart,
+			'userend' => $batchEnd,
+		];
+		$promotions = $assertor->assertQuery('fetchUsersForPromotion_ByBatch', $conditions);
+
+		$itemsToLog = [];
+		$usertitlecache = $assertor->getColumn('usertitle', 'title', [], ['field' => 'minposts', 'direction' => vB_dB_Query::SORT_ASC], 'minposts');
+		$this->doPromoteUsersInternal($promotions, $usertitlecache, $itemsToLog);
+
+		return [
+			'itemsToLog' => $itemsToLog,
+		];
+	}
+
+	public function promoteUsers(int $cutoff) : array
+	{
+		$assertor = vB::getDbAssertor();
+
+		$usertitlecache = $assertor->getColumn('usertitle', 'title', [], ['field' => 'minposts', 'direction' => vB_dB_Query::SORT_ASC], 'minposts');
+		// We only check the users that have been active since the lastrun to save a bit of cpu time.
+		// Note that this means we won't pick up "demotion" users for use with the "days_since_lastpost" option
+		$conditions = [
+			'lastactivity_cutoff' => $cutoff,
+		];
+		$promotions = $assertor->assertQuery('fetchUsersForPromotion_ByLastActivity', $conditions);
+
+		$itemsToLog = [];
+
+		$this->doPromoteUsersInternal($promotions, $usertitlecache, $itemsToLog);
+
+		$this->processInactiveUserPromotions__DaysSinceLastPost($cutoff, $usertitlecache, $itemsToLog);
+
+		return [
+			'itemsToLog' => $itemsToLog,
+		];
+	}
+
+	private function doPromoteUsersInternal(Iterator $promotions, array $usertitlecache, array &$itemsToLog) : void
+	{
+		$timenow = vB::getRequest()->getTimeNow();
+		$vb5_config = vB::getConfig();
+		$undeletable_users = $vb5_config['SpecialUsers']['undeletableusers'] ?? '';
+		$undeletable_users = !empty($undeletable_users) ? explode(',', $undeletable_users) : [];
+
+		$usergroupChanges = [];
+		$primaryupdates = [];
+		$secondaryupdates = [];
+		$userupdates = [];
+		// # of changes to accumlate before running the queries and flushing out the arrays above.
+		$batchCount = 5000;
+
+		/** @var vB_Library_Userrank */
+		$ranklib = vB_Library::instance('userrank');
+		foreach ($promotions as $promotion)
+		{
+			// First make sure user isn't already a member of the group we are joining
+			if (
+				(
+					strpos(",$promotion[membergroupids],", ",$promotion[joinusergroupid],") === false AND
+					$promotion['type'] == 2
+				) OR
+				(
+					$promotion['usergroupid'] != $promotion['joinusergroupid'] AND
+					$promotion['type'] == 1
+				)
+			)
+			{
+				$daysregged = intval(($timenow - $promotion['joindate']) / 86400);
+				$joinusergroupid = $promotion['joinusergroupid'];
+				$dojoin = false;
+				$reputation = false;
+				$posts = false;
+				$joindate = false;
+				// These strategies are for the flipped (<) reputation checking
+				if (($promotion['strategy'] > 7 AND $promotion['strategy'] < 16) OR $promotion['strategy'] == 24)
+				{
+					if ($promotion['reputation'] < $promotion['jumpreputation'])
+					{
+						$reputation = true;
+					}
+				}
+				else if ($promotion['reputation'] >= $promotion['jumpreputation'])
+				{
+					$reputation = true;
+				}
+
+				if ($promotion['posts'] >= $promotion['jumpposts'])
+				{
+					$posts = true;
+				}
+				if ($daysregged >= $promotion['jumpdate'])
+				{
+					$joindate = true;
+				}
+
+				if ($promotion['strategy'] == 17)
+				{
+					$dojoin = $posts;
+				}
+				else if ($promotion['strategy'] == 18)
+				{
+					$dojoin = $joindate;
+				}
+				else if ($promotion['strategy'] == 16 OR $promotion['strategy'] == 24)
+				{
+					$dojoin = $reputation;
+				}
+				// days_since_lastpost
+				else if ($promotion['strategy'] == vB_Library_Usergroup::PROMOTION_STRATEGY_DAYS_SINCE_LAST_POST)
+				{
+					$seconds_since_lastpost = $timenow - $promotion['lastpost'];
+					$jumpCutoff = $promotion['jump_days_since_lastpost'] * 86400;
+					if ($seconds_since_lastpost >= $jumpCutoff)
+					{
+						$dojoin = true;
+					}
+				}
+				else
+				{
+					switch($promotion['strategy'])
+					{
+						case 0:
+						case 8:
+							if ($posts AND $reputation AND $joindate)
+							{
+								$dojoin = true;
+							}
+							break;
+						case 1:
+						case 9:
+							if ($posts OR $reputation OR $joindate)
+							{
+								$dojoin = true;
+							}
+							break;
+						case 2:
+						case 10:
+							if (($posts AND $reputation) OR $joindate)
+							{
+								$dojoin = true;
+							}
+							break;
+						case 3:
+						case 11:
+							if ($posts AND ($reputation OR $joindate))
+							{
+								$dojoin = true;
+							}
+							break;
+						case 4:
+						case 12:
+							if (($posts OR $reputation) AND $joindate)
+							{
+								$dojoin = true;
+							}
+							break;
+						case 5:
+						case 13:
+							if ($posts OR ($reputation AND $joindate))
+							{
+								$dojoin = true;
+							}
+							break;
+						case 6:
+						case 14:
+							if ($reputation AND ($posts OR $joindate))
+							{
+								$dojoin = true;
+							}
+							break;
+						case 7:
+						case 15:
+							if ($reputation OR ($posts AND $joindate))
+							{
+								$dojoin = true;
+							}
+					}
+				}
+
+				if ($dojoin)
+				{
+					$user = $promotion;
+					$undeletable_user = in_array($promotion['userid'], $undeletable_users);
+					 // Primary usergroup changes
+					if ($promotion['type'] == 1 )
+					{
+						if (!$undeletable_user)
+						{
+							$primaryupdates[$joinusergroupid] ??= [];
+							$primaryupdates[$joinusergroupid][] = $promotion['userid'];
+							// A user can only have 1 primary group, so if there happen to be multiples, just overwrite with the
+							// last as that'll be the one that sticks.
+							$usergroupChanges[$promotion['userid']] ??= [];
+							$usergroupChanges[$promotion['userid']]['primary'] = $joinusergroupid;
+
+
+							if (
+								(!$promotion['displaygroupid'] OR $promotion['displaygroupid'] == $promotion['usergroupid']) AND
+								!$promotion['customtitle']
+								)
+							{
+								if ($promotion['ug_usertitle'])
+								{
+									// update title if the user (doesn't have a special display group or if their display group is their primary group)
+									// and he doesn't have a custom title already, and the new usergroup has a custom title
+									$userupdates[$promotion['userid']]['title'] = $promotion['ug_usertitle'];
+								}
+								else
+								{
+									// need to use default thats specified for X posts.
+									foreach ($usertitlecache AS $minposts => $title)
+									{
+										if ($minposts <= $promotion['posts'])
+										{
+											$userupdates[$promotion['userid']]['title'] = $title;
+										}
+										else
+										{
+											break;
+										}
+									}
+								}
+							}
+
+							$user['displaygroupid'] = ($user['displaygroupid'] == $user['usergroupid']) ? $joinusergroupid : $user['displaygroupid'];
+							$user['usergroupid'] = $joinusergroupid;
+						}
+					}
+					else
+					{
+						// membergroup changes
+						$membergroupids =  explode(',', $user['membergroupids']);
+						if (!in_array($joinusergroupid, $membergroupids))
+						{
+							$secondaryupdates[$joinusergroupid] ??= [];
+							$secondaryupdates[$joinusergroupid][] = $promotion['userid'];
+
+							// A user can have multiple secondary/membergroups, so keep track of all.
+							$usergroupChanges[$promotion['userid']] ??= [];
+							$usergroupChanges[$promotion['userid']]['secondary'][] = $joinusergroupid;
+
+							$membergroupids[] = $joinusergroupid;
+							$user['membergroupids'] = implode($membergroupids);
+						}
+
+					}
+
+					// $userupdates[...]['rank'] & ['title'] note:
+					// So these strings are annoying, but we can't get around it
+					// unless we can compress the stacked ranks as a series of
+					// integer IDs or something. Deferring this rank
+					// calculation/assignment actually requires storing *more*
+					// data in memory (most of the $promotion data to drive
+					// getRankHtml()) than just these rank & usergroup title
+					// strings so we don't gain anything there.
+					$userrank = $ranklib->getRankHtml($user);
+					if ($promotion['rank'] != $userrank AND !$undeletable_user)
+					{
+						$userupdates[$promotion['userid']]['rank'] = $userrank;
+					}
+
+					// For extremely large # of users, the array build-ups can cause memory issues. Clear it out every once in a while.
+					if (count($userupdates) >= $batchCount OR count($primaryupdates) >= $batchCount OR count($secondaryupdates) >= $batchCount)
+					{
+						$this->runPromotionQueriesAndUserUpdates($userupdates, $primaryupdates, $secondaryupdates, $itemsToLog);
+						$userupdates = [];
+						$primaryupdates = [];
+						$secondaryupdates = [];
+						foreach ($usergroupChanges AS $__userid => $__arr)
+						{
+							$this->registerUserUsergroupChanges($__userid, $__arr['primary'] ?? null, $__arr['secondary'] ?? []);
+						}
+						$usergroupChanges = [];
+					}
+				}
+			}
+		}
+
+		$this->runPromotionQueriesAndUserUpdates($userupdates, $primaryupdates, $secondaryupdates, $itemsToLog);
+		$userupdates = [];
+		$primaryupdates = [];
+		$secondaryupdates = [];
+		foreach ($usergroupChanges AS $__userid => $__arr)
+		{
+			$this->registerUserUsergroupChanges($__userid, $__arr['primary'] ?? null, $__arr['secondary'] ?? []);
+		}
+		$usergroupChanges = [];
+	}
+
+	private function runPromotionQueriesAndUserUpdates(
+		array $userupdates,
+		array $primaryupdates,
+		array $secondaryupdates,
+		array &$itemsToLog) : void
+	{
+		$assertor = vB::getDbAssertor();
+
+		$groupids = [];
+
+		// we should probably refactor this chunk and cache $groupids outside...
+		if (!empty($primaryupdates))
+		{
+			$infractiongroupids = [];
+			$joingroups = array_keys($primaryupdates);
+			$groups = $assertor->assertQuery('infractiongroup',
+				['usergroupid' => array_merge($joingroups, [-1])],
+				['field' => 'pointlevel', 'direction' => vB_dB_Query::SORT_ASC]
+			);
+			foreach ($groups as $group)
+			{
+				$infractiongroupids[$group['usergroupid']][$group['pointlevel']] = [
+					'orusergroupid' => $group['orusergroupid'],
+					'override'      => $group['override'],
+				];
+			}
+
+			foreach ($joingroups AS $usergroupid)
+			{
+				if (empty($infractiongroupids[$usergroupid]))
+				{
+					$infractiongroupids[$usergroupid] = [];
+				}
+			}
+
+			if (!empty($infractiongroupids['-1']))
+			{
+				foreach ($infractiongroupids AS $usergroupid => $pointlevel)
+				{
+					$infractiongroupids[$usergroupid] += $infractiongroupids['-1'];
+					ksort($infractiongroupids[$usergroupid]);
+				}
+				unset($infractiongroupids['-1']);
+			}
+
+			foreach ($infractiongroupids AS $usergroupid => $pointlevel)
+			{
+				$ids = '';
+				$infractiongroupid = 0;
+				foreach ($pointlevel AS $points => $infractioninfo)
+				{
+					if ($infractioninfo['override'])
+					{
+						$infractiongroupid = $infractioninfo['orusergroupid'];
+					}
+					$ids .= (!empty($ids) ? ',' : '') . $infractioninfo['orusergroupid'];
+					$groupids[$usergroupid][$points]['ids'] = $ids;
+					$groupids[$usergroupid][$points]['id'] = $infractiongroupid;
+				}
+			}
+			unset($infractiongroupid, $infractiongroupids, $ids);
+		}
+
+		foreach ($primaryupdates AS $joinusergroupid => $userids)
+		{
+			$assertor->assertQuery('updateUserInfractions', [
+				'joinusergroupid' => $joinusergroupid,
+				'pointlevel' => $groupids[$joinusergroupid] ?? [],
+				'ids' => $userids
+			]);
+
+			$itemsToLog['primaryupdates'][$joinusergroupid] ??= [];
+			$itemsToLog['primaryupdates'][$joinusergroupid] = array_merge($itemsToLog['primaryupdates'][$joinusergroupid], $userids);
+		}
+		unset($groupids);
+
+		foreach ($userupdates AS $userid => $update)
+		{
+			$userdm = new vB_Datamanager_User(vB_DataManager_Constants::ERRTYPE_SILENT);
+			$user = ['userid' => $userid];
+			$userdm->set_existing($user);
+
+			if (!empty($update['title']))
+			{
+				$userdm->set('usertitle', $update['title']);
+			}
+
+			if (!empty($update['rank']))
+			{
+				$userdm->setr('rank', $update['rank']);
+			}
+
+			$userdm->save();
+			unset($userdm);
+		}
+
+		foreach ($secondaryupdates AS $joinusergroupid => $userids)
+		{
+			$assertor->assertQuery('vBForum:updateUserMemberGroupsByUserId',
+				[
+					'usergroupid' => $joinusergroupid,
+					'auth' => $userids
+				]
+			);
+			$itemsToLog['secondaryupdates'][$joinusergroupid] ??= [];
+			$itemsToLog['secondaryupdates'][$joinusergroupid] = array_merge($itemsToLog['secondaryupdates'][$joinusergroupid], $userids);
+		}
+	}
+
+	public function registerUserUsergroupChanges(int $userid, ?int $newprimarygroupid, array $newmembergroupids) : void
+	{
+		// ATM, this function does not handle anything about "lost" groupids, only "gained" groupids. The main problem is
+		// that for usergroup promotions we don't keep track of the "old" usergroupids currently, so I'm deferring
+		// additional logic for "lost" groupids until the actual need arises.
+		$newUsergroups = $newmembergroupids;
+		if ($newprimarygroupid)
+		{
+			$newUsergroups[] = $newprimarygroupid;
+		}
+		$newUsergroups = array_unique($newUsergroups);
+
+		// wrapper for two reasons:
+		// 1. we may want to run other post-usergroup-change logic in the future, and
+		// 2. hopefully slightly easier for future refactor when we move this out into a systemevent (which is also why this
+		//    method is named "register...")
+
+		// TODO: push this into systemevent.
+		$this->doUsergroupChannelAutosubscriptions($userid, $newUsergroups);
+	}
+
+	private function doUsergroupChannelAutosubscriptions(int $userid, array $newUsergroups) : void
+	{
+		if (empty($userid) OR empty($newUsergroups))
+		{
+			return;
+		}
+
+		$assertor = vB::getDbAssertor();
+
+		// fetch usergroup auto subscriptions.
+		$filteredExisting = $assertor->getColumn('vBForum:subscribediscussion', 'discussionid', ['userid' => $userid], false, 'discussionid');
+		// Technically nothing other than UI blocks the usergroup_channel_subscription from defining topic subscriptions as
+		// well... skipping filtering above against `channel` records for now as it's not really required.
+
+		$newSubs = $assertor->GetColumn('vBForum:usergroup_channel_subscription', 'nodeid', ['usergroupid' => $newUsergroups], false, 'nodeid');
+
+		$assertor = vB::getDbAssertor();
+		$inserts = [];
+		foreach ($newSubs AS $__nodeid)
+		{
+			if (isset($filteredExisting[$__nodeid]))
+			{
+				continue;
+			}
+			// Don't try to duplicate the insert if multiple eligible usergroups define autosubscriptions against the same
+			// channel.
+			$filteredExisting[$__nodeid] = $__nodeid;
+
+			//  do we need to move/add the add functions to the follow library? Current follow api ::add is problematic here since
+			// we may not actually have a "current user" yet (e.g. user registration), and/or "current user" (e.g. admin) may not
+			// be who we want to add the follow for.
+			// /** @var vB_Library_Follow */
+			// $followLib = vB_Library::instance('follow');
+			//$__result = $followLib->add($__nodeid, vB_Api_Follow::FOLLOWTYPE_CONTENT);
+			// For now, doing direct inserts.
+
+			$inserts[] = [
+				$userid,
+				$__nodeid,
+			];
+		}
+		if (count($inserts))
+		{
+			// GREPMARK: ADD NODE SUBSCRIPTION
+			// This one does potentially multiple nodes per one user
+			$assertor->insertMultiple('vBForum:subscribediscussion',
+				['userid', 'discussionid'],
+				$inserts
+			);
+		}
+	}
+}
+
+/*=========================================================================*\
+|| #######################################################################
+|| # Downloaded: 12:50, Tue Dec 24th 2024
+|| # CVS: $RCSfile$ - $Revision: 117089 $
+|| #######################################################################
+\*=========================================================================*/

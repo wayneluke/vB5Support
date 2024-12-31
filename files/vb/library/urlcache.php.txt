@@ -1,0 +1,314 @@
+<?php
+/*========================================================================*\
+|| ###################################################################### ||
+|| # vBulletin 6.1.0 Alpha 4 Week 2 - Licence Number VBCW2VFT7A
+|| # ------------------------------------------------------------------ # ||
+|| # Copyright 2000-2024 MH Sub I, LLC dba vBulletin. All Rights Reserved.  # ||
+|| # This file may not be redistributed in whole or significant part.   # ||
+|| # ----------------- VBULLETIN IS NOT FREE SOFTWARE ----------------- # ||
+|| # http://www.vbulletin.com | http://www.vbulletin.com/license.html   # ||
+|| ###################################################################### ||
+\*========================================================================*/
+
+/**
+ * @package vBLibrary
+ */
+class vB_Library_UrlCache extends vB_Library implements vB_Interface_UrlCache
+{
+	public const STATUS_URL_FETCH_MISSINGSTATUS = 0;
+	public const STATUS_URL_FETCH_ERROR = 1;
+	//public const STATUS_URL_LEGACY_DATA = 2;
+
+	/**
+	 * Save URL preview data to the database. Callers outside of this class probably wants to call the public fetchUrl() method
+	 * instead.
+	 *
+	 * @param vB_Entity_CachedUrl $newUrl
+	 *
+	 * @return int|false  Affected urlid, or false on failure
+	 */
+	private function saveUrl(vB_Entity_CachedUrl $newUrl) : mixed
+	{
+		// Currently set to private because nothing outside calls this directly -- instead, they should be going through the
+		// fetchUrl() method which only fetches the URL & updates the cache if necessary. If we make this public, we will need to
+		// reconsider the deduping logic below.
+
+		$params = $newUrl->toArray();
+
+		// if (empty($params['urlid']))
+		// {
+		// 	unset($params['urlid']);
+		// }
+		// should probably never overwrite the URLID if the hash / url changed,
+		// since other areas might be depending on the old cached URL data
+		unset($params['urlid']);
+
+		$params['data'] = json_encode($params['data']);
+
+		if (empty($params['hash']))
+		{
+			throw new vB_Exception_Api('invalid_data');
+		}
+
+		$db = vB::getDbAssertor();
+		$check = $this->fetchCachedUrl($params['hash'], $params['url']);
+		if ($check)
+		{
+			// This will generally only happen if the existing data is already expired.
+			// However, if things outside of this class starts calling saveUrl(), we may want to make this check more sophisticated.
+			// For example, of $old is not expired yet and has valid data, and $new.statuscode is an error (< 200 || > 299), we
+			// might want to chalk it up to a temporary network issue and prefer the old data.
+			if ($check['expires'] < $params['expires'])
+			{
+				$id = $check['urlid'];
+				unset($params['urlid']);
+				$db->update('urlcache', $params, ['urlid' => $id]);
+			}
+			else
+			{
+				return false;
+			}
+		}
+		else
+		{
+			$id = $db->insertIgnore('urlcache', $params);
+			// Not sure why, but insertIgnore(), unlike insert(), always returns an array.
+			$id = reset($id);
+		}
+
+		// Update the local cache with latest data.
+		$params['urlid'] = $id;
+		$this->fetchedUrls[$params['hash']] = $params;
+
+		return $id;
+	}
+
+	private array $fetchedUrls = [];
+	public function prefetchCachedUrls(array|string $urls) : void
+	{
+		$urls = is_array($urls) ? $urls : [$urls];
+		array_unique($urls);
+		$toFetch = [];
+		$hashToUrl = [];
+		foreach ($urls AS $__url)
+		{
+			$__url = vB_Entity_CachedUrl::normalizeUrl($__url);
+			$__hash = vB_Entity_CachedUrl::hashNormalizedUrl($__url);
+			if (!isset($this->fetchedUrls[$__hash]))
+			{
+				$toFetch[] = $__hash;
+				$hashToUrl[$__hash] = $__url;
+			}
+		}
+
+		// We may end up calling this multiple times -- once for bulk nodes for already saved nodes that have `bbcode_data`
+		// records, another for a newly added or edited node that lack the `bbcode_data` records. In the latter case, we want to
+		// avoid re-fetching URLs that we already attempted to fetch in the first bulk.
+		if (count($toFetch) < 1)
+		{
+			return;
+		}
+
+		$assertor = vB::getDbAssertor();
+		$qry = $assertor->assertQuery('urlcache', ['hash' => $toFetch]);
+		foreach ($qry AS $__row)
+		{
+			$__hash = $__row['hash'];
+			$this->fetchedUrls[$__hash] = $__row;
+			unset($hashToUrl[$__hash]);
+		}
+
+		foreach ($hashToUrl AS $__hash => $__url)
+		{
+			// Note, we're intentionally locally caching misses as well here, so that we don't keep hitting the DB for the same
+			// URLs. IF we end up fetching the URL later, we will store it in the DB & update this->fetchedUrls[..] in saveUrl()
+			//
+			// If we do not do this, and a page has a number of new, uncached URLs, we'd end up hitting the DB for every
+			// one of those URLs even though we already know we don't have them in DB and need to remote-fetch them.
+			$this->fetchedUrls[$__hash] = [];
+		}
+	}
+
+	private function fetchCachedUrl(string $hash, string $url) : array
+	{
+		// Note, 2nd param $url was used mostly for debugging & logging.
+
+		if (!isset($this->fetchedUrls[$hash]))
+		{
+			$assertor = vB::getDbAssertor();
+			// Note, we're intentionally locally caching misses as well here, so that we don't keep hitting the DB for the same
+			// URLs. IF we end up fetching the URL later, we will store it in the DB & update this->fetchedUrls[..] in saveUrl()
+			$this->fetchedUrls[$hash] = $assertor->getRow('urlcache', ['hash' => $hash]) ?? [];
+		}
+
+		return $this->fetchedUrls[$hash];
+	}
+
+	public function fetchUrl(string $url, bool $cachedOnly = false, bool &$wasUrlLoaded = false, ?int $cutoff = null) : ?vB_Entity_CachedUrl
+	{
+		if (empty($cutoff))
+		{
+			$cutoff = vB::getRequest()->getTimeNow();
+		}
+
+		$urlarr = [];
+		$url = vB_Entity_CachedUrl::normalizeUrl($url, $urlarr);
+		// todo: where do we want to do host restrictions?
+		//$host = $urlarr['host'];
+		$hash = vB_Entity_CachedUrl::hashNormalizedUrl($url);
+		$check = $this->fetchCachedUrl($hash, $url);
+		if ((empty($check) OR $check['expires'] < $cutoff))
+		{
+			if ($cachedOnly)
+			{
+				return null;
+			}
+			else
+			{
+				$wasUrlLoaded = true;
+				// fetch fresh, then cache.
+				$data = $this->fetchUrlLive($url);
+				if (empty($data['errors']))
+				{
+					$headers = $data['headers'];
+					$expires = $this->getExpires($headers);
+					//unset($data['headers']);
+					//$data['url'] = $link;
+
+					$this->filterHeadersForStorage($data['headers']);
+					// todo: max-length for title & meta?
+					// todo: max-count for images?
+
+					$storageArray = [
+						'url' => $url,
+						'data' => $data,
+						'expires' => $expires,
+						'lastfetch' => time(),
+						// todo: I think we have a function to normalize contenttype somewhere...
+						'contenttype' => $headers['content-type'] ?? '',
+						'statuscode' => $headers['http-response']['statuscode'] ?? self::STATUS_URL_FETCH_MISSINGSTATUS,
+					];
+					$newEntity = vB_Entity_CachedUrl::createFromArray($storageArray);
+					// Cache the fetched URL
+					$this->saveUrl($newEntity);
+					return $newEntity;
+				}
+				else
+				{
+					// we should probably store & cache error states for some time to avoid abuse..
+					$storageArray = [
+						'url' => $url,
+						'data' => $data,
+						// 5 minutes?
+						'expires' => $cutoff + 300,
+						'lastfetch' => time(),
+						'contenttype' => 'error',
+						'statuscode' => self::STATUS_URL_FETCH_ERROR,
+					];
+					$newEntity = vB_Entity_CachedUrl::createFromArray($storageArray);
+					// Cache the fetched URL
+					$this->saveUrl($newEntity);
+
+					return $newEntity;
+				}
+			}
+		}
+		else
+		{
+			return vB_Entity_CachedUrl::createFromArray($check);
+		}
+	}
+
+	private function fetchUrlLive(string $url) : array
+	{
+		// todo: localize this function to a common functions class?
+		try
+		{
+			/** @var vB_Api_Content_Link */
+			$linkApi = vB_Api::instanceInternal('content_link');
+			$data = $linkApi->parsePage($url);
+		}
+		catch (vB_Exception_Api $e)
+		{
+			// ignore API errors e.g. due to invalid URl
+			$data = [
+				'title' => null,
+				'meta' => null,
+				'images' => [],
+				// We may want to cache errors longer, or maybe not. For now letting it fall back to the default of 1 day.
+				'headers' => [],
+				// todo: what to do about errors?
+				'errors' => $e->get_errors(),
+			];
+		}
+
+		// $data: title, meta, images => [0 =>,..]
+
+		return $data;
+	}
+
+	// there's a lot of data in the headers, and not all of them are interesting to keep in the urlcache.data.
+	private function filterHeadersForStorage(array &$headers) : void
+	{
+		$wantedHeaders = [
+			'http-response',
+			'content-type',
+			// getExpires() & other cache-control related...
+			'cache-control',
+			'expires',
+			'pragma',
+			'etag',
+			'last-modified',
+		];
+		$headers = array_intersect_key($headers, array_flip($wantedHeaders));
+	}
+
+	private function getExpires(array $headers) : int
+	{
+		// Default to cache for 1 day.
+		$timenow = time();
+		//hard code a minimum of half a day, both to guard against a too aggressive load cycle
+		//and to avoid the problem where something accidentally sets this to 0 which would be bad.
+		$days_cache = max(0.5, floatval(vB::getDatastore()->getOption('url_preview_minimum_cache')));
+		$default = $timenow + intval($days_cache * 86400);
+
+		//When we load an internal page that also has links we'll render those links, which in turn will load
+		//pages that could have links...  This cascade isn't great.  Worse since all of the caches will likely
+		//expire at the same time it's likely to happen again.  This is an attempt to introduce some variation
+		//in the cache timeouts so hopefully some of the reloads will hit cache and stop some of the cascade.
+		//It doesn't need to be a secure random number.
+		$offset = rand(-120, 120) * 60;
+
+		$expires = 0;
+		if (!empty($headers['cache-control']))
+		{
+			// Okay, so I'm not sure what the exact rules are for quoting in this header, but
+			// it sounds like there are no rules...
+			// For now, I'm going to assume the responses will NOT quote values (e.g. Cache-Control: max-age="1234")
+			// but we may want to just remove quotes or do some other processing.
+			// We may also want to consider the following directives: private, nocache, no-store, s-maxage, immutable
+			// This also currently doesn't handle things like Cache-Control: extends="max-age=1245", max-age=4567
+			if (preg_match('#(?:^|\s)\s*max-age=(?<maxage>\d+)#', $headers['cache-control'], $matches))
+			{
+				// Not sure what clamp value might make sense... let's clamp it to at least 10 minutes since
+				// caching is kind of meaningless otherwise.
+				$expires =  $timenow + intval($matches['maxage']);
+			}
+			// handle older expires header if newer cache-control does not exist.
+			else if (!empty($headers['expires']))
+			{
+				$expires = intval(strtotime($headers['expires']));
+			}
+			// Ignoring old Pragma: no-cache.
+		}
+
+		return max($default, $expires) + $offset;
+	}
+}
+
+/*=========================================================================*\
+|| #######################################################################
+|| # Downloaded: 12:50, Tue Dec 24th 2024
+|| # CVS: $RCSfile$ - $Revision: 102970 $
+|| #######################################################################
+\*=========================================================================*/

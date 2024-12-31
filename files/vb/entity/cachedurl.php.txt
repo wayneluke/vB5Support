@@ -1,0 +1,95 @@
+<?php
+/*========================================================================*\
+|| ###################################################################### ||
+|| # vBulletin 6.1.0 Alpha 4 Week 2 - Licence Number VBCW2VFT7A
+|| # ------------------------------------------------------------------ # ||
+|| # Copyright 2000-2024 MH Sub I, LLC dba vBulletin. All Rights Reserved.  # ||
+|| # This file may not be redistributed in whole or significant part.   # ||
+|| # ----------------- VBULLETIN IS NOT FREE SOFTWARE ----------------- # ||
+|| # http://www.vbulletin.com | http://www.vbulletin.com/license.html   # ||
+|| ###################################################################### ||
+\*========================================================================*/
+
+// helper class to transport styleschedule data
+class vB_Entity_CachedUrl extends vB_Entity
+{
+	use vB_Trait_NoSerialize;
+
+	public string $hash;
+	public string $host;
+
+	public function __construct(
+		public string $url,
+		public array $data,
+		public int $expires,
+		public int $lastfetch,
+		public string $contenttype,
+		public int $statuscode = 0,
+		public ?int $urlid = null
+	)
+	{
+		$urlarr = [];
+		$url = static::normalizeUrl($url, $urlarr);
+		// hash for lookup
+		$this->hash = static::hashNormalizedUrl($url);
+		// This is in case we want to track host separately for domain level restrictions... (e.g. too many 404s)
+		$this->host = $urlarr['host'];
+	}
+
+	public static function hashNormalizedUrl(string $url) : string
+	{
+		return md5($url);
+	}
+
+	public static function normalizeUrl(string $url, array &$urlarr = []) : string
+	{
+		// todo: we might want a more thorough normalization method, e.g.: https://github.com/glenscott/url-normalizer
+		// which also removes ports, etc
+
+		// remove #fragment
+		$stringUtil = vB::getString();
+		$urlarr = $stringUtil->parseUrl($url);
+		unset($urlarr['fragment']);
+		// We may want to consider sorting the query parameters... but it's not clear whether the order of queryparams being
+		// different should count as a different URL
+		$url = $stringUtil->unparseUrl($urlarr);
+
+		return $url;
+	}
+
+	// Normally meant for creating from a DB record, but allows for urlid to be null (which would not
+	// happen for a db record since it's a primary key) so that we can use this function internally
+	// for quick copies
+	public static function createFromArray(array $dbrecord) : static
+	{
+		// kind of an invert of convertSingleInstanceToArray()
+
+		$dbrecord['data'] ??= [];
+		if (!is_array($dbrecord['data']))
+		{
+			$dbrecord['data'] = json_decode($dbrecord['data'], true);
+			if ($dbrecord['data'] === false)
+			{
+				$dbrecord['data'] = [];
+			}
+		}
+
+		// wish there was a better/easier way than manually specifying all of these keys
+		return new vB_Entity_CachedUrl(
+			$dbrecord['url'],
+			$dbrecord['data'],
+			$dbrecord['expires'] ?? 0,
+			$dbrecord['lastfetch'] ?? 0,
+			$dbrecord['contenttype'] ?? '',
+			$dbrecord['statuscode'] ?? 0,
+			$dbrecord['urlid'] ?? null
+		);
+	}
+}
+
+/*=========================================================================*\
+|| #######################################################################
+|| # Downloaded: 12:50, Tue Dec 24th 2024
+|| # CVS: $RCSfile$ - $Revision: 113078 $
+|| #######################################################################
+\*=========================================================================*/

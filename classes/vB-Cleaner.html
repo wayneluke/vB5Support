@@ -1,0 +1,2064 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+            <title>vBulletin v6.1.0</title>
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <base href="../">
+    <link rel="icon" href="images/favicon.ico"/>
+    <link rel="stylesheet" href="css/normalize.css">
+    <link rel="stylesheet" href="css/base.css">
+            <link rel="preconnect" href="https://fonts.gstatic.com">
+        <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@100;200;300;400;600;700&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@400;600;700&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="css/template.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.0/css/all.min.css" integrity="sha256-ybRkN9dBjhcS2qrW1z+hfCxq+1aBdwyQM5wlQoQVt/0=" crossorigin="anonymous" />
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.23.0/themes/prism-okaidia.css">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.23.0/plugins/line-numbers/prism-line-numbers.css">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.23.0/plugins/line-highlight/prism-line-highlight.css">
+                <script src="https://cdn.jsdelivr.net/npm/fuse.js@3.4.6"></script>
+        <script src="https://cdn.jsdelivr.net/npm/css-vars-ponyfill@2"></script>
+        <script src="js/template.js"></script>
+        <script src="js/search.js"></script>
+        <script defer src="js/searchIndex.js"></script>
+    </head>
+<body id="top">
+    <header class="phpdocumentor-header phpdocumentor-section">
+    <h1 class="phpdocumentor-title"><a href="" class="phpdocumentor-title__link">vBulletin v6.1.0</a></h1>
+    <input class="phpdocumentor-header__menu-button" type="checkbox" id="menu-button" name="menu-button" />
+    <label class="phpdocumentor-header__menu-icon" for="menu-button">
+        <i class="fas fa-bars"></i>
+    </label>
+    <section data-search-form class="phpdocumentor-search">
+    <label>
+        <span class="visually-hidden">Search for</span>
+        <svg class="phpdocumentor-search__icon" width="21" height="20" viewBox="0 0 21 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="7.5" cy="7.5" r="6.5" stroke="currentColor" stroke-width="2"/>
+            <line x1="12.4892" y1="12.2727" x2="19.1559" y2="18.9393" stroke="currentColor" stroke-width="3"/>
+        </svg>
+        <input type="search" class="phpdocumentor-field phpdocumentor-search__field" placeholder="Loading .." disabled />
+    </label>
+</section>
+
+    <nav class="phpdocumentor-topnav">
+    <ul class="phpdocumentor-topnav__menu">
+        </ul>
+</nav>
+</header>
+
+    <main class="phpdocumentor">
+        <div class="phpdocumentor-section">
+            <input class="phpdocumentor-sidebar__menu-button" type="checkbox" id="sidebar-button" name="sidebar-button" />
+<label class="phpdocumentor-sidebar__menu-icon" for="sidebar-button">
+    Menu
+</label>
+<aside class="phpdocumentor-column -three phpdocumentor-sidebar">
+                    <section class="phpdocumentor-sidebar__category -packages">
+            <h2 class="phpdocumentor-sidebar__category-header">Packages</h2>
+                                    <h4 class="phpdocumentor-sidebar__root-namespace">
+    <a href="packages/vBulletin.html" class="">vBulletin</a>
+</h4>
+    <ul class="phpdocumentor-list">
+                    <li>
+                <a href="packages/vBulletin-Cache.html" class="">Cache</a>
+                
+            </li>
+                    <li>
+                <a href="packages/vBulletin-Search.html" class="">Search</a>
+                
+            </li>
+                    <li>
+                <a href="packages/vBulletin-Utility.html" class="">Utility</a>
+                
+            </li>
+            </ul>
+
+                                    <h4 class="phpdocumentor-sidebar__root-namespace">
+    <a href="packages/vBApi.html" class="">vBApi</a>
+</h4>
+
+                                    <h4 class="phpdocumentor-sidebar__root-namespace">
+    <a href="packages/vBLibrary.html" class="">vBLibrary</a>
+</h4>
+
+                                    <h4 class="phpdocumentor-sidebar__root-namespace">
+    <a href="packages/vBDatabase.html" class="">vBDatabase</a>
+</h4>
+
+                                    <h4 class="phpdocumentor-sidebar__root-namespace">
+    <a href="packages/vBForum.html" class="">vBForum</a>
+</h4>
+
+                                    <h4 class="phpdocumentor-sidebar__root-namespace">
+    <a href="packages/vBUtility.html" class="">vBUtility</a>
+</h4>
+
+                        </section>
+            
+    <section class="phpdocumentor-sidebar__category -reports">
+        <h2 class="phpdocumentor-sidebar__category-header">Reports</h2>
+                <h3 class="phpdocumentor-sidebar__root-package"><a href="reports/deprecated.html">Deprecated</a></h3>
+        <h3 class="phpdocumentor-sidebar__root-package"><a href="reports/errors.html">Errors</a></h3>
+        <h3 class="phpdocumentor-sidebar__root-package"><a href="reports/markers.html">Markers</a></h3>
+    </section>
+
+    <section class="phpdocumentor-sidebar__category -indices">
+        <h2 class="phpdocumentor-sidebar__category-header">Indices</h2>
+        <h3 class="phpdocumentor-sidebar__root-package"><a href="indices/files.html">Files</a></h3>
+    </section>
+</aside>
+
+            <div class="phpdocumentor-column -nine phpdocumentor-content">
+                                <section>
+                                        <ul class="phpdocumentor-breadcrumbs">
+            <li class="phpdocumentor-breadcrumb"><a href="packages/vBulletin.html">vBulletin</a></li>
+    </ul>
+
+    <article class="phpdocumentor-element -class">
+        <h2 class="phpdocumentor-content__title">
+    vB_Cleaner
+
+    
+            <div class="phpdocumentor-element__package">
+            in package
+            <ul class="phpdocumentor-breadcrumbs">
+                                    <li class="phpdocumentor-breadcrumb"><a href="packages/vBulletin.html">vBulletin</a></li>
+                            </ul>
+        </div>
+    
+    
+            <span class="phpdocumentor-element__extends">
+            uses
+                            <a href="classes/vB-Trait-NoSerialize.html"><abbr title="\vB_Trait_NoSerialize">vB_Trait_NoSerialize</abbr></a>                    </span>
+    </h2>
+
+<div class="phpdocumentor-label-line">
+
+
+</div>
+
+        <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="vb/cleaner.php"><a href="files/vb-cleaner.html"><abbr title="vb/cleaner.php">cleaner.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">18</span>
+
+            <a href="classes/vB-Cleaner.html#source-view.18" class="phpdocumentor-element-found-in__source" data-line="18" data-modal="source-view" data-src="files/vb/cleaner.php.txt"></a>
+    </aside>
+
+            <p class="phpdocumentor-summary">Class to handle and sanitize variables from GET, POST and COOKIE etc</p>
+
+
+
+
+
+
+
+
+
+<h3 id="toc">
+    Table of Contents
+    <a href="classes/vB-Cleaner.html#toc" class="headerlink"><i class="fas fa-link"></i></a>
+
+</h3>
+
+
+
+
+
+
+
+<h4 id="toc-constants">
+    Constants
+    <a href="classes/vB-Cleaner.html#toc-constants" class="headerlink"><i class="fas fa-link"></i></a>
+
+</h4>
+<dl class="phpdocumentor-table-of-contents">
+            <dt class="phpdocumentor-table-of-contents__entry -constant -public">
+    <a class="" href="classes/vB-Cleaner.html#constant_CONVERT_KEYS">CONVERT_KEYS</a>
+    <span>
+        &nbsp;= 200                            </span>
+</dt>
+
+            <dt class="phpdocumentor-table-of-contents__entry -constant -public">
+    <a class="" href="classes/vB-Cleaner.html#constant_CONVERT_SINGLE">CONVERT_SINGLE</a>
+    <span>
+        &nbsp;= 100                            </span>
+</dt>
+
+            <dt class="phpdocumentor-table-of-contents__entry -constant -public">
+    <a class="" href="classes/vB-Cleaner.html#constant_STR_NOHTML">STR_NOHTML</a>
+    <span>
+        &nbsp;= self::TYPE_NOHTML                            </span>
+</dt>
+
+            <dt class="phpdocumentor-table-of-contents__entry -constant -public">
+    <a class="" href="classes/vB-Cleaner.html#constant_TYPE_ARRAY">TYPE_ARRAY</a>
+    <span>
+        &nbsp;= 10                            </span>
+</dt>
+
+            <dt class="phpdocumentor-table-of-contents__entry -constant -public">
+    <a class="" href="classes/vB-Cleaner.html#constant_TYPE_ARRAY_ARRAY">TYPE_ARRAY_ARRAY</a>
+    <span>
+        &nbsp;= 110                            </span>
+</dt>
+
+            <dt class="phpdocumentor-table-of-contents__entry -constant -public">
+    <a class="" href="classes/vB-Cleaner.html#constant_TYPE_ARRAY_BINARY">TYPE_ARRAY_BINARY</a>
+    <span>
+        &nbsp;= 112                            </span>
+</dt>
+
+            <dt class="phpdocumentor-table-of-contents__entry -constant -public">
+    <a class="" href="classes/vB-Cleaner.html#constant_TYPE_ARRAY_BOOL">TYPE_ARRAY_BOOL</a>
+    <span>
+        &nbsp;= 101                            </span>
+</dt>
+
+            <dt class="phpdocumentor-table-of-contents__entry -constant -public">
+    <a class="" href="classes/vB-Cleaner.html#constant_TYPE_ARRAY_FILE">TYPE_ARRAY_FILE</a>
+    <span>
+        &nbsp;= self::TYPE_FILE                            </span>
+</dt>
+
+            <dt class="phpdocumentor-table-of-contents__entry -constant -public">
+    <a class="" href="classes/vB-Cleaner.html#constant_TYPE_ARRAY_INT">TYPE_ARRAY_INT</a>
+    <span>
+        &nbsp;= 102                            </span>
+</dt>
+
+            <dt class="phpdocumentor-table-of-contents__entry -constant -public">
+    <a class="" href="classes/vB-Cleaner.html#constant_TYPE_ARRAY_KEYS_INT">TYPE_ARRAY_KEYS_INT</a>
+    <span>
+        &nbsp;= 202                            </span>
+</dt>
+
+            <dt class="phpdocumentor-table-of-contents__entry -constant -public">
+    <a class="" href="classes/vB-Cleaner.html#constant_TYPE_ARRAY_KEYS_STR">TYPE_ARRAY_KEYS_STR</a>
+    <span>
+        &nbsp;= 207                            </span>
+</dt>
+
+            <dt class="phpdocumentor-table-of-contents__entry -constant -public">
+    <a class="" href="classes/vB-Cleaner.html#constant_TYPE_ARRAY_NOHTML">TYPE_ARRAY_NOHTML</a>
+    <span>
+        &nbsp;= 109                            </span>
+</dt>
+
+            <dt class="phpdocumentor-table-of-contents__entry -constant -public">
+    <a class="" href="classes/vB-Cleaner.html#constant_TYPE_ARRAY_NOHTMLCOND">TYPE_ARRAY_NOHTMLCOND</a>
+    <span>
+        &nbsp;= 113                            </span>
+</dt>
+
+            <dt class="phpdocumentor-table-of-contents__entry -constant -public">
+    <a class="" href="classes/vB-Cleaner.html#constant_TYPE_ARRAY_NOTRIM">TYPE_ARRAY_NOTRIM</a>
+    <span>
+        &nbsp;= 108                            </span>
+</dt>
+
+            <dt class="phpdocumentor-table-of-contents__entry -constant -public">
+    <a class="" href="classes/vB-Cleaner.html#constant_TYPE_ARRAY_NUM">TYPE_ARRAY_NUM</a>
+    <span>
+        &nbsp;= 104                            </span>
+</dt>
+
+            <dt class="phpdocumentor-table-of-contents__entry -constant -public">
+    <a class="" href="classes/vB-Cleaner.html#constant_TYPE_ARRAY_STR">TYPE_ARRAY_STR</a>
+    <span>
+        &nbsp;= 107                            </span>
+</dt>
+
+            <dt class="phpdocumentor-table-of-contents__entry -constant -public">
+    <a class="" href="classes/vB-Cleaner.html#constant_TYPE_ARRAY_UINT">TYPE_ARRAY_UINT</a>
+    <span>
+        &nbsp;= 103                            </span>
+</dt>
+
+            <dt class="phpdocumentor-table-of-contents__entry -constant -public">
+    <a class="" href="classes/vB-Cleaner.html#constant_TYPE_ARRAY_UNIXTIME">TYPE_ARRAY_UNIXTIME</a>
+    <span>
+        &nbsp;= 106                            </span>
+</dt>
+
+            <dt class="phpdocumentor-table-of-contents__entry -constant -public">
+    <a class="" href="classes/vB-Cleaner.html#constant_TYPE_ARRAY_UNUM">TYPE_ARRAY_UNUM</a>
+    <span>
+        &nbsp;= 105                            </span>
+</dt>
+
+            <dt class="phpdocumentor-table-of-contents__entry -constant -public">
+    <a class="" href="classes/vB-Cleaner.html#constant_TYPE_BINARY">TYPE_BINARY</a>
+    <span>
+        &nbsp;= 12                            </span>
+</dt>
+
+            <dt class="phpdocumentor-table-of-contents__entry -constant -public">
+    <a class="" href="classes/vB-Cleaner.html#constant_TYPE_BOOL">TYPE_BOOL</a>
+    <span>
+        &nbsp;= 1                            </span>
+</dt>
+
+            <dt class="phpdocumentor-table-of-contents__entry -constant -public">
+    <a class="" href="classes/vB-Cleaner.html#constant_TYPE_FILE">TYPE_FILE</a>
+    <span>
+        &nbsp;= 11                            </span>
+</dt>
+
+            <dt class="phpdocumentor-table-of-contents__entry -constant -public">
+    <a class="" href="classes/vB-Cleaner.html#constant_TYPE_INT">TYPE_INT</a>
+    <span>
+        &nbsp;= 2                            </span>
+</dt>
+
+            <dt class="phpdocumentor-table-of-contents__entry -constant -public">
+    <a class="" href="classes/vB-Cleaner.html#constant_TYPE_NOCLEAN">TYPE_NOCLEAN</a>
+    <span>
+        &nbsp;= 0                            </span>
+</dt>
+
+            <dt class="phpdocumentor-table-of-contents__entry -constant -public">
+    <a class="" href="classes/vB-Cleaner.html#constant_TYPE_NOHTML">TYPE_NOHTML</a>
+    <span>
+        &nbsp;= 9                            </span>
+</dt>
+
+            <dt class="phpdocumentor-table-of-contents__entry -constant -public">
+    <a class="" href="classes/vB-Cleaner.html#constant_TYPE_NOHTMLCOND">TYPE_NOHTMLCOND</a>
+    <span>
+        &nbsp;= 13                            </span>
+</dt>
+
+            <dt class="phpdocumentor-table-of-contents__entry -constant -public">
+    <a class="" href="classes/vB-Cleaner.html#constant_TYPE_NOTRIM">TYPE_NOTRIM</a>
+    <span>
+        &nbsp;= 8                            </span>
+</dt>
+
+            <dt class="phpdocumentor-table-of-contents__entry -constant -public">
+    <a class="" href="classes/vB-Cleaner.html#constant_TYPE_NUM">TYPE_NUM</a>
+    <span>
+        &nbsp;= 4                            </span>
+</dt>
+
+            <dt class="phpdocumentor-table-of-contents__entry -constant -public">
+    <a class="" href="classes/vB-Cleaner.html#constant_TYPE_STR">TYPE_STR</a>
+    <span>
+        &nbsp;= 7                            </span>
+</dt>
+
+            <dt class="phpdocumentor-table-of-contents__entry -constant -public">
+    <a class="" href="classes/vB-Cleaner.html#constant_TYPE_UINT">TYPE_UINT</a>
+    <span>
+        &nbsp;= 3                            </span>
+</dt>
+
+            <dt class="phpdocumentor-table-of-contents__entry -constant -public">
+    <a class="" href="classes/vB-Cleaner.html#constant_TYPE_UNIXTIME">TYPE_UNIXTIME</a>
+    <span>
+        &nbsp;= 6                            </span>
+</dt>
+
+            <dt class="phpdocumentor-table-of-contents__entry -constant -public">
+    <a class="" href="classes/vB-Cleaner.html#constant_TYPE_UNUM">TYPE_UNUM</a>
+    <span>
+        &nbsp;= 5                            </span>
+</dt>
+
+    </dl>
+
+
+
+<h4 id="toc-methods">
+    Methods
+    <a href="classes/vB-Cleaner.html#toc-methods" class="headerlink"><i class="fas fa-link"></i></a>
+
+</h4>
+<dl class="phpdocumentor-table-of-contents">
+            <dt class="phpdocumentor-table-of-contents__entry -method -public">
+    <a class="" href="classes/vB-Trait-NoSerialize.html#method___serialize">__serialize()</a>
+    <span>
+                                &nbsp;: array&lt;string|int, mixed&gt;    </span>
+</dt>
+
+            <dt class="phpdocumentor-table-of-contents__entry -method -public">
+    <a class="" href="classes/vB-Trait-NoSerialize.html#method___sleep">__sleep()</a>
+    <span>
+                                &nbsp;: array&lt;string|int, mixed&gt;    </span>
+</dt>
+
+            <dt class="phpdocumentor-table-of-contents__entry -method -public">
+    <a class="" href="classes/vB-Trait-NoSerialize.html#method___unserialize">__unserialize()</a>
+    <span>
+                                &nbsp;: void    </span>
+</dt>
+
+            <dt class="phpdocumentor-table-of-contents__entry -method -public">
+    <a class="" href="classes/vB-Trait-NoSerialize.html#method___wakeup">__wakeup()</a>
+    <span>
+                                &nbsp;: void    </span>
+</dt>
+
+            <dt class="phpdocumentor-table-of-contents__entry -method -public">
+    <a class="" href="classes/vB-Cleaner.html#method_clean">clean()</a>
+    <span>
+                                &nbsp;: mixed    </span>
+</dt>
+<dd>Makes a single variable safe to use and returns it</dd>
+
+            <dt class="phpdocumentor-table-of-contents__entry -method -public">
+    <a class="" href="classes/vB-Cleaner.html#method_cleanArray">cleanArray()</a>
+    <span>
+                                &nbsp;: array&lt;string|int, mixed&gt;    </span>
+</dt>
+<dd>Makes data in an array safe to use</dd>
+
+            <dt class="phpdocumentor-table-of-contents__entry -method -public">
+    <a class="" href="classes/vB-Cleaner.html#method_xssClean">xssClean()</a>
+    <span>
+                                &nbsp;: string    </span>
+</dt>
+<dd>Removes HTML characters and potentially unsafe scripting words from a string</dd>
+
+            <dt class="phpdocumentor-table-of-contents__entry -method -public">
+    <a class="" href="classes/vB-Cleaner.html#method_xssCleanUrl">xssCleanUrl()</a>
+    <span>
+                                &nbsp;: string    </span>
+</dt>
+<dd>Removes HTML characters and potentially unsafe scripting words from a URL
+Note: The query string and the  URL #fragment are preserved.</dd>
+
+    </dl>
+
+
+
+        
+    <section class="phpdocumentor-constants">
+        <h3 class="phpdocumentor-elements__header" id="constants">
+            Constants
+            <a href="classes/vB-Cleaner.html#constants" class="headerlink"><i class="fas fa-link"></i></a>
+
+        </h3>
+                    <article class="phpdocumentor-element -constant -public ">
+    <h4 class="phpdocumentor-element__name" id="constant_CONVERT_KEYS">
+        CONVERT_KEYS
+        <a href="classes/vB-Cleaner.html#constant_CONVERT_KEYS" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="vb/cleaner.php"><a href="files/vb-cleaner.html"><abbr title="vb/cleaner.php">cleaner.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">52</span>
+
+            <a href="classes/vB-Cleaner.html#source-view.52" class="phpdocumentor-element-found-in__source" data-line="52" data-modal="source-view" data-src="files/vb/cleaner.php.txt"></a>
+    </aside>
+
+    
+    
+    <code class="phpdocumentor-signature phpdocumentor-code ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+        <span class="phpdocumentor-signature__type">mixed</span>
+    <span class="phpdocumentor-signature__name">CONVERT_KEYS</span>
+    = <span class="phpdocumentor-signature__default-value">200</span>
+</code>
+
+
+    
+    
+    
+
+    
+
+</article>
+                    <article class="phpdocumentor-element -constant -public ">
+    <h4 class="phpdocumentor-element__name" id="constant_CONVERT_SINGLE">
+        CONVERT_SINGLE
+        <a href="classes/vB-Cleaner.html#constant_CONVERT_SINGLE" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="vb/cleaner.php"><a href="files/vb-cleaner.html"><abbr title="vb/cleaner.php">cleaner.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">51</span>
+
+            <a href="classes/vB-Cleaner.html#source-view.51" class="phpdocumentor-element-found-in__source" data-line="51" data-modal="source-view" data-src="files/vb/cleaner.php.txt"></a>
+    </aside>
+
+    
+    
+    <code class="phpdocumentor-signature phpdocumentor-code ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+        <span class="phpdocumentor-signature__type">mixed</span>
+    <span class="phpdocumentor-signature__name">CONVERT_SINGLE</span>
+    = <span class="phpdocumentor-signature__default-value">100</span>
+</code>
+
+
+    
+    
+    
+
+    
+
+</article>
+                    <article class="phpdocumentor-element -constant -public ">
+    <h4 class="phpdocumentor-element__name" id="constant_STR_NOHTML">
+        STR_NOHTML
+        <a href="classes/vB-Cleaner.html#constant_STR_NOHTML" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="vb/cleaner.php"><a href="files/vb-cleaner.html"><abbr title="vb/cleaner.php">cleaner.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">53</span>
+
+            <a href="classes/vB-Cleaner.html#source-view.53" class="phpdocumentor-element-found-in__source" data-line="53" data-modal="source-view" data-src="files/vb/cleaner.php.txt"></a>
+    </aside>
+
+    
+    
+    <code class="phpdocumentor-signature phpdocumentor-code ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+        <span class="phpdocumentor-signature__type">mixed</span>
+    <span class="phpdocumentor-signature__name">STR_NOHTML</span>
+    = <span class="phpdocumentor-signature__default-value">self::TYPE_NOHTML</span>
+</code>
+
+
+    
+    
+    
+
+    
+
+</article>
+                    <article class="phpdocumentor-element -constant -public ">
+    <h4 class="phpdocumentor-element__name" id="constant_TYPE_ARRAY">
+        TYPE_ARRAY
+        <a href="classes/vB-Cleaner.html#constant_TYPE_ARRAY" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="vb/cleaner.php"><a href="files/vb-cleaner.html"><abbr title="vb/cleaner.php">cleaner.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">32</span>
+
+            <a href="classes/vB-Cleaner.html#source-view.32" class="phpdocumentor-element-found-in__source" data-line="32" data-modal="source-view" data-src="files/vb/cleaner.php.txt"></a>
+    </aside>
+
+    
+    
+    <code class="phpdocumentor-signature phpdocumentor-code ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+        <span class="phpdocumentor-signature__type">mixed</span>
+    <span class="phpdocumentor-signature__name">TYPE_ARRAY</span>
+    = <span class="phpdocumentor-signature__default-value">10</span>
+</code>
+
+
+    
+    
+    
+
+    
+
+</article>
+                    <article class="phpdocumentor-element -constant -public ">
+    <h4 class="phpdocumentor-element__name" id="constant_TYPE_ARRAY_ARRAY">
+        TYPE_ARRAY_ARRAY
+        <a href="classes/vB-Cleaner.html#constant_TYPE_ARRAY_ARRAY" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="vb/cleaner.php"><a href="files/vb-cleaner.html"><abbr title="vb/cleaner.php">cleaner.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">45</span>
+
+            <a href="classes/vB-Cleaner.html#source-view.45" class="phpdocumentor-element-found-in__source" data-line="45" data-modal="source-view" data-src="files/vb/cleaner.php.txt"></a>
+    </aside>
+
+    
+    
+    <code class="phpdocumentor-signature phpdocumentor-code ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+        <span class="phpdocumentor-signature__type">mixed</span>
+    <span class="phpdocumentor-signature__name">TYPE_ARRAY_ARRAY</span>
+    = <span class="phpdocumentor-signature__default-value">110</span>
+</code>
+
+
+    
+    
+    
+
+    
+
+</article>
+                    <article class="phpdocumentor-element -constant -public ">
+    <h4 class="phpdocumentor-element__name" id="constant_TYPE_ARRAY_BINARY">
+        TYPE_ARRAY_BINARY
+        <a href="classes/vB-Cleaner.html#constant_TYPE_ARRAY_BINARY" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="vb/cleaner.php"><a href="files/vb-cleaner.html"><abbr title="vb/cleaner.php">cleaner.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">47</span>
+
+            <a href="classes/vB-Cleaner.html#source-view.47" class="phpdocumentor-element-found-in__source" data-line="47" data-modal="source-view" data-src="files/vb/cleaner.php.txt"></a>
+    </aside>
+
+    
+    
+    <code class="phpdocumentor-signature phpdocumentor-code ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+        <span class="phpdocumentor-signature__type">mixed</span>
+    <span class="phpdocumentor-signature__name">TYPE_ARRAY_BINARY</span>
+    = <span class="phpdocumentor-signature__default-value">112</span>
+</code>
+
+
+    
+    
+    
+
+    
+
+</article>
+                    <article class="phpdocumentor-element -constant -public ">
+    <h4 class="phpdocumentor-element__name" id="constant_TYPE_ARRAY_BOOL">
+        TYPE_ARRAY_BOOL
+        <a href="classes/vB-Cleaner.html#constant_TYPE_ARRAY_BOOL" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="vb/cleaner.php"><a href="files/vb-cleaner.html"><abbr title="vb/cleaner.php">cleaner.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">36</span>
+
+            <a href="classes/vB-Cleaner.html#source-view.36" class="phpdocumentor-element-found-in__source" data-line="36" data-modal="source-view" data-src="files/vb/cleaner.php.txt"></a>
+    </aside>
+
+    
+    
+    <code class="phpdocumentor-signature phpdocumentor-code ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+        <span class="phpdocumentor-signature__type">mixed</span>
+    <span class="phpdocumentor-signature__name">TYPE_ARRAY_BOOL</span>
+    = <span class="phpdocumentor-signature__default-value">101</span>
+</code>
+
+
+    
+    
+    
+
+    
+
+</article>
+                    <article class="phpdocumentor-element -constant -public ">
+    <h4 class="phpdocumentor-element__name" id="constant_TYPE_ARRAY_FILE">
+        TYPE_ARRAY_FILE
+        <a href="classes/vB-Cleaner.html#constant_TYPE_ARRAY_FILE" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="vb/cleaner.php"><a href="files/vb-cleaner.html"><abbr title="vb/cleaner.php">cleaner.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">46</span>
+
+            <a href="classes/vB-Cleaner.html#source-view.46" class="phpdocumentor-element-found-in__source" data-line="46" data-modal="source-view" data-src="files/vb/cleaner.php.txt"></a>
+    </aside>
+
+    
+    
+    <code class="phpdocumentor-signature phpdocumentor-code ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+        <span class="phpdocumentor-signature__type">mixed</span>
+    <span class="phpdocumentor-signature__name">TYPE_ARRAY_FILE</span>
+    = <span class="phpdocumentor-signature__default-value">self::TYPE_FILE</span>
+</code>
+
+
+    
+    
+    
+
+    
+
+</article>
+                    <article class="phpdocumentor-element -constant -public ">
+    <h4 class="phpdocumentor-element__name" id="constant_TYPE_ARRAY_INT">
+        TYPE_ARRAY_INT
+        <a href="classes/vB-Cleaner.html#constant_TYPE_ARRAY_INT" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="vb/cleaner.php"><a href="files/vb-cleaner.html"><abbr title="vb/cleaner.php">cleaner.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">37</span>
+
+            <a href="classes/vB-Cleaner.html#source-view.37" class="phpdocumentor-element-found-in__source" data-line="37" data-modal="source-view" data-src="files/vb/cleaner.php.txt"></a>
+    </aside>
+
+    
+    
+    <code class="phpdocumentor-signature phpdocumentor-code ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+        <span class="phpdocumentor-signature__type">mixed</span>
+    <span class="phpdocumentor-signature__name">TYPE_ARRAY_INT</span>
+    = <span class="phpdocumentor-signature__default-value">102</span>
+</code>
+
+
+    
+    
+    
+
+    
+
+</article>
+                    <article class="phpdocumentor-element -constant -public ">
+    <h4 class="phpdocumentor-element__name" id="constant_TYPE_ARRAY_KEYS_INT">
+        TYPE_ARRAY_KEYS_INT
+        <a href="classes/vB-Cleaner.html#constant_TYPE_ARRAY_KEYS_INT" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="vb/cleaner.php"><a href="files/vb-cleaner.html"><abbr title="vb/cleaner.php">cleaner.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">49</span>
+
+            <a href="classes/vB-Cleaner.html#source-view.49" class="phpdocumentor-element-found-in__source" data-line="49" data-modal="source-view" data-src="files/vb/cleaner.php.txt"></a>
+    </aside>
+
+    
+    
+    <code class="phpdocumentor-signature phpdocumentor-code ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+        <span class="phpdocumentor-signature__type">mixed</span>
+    <span class="phpdocumentor-signature__name">TYPE_ARRAY_KEYS_INT</span>
+    = <span class="phpdocumentor-signature__default-value">202</span>
+</code>
+
+
+    
+    
+    
+
+    
+
+</article>
+                    <article class="phpdocumentor-element -constant -public ">
+    <h4 class="phpdocumentor-element__name" id="constant_TYPE_ARRAY_KEYS_STR">
+        TYPE_ARRAY_KEYS_STR
+        <a href="classes/vB-Cleaner.html#constant_TYPE_ARRAY_KEYS_STR" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="vb/cleaner.php"><a href="files/vb-cleaner.html"><abbr title="vb/cleaner.php">cleaner.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">50</span>
+
+            <a href="classes/vB-Cleaner.html#source-view.50" class="phpdocumentor-element-found-in__source" data-line="50" data-modal="source-view" data-src="files/vb/cleaner.php.txt"></a>
+    </aside>
+
+    
+    
+    <code class="phpdocumentor-signature phpdocumentor-code ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+        <span class="phpdocumentor-signature__type">mixed</span>
+    <span class="phpdocumentor-signature__name">TYPE_ARRAY_KEYS_STR</span>
+    = <span class="phpdocumentor-signature__default-value">207</span>
+</code>
+
+
+    
+    
+    
+
+    
+
+</article>
+                    <article class="phpdocumentor-element -constant -public ">
+    <h4 class="phpdocumentor-element__name" id="constant_TYPE_ARRAY_NOHTML">
+        TYPE_ARRAY_NOHTML
+        <a href="classes/vB-Cleaner.html#constant_TYPE_ARRAY_NOHTML" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="vb/cleaner.php"><a href="files/vb-cleaner.html"><abbr title="vb/cleaner.php">cleaner.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">44</span>
+
+            <a href="classes/vB-Cleaner.html#source-view.44" class="phpdocumentor-element-found-in__source" data-line="44" data-modal="source-view" data-src="files/vb/cleaner.php.txt"></a>
+    </aside>
+
+    
+    
+    <code class="phpdocumentor-signature phpdocumentor-code ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+        <span class="phpdocumentor-signature__type">mixed</span>
+    <span class="phpdocumentor-signature__name">TYPE_ARRAY_NOHTML</span>
+    = <span class="phpdocumentor-signature__default-value">109</span>
+</code>
+
+
+    
+    
+    
+
+    
+
+</article>
+                    <article class="phpdocumentor-element -constant -public ">
+    <h4 class="phpdocumentor-element__name" id="constant_TYPE_ARRAY_NOHTMLCOND">
+        TYPE_ARRAY_NOHTMLCOND
+        <a href="classes/vB-Cleaner.html#constant_TYPE_ARRAY_NOHTMLCOND" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="vb/cleaner.php"><a href="files/vb-cleaner.html"><abbr title="vb/cleaner.php">cleaner.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">48</span>
+
+            <a href="classes/vB-Cleaner.html#source-view.48" class="phpdocumentor-element-found-in__source" data-line="48" data-modal="source-view" data-src="files/vb/cleaner.php.txt"></a>
+    </aside>
+
+    
+    
+    <code class="phpdocumentor-signature phpdocumentor-code ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+        <span class="phpdocumentor-signature__type">mixed</span>
+    <span class="phpdocumentor-signature__name">TYPE_ARRAY_NOHTMLCOND</span>
+    = <span class="phpdocumentor-signature__default-value">113</span>
+</code>
+
+
+    
+    
+    
+
+    
+
+</article>
+                    <article class="phpdocumentor-element -constant -public ">
+    <h4 class="phpdocumentor-element__name" id="constant_TYPE_ARRAY_NOTRIM">
+        TYPE_ARRAY_NOTRIM
+        <a href="classes/vB-Cleaner.html#constant_TYPE_ARRAY_NOTRIM" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="vb/cleaner.php"><a href="files/vb-cleaner.html"><abbr title="vb/cleaner.php">cleaner.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">43</span>
+
+            <a href="classes/vB-Cleaner.html#source-view.43" class="phpdocumentor-element-found-in__source" data-line="43" data-modal="source-view" data-src="files/vb/cleaner.php.txt"></a>
+    </aside>
+
+    
+    
+    <code class="phpdocumentor-signature phpdocumentor-code ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+        <span class="phpdocumentor-signature__type">mixed</span>
+    <span class="phpdocumentor-signature__name">TYPE_ARRAY_NOTRIM</span>
+    = <span class="phpdocumentor-signature__default-value">108</span>
+</code>
+
+
+    
+    
+    
+
+    
+
+</article>
+                    <article class="phpdocumentor-element -constant -public ">
+    <h4 class="phpdocumentor-element__name" id="constant_TYPE_ARRAY_NUM">
+        TYPE_ARRAY_NUM
+        <a href="classes/vB-Cleaner.html#constant_TYPE_ARRAY_NUM" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="vb/cleaner.php"><a href="files/vb-cleaner.html"><abbr title="vb/cleaner.php">cleaner.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">39</span>
+
+            <a href="classes/vB-Cleaner.html#source-view.39" class="phpdocumentor-element-found-in__source" data-line="39" data-modal="source-view" data-src="files/vb/cleaner.php.txt"></a>
+    </aside>
+
+    
+    
+    <code class="phpdocumentor-signature phpdocumentor-code ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+        <span class="phpdocumentor-signature__type">mixed</span>
+    <span class="phpdocumentor-signature__name">TYPE_ARRAY_NUM</span>
+    = <span class="phpdocumentor-signature__default-value">104</span>
+</code>
+
+
+    
+    
+    
+
+    
+
+</article>
+                    <article class="phpdocumentor-element -constant -public ">
+    <h4 class="phpdocumentor-element__name" id="constant_TYPE_ARRAY_STR">
+        TYPE_ARRAY_STR
+        <a href="classes/vB-Cleaner.html#constant_TYPE_ARRAY_STR" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="vb/cleaner.php"><a href="files/vb-cleaner.html"><abbr title="vb/cleaner.php">cleaner.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">42</span>
+
+            <a href="classes/vB-Cleaner.html#source-view.42" class="phpdocumentor-element-found-in__source" data-line="42" data-modal="source-view" data-src="files/vb/cleaner.php.txt"></a>
+    </aside>
+
+    
+    
+    <code class="phpdocumentor-signature phpdocumentor-code ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+        <span class="phpdocumentor-signature__type">mixed</span>
+    <span class="phpdocumentor-signature__name">TYPE_ARRAY_STR</span>
+    = <span class="phpdocumentor-signature__default-value">107</span>
+</code>
+
+
+    
+    
+    
+
+    
+
+</article>
+                    <article class="phpdocumentor-element -constant -public ">
+    <h4 class="phpdocumentor-element__name" id="constant_TYPE_ARRAY_UINT">
+        TYPE_ARRAY_UINT
+        <a href="classes/vB-Cleaner.html#constant_TYPE_ARRAY_UINT" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="vb/cleaner.php"><a href="files/vb-cleaner.html"><abbr title="vb/cleaner.php">cleaner.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">38</span>
+
+            <a href="classes/vB-Cleaner.html#source-view.38" class="phpdocumentor-element-found-in__source" data-line="38" data-modal="source-view" data-src="files/vb/cleaner.php.txt"></a>
+    </aside>
+
+    
+    
+    <code class="phpdocumentor-signature phpdocumentor-code ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+        <span class="phpdocumentor-signature__type">mixed</span>
+    <span class="phpdocumentor-signature__name">TYPE_ARRAY_UINT</span>
+    = <span class="phpdocumentor-signature__default-value">103</span>
+</code>
+
+
+    
+    
+    
+
+    
+
+</article>
+                    <article class="phpdocumentor-element -constant -public ">
+    <h4 class="phpdocumentor-element__name" id="constant_TYPE_ARRAY_UNIXTIME">
+        TYPE_ARRAY_UNIXTIME
+        <a href="classes/vB-Cleaner.html#constant_TYPE_ARRAY_UNIXTIME" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="vb/cleaner.php"><a href="files/vb-cleaner.html"><abbr title="vb/cleaner.php">cleaner.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">41</span>
+
+            <a href="classes/vB-Cleaner.html#source-view.41" class="phpdocumentor-element-found-in__source" data-line="41" data-modal="source-view" data-src="files/vb/cleaner.php.txt"></a>
+    </aside>
+
+    
+    
+    <code class="phpdocumentor-signature phpdocumentor-code ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+        <span class="phpdocumentor-signature__type">mixed</span>
+    <span class="phpdocumentor-signature__name">TYPE_ARRAY_UNIXTIME</span>
+    = <span class="phpdocumentor-signature__default-value">106</span>
+</code>
+
+
+    
+    
+    
+
+    
+
+</article>
+                    <article class="phpdocumentor-element -constant -public ">
+    <h4 class="phpdocumentor-element__name" id="constant_TYPE_ARRAY_UNUM">
+        TYPE_ARRAY_UNUM
+        <a href="classes/vB-Cleaner.html#constant_TYPE_ARRAY_UNUM" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="vb/cleaner.php"><a href="files/vb-cleaner.html"><abbr title="vb/cleaner.php">cleaner.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">40</span>
+
+            <a href="classes/vB-Cleaner.html#source-view.40" class="phpdocumentor-element-found-in__source" data-line="40" data-modal="source-view" data-src="files/vb/cleaner.php.txt"></a>
+    </aside>
+
+    
+    
+    <code class="phpdocumentor-signature phpdocumentor-code ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+        <span class="phpdocumentor-signature__type">mixed</span>
+    <span class="phpdocumentor-signature__name">TYPE_ARRAY_UNUM</span>
+    = <span class="phpdocumentor-signature__default-value">105</span>
+</code>
+
+
+    
+    
+    
+
+    
+
+</article>
+                    <article class="phpdocumentor-element -constant -public ">
+    <h4 class="phpdocumentor-element__name" id="constant_TYPE_BINARY">
+        TYPE_BINARY
+        <a href="classes/vB-Cleaner.html#constant_TYPE_BINARY" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="vb/cleaner.php"><a href="files/vb-cleaner.html"><abbr title="vb/cleaner.php">cleaner.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">34</span>
+
+            <a href="classes/vB-Cleaner.html#source-view.34" class="phpdocumentor-element-found-in__source" data-line="34" data-modal="source-view" data-src="files/vb/cleaner.php.txt"></a>
+    </aside>
+
+    
+    
+    <code class="phpdocumentor-signature phpdocumentor-code ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+        <span class="phpdocumentor-signature__type">mixed</span>
+    <span class="phpdocumentor-signature__name">TYPE_BINARY</span>
+    = <span class="phpdocumentor-signature__default-value">12</span>
+</code>
+
+
+    
+    
+    
+
+    
+
+</article>
+                    <article class="phpdocumentor-element -constant -public ">
+    <h4 class="phpdocumentor-element__name" id="constant_TYPE_BOOL">
+        TYPE_BOOL
+        <a href="classes/vB-Cleaner.html#constant_TYPE_BOOL" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="vb/cleaner.php"><a href="files/vb-cleaner.html"><abbr title="vb/cleaner.php">cleaner.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">23</span>
+
+            <a href="classes/vB-Cleaner.html#source-view.23" class="phpdocumentor-element-found-in__source" data-line="23" data-modal="source-view" data-src="files/vb/cleaner.php.txt"></a>
+    </aside>
+
+    
+    
+    <code class="phpdocumentor-signature phpdocumentor-code ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+        <span class="phpdocumentor-signature__type">mixed</span>
+    <span class="phpdocumentor-signature__name">TYPE_BOOL</span>
+    = <span class="phpdocumentor-signature__default-value">1</span>
+</code>
+
+
+    
+    
+    
+
+    
+
+</article>
+                    <article class="phpdocumentor-element -constant -public ">
+    <h4 class="phpdocumentor-element__name" id="constant_TYPE_FILE">
+        TYPE_FILE
+        <a href="classes/vB-Cleaner.html#constant_TYPE_FILE" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="vb/cleaner.php"><a href="files/vb-cleaner.html"><abbr title="vb/cleaner.php">cleaner.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">33</span>
+
+            <a href="classes/vB-Cleaner.html#source-view.33" class="phpdocumentor-element-found-in__source" data-line="33" data-modal="source-view" data-src="files/vb/cleaner.php.txt"></a>
+    </aside>
+
+    
+    
+    <code class="phpdocumentor-signature phpdocumentor-code ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+        <span class="phpdocumentor-signature__type">mixed</span>
+    <span class="phpdocumentor-signature__name">TYPE_FILE</span>
+    = <span class="phpdocumentor-signature__default-value">11</span>
+</code>
+
+
+    
+    
+    
+
+    
+
+</article>
+                    <article class="phpdocumentor-element -constant -public ">
+    <h4 class="phpdocumentor-element__name" id="constant_TYPE_INT">
+        TYPE_INT
+        <a href="classes/vB-Cleaner.html#constant_TYPE_INT" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="vb/cleaner.php"><a href="files/vb-cleaner.html"><abbr title="vb/cleaner.php">cleaner.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">24</span>
+
+            <a href="classes/vB-Cleaner.html#source-view.24" class="phpdocumentor-element-found-in__source" data-line="24" data-modal="source-view" data-src="files/vb/cleaner.php.txt"></a>
+    </aside>
+
+    
+    
+    <code class="phpdocumentor-signature phpdocumentor-code ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+        <span class="phpdocumentor-signature__type">mixed</span>
+    <span class="phpdocumentor-signature__name">TYPE_INT</span>
+    = <span class="phpdocumentor-signature__default-value">2</span>
+</code>
+
+
+    
+    
+    
+
+    
+
+</article>
+                    <article class="phpdocumentor-element -constant -public ">
+    <h4 class="phpdocumentor-element__name" id="constant_TYPE_NOCLEAN">
+        TYPE_NOCLEAN
+        <a href="classes/vB-Cleaner.html#constant_TYPE_NOCLEAN" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="vb/cleaner.php"><a href="files/vb-cleaner.html"><abbr title="vb/cleaner.php">cleaner.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">22</span>
+
+            <a href="classes/vB-Cleaner.html#source-view.22" class="phpdocumentor-element-found-in__source" data-line="22" data-modal="source-view" data-src="files/vb/cleaner.php.txt"></a>
+    </aside>
+
+    
+    
+    <code class="phpdocumentor-signature phpdocumentor-code ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+        <span class="phpdocumentor-signature__type">mixed</span>
+    <span class="phpdocumentor-signature__name">TYPE_NOCLEAN</span>
+    = <span class="phpdocumentor-signature__default-value">0</span>
+</code>
+
+
+    
+    
+    
+
+    
+
+</article>
+                    <article class="phpdocumentor-element -constant -public ">
+    <h4 class="phpdocumentor-element__name" id="constant_TYPE_NOHTML">
+        TYPE_NOHTML
+        <a href="classes/vB-Cleaner.html#constant_TYPE_NOHTML" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="vb/cleaner.php"><a href="files/vb-cleaner.html"><abbr title="vb/cleaner.php">cleaner.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">31</span>
+
+            <a href="classes/vB-Cleaner.html#source-view.31" class="phpdocumentor-element-found-in__source" data-line="31" data-modal="source-view" data-src="files/vb/cleaner.php.txt"></a>
+    </aside>
+
+    
+    
+    <code class="phpdocumentor-signature phpdocumentor-code ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+        <span class="phpdocumentor-signature__type">mixed</span>
+    <span class="phpdocumentor-signature__name">TYPE_NOHTML</span>
+    = <span class="phpdocumentor-signature__default-value">9</span>
+</code>
+
+
+    
+    
+    
+
+    
+
+</article>
+                    <article class="phpdocumentor-element -constant -public ">
+    <h4 class="phpdocumentor-element__name" id="constant_TYPE_NOHTMLCOND">
+        TYPE_NOHTMLCOND
+        <a href="classes/vB-Cleaner.html#constant_TYPE_NOHTMLCOND" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="vb/cleaner.php"><a href="files/vb-cleaner.html"><abbr title="vb/cleaner.php">cleaner.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">35</span>
+
+            <a href="classes/vB-Cleaner.html#source-view.35" class="phpdocumentor-element-found-in__source" data-line="35" data-modal="source-view" data-src="files/vb/cleaner.php.txt"></a>
+    </aside>
+
+    
+    
+    <code class="phpdocumentor-signature phpdocumentor-code ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+        <span class="phpdocumentor-signature__type">mixed</span>
+    <span class="phpdocumentor-signature__name">TYPE_NOHTMLCOND</span>
+    = <span class="phpdocumentor-signature__default-value">13</span>
+</code>
+
+
+    
+    
+    
+
+    
+
+</article>
+                    <article class="phpdocumentor-element -constant -public ">
+    <h4 class="phpdocumentor-element__name" id="constant_TYPE_NOTRIM">
+        TYPE_NOTRIM
+        <a href="classes/vB-Cleaner.html#constant_TYPE_NOTRIM" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="vb/cleaner.php"><a href="files/vb-cleaner.html"><abbr title="vb/cleaner.php">cleaner.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">30</span>
+
+            <a href="classes/vB-Cleaner.html#source-view.30" class="phpdocumentor-element-found-in__source" data-line="30" data-modal="source-view" data-src="files/vb/cleaner.php.txt"></a>
+    </aside>
+
+    
+    
+    <code class="phpdocumentor-signature phpdocumentor-code ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+        <span class="phpdocumentor-signature__type">mixed</span>
+    <span class="phpdocumentor-signature__name">TYPE_NOTRIM</span>
+    = <span class="phpdocumentor-signature__default-value">8</span>
+</code>
+
+
+    
+    
+    
+
+    
+
+</article>
+                    <article class="phpdocumentor-element -constant -public ">
+    <h4 class="phpdocumentor-element__name" id="constant_TYPE_NUM">
+        TYPE_NUM
+        <a href="classes/vB-Cleaner.html#constant_TYPE_NUM" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="vb/cleaner.php"><a href="files/vb-cleaner.html"><abbr title="vb/cleaner.php">cleaner.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">26</span>
+
+            <a href="classes/vB-Cleaner.html#source-view.26" class="phpdocumentor-element-found-in__source" data-line="26" data-modal="source-view" data-src="files/vb/cleaner.php.txt"></a>
+    </aside>
+
+    
+    
+    <code class="phpdocumentor-signature phpdocumentor-code ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+        <span class="phpdocumentor-signature__type">mixed</span>
+    <span class="phpdocumentor-signature__name">TYPE_NUM</span>
+    = <span class="phpdocumentor-signature__default-value">4</span>
+</code>
+
+
+    
+    
+    
+
+    
+
+</article>
+                    <article class="phpdocumentor-element -constant -public ">
+    <h4 class="phpdocumentor-element__name" id="constant_TYPE_STR">
+        TYPE_STR
+        <a href="classes/vB-Cleaner.html#constant_TYPE_STR" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="vb/cleaner.php"><a href="files/vb-cleaner.html"><abbr title="vb/cleaner.php">cleaner.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">29</span>
+
+            <a href="classes/vB-Cleaner.html#source-view.29" class="phpdocumentor-element-found-in__source" data-line="29" data-modal="source-view" data-src="files/vb/cleaner.php.txt"></a>
+    </aside>
+
+    
+    
+    <code class="phpdocumentor-signature phpdocumentor-code ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+        <span class="phpdocumentor-signature__type">mixed</span>
+    <span class="phpdocumentor-signature__name">TYPE_STR</span>
+    = <span class="phpdocumentor-signature__default-value">7</span>
+</code>
+
+
+    
+    
+    
+
+    
+
+</article>
+                    <article class="phpdocumentor-element -constant -public ">
+    <h4 class="phpdocumentor-element__name" id="constant_TYPE_UINT">
+        TYPE_UINT
+        <a href="classes/vB-Cleaner.html#constant_TYPE_UINT" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="vb/cleaner.php"><a href="files/vb-cleaner.html"><abbr title="vb/cleaner.php">cleaner.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">25</span>
+
+            <a href="classes/vB-Cleaner.html#source-view.25" class="phpdocumentor-element-found-in__source" data-line="25" data-modal="source-view" data-src="files/vb/cleaner.php.txt"></a>
+    </aside>
+
+    
+    
+    <code class="phpdocumentor-signature phpdocumentor-code ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+        <span class="phpdocumentor-signature__type">mixed</span>
+    <span class="phpdocumentor-signature__name">TYPE_UINT</span>
+    = <span class="phpdocumentor-signature__default-value">3</span>
+</code>
+
+
+    
+    
+    
+
+    
+
+</article>
+                    <article class="phpdocumentor-element -constant -public ">
+    <h4 class="phpdocumentor-element__name" id="constant_TYPE_UNIXTIME">
+        TYPE_UNIXTIME
+        <a href="classes/vB-Cleaner.html#constant_TYPE_UNIXTIME" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="vb/cleaner.php"><a href="files/vb-cleaner.html"><abbr title="vb/cleaner.php">cleaner.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">28</span>
+
+            <a href="classes/vB-Cleaner.html#source-view.28" class="phpdocumentor-element-found-in__source" data-line="28" data-modal="source-view" data-src="files/vb/cleaner.php.txt"></a>
+    </aside>
+
+    
+    
+    <code class="phpdocumentor-signature phpdocumentor-code ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+        <span class="phpdocumentor-signature__type">mixed</span>
+    <span class="phpdocumentor-signature__name">TYPE_UNIXTIME</span>
+    = <span class="phpdocumentor-signature__default-value">6</span>
+</code>
+
+
+    
+    
+    
+
+    
+
+</article>
+                    <article class="phpdocumentor-element -constant -public ">
+    <h4 class="phpdocumentor-element__name" id="constant_TYPE_UNUM">
+        TYPE_UNUM
+        <a href="classes/vB-Cleaner.html#constant_TYPE_UNUM" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="vb/cleaner.php"><a href="files/vb-cleaner.html"><abbr title="vb/cleaner.php">cleaner.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">27</span>
+
+            <a href="classes/vB-Cleaner.html#source-view.27" class="phpdocumentor-element-found-in__source" data-line="27" data-modal="source-view" data-src="files/vb/cleaner.php.txt"></a>
+    </aside>
+
+    
+    
+    <code class="phpdocumentor-signature phpdocumentor-code ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+        <span class="phpdocumentor-signature__type">mixed</span>
+    <span class="phpdocumentor-signature__name">TYPE_UNUM</span>
+    = <span class="phpdocumentor-signature__default-value">5</span>
+</code>
+
+
+    
+    
+    
+
+    
+
+</article>
+            </section>
+
+        
+
+            <section class="phpdocumentor-methods">
+        <h3 class="phpdocumentor-elements__header" id="methods">
+            Methods
+            <a href="classes/vB-Cleaner.html#methods" class="headerlink"><i class="fas fa-link"></i></a>
+
+        </h3>
+                    <article
+        class="phpdocumentor-element
+            -method
+            -public
+                                                        "
+>
+    <h4 class="phpdocumentor-element__name" id="method___serialize">
+        __serialize()
+        <a href="classes/vB-Trait-NoSerialize.html#method___serialize" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="vb/trait/noserialize.php"><a href="files/vb-trait-noserialize.html"><abbr title="vb/trait/noserialize.php">noserialize.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">25</span>
+
+            <a href="classes/vB-Cleaner.html#source-view.25" class="phpdocumentor-element-found-in__source" data-line="25" data-modal="source-view" data-src="files/vb/trait/noserialize.php.txt"></a>
+    </aside>
+
+    
+    <code class="phpdocumentor-code phpdocumentor-signature ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+                    <span class="phpdocumentor-signature__name">__serialize</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">array&lt;string|int, mixed&gt;</span></code>
+
+    <div class="phpdocumentor-label-line">
+        </div>
+    
+    
+    
+    
+
+    
+
+            <section>
+        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
+        <span class="phpdocumentor-signature__response_type">array&lt;string|int, mixed&gt;</span>
+            </section>
+
+</article>
+                    <article
+        class="phpdocumentor-element
+            -method
+            -public
+                                                        "
+>
+    <h4 class="phpdocumentor-element__name" id="method___sleep">
+        __sleep()
+        <a href="classes/vB-Trait-NoSerialize.html#method___sleep" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="vb/trait/noserialize.php"><a href="files/vb-trait-noserialize.html"><abbr title="vb/trait/noserialize.php">noserialize.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">15</span>
+
+            <a href="classes/vB-Cleaner.html#source-view.15" class="phpdocumentor-element-found-in__source" data-line="15" data-modal="source-view" data-src="files/vb/trait/noserialize.php.txt"></a>
+    </aside>
+
+    
+    <code class="phpdocumentor-code phpdocumentor-signature ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+                    <span class="phpdocumentor-signature__name">__sleep</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">array&lt;string|int, mixed&gt;</span></code>
+
+    <div class="phpdocumentor-label-line">
+        </div>
+    
+    
+    
+    
+
+    
+
+            <section>
+        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
+        <span class="phpdocumentor-signature__response_type">array&lt;string|int, mixed&gt;</span>
+            </section>
+
+</article>
+                    <article
+        class="phpdocumentor-element
+            -method
+            -public
+                                                        "
+>
+    <h4 class="phpdocumentor-element__name" id="method___unserialize">
+        __unserialize()
+        <a href="classes/vB-Trait-NoSerialize.html#method___unserialize" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="vb/trait/noserialize.php"><a href="files/vb-trait-noserialize.html"><abbr title="vb/trait/noserialize.php">noserialize.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">30</span>
+
+            <a href="classes/vB-Cleaner.html#source-view.30" class="phpdocumentor-element-found-in__source" data-line="30" data-modal="source-view" data-src="files/vb/trait/noserialize.php.txt"></a>
+    </aside>
+
+    
+    <code class="phpdocumentor-code phpdocumentor-signature ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+                    <span class="phpdocumentor-signature__name">__unserialize</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">array&lt;string|int, mixed&gt;&nbsp;</span><span class="phpdocumentor-signature__argument__name">$serialized</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">void</span></code>
+
+    <div class="phpdocumentor-label-line">
+        </div>
+    
+    
+        <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
+    <dl class="phpdocumentor-argument-list">
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-signature__argument__name">$serialized</span>
+                : <span class="phpdocumentor-signature__argument__return-type">array&lt;string|int, mixed&gt;</span>
+                            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                
+            </dd>
+            </dl>
+
+    
+
+    
+
+    
+</article>
+                    <article
+        class="phpdocumentor-element
+            -method
+            -public
+                                                        "
+>
+    <h4 class="phpdocumentor-element__name" id="method___wakeup">
+        __wakeup()
+        <a href="classes/vB-Trait-NoSerialize.html#method___wakeup" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="vb/trait/noserialize.php"><a href="files/vb-trait-noserialize.html"><abbr title="vb/trait/noserialize.php">noserialize.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">20</span>
+
+            <a href="classes/vB-Cleaner.html#source-view.20" class="phpdocumentor-element-found-in__source" data-line="20" data-modal="source-view" data-src="files/vb/trait/noserialize.php.txt"></a>
+    </aside>
+
+    
+    <code class="phpdocumentor-code phpdocumentor-signature ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+                    <span class="phpdocumentor-signature__name">__wakeup</span><span>(</span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">void</span></code>
+
+    <div class="phpdocumentor-label-line">
+        </div>
+    
+    
+    
+    
+
+    
+
+    
+</article>
+                    <article
+        class="phpdocumentor-element
+            -method
+            -public
+                                                        "
+>
+    <h4 class="phpdocumentor-element__name" id="method_clean">
+        clean()
+        <a href="classes/vB-Cleaner.html#method_clean" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="vb/cleaner.php"><a href="files/vb-cleaner.html"><abbr title="vb/cleaner.php">cleaner.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">99</span>
+
+            <a href="classes/vB-Cleaner.html#source-view.99" class="phpdocumentor-element-found-in__source" data-line="99" data-modal="source-view" data-src="files/vb/cleaner.php.txt"></a>
+    </aside>
+
+        <p class="phpdocumentor-summary">Makes a single variable safe to use and returns it</p>
+
+    <code class="phpdocumentor-code phpdocumentor-signature ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+                <span class="phpdocumentor-signature__reference-operator">&amp;</span>    <span class="phpdocumentor-signature__name">clean</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__reference-operator">&amp;</span><span class="phpdocumentor-signature__argument__name">$var</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$vartype</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">self::TYPE_NOCLEAN</span><span> ]</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$exists</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">true</span><span> ]</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
+
+    <div class="phpdocumentor-label-line">
+        </div>
+    
+    
+        <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
+    <dl class="phpdocumentor-argument-list">
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-signature__argument__name">$var</span>
+                : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
+                            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                
+            </dd>
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-signature__argument__name">$vartype</span>
+                : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
+                 = <span class="phpdocumentor-signature__argument__default-value">self::TYPE_NOCLEAN</span>            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                
+            </dd>
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-signature__argument__name">$exists</span>
+                : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
+                 = <span class="phpdocumentor-signature__argument__default-value">true</span>            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                
+            </dd>
+            </dl>
+
+    
+
+    
+
+            <section>
+        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
+        <span class="phpdocumentor-signature__response_type">mixed</span>
+                    &mdash;
+                <section class="phpdocumentor-description"><p>The cleaned value</p>
+</section>
+
+            </section>
+
+</article>
+                    <article
+        class="phpdocumentor-element
+            -method
+            -public
+                                                        "
+>
+    <h4 class="phpdocumentor-element__name" id="method_cleanArray">
+        cleanArray()
+        <a href="classes/vB-Cleaner.html#method_cleanArray" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="vb/cleaner.php"><a href="files/vb-cleaner.html"><abbr title="vb/cleaner.php">cleaner.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">78</span>
+
+            <a href="classes/vB-Cleaner.html#source-view.78" class="phpdocumentor-element-found-in__source" data-line="78" data-modal="source-view" data-src="files/vb/cleaner.php.txt"></a>
+    </aside>
+
+        <p class="phpdocumentor-summary">Makes data in an array safe to use</p>
+
+    <code class="phpdocumentor-code phpdocumentor-signature ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+                    <span class="phpdocumentor-signature__name">cleanArray</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__reference-operator">&amp;</span><span class="phpdocumentor-signature__argument__name">$source</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$variables</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">array&lt;string|int, mixed&gt;</span></code>
+
+    <div class="phpdocumentor-label-line">
+        </div>
+    
+    
+        <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
+    <dl class="phpdocumentor-argument-list">
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-signature__argument__name">$source</span>
+                : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
+                            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                
+            </dd>
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-signature__argument__name">$variables</span>
+                : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
+                            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                
+            </dd>
+            </dl>
+
+    
+
+    
+
+            <section>
+        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
+        <span class="phpdocumentor-signature__response_type">array&lt;string|int, mixed&gt;</span>
+            </section>
+
+</article>
+                    <article
+        class="phpdocumentor-element
+            -method
+            -public
+                                                        "
+>
+    <h4 class="phpdocumentor-element__name" id="method_xssClean">
+        xssClean()
+        <a href="classes/vB-Cleaner.html#method_xssClean" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="vb/cleaner.php"><a href="files/vb-cleaner.html"><abbr title="vb/cleaner.php">cleaner.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">397</span>
+
+            <a href="classes/vB-Cleaner.html#source-view.397" class="phpdocumentor-element-found-in__source" data-line="397" data-modal="source-view" data-src="files/vb/cleaner.php.txt"></a>
+    </aside>
+
+        <p class="phpdocumentor-summary">Removes HTML characters and potentially unsafe scripting words from a string</p>
+
+    <code class="phpdocumentor-code phpdocumentor-signature ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+                    <span class="phpdocumentor-signature__name">xssClean</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">string&nbsp;</span><span class="phpdocumentor-signature__argument__name">$var</span></span><span class="phpdocumentor-signature__argument"><span>[</span><span>, </span><span class="phpdocumentor-signature__argument__return-type">bool&nbsp;</span><span class="phpdocumentor-signature__argument__name">$escape</span><span> = </span><span class="phpdocumentor-signature__argument__default-value">true</span><span> ]</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">string</span></code>
+
+    <div class="phpdocumentor-label-line">
+        </div>
+    
+    
+        <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
+    <dl class="phpdocumentor-argument-list">
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-signature__argument__name">$var</span>
+                : <span class="phpdocumentor-signature__argument__return-type">string</span>
+                            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                    <section class="phpdocumentor-description"><p>-- The variable we want to make safe</p>
+</section>
+
+            </dd>
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-signature__argument__name">$escape</span>
+                : <span class="phpdocumentor-signature__argument__return-type">bool</span>
+                 = <span class="phpdocumentor-signature__argument__default-value">true</span>            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                    <section class="phpdocumentor-description"><p>-- Whether to html escape the var.  Doing so is dubious as a matter of course
+since we use this at a pretty low level and either use the results in a non html context or
+escape everything again.</p>
+</section>
+
+            </dd>
+            </dl>
+
+    
+
+    
+
+            <section>
+        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
+        <span class="phpdocumentor-signature__response_type">string</span>
+            </section>
+
+</article>
+                    <article
+        class="phpdocumentor-element
+            -method
+            -public
+                                                        "
+>
+    <h4 class="phpdocumentor-element__name" id="method_xssCleanUrl">
+        xssCleanUrl()
+        <a href="classes/vB-Cleaner.html#method_xssCleanUrl" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h4>
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="vb/cleaner.php"><a href="files/vb-cleaner.html"><abbr title="vb/cleaner.php">cleaner.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">416</span>
+
+            <a href="classes/vB-Cleaner.html#source-view.416" class="phpdocumentor-element-found-in__source" data-line="416" data-modal="source-view" data-src="files/vb/cleaner.php.txt"></a>
+    </aside>
+
+        <p class="phpdocumentor-summary">Removes HTML characters and potentially unsafe scripting words from a URL
+Note: The query string and the  URL #fragment are preserved.</p>
+
+    <code class="phpdocumentor-code phpdocumentor-signature ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+                    <span class="phpdocumentor-signature__name">xssCleanUrl</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$url</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">string</span></code>
+
+    <div class="phpdocumentor-label-line">
+        </div>
+    
+    
+        <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
+    <dl class="phpdocumentor-argument-list">
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-signature__argument__name">$url</span>
+                : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
+                            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                
+            </dd>
+            </dl>
+
+    
+
+    
+
+            <section>
+        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
+        <span class="phpdocumentor-signature__response_type">string</span>
+            </section>
+
+</article>
+            </section>
+
+        <div class="phpdocumentor-modal" id="source-view">
+    <div class="phpdocumentor-modal-bg" data-exit-button></div>
+    <div class="phpdocumentor-modal-container">
+        <div class="phpdocumentor-modal-content">
+            <pre style="max-height: 500px; overflow-y: scroll" data-src="files/vb/cleaner.php.txt" class="language-php line-numbers linkable-line-numbers"></pre>
+        </div>
+        <button data-exit-button class="phpdocumentor-modal__close">&times;</button>
+    </div>
+</div>
+
+    <script type="text/javascript">
+        (function () {
+            function loadExternalCodeSnippet(el, url, line) {
+                Array.prototype.slice.call(el.querySelectorAll('pre[data-src]')).forEach((pre) => {
+                    const src = url || pre.getAttribute('data-src').replace(/\\/g, '/');
+                    const language = 'php';
+
+                    const code = document.createElement('code');
+                    code.className = 'language-' + language;
+                    pre.textContent = '';
+                    pre.setAttribute('data-line', line)
+                    code.textContent = 'Loading…';
+                    pre.appendChild(code);
+
+                    var xhr = new XMLHttpRequest();
+
+                    xhr.open('GET', src, true);
+
+                    xhr.onreadystatechange = function () {
+                        if (xhr.readyState !== 4) {
+                            return;
+                        }
+
+                        if (xhr.status < 400 && xhr.responseText) {
+                            code.textContent = xhr.responseText;
+                            Prism.highlightElement(code);
+                            return;
+                        }
+
+                        if (xhr.status === 404) {
+                            code.textContent = '✖ Error: File could not be found';
+                            return;
+                        }
+
+                        if (xhr.status >= 400) {
+                            code.textContent = '✖ Error ' + xhr.status + ' while fetching file: ' + xhr.statusText;
+                            return;
+                        }
+
+                        code.textContent = '✖ Error: An unknown error occurred';
+                    };
+
+                    xhr.send(null);
+                });
+            }
+
+            const modalButtons = document.querySelectorAll("[data-modal]");
+            const openedAsLocalFile = window.location.protocol === 'file:';
+            if (modalButtons.length > 0 && openedAsLocalFile) {
+                console.warn(
+                    'Viewing the source code is unavailable because you are opening this page from the file:// scheme; ' +
+                    'browsers block XHR requests when a page is opened this way'
+                );
+            }
+
+            modalButtons.forEach(function (trigger) {
+                if (openedAsLocalFile) {
+                    trigger.setAttribute("hidden", "hidden");
+                }
+
+                trigger.addEventListener("click", function (event) {
+                    event.preventDefault();
+                    const modal = document.getElementById(trigger.dataset.modal);
+                    if (!modal) {
+                        console.error(`Modal with id "${trigger.dataset.modal}" could not be found`);
+                        return;
+                    }
+                    modal.classList.add("phpdocumentor-modal__open");
+
+                    loadExternalCodeSnippet(modal, trigger.dataset.src || null, trigger.dataset.line)
+                    const exits = modal.querySelectorAll("[data-exit-button]");
+                    exits.forEach(function (exit) {
+                        exit.addEventListener("click", function (event) {
+                            event.preventDefault();
+                            modal.classList.remove("phpdocumentor-modal__open");
+                        });
+                    });
+                });
+            });
+        })();
+    </script>
+
+    </article>
+                                </section>
+                <section class="phpdocumentor-on-this-page__sidebar">
+                                
+    <section class="phpdocumentor-on-this-page__content">
+        <strong class="phpdocumentor-on-this-page__title">On this page</strong>
+
+        <ul class="phpdocumentor-list -clean">
+            <li class="phpdocumentor-on-this-page-section__title">Table Of Contents</li>
+            <li>
+                <ul class="phpdocumentor-list -clean">
+                                        <li><a href="classes/vB-Cleaner.html#toc-constants">Constants</a></li>
+                                                                                <li><a href="classes/vB-Cleaner.html#toc-methods">Methods</a></li>
+                                    </ul>
+            </li>
+                            <li class="phpdocumentor-on-this-page-section__title">Constants</li>
+                <li>
+                    <ul class="phpdocumentor-list -clean">
+                                                    <li class=""><a href="classes/vB-Cleaner.html#constant_CONVERT_KEYS">CONVERT_KEYS</a></li>
+                                                    <li class=""><a href="classes/vB-Cleaner.html#constant_CONVERT_SINGLE">CONVERT_SINGLE</a></li>
+                                                    <li class=""><a href="classes/vB-Cleaner.html#constant_STR_NOHTML">STR_NOHTML</a></li>
+                                                    <li class=""><a href="classes/vB-Cleaner.html#constant_TYPE_ARRAY">TYPE_ARRAY</a></li>
+                                                    <li class=""><a href="classes/vB-Cleaner.html#constant_TYPE_ARRAY_ARRAY">TYPE_ARRAY_ARRAY</a></li>
+                                                    <li class=""><a href="classes/vB-Cleaner.html#constant_TYPE_ARRAY_BINARY">TYPE_ARRAY_BINARY</a></li>
+                                                    <li class=""><a href="classes/vB-Cleaner.html#constant_TYPE_ARRAY_BOOL">TYPE_ARRAY_BOOL</a></li>
+                                                    <li class=""><a href="classes/vB-Cleaner.html#constant_TYPE_ARRAY_FILE">TYPE_ARRAY_FILE</a></li>
+                                                    <li class=""><a href="classes/vB-Cleaner.html#constant_TYPE_ARRAY_INT">TYPE_ARRAY_INT</a></li>
+                                                    <li class=""><a href="classes/vB-Cleaner.html#constant_TYPE_ARRAY_KEYS_INT">TYPE_ARRAY_KEYS_INT</a></li>
+                                                    <li class=""><a href="classes/vB-Cleaner.html#constant_TYPE_ARRAY_KEYS_STR">TYPE_ARRAY_KEYS_STR</a></li>
+                                                    <li class=""><a href="classes/vB-Cleaner.html#constant_TYPE_ARRAY_NOHTML">TYPE_ARRAY_NOHTML</a></li>
+                                                    <li class=""><a href="classes/vB-Cleaner.html#constant_TYPE_ARRAY_NOHTMLCOND">TYPE_ARRAY_NOHTMLCOND</a></li>
+                                                    <li class=""><a href="classes/vB-Cleaner.html#constant_TYPE_ARRAY_NOTRIM">TYPE_ARRAY_NOTRIM</a></li>
+                                                    <li class=""><a href="classes/vB-Cleaner.html#constant_TYPE_ARRAY_NUM">TYPE_ARRAY_NUM</a></li>
+                                                    <li class=""><a href="classes/vB-Cleaner.html#constant_TYPE_ARRAY_STR">TYPE_ARRAY_STR</a></li>
+                                                    <li class=""><a href="classes/vB-Cleaner.html#constant_TYPE_ARRAY_UINT">TYPE_ARRAY_UINT</a></li>
+                                                    <li class=""><a href="classes/vB-Cleaner.html#constant_TYPE_ARRAY_UNIXTIME">TYPE_ARRAY_UNIXTIME</a></li>
+                                                    <li class=""><a href="classes/vB-Cleaner.html#constant_TYPE_ARRAY_UNUM">TYPE_ARRAY_UNUM</a></li>
+                                                    <li class=""><a href="classes/vB-Cleaner.html#constant_TYPE_BINARY">TYPE_BINARY</a></li>
+                                                    <li class=""><a href="classes/vB-Cleaner.html#constant_TYPE_BOOL">TYPE_BOOL</a></li>
+                                                    <li class=""><a href="classes/vB-Cleaner.html#constant_TYPE_FILE">TYPE_FILE</a></li>
+                                                    <li class=""><a href="classes/vB-Cleaner.html#constant_TYPE_INT">TYPE_INT</a></li>
+                                                    <li class=""><a href="classes/vB-Cleaner.html#constant_TYPE_NOCLEAN">TYPE_NOCLEAN</a></li>
+                                                    <li class=""><a href="classes/vB-Cleaner.html#constant_TYPE_NOHTML">TYPE_NOHTML</a></li>
+                                                    <li class=""><a href="classes/vB-Cleaner.html#constant_TYPE_NOHTMLCOND">TYPE_NOHTMLCOND</a></li>
+                                                    <li class=""><a href="classes/vB-Cleaner.html#constant_TYPE_NOTRIM">TYPE_NOTRIM</a></li>
+                                                    <li class=""><a href="classes/vB-Cleaner.html#constant_TYPE_NUM">TYPE_NUM</a></li>
+                                                    <li class=""><a href="classes/vB-Cleaner.html#constant_TYPE_STR">TYPE_STR</a></li>
+                                                    <li class=""><a href="classes/vB-Cleaner.html#constant_TYPE_UINT">TYPE_UINT</a></li>
+                                                    <li class=""><a href="classes/vB-Cleaner.html#constant_TYPE_UNIXTIME">TYPE_UNIXTIME</a></li>
+                                                    <li class=""><a href="classes/vB-Cleaner.html#constant_TYPE_UNUM">TYPE_UNUM</a></li>
+                                            </ul>
+                </li>
+            
+            
+                        <li class="phpdocumentor-on-this-page-section__title">Methods</li>
+            <li>
+                <ul class="phpdocumentor-list -clean">
+                                            <li class=""><a href="classes/vB-Trait-NoSerialize.html#method___serialize">__serialize()</a></li>
+                                            <li class=""><a href="classes/vB-Trait-NoSerialize.html#method___sleep">__sleep()</a></li>
+                                            <li class=""><a href="classes/vB-Trait-NoSerialize.html#method___unserialize">__unserialize()</a></li>
+                                            <li class=""><a href="classes/vB-Trait-NoSerialize.html#method___wakeup">__wakeup()</a></li>
+                                            <li class=""><a href="classes/vB-Cleaner.html#method_clean">clean()</a></li>
+                                            <li class=""><a href="classes/vB-Cleaner.html#method_cleanArray">cleanArray()</a></li>
+                                            <li class=""><a href="classes/vB-Cleaner.html#method_xssClean">xssClean()</a></li>
+                                            <li class=""><a href="classes/vB-Cleaner.html#method_xssCleanUrl">xssCleanUrl()</a></li>
+                                    </ul>
+            </li>
+                    </ul>
+    </section>
+
+                </section>
+                            </div>
+            <section data-search-results class="phpdocumentor-search-results phpdocumentor-search-results--hidden">
+    <section class="phpdocumentor-search-results__dialog">
+        <header class="phpdocumentor-search-results__header">
+            <h2 class="phpdocumentor-search-results__title">Search results</h2>
+            <button class="phpdocumentor-search-results__close"><i class="fas fa-times"></i></button>
+        </header>
+        <section class="phpdocumentor-search-results__body">
+            <ul class="phpdocumentor-search-results__entries"></ul>
+        </section>
+    </section>
+</section>
+        </div>
+        <a href="classes/vB-Cleaner.html#top" class="phpdocumentor-back-to-top"><i class="fas fa-chevron-circle-up"></i></a>
+
+    </main>
+
+    <script>
+        cssVars({});
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/prismjs@1.23.0/prism.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/prismjs@1.23.0/plugins/autoloader/prism-autoloader.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/prismjs@1.23.0/plugins/line-numbers/prism-line-numbers.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/prismjs@1.23.0/plugins/line-highlight/prism-line-highlight.min.js"></script>
+</body>
+</html>

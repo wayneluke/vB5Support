@@ -1,0 +1,79 @@
+<?php
+/*========================================================================*\
+|| ###################################################################### ||
+|| # vBulletin 6.1.0 Alpha 4 Week 2 - Licence Number VBCW2VFT7A
+|| # ------------------------------------------------------------------ # ||
+|| # Copyright 2000-2024 MH Sub I, LLC dba vBulletin. All Rights Reserved.  # ||
+|| # This file may not be redistributed in whole or significant part.   # ||
+|| # ----------------- VBULLETIN IS NOT FREE SOFTWARE ----------------- # ||
+|| # http://www.vbulletin.com | http://www.vbulletin.com/license.html   # ||
+|| ###################################################################### ||
+\*========================================================================*/
+
+/**
+ * @package vBUtility
+ */
+class vB_Utility_Template_ParserNode_Tag_Every extends vB_Utility_Template_ParserNode_Tag
+{
+	public function validate() : array
+	{
+		$varname = $this->main_node->attributes['index'] ?? null;
+		$count = $this->main_node->attributes['count'] ?? null;
+		$start = $this->main_node->attributes['start'] ?? 0;
+
+		$errors = [];
+		if (!$varname)
+		{
+			$errors[] = 'no_variable_specified';
+		}
+		else
+		{
+			if (!$this->validateVarStrict($varname))
+			{
+				throw new vB_Utility_Template_Parser_FatalError(['template_parser_invalid_varname', $this->nodename()]);
+			}
+		}
+
+		//A count of 0 doesn't make sense.  A count of 1 really doesn't either but it doesn't break anything
+		if (!$count)
+		{
+			$errors[] = ['template_parser_count_required', $this->nodename()];
+		}
+		else
+		{
+			if ($start >= $count)
+			{
+				$errors[] = ['template_parser_start_greater_than_count', $this->nodename()];
+			}
+		}
+
+		return $errors;
+	}
+
+	public function compile() : string
+	{
+		$varname = $this->main_node->attributes['index'] ?? null;
+		$count = intval($this->main_node->attributes['count'] ?? 1);
+		$start = intval($this->main_node->attributes['start'] ?? 0);
+
+		$varnameText = $this->compileVarStrict($varname);
+
+
+		$condition = "isset($varnameText) AND (($varnameText % $count) == $start)";
+
+		$children = $this->parser->_parse_nodes($this->main_node->childNodes());
+
+		$output = "''; if (" . $condition . ') {
+			' . $this->parser->outputVar . " .= " . $children . ";" . '
+		} ' . $this->parser->outputVar . " .= ''";
+
+		return $output;
+	}
+}
+
+/*=========================================================================*\
+|| #######################################################################
+|| # Downloaded: 12:50, Tue Dec 24th 2024
+|| # CVS: $RCSfile$ - $Revision: 115380 $
+|| #######################################################################
+\*=========================================================================*/

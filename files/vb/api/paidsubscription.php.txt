@@ -1,0 +1,637 @@
+<?php
+/*========================================================================*\
+|| ###################################################################### ||
+|| # vBulletin 6.1.0 Alpha 4 Week 2 - Licence Number VBCW2VFT7A
+|| # ------------------------------------------------------------------ # ||
+|| # Copyright 2000-2024 MH Sub I, LLC dba vBulletin. All Rights Reserved.  # ||
+|| # This file may not be redistributed in whole or significant part.   # ||
+|| # ----------------- VBULLETIN IS NOT FREE SOFTWARE ----------------- # ||
+|| # http://www.vbulletin.com | http://www.vbulletin.com/license.html   # ||
+|| ###################################################################### ||
+\*========================================================================*/
+
+/**
+ * vB_Api_Paidsubscription
+ *
+ * @package vBApi
+ */
+class vB_Api_Paidsubscription extends vB_Api
+{
+	protected $subobj = null;
+	protected $apicache = array();
+
+	protected $disableFalseReturnOnly = array('fetchAll');
+
+
+	protected function __construct()
+	{
+		parent::__construct();
+		require_once(DIR . '/includes/class_paid_subscription.php');
+
+		// Cache subscriptions
+		$this->fetchActivePaymentApis();
+	}
+
+	protected function checkPermission()
+	{
+		$userinfo = vB::getCurrentSession()->fetch_userinfo();
+		if ($userinfo['userid'] == 0)
+		{
+			// Guests are not allowed to use paid subscriptions
+			throw new vB_Exception_Api('no_permission');
+		}
+	}
+
+	/**
+	 * Check whether paid subscriptions system is active or not
+	 *
+	 * @throws vB_Exception_Api
+	 * @return void
+	 */
+	public function checkStatus()
+	{
+		/** @var vB_Library_Paidsubscription */
+		$lib = vB_Library::instance('paidsubscription');
+		$subobj = $lib->getSubObject();
+
+		$this->fetchActivePaymentApis();
+		if (empty($subobj->subscriptioncache) OR empty($this->apicache) OR !vB::getDatastore()->getOption('subscriptionmethods'))
+		{
+			// Paid Subscription is disabled.
+			throw new vB_Exception_Api('nosubscriptions');
+		}
+	}
+
+	/**
+	 * Fetch all subscriptions that an user can join and already joined
+	 * It also fetches active payment APIs
+	 *
+	 * @param bool $isreg Whether to fetch subscriptions for signup page
+	 * @return array Paid subscriptions info for the user.
+	 */
+	public function fetchAll($isreg = false)
+	{
+		try
+		{
+			$this->checkStatus();
+		}
+		catch (vB_Exception_Api $e)
+		{
+			return array();
+		}
+
+		$userinfo = vB::getCurrentSession()->fetch_userinfo();
+		$usercontext = vB::getUserContext();
+
+		$membergroupids = fetch_membergroupids_array($userinfo);
+		$allow_secondary_groups = $usercontext->hasPermission('genericoptions', 'allowmembergroups');
+
+		$subscribed = $this->fetchSubscribed();
+
+		//Should return phrase values from here and do the rendering in the templates.
+		//this could get a little complicated due to nesting of phrases below.
+		$phraseApi = vB_Api::instanceInternal('phrase');
+
+		$vbphrase = $phraseApi->fetch(array(
+			'day',
+			'week',
+			'month',
+			'year',
+			'days',
+			'weeks',
+			'months',
+			'years',
+			'length_x_units_y_recurring_z',
+			'recurring'
+		));
+
+		$lengths = array(
+			'D' => $vbphrase['day'],
+			'W' => $vbphrase['week'],
+			'M' => $vbphrase['month'],
+			'Y' => $vbphrase['year'],
+			// plural stuff below
+			'Ds' => $vbphrase['days'],
+			'Ws' => $vbphrase['weeks'],
+			'Ms' => $vbphrase['months'],
+			'Ys' => $vbphrase['years']
+		);
+
+		/** @var vB_Library_Paidsubscription */
+		$lib = vB_Library::instance('paidsubscription');
+		$subobj = $lib->getSubObject();
+		$cansubscribesubscriptions = array();
+		$subscribedsubscriptions = array();
+		foreach ($subobj->subscriptioncache AS $subscription)
+		{
+			$subscriptionid =& $subscription['subscriptionid'];
+			$subscription['cost'] = unserialize($subscription['cost']);
+
+			$subscription['newoptions'] = @unserialize($subscription['newoptions']);
+			foreach ($subscription['cost'] AS $key => $currentsub)
+			{
+				if ($currentsub['length'] == 1)
+				{
+					$currentsub['units'] = $lengths["{$currentsub['units']}"];
+				}
+				else
+				{
+					$currentsub['units'] = $lengths[$currentsub['units'] . 's'];
+				}
+
+				$phrases = $phraseApi->renderPhrases(array('length' => array(
+					'length_x_units_y_recurring_z',
+					$currentsub['length'],
+					$currentsub['units'],
+					($currentsub['recurring'] ? " ($vbphrase[recurring])" : '')
+				)));
+
+				$subscription['cost'][$key]['subscription_length'] = $phrases['phrases']['length'];
+			}
+
+
+			if (isset($subscribed["$subscription[subscriptionid]"]))
+			{
+				// This subscription has been subscribed by the user
+				$subscribedsubscriptions[$subscriptionid] = $subscription;
+				$subscribedsubscriptions[$subscriptionid]['subscribed'] = $subscribed["$subscription[subscriptionid]"];
+			}
+
+			if ($subscription['active'])
+			{
+				if ($isreg AND empty($subscription['newoptions']['regshow']))
+				{
+					// Display paid subscription during registration is set to false
+					continue;
+				}
+
+				// Check whether to show the subscription to the user.
+				if (
+					!empty($subscription['deniedgroups'])
+					AND
+					(
+						($allow_secondary_groups AND !count(array_diff($membergroupids, $subscription['deniedgroups'])))
+						OR
+						(!$allow_secondary_groups AND in_array($userinfo['usergroupid'], $subscription['deniedgroups']))
+					)
+				)
+				{
+					continue;
+				}
+
+				// List allowed payment apis
+				$allowedapis = [];
+				//we aren't guarenteed to have the options actually set properly so if they aren't assume blank
+				if(isset($subscription['newoptions']['api']) AND is_array($subscription['newoptions']['api']))
+				{
+					foreach($subscription['newoptions']['api'] AS $api => $options)
+					{
+						if (!empty($options['show']))
+						{
+							$allowedapis[] = $api;
+						}
+					}
+				}
+
+				$subscription['allowedapis'] = json_encode($allowedapis);
+
+				$cansubscribesubscriptions[$subscriptionid] = $subscription;
+			}
+		}
+
+		if (!$cansubscribesubscriptions AND !$subscribedsubscriptions)
+		{
+			return [];
+		}
+
+		return array(
+			'subscribed' => $subscribedsubscriptions,
+			'cansubscribe' => $cansubscribesubscriptions,
+			'paymentapis' => $this->apicache,
+			'currencysymbols' => $this->getCurrencySymbols(),
+		);
+	}
+
+	private function getCurrencySymbols()
+	{
+		//this is entered by the admin.  Try very hard to bullet proof it
+		//and figure out what we can salvage from bad data.
+		$result = [];
+		$symbols = vB::getDatastore()->getOption('currencysymbols');
+
+		$lines = explode("\n", $symbols);
+		foreach($lines AS $line)
+		{
+			$fields = explode('|', trim($line));
+			if(count($fields) == 2)
+			{
+				$code = trim($fields[0]);
+				$symbol = trim($fields[1]);
+
+				if($code AND $symbol)
+				{
+					$result[strtolower($code)] = $symbol;
+				}
+			}
+		}
+
+		return $result;
+	}
+
+	/**
+	 * Fetch all active payment APIs.
+	 *
+	 * @return array Payment APIs
+	 */
+	public function fetchActivePaymentApis()
+	{
+		if (!$this->apicache)
+		{
+			$paymentapis = vB::getDbAssertor()->getRows('vBForum:paymentapi', ['active' => 1]);
+			foreach ($paymentapis AS $paymentapi)
+			{
+				if($paymentapi['settings'])
+				{
+					$paymentapi['settings'] = unserialize($paymentapi['settings']);
+				}
+
+				$this->apicache[$paymentapi['classname']] = $paymentapi;
+			}
+		}
+		return $this->apicache;
+	}
+
+	/**
+	 * Fetch all active subscriptions current user is subscribed too
+	 */
+	public function fetchSubscribed()
+	{
+		try
+		{
+			$this->checkStatus();
+			$this->checkPermission();
+		}
+		catch (vB_Exception_Api $e)
+		{
+			return [];
+		}
+
+		$currentUserId = vB::getUserContext()->fetchUserId();
+		$susers = vB::getDbAssertor()->getRows('vBForum:subscriptionlog', ['status' => 1, 'userid' => $currentUserId]);
+
+		$subscribed = [];
+		foreach ($susers as $suser)
+		{
+			$subscribed["$suser[subscriptionid]"] = $suser;
+		}
+
+		return $subscribed;
+	}
+
+	/**
+	 * Prepares or places a subscription order, if applicable, and shows the payment buttons.
+	 * Note, this legacy method name is a misnomer for many payment APIs. Nowadays, an "order" is frequently not actually
+	 * placed until a user physically clicks a button. In many cases this function only prepares the order button,
+	 * and loads the necessary code to initialize the client SDK (if applicable) that allows the various frontend payment
+	 * flows, before sending data back through prepareTransaction() & completeTransaction() to actually charge the user
+	 * and complete the order.
+	 *
+	 *
+	 */
+	public function placeOrder($subscriptionid, $subscriptionsubid, $paymentapiclass, $currency, $context = 'usersettings')
+	{
+		$this->checkStatus();
+		$this->checkPermission();
+
+		/** @var vB_Library_Paidsubscription */
+		$lib = vB_Library::instance('paidsubscription');
+		$sub = $lib->getSpecificSubcriptionObject($subscriptionid);
+
+		// Verify that the payment api is allowed for this subscription
+		if (empty($sub['newoptions']['api'][$paymentapiclass]['show']))
+		{
+			throw new vB_Exception_Api('invalid_paymentapiclass');
+		}
+
+		$userinfo = vB::getCurrentSession()->fetch_userinfo();
+		$usercontext = vB::getUserContext();
+
+		$membergroupids = fetch_membergroupids_array($userinfo);
+		$allow_secondary_groups = $usercontext->hasPermission('genericoptions', 'allowmembergroups');
+
+		if (empty($sub) OR !$sub['active'])
+		{
+			throw new vB_Exception_Api('invalidid');
+		}
+
+		if (
+			!empty($sub['deniedgroups'])
+			AND
+			(
+				($allow_secondary_groups AND !count(array_diff($membergroupids, $sub['deniedgroups'])))
+				OR
+				(!$allow_secondary_groups AND in_array($userinfo['usergroupid'], $sub['deniedgroups']))
+			)
+		)
+		{
+			throw new vB_Exception_Api('invalidid');
+		}
+
+		$costs = unserialize($sub['cost'], ['allowed_classes' => false]);
+		if (empty($costs["$subscriptionsubid"]['cost']["$currency"]))
+		{
+			throw new vB_Exception_Api('invalid_currency');
+		}
+
+		$hash = md5($userinfo['userid'] . $userinfo['secret'] . $subscriptionid . uniqid(microtime(),1));
+		/* insert query */
+		$check = vB::getDbAssertor()->insert('vBForum:paymentinfo', array(
+			'hash' => $hash,
+			'completed' => 0,
+			'subscriptionid' => $subscriptionid,
+			'subscriptionsubid' => $subscriptionsubid,
+			'userid' => $userinfo['userid'],
+		));
+		if (!$check)
+		{
+			throw new vB_Exception_Api('payment_api_error');
+		}
+
+		$method = vB::getDbAssertor()->getRow('vBForum:paymentapi', array('active' => 1, 'classname' => $paymentapiclass));
+
+		$supportedcurrencies = explode(',', $method['currency']);
+
+		if (!in_array($currency, $supportedcurrencies))
+		{
+			throw new vB_Exception_Api('currency_not_supported');
+		}
+
+		// TODO: replace the messy & confusing function params (i.e. wtf are $costs & $sub) with entity and update all paymentapis' generate_form_html()
+		// (downstream of construct_payment() below)
+		//$vbsubscriptioninfo = $lib->convertArrayToPaidsubscriptionEntity($subscriptionid, $subscriptionsubid, $costs, $currency, $userinfo['userid'], $hash);
+
+		// TODO: vB_Template::create() has many PHP notices. We need to fix them.
+		error_reporting(error_reporting() & ~E_NOTICE);
+
+		$subobj = $lib->getSubObject();
+		$form = $subobj->construct_payment($hash, $method, $costs["$subscriptionsubid"], $currency, $sub, $userinfo, ['context' => $context]);
+		$typetext = $method['classname'] . '_order_instructions';
+
+		$templater = new vB5_Template('subscription_paymentbit');
+			$templater->register('form', $form);
+			$templater->register('method', $method);
+			$templater->register('typetext', $typetext);
+		$orderbit = $templater->render();
+
+		return $orderbit;
+	}
+
+	/**
+	 * User End a subscription by its own
+	 *
+	 * @param $subscriptionid int The id of the subscription
+	 */
+	public function endsubscription($subscriptionid)
+	{
+		$this->checkStatus();
+		$this->checkPermission();
+
+		$userinfo = vB::getCurrentSession()->fetch_userinfo();
+
+		/** @var vB_Library_Paidsubscription */
+		$lib = vB_Library::instance('paidsubscription');
+		$subobj = $lib->getSubObject();
+		$subobj->delete_user_subscription($subscriptionid, $userinfo['userid'], -1, true);
+		$this->tryEndSubscriptionPayments($subscriptionid, $userinfo['userid']);
+
+		return ['success' => true];
+	}
+
+	private function tryEndSubscriptionPayments($subscriptionid, $userid)
+	{
+		$assertor = vB::getDbAssertor();
+		$paymentapiids = $assertor->getColumn('vBForum:paymentapi_subscription',
+			'paymentapiid',
+			['vbsubscriptionid' => $subscriptionid, 'userid' => $userid],
+			false,
+			'paymentapiid'
+		);
+		$paymentAPIRecords = $assertor->getRows('vBForum:paymentapi', ['paymentapiid' => $paymentapiids]);
+		foreach ($paymentAPIRecords AS $__api)
+		{
+			$paymentObj = vB_PaidSubscription::fetchPaymentMethodInstance($__api);
+			$__check = $paymentObj->cancelRemoteSubscription($userid, $subscriptionid);
+		}
+
+	}
+
+	private function digestPaypalData(string $paymentapiclass, string $hash, string $currency, float $cost)
+	{
+		$assertor = vB::getDbAssertor();
+		// Find the paymentinfo record that holds various information
+		$userinfo = vB::getCurrentSession()->fetch_userinfo();
+		$check = $assertor->getRow('vBForum:paymentinfo', ['hash' => $hash]);
+		if (empty($check) OR $check['completed'] OR $check['userid'] != $userinfo['userid'])
+		{
+			throw new vB_Exception_Api('payment_api_error');
+		}
+
+		$subscriptionid = $check['subscriptionid'];
+		$subscriptionsubid = $check['subscriptionsubid'];
+
+		/** @var vB_Library_Paidsubscription */
+		$lib = vB_Library::instance('paidsubscription');
+		$sub = $lib->getSpecificSubcriptionObject($subscriptionid);
+		// Verify that the payment api is (still) allowed for this subscription
+		// This would only happen if an initially active payment API was turned off between placeOrder() call
+		// above -- which generates the form that either takes you to an external handler (e.g. stripe) or
+		// embeds a payment form (e.g. braintree) -- and when that form was submitted in the "embed" case.
+		if (empty($sub['newoptions']['api'][$paymentapiclass]['show']))
+		{
+			throw new vB_Exception_Api('invalid_paymentapiclass');
+		}
+
+		$paymentapi = $assertor->getRow('vBForum:paymentapi', array('active' => 1, 'classname' => $paymentapiclass));
+		if (!$paymentapi)
+		{
+			throw new vB_Exception_Api('invalid_paymentapiclass');
+		}
+		$supportedcurrencies = explode(',', $paymentapi['currency']);
+		if (!in_array($currency, $supportedcurrencies))
+		{
+			throw new vB_Exception_Api('currency_not_supported');
+		}
+
+		// We want to sanity check that these are valid, because the cost & currency is apparently not explicitly
+		// saved in the paymentinfo record, and because we may have to directly place the transaction ourselves
+		// in the case of braintree, and we can't blindly trust the form info.
+
+		$timeAndCosts = unserialize($sub['cost'], ['allowed_classes' => false]);
+		$actualCost = $timeAndCosts[$subscriptionsubid]['cost'][$currency] ?? null;
+		if (is_null($actualCost))
+		{
+			throw new vB_Exception_Api('currency_not_supported');
+		}
+		if (!is_numeric($actualCost) OR $actualCost < 0 OR $actualCost != $cost)
+		{
+			throw new vB_Exception_Api('invalid_data');
+		}
+
+		$vbsubscriptioninfo = $lib->convertArrayToPaidsubscriptionEntity(
+			$subscriptionid,
+			$subscriptionsubid,
+			$timeAndCosts,
+			$currency,
+			$userinfo['userid'],
+			$hash
+		);
+
+		// $vbsubscriptioninfo = vB_Entity_Paidsubscription::createFromArray([
+		// 	'cost' => $actualCost,
+		// 	'currency' => $currency,
+		// 	// time info
+		// 	'recurring' => $timeAndCosts[$subscriptionsubid]['recurring'],
+		// 	'duration' => $timeAndCosts[$subscriptionsubid]['length'],
+		// 	'duration_units' => $timeAndCosts[$subscriptionsubid]['units'],
+		// 	// sub info
+		// 	'subscriptionid' => $subscriptionid,
+		// 	'subscriptionsubid' => $subscriptionsubid,
+		// 	'userid' => $userinfo['userid'],
+		// 	'vbhash' => $hash,
+		// ]);
+
+		return [
+			'vbsubscriptioninfo' => $vbsubscriptioninfo,
+			'paymentapirecord' => $paymentapi,
+			'settings' => $sub['newoptions']['api'][$paymentapiclass],
+		];
+	}
+
+	public function preparePayPalOrder(string $paymentapiclass, string $hash, string $currency, float $cost)
+	{
+		// This is called by client when the paypal button is initially clicked to popup the payment select/review.
+
+		$this->checkStatus();
+		// Note, this check enforces userid > 0
+		$this->checkPermission();
+
+		if ($paymentapiclass !== 'paypal2')
+		{
+			throw new vB_Exception_Api('invalid_paymentapiclass');
+		}
+
+		[
+			'vbsubscriptioninfo' => $vbsubscriptioninfo,
+			'paymentapirecord' => $paymentapi,
+			'settings' => $subscriptionSettings,
+		] = $this->digestPaypalData($paymentapiclass, $hash, $currency, $cost);
+
+		/** @var vB_PaidSubscriptionMethod_paypal2 */
+		$paymentObj = vB_PaidSubscription::fetchPaymentMethodInstance($paymentapi);
+		$response = $paymentObj->prepareOrder($vbsubscriptioninfo, $subscriptionSettings);
+
+		if (empty($response['id']))
+		{
+			throw new vB_Exception_Api('payment_api_error');
+		}
+
+		return [
+			// sparsifying the response to client per paypal's guidelines:
+			// https://youtu.be/MBfJEUGNNs0?t=329
+			'id' => $response['id'],
+		];
+	}
+
+	public function completePayPalOrder(string $order_id)
+	{
+		// This is called by client after user completes the payment & the paypal popup closes.
+		$paymentapi = vB::getDbAssertor()->getRow('vBForum:paymentapi', ['active' => 1, 'classname' => 'paypal2']);
+		if (!$paymentapi)
+		{
+			throw new vB_Exception_Api('invalid_paymentapiclass');
+		}
+
+		/** @var vB_PaidSubscriptionMethod_paypal2 */
+		$paymentObj = vB_PaidSubscription::fetchPaymentMethodInstance($paymentapi);
+		$response = $paymentObj->completeOrder($order_id);
+
+		if ($response['status'] ?? '' == 'COMPLETED')
+		{
+			return [
+				'success' => true,
+				'message' => '...todo?',
+			];
+		}
+		else
+		{
+			// todo: do we want some more specific message or echo back the paypal error?
+			throw new vB_Exception_Api('payment_api_error');
+		}
+	}
+
+	public function completePaypalSubscription(string $subscription_id, string $order_id)
+	{
+		// This is called by client after user completes the payment/subscription agreement & the paypal popup closes.
+		$paymentapi = vB::getDbAssertor()->getRow('vBForum:paymentapi', ['active' => 1, 'classname' => 'paypal2']);
+		if (!$paymentapi)
+		{
+			throw new vB_Exception_Api('invalid_paymentapiclass');
+		}
+
+		/** @var vB_PaidSubscriptionMethod_paypal2 */
+		$paymentObj = vB_PaidSubscription::fetchPaymentMethodInstance($paymentapi);
+		$response = $paymentObj->completeSubscription($subscription_id, $order_id);
+
+		$status = $response['status'] ?? '';
+		if ($status == 'APPROVED' || $status == 'ACTIVE')
+		{
+			return [
+				'success' => true,
+				'message' => '...todo?',
+			];
+		}
+		else
+		{
+			// todo: do we want some more specific message or echo back the paypal error?
+			throw new vB_Exception_Api('payment_api_error');
+		}
+	}
+
+	public function fetchPayPalJsArray() : array
+	{
+		$paypal2Data = $this->apicache['paypal2'] ?? [];
+		$clientid = $paypal2Data['settings']['client_id']['value'] ?? '';
+		if (empty($paypal2Data['active']) OR empty($clientid))
+		{
+			return ['js' => [],];
+		}
+		$sandbox = $paypal2Data['settings']['sandbox']['value'];
+
+		$urls = [];
+		$currencies = explode(',', $paypal2Data['currency']);
+		foreach ($currencies AS $__currency)
+		{
+			$__currencyUpper = strtoupper(trim($__currency));
+			// might need to filter the currency codes: https://developer.paypal.com/api/rest/reference/currency-codes/
+			$__onetime = "https://www.paypal.com/sdk/js?client-id=" . $clientid . "&components=buttons&currency=" . $__currencyUpper;
+			// https://developer.paypal.com/docs/subscriptions/integrate/
+			$__recurring = $__onetime .  '&vault=true&intent=subscription';
+			if ($sandbox)
+			{
+				$__onetime .= "&debug=true";
+				$__recurring .= "&debug=true";
+			}
+			$urls['paypal2_' . $__currencyUpper . '_onetime'] = $__onetime;
+			$urls['paypal2_' . $__currencyUpper . '_recurring'] = $__recurring;
+		}
+
+		return ['urls' => $urls,];
+	}
+}
+
+/*=========================================================================*\
+|| #######################################################################
+|| # Downloaded: 12:50, Tue Dec 24th 2024
+|| # CVS: $RCSfile$ - $Revision: 115186 $
+|| #######################################################################
+\*=========================================================================*/

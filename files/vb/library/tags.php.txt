@@ -1,0 +1,633 @@
+<?php
+/*========================================================================*\
+|| ###################################################################### ||
+|| # vBulletin 6.1.0 Alpha 4 Week 2 - Licence Number VBCW2VFT7A
+|| # ------------------------------------------------------------------ # ||
+|| # Copyright 2000-2024 MH Sub I, LLC dba vBulletin. All Rights Reserved.  # ||
+|| # This file may not be redistributed in whole or significant part.   # ||
+|| # ----------------- VBULLETIN IS NOT FREE SOFTWARE ----------------- # ||
+|| # http://www.vbulletin.com | http://www.vbulletin.com/license.html   # ||
+|| ###################################################################### ||
+\*========================================================================*/
+
+/**
+ * vB_Library_Tags
+ *
+ * @package vBLibrary
+ */
+class vB_Library_Tags extends vB_Library
+{
+	private array $tagDelimiters = [];
+
+	public function deleteUserTagAssociations($userid)
+	{
+		$db = vB::getDbAssertor();
+
+		//do this first because it relies on the tagnode records existing to find the
+		//nodes related to the user.  It will exclude any tags associated with the users
+		//while rebuilding.
+		$db->assertQuery('setGroupConcatSize', ['maxlen' => 10000]);
+		$nodeids = $db->getColumn('vBForum:getTagNodesForUser', 'nodeid', ['userid' => $userid]);
+
+		//we went to some trouble to write this query to avoid pulling the nodeids down to the client
+		//but ended up having to anyway to handle the cache.  It's not clear, however, if it's better
+		//to pass the nodeids back or continue to look them up via subquery based on the userid.
+		//Leaving as is for now.  It's only going to matter for users with thousands of tagged nodes
+		$db->assertQuery('vBForum:updateTagListExcludeUser', ['userid' => $userid]);
+		$db->delete('vBForum:tagnode', ['userid' => $userid]);
+
+		vB_Library::instance('node')->nodesChanged($nodeids);
+		vB_Library::instance('search')->indexNodeList($nodeids);
+	}
+
+	/**
+	 * Get tag info
+	 *
+	 * Gets the id and tag value, keyed by the original tag value.  This is intended
+	 * to do several things
+	 * 1) Get the case for a tagname that might have been given the wrong case
+	 * 2) Substitute the canonical tag for synonyms
+	 * 3) Get the tagid.
+	 *
+	 * @param array $taglist -- string array of tag values
+	 * @return array -- array of [tagname => ['tagid' => tagid, 'tagtext' => correctedtagname]]
+	 * 	If a value in the list isn't a valid tag, it will return [tagname => false]
+	 */
+	public function getTagList($taglist)
+	{
+		$db = vB::getDbAssertor();
+		$stringUtil = vB::getString();
+
+		$newtaglist = array_fill_keys($taglist, false);
+
+		$tagmaplower = [];
+		foreach ($taglist AS $tag)
+		{
+			$tagmaplower[$stringUtil->strtolower($tag)] = $tag;
+		}
+
+		//there isn't a good way to do this.  We want to make sure we preserve the case of the requested
+		//tag so that the caller can match up the requests with the results.  But there isn't a way get the
+		//query to return the string that matched the text with the row.  Nor is there a particularly
+		//good way to do MB string comparisons
+		$result = $db->select('vBForum:tag', ['tagtext' => $taglist], false, ['tagid', 'tagtext']);
+		foreach ($result AS $row)
+		{
+			$lower = $stringUtil->strtolower($row['tagtext']);
+			$newtaglist[$tagmaplower[$lower]] = $row;
+		}
+
+		$map = $this->getSynonymMap($taglist);
+		foreach ($map AS $orig => $new)
+		{
+			$newtaglist[$tagmaplower[$orig]] = ['tagid' => $new['canonicaltagid'], 'tagtext' => $new['canonicaltagtext']];
+		}
+
+		return $newtaglist;
+	}
+
+	/**
+	 *	Add tags to content.
+	 *
+	 *	This is a low level function that does not take into account any permissions or limits.
+	 *	The caller is expected to handle those details.
+	 *
+	 *	This also handles updating the denormalized tag information for the node
+	 *
+	 *	@param int $nodeid
+	 *	@param array $tagids
+	 */
+	public function addTagIdsToContent(int $nodeid, array $tagids) : void
+	{
+		$db = vB::getDbAssertor();
+
+		// This will convert synonym tags to canonical.
+		$db->assertQuery('vBForum:addTagidsContent', [
+			'tagids' => $tagids,
+			'nodeid' => $nodeid,
+			'userid' => vB::getCurrentSession()->get('userid'),
+			'dateline' => vB::getRequest()->getTimeNow(),
+		]);
+
+		$db->assertQuery('vBForum:updateNodeTagList', ['nodeid' => $nodeid]);
+
+		vB_Library::instance('node')->nodesChanged($nodeid);
+	}
+
+	/**
+	*	Takes a list of tags and returns a list of valid tags
+	*
+	* Tags are transformed to removed tabs and newlines
+	* Tags may be lowercased based on options
+	* Tags matching synomyns will
+	* Duplicate will be eliminated (case insensitive)
+	* Invalid tags will be removed.
+	*
+	* Fetch the valid tags from a list. Filters are length, censorship, perms (if desired).
+	*
+	* @param	string|array	List of tags to add (comma delimited, or an array as is). If array, ensure there are no commas.
+	* @param	array			(output) List of errors that happens
+	*
+	* @return	array			List of valid tags
+	*/
+	public function filterTagList(string|array $taglist, array &$errors) : array
+	{
+		$options = vB::getDatastore()->getValue('options');
+		$errors = [];
+		if (!is_array($taglist))
+		{
+			$taglist = $this->splitTagList($taglist);
+		}
+
+		$validRaw = [];
+		foreach ($taglist AS $tagtext)
+		{
+			$tagtext = trim(preg_replace('#[ \r\n\t]+#', ' ', $tagtext));
+			if ($this->isTagValid($tagtext, $errors))
+			{
+				$validRaw[] = ($options['tagforcelower'] ? vB_String::vBStrToLower($tagtext) : $tagtext);
+			}
+		}
+
+		if (empty($validRaw))
+		{
+			$errors['no_valid_tags'] = 'no_valid_tags_found';
+			return [];
+		}
+
+		$validRaw = $this->convertSynonyms($validRaw, $errors);
+		// we need to essentially do a case-insensitive array_unique here
+		$validUnique = array_unique(array_map(vB_String::vBStrToLower(...), $validRaw));
+		$valid = [];
+		foreach (array_keys($validUnique) AS $key)
+		{
+			$valid[] = $validRaw[$key];
+		}
+
+		return $valid;
+	}
+
+	/**
+	*	Converts synomyns to canonical tags
+	*
+	* If a tag is converted a message will be added to the error array to alert the user
+	* Does not handle removing duplicates created by the coversion process
+	*
+	* @param array array of tags to convert
+	* @param array array of errors (in/out param)
+	*
+	*	@return array the new list of tags
+	*/
+	private function convertSynonyms(array $tags, array &$errors) : array
+	{
+		$db = vB::getDbAssertor();
+		$set = $db->assertQuery('vBForum:getCanonicalTags', ['tags' => $tags]);
+		$map = [];
+		foreach ($set AS $row)
+		{
+			$map[vB_String::vBStrToLower($row['tagtext'])] = $row['canonicaltagtext'];
+		}
+
+		$newTags = [];
+		foreach ($tags AS $key => $tag)
+		{
+			$tag_lower = vB_String::vBStrToLower($tag);
+			if (array_key_exists($tag_lower, $map))
+			{
+				$errors["$tag_lower-convert"] = ['tag_x_converted_to_y', $tag, $map[$tag_lower]];
+				$newTags[] = $map[$tag_lower];
+			}
+			else
+			{
+				$newTags[] = $tag;
+			}
+		}
+
+		return $newTags;
+	}
+
+	/**
+	*	Checks to see if the tag is valid.
+	*
+	* Does not check the validity of any tag associations.
+	* @param 	string $tagtext tag text to validate
+	* @param	array	$errors (output) List of errors that happens
+	*/
+	private function isTagValid($tagtext, &$errors) : bool
+	{
+		$options = vB::getDatastore()->getValue('options');
+
+		// we share some of the validation logic with search
+		$validator = new vB_Search_KeywordValidator();
+
+		if ($tagtext === '')
+		{
+			return false;
+		}
+
+		$charStrlen = vB_String::vbStrlen($tagtext, true);
+
+		// Do this check *before* we check the good list.  We only have 100 characters in the db
+		// (we'll assume people aren't using a latin1 backend to handle mulitbyte characters or we'll go mad)
+		// If the tag gets truncated then bad things happen so we can't just bypass it because the admin said so.
+		if ($charStrlen > 100)
+		{
+			$errors['max_length'] = ['tag_too_long_max_x', $options['tagmaxlen']];
+			return false;
+		}
+
+		if ($validator->isGoodTagWord($tagtext))
+		{
+			return true;
+		}
+
+		if ($options['tagminlen'] AND $charStrlen < $options['tagminlen'])
+		{
+			$errors['min_length'] = ['tag_too_short_min_x', $options['tagminlen']];
+			return false;
+		}
+
+		if ($charStrlen > $options['tagmaxlen'])
+		{
+			$errors['max_length'] = ['tag_too_long_max_x', $options['tagmaxlen']];
+			return false;
+		}
+
+		$censored = vB_String::fetchCensoredText($tagtext);
+		if ($censored != $tagtext)
+		{
+			// can't have tags with censored text
+			$errors['censor'] = 'tag_no_censored';
+			return false;
+		}
+
+		if (count($this->splitTagList($tagtext)) > 1)
+		{
+			// contains a delimiter character
+			$errors['comma'] = 'tag_no_comma';
+			return false;
+		}
+
+		if ($validator->isBadTagWord($tagtext))
+		{
+			if (isset($errors['common']))
+			{
+				$tagtext = trim($errors['common'][1]) . ', ' . $tagtext;
+			}
+
+			$errors['common'] = ['tag_x_not_be_common_words', ' ' . $tagtext . ' '];
+			return false;
+		}
+
+		return true;
+	}
+
+
+	/**
+	 * Splits the tag list based on the configured delimiters (including comma) and
+	 * formats the tag values to be valid.
+	 *
+	 * The function applies standard tag transforms including setting the case to
+	 * lower if configured as well as collasping white space to a single space within the tag.
+	 *
+	 * This will also take an array of tags and apply the case rules to it
+	 */
+	public function splitTagListNormalized(string|array $taglist) : array
+	{
+		$options = vB::getDatastore()->getValue('options');
+		if (!is_array($taglist))
+		{
+			$taglist = $this->splitTagList($taglist);
+		}
+
+		$normtaglist = [];
+		foreach ($taglist AS $tagtext)
+		{
+			$tagtext = trim(preg_replace('#[ \r\n\t]+#', ' ', $tagtext));
+			$normtaglist[] = ($options['tagforcelower'] ? vB_String::vBStrToLower($tagtext) : $tagtext);
+		}
+
+		return $normtaglist;
+	}
+
+	/**
+	* Splits the tag list based on an admin-specified set of delimiters (and comma).
+	*
+	* @param	string	List of tags
+	*
+	* @return	array	Tags in seperate array entries
+	*/
+	public function splitTagList(string $taglist) : array
+	{
+		if (count($this->tagDelimiters) == 0)
+		{
+			$this->tagDelimiters = $this->getTagDelimitersFromOption();
+			$this->tagDelimiters[] = ',';
+			$this->tagDelimiters = array_map(function($d) {return preg_quote($d, '#');}, $this->tagDelimiters);
+		}
+
+		$taglist = unhtmlspecialchars($taglist);
+		$taglist = preg_split('#(' . implode('|', $this->tagDelimiters) . ')#', $taglist, -1, PREG_SPLIT_NO_EMPTY);
+		return array_map(vB::getString()->htmlspecialchars(...), $taglist);
+	}
+
+	public function matchAllTagsForNodeText(string $text) : array
+	{
+		//remove formatting for the bbcode before attempting to match.
+		return $this->matchAllTagsForText(vB_String::stripBbCode($text));
+	}
+
+	public function matchTagsForNodeText(string $text, array $tags) : array
+	{
+		//remove formatting for the bbcode before attempting to match.
+		return $this->matchTagsForText(vB_String::stripBbCode($text), $tags);
+	}
+
+	public function matchAllTagsForText(string $text) : array
+	{
+		// Make the match case insensitive.  Might want to try to make this an option (possibly based on the "taglower" option)
+		// but for now let's just go with it.
+
+		$stringUtil = vB::getString();
+		$text = $stringUtil->strtolower($text);
+		$map = $this->getTextMap($text);
+
+		$result = vB::getDbAssertor()->select('vBForum:tag', [], false, ['tagid', 'tagtext']);
+
+		$matched = [];
+		foreach ($result AS $row)
+		{
+			$tag = $row['tagtext'];
+			if ($this->doesTagMatch($stringUtil->strtolower($tag), $text, $map))
+			{
+				$matched[$row['tagid']] = $tag;
+			}
+		}
+
+		return $matched;
+	}
+
+	public function matchTagsForText(string $text, array $tags) : array
+	{
+		// Make the match case insensitive.  Might want to try to make this an option (possibly based on the "taglower" option)
+		// but for now let's just go with it.
+
+		$stringUtil = vB::getString();
+		$text = $stringUtil->strtolower($text);
+		$map = $this->getTextMap($text);
+
+		$matched = [];
+		foreach ($tags AS $key => $tag)
+		{
+			if ($this->doesTagMatch($stringUtil->strtolower($tag), $text, $map))
+			{
+				$matched[$key] = $tag;
+			}
+		}
+
+		return $matched;
+	}
+
+	/**
+	 * Replace plain text that matches tags with hashtag bbcode.
+	 *
+	 * This function is bbcode aware and will not replace text in the bbcode "structure" and
+	 * will exclude bbcode tags where replacements are awkward or harmful.
+	 *
+	 * Tags will be match at word boundaries and will check for a literal match of the tag text including
+	 * whitespace("A tag" will not match "A  tag"), but is not case sensitive (case is preserved for the visible
+	 * text).  Matches will not occur over bbcode boundaries (the replacement would require altering the bbcode
+	 * structure which would require complex handling if it is even possbile to preserve the original rendering).
+	 *
+	 * If two or more matched tags overlap (tags "I am a tag", "I am", "a tag", matching "Really I am a tag in text"
+	 * then we will match the tag that starts first and ignore the others (we can't have a hashtag within a hashgat).
+	 *
+	 * @param string $text
+	 * @param bool $firstOnly -- Only replace a given tag once.  Something other than first occurance of the tag string
+	 * 	may be replaced in the case were the tag was skipped due to a conflict.
+	 * @param array $tags -- Tags to replace.  If empty all tags will be used.
+	 * @return array ['text' => new text, 'tags' => the ids of the tags actually replaced]
+	 */
+	public function addTagsToNodeText(string $text, bool $firstOnly, array $tags = []) : array
+	{
+		if (count($tags) > 0)
+		{
+			$matchedtags = $this->matchTagsForNodeText($text, $tags);
+		}
+		else
+		{
+			$matchedtags = $this->matchAllTagsForNodeText($text);
+		}
+
+		if (count($matchedtags) == 0)
+		{
+			return [
+				'text' => $text,
+				'tags' => [],
+			];
+		}
+
+		// replaceInText will break ties based on the order in the "find" array and we want to match longer
+		// tags before shorter tags.
+		uasort($matchedtags, function($a, $b) {return strlen($b) <=> strlen($a);});
+
+		$stringutil = vB::getString();
+		$regexes = [];
+		$tagidmap = [];
+		foreach ($matchedtags AS $id => $tag)
+		{
+			$lowertag = $stringutil->strtolower($tag);
+			$regexes[$lowertag] = '#\b' . preg_quote($tag, '#') . '\b#i';
+			$tagidmap[$lowertag] = $id;
+		}
+
+		$found = [];
+		$makeHashtag = function ($source, $matches) use ($stringutil, $tagidmap, $firstOnly, &$found)
+		{
+			if ($firstOnly AND isset($found[$source]))
+			{
+				return false;
+			}
+
+			$id = $tagidmap[$source];
+			$found[$source] = $id;
+			return '[HASHTAG="t' . $id . '"]' . $stringutil->htmlspecialchars($matches[0]) . '[/HASHTAG]';
+		};
+
+		// Be careful adding things to this list.  Matching some text could cause breakage if we naively replace things.
+		// For instance if the tag text is a url or other data instead of raw text.
+		$allowedTags = [
+			//basic formating options
+			'b',
+			'u',
+			'i',
+			'highlight',
+			'color',
+			'size',
+			'font',
+			'left',
+			'center',
+			'right',
+
+			// Some options where we could do the replacement -- nothing will break -- but we probably don't want to.
+			// Seems tacky to replace in headers, subscript, etc.  The quote is essentially the content of another post
+			// and seems weird to tag something based on that.
+			// 'h',
+			// 'sub',
+			// 'sup',
+			// 'quote',
+
+			// Shouldn't even *have* text.
+			// 'hr',
+
+			// Similar we don't want to alter the text of the "noparse" tags.  Not only are these supposed to be literal
+			// text (so altering it is dubious), chances are we won't parse the bbcode we inject here anyway.
+			// 'noparse',
+			// 'php',
+			// 'code',
+			// 'html',
+
+			// We don't want to put a hashtag in a url wrapper and in general these tags are likely to behave badly
+			// if we replace the text.  They also come in no option varieties where the text is url that should never
+			// be altered (so we need to allow distinguishing those cases before we think of enabling them).
+			// 'video',
+			// 'email',
+			// 'url',
+			// 'attach',
+			// 'img2',
+
+			// Replacing in tables and lists seems like it could be dangerous and possibly unwanted.  First do no harm
+			// 'table',
+			// 'list',
+
+			// Need to investigate
+			// 'page',
+			// 'prbreak',
+			// 'indent',
+			// 'thread',
+			// 'post',
+			// 'node',
+			// 'user',
+		];
+
+		$helper = vB_BbCodeHelper::instance(true, true);
+		$newtext = $helper->replaceInText($text, $regexes, $makeHashtag, $allowedTags);
+
+		return [
+			'text' => $newtext,
+			'tags' => array_values($found),
+		];
+	}
+
+	private function doesTagMatch(string $tag, string $text, array $map) : bool
+	{
+		$matches = preg_split('#\b#', $tag, 2, PREG_SPLIT_NO_EMPTY);
+		$key = $matches[0];
+
+		// we don't match the first "word" of the tag at all, so it can't be in here.
+		if (!isset($map[$key]))
+		{
+			return false;
+		}
+
+		// there aren't any "word breaks" in the tag
+		if (!isset($matches[1]))
+		{
+			return true;
+		}
+
+		// we need to check the offsets to see if there is a match.
+		foreach ($map[$key] AS $offset)
+		{
+			if (substr_compare($text, $tag, $offset, strlen($tag)) == 0)
+			{
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	private function getTextMap(string $text) : array
+	{
+		$map = [];
+		$matches = preg_split('#\b|(?!\w)#', $text, -1, PREG_SPLIT_NO_EMPTY | PREG_SPLIT_OFFSET_CAPTURE);
+		foreach ($matches AS $match)
+		{
+			[$key, $value] = $match;
+
+			$key = trim($key);
+			if ($key)
+			{
+				$map[$key] ??= [];
+				$map[$key][] = $value;
+			}
+		}
+
+		return $map;
+	}
+
+
+	// This is superficially similar to the parsing for the word list.  Except that doesn't need to preserve
+	// the whitespace inside of {} expressions (and treats term and {term} differnet which this doesn't end up doing.
+	// It would be good to consolidate all of that login into one text to term breakdown but that's going to
+	// require some significant refactoring of the existing word code.
+	private function getTagDelimitersFromOption()
+	{
+		$delimiters = [];
+
+		// match {...} segments as is, then remove them from the string
+		$delimiterText = vB::getDatastore()->getOption('tagdelimiter');
+		if (preg_match_all('#\{([^}]*)\}#s', $delimiterText, $matches, PREG_SET_ORDER))
+		{
+			foreach ($matches AS $match)
+			{
+				if ($match[1] !== '')
+				{
+					$delimiters[] = $match[1];
+				}
+
+				$delimiterText = str_replace($match[0], '', $delimiterText);
+			}
+		}
+
+		// remaining is simple, space-delimited text
+		foreach (preg_split('#\s+#', $delimiterText, -1, PREG_SPLIT_NO_EMPTY) AS $delimiter)
+		{
+			$delimiters[] = preg_quote($delimiter, '#');
+		}
+
+		return $delimiters;
+	}
+
+	/**
+	*	Converts synomyns to canonical tags
+	*
+	* If a tag is converted a message will be added to the error array to alert the user
+	* Does not handle removing duplicates created by the conversion process
+	*
+	* @param array array of tags to convert
+	*	@return array the new list of tags, preserving the keys of the original array.
+	*/
+	private function getSynonymMap($tags)
+	{
+		$db = vB::getDbAssertor();
+		$stringUtil = vB::getString();
+
+		$set = $db->assertQuery('vBForum:getCanonicalTags', ['tags' => $tags]);
+		$map = [];
+		foreach ($set AS $row)
+		{
+			$map[$stringUtil->strtolower($row['tagtext'])] = $row;
+		}
+
+		return $map;
+	}
+}
+
+/*=========================================================================*\
+|| #######################################################################
+|| # Downloaded: 12:50, Tue Dec 24th 2024
+|| # CVS: $RCSfile$ - $Revision: 117704 $
+|| #######################################################################
+\*=========================================================================*/

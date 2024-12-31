@@ -1,0 +1,95 @@
+<?php
+/*========================================================================*\
+|| ###################################################################### ||
+|| # vBulletin 6.1.0 Alpha 4 Week 2 - Licence Number VBCW2VFT7A
+|| # ------------------------------------------------------------------ # ||
+|| # Copyright 2000-2024 MH Sub I, LLC dba vBulletin. All Rights Reserved.  # ||
+|| # This file may not be redistributed in whole or significant part.   # ||
+|| # ----------------- VBULLETIN IS NOT FREE SOFTWARE ----------------- # ||
+|| # http://www.vbulletin.com | http://www.vbulletin.com/license.html   # ||
+|| ###################################################################### ||
+\*========================================================================*/
+
+class vB_Xml_Export_Route extends vB_Xml_Export
+{
+	public function getXml(?vB_XML_Builder &$xml = null)
+	{
+		if (empty($xml))
+		{
+			$xml = new vB_XML_Builder();
+			$returnString = true;
+		}
+		else
+		{
+			$returnString = false;
+		}
+
+		$xml->add_group('routes');
+
+		$routeTable = $this->db->fetchTableStructure('routenew');
+		$routeTableColumns = array_diff($routeTable['structure'], ['guid', 'contentid', $routeTable['key']]);
+
+		$routes = $this->db->assertQuery('routenew', ['product' => $this->productid]);
+
+		if (!empty($routes))
+		{
+			foreach ($routes AS $route)
+			{
+				$routeClass = (!empty($route['class']) AND class_exists($route['class'])) ? $route['class'] : vB5_Route::DEFAULT_CLASS;
+
+				//Arguments *should* always be a serialized array.  Sometimes it's an empty string.
+				//Try to handle that case (we previously did the unserialization/serialization in the exportArguments function
+				//and the base class just returned the string unchanged -- I think all of the classes that do anything with
+				//it do have an array here.
+				$isempty = (trim($route['arguments']) == '');
+				if($isempty)
+				{
+					$arguments = [];
+				}
+				else
+				{
+					//in theory this could be serialized false, unfortuantely there isn't a good way to
+					//distinguish between that and a failure.  However that's an invalid value anyway
+					$arguments = vb_unserialize($route['arguments']);
+					if($arguments === false)
+					{
+						$arguments = [];
+					}
+				}
+
+				$newarguments = [$routeClass, 'exportArguments']($arguments);
+
+				//If we started with an empty string and the argument tweak didn't change that, leave the
+				//arguments as empty. Otherwise set to the, potentially, updated version.
+				if(!$isempty OR count($newarguments))
+				{
+					$route['arguments'] = serialize($newarguments);
+				}
+
+				$xml->add_group('route', ['guid' => $route['guid']]);
+				foreach ($routeTableColumns AS $column)
+				{
+					if ($route[$column] != NULL)
+					{
+						$xml->add_tag($column, $route[$column]);
+					}
+				}
+				$xml->close_group();
+			}
+		}
+
+		$xml->close_group();
+
+		if ($returnString)
+		{
+			return $xml->fetch_xml();
+		}
+	}
+}
+
+/*=========================================================================*\
+|| #######################################################################
+|| # Downloaded: 12:50, Tue Dec 24th 2024
+|| # CVS: $RCSfile$ - $Revision: 117582 $
+|| #######################################################################
+\*=========================================================================*/

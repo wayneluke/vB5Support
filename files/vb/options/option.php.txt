@@ -1,0 +1,628 @@
+<?php
+/*========================================================================*\
+|| ###################################################################### ||
+|| # vBulletin 6.1.0 Alpha 4 Week 2 - Licence Number VBCW2VFT7A
+|| # ------------------------------------------------------------------ # ||
+|| # Copyright 2000-2024 MH Sub I, LLC dba vBulletin. All Rights Reserved.  # ||
+|| # This file may not be redistributed in whole or significant part.   # ||
+|| # ----------------- VBULLETIN IS NOT FREE SOFTWARE ----------------- # ||
+|| # http://www.vbulletin.com | http://www.vbulletin.com/license.html   # ||
+|| ###################################################################### ||
+\*========================================================================*/
+
+/**
+ * @package vBulletin
+ */
+class vB_Options_Option
+{
+	use vB_Trait_NoSerialize;
+
+	protected string $datatype;
+	protected string $name;
+	protected string $validationcode;
+
+	// rule names to function that validates the rule
+	private array $validationMap = [
+		'range' => 'validateRange',
+		'rangeexclusive' => 'validateRangeExclusive',
+		'url' => 'validateUrl',
+		'required' => 'validateRequired',
+		'custom' => 'validateCustom',
+	];
+
+	public static function createFromArray(array $option) : self
+	{
+		// Underscores mess up the class to file mapping.  It means that we could hypothetically have collisions
+		// between an option like abc_edf and a_bce_df but in practice this isn't likely to happen.  Furthermore
+		// since it's the class name that needs to be unique not the massaged option name collisions can't happen
+		// between packages.
+		$name = str_replace('_', '', $option['varname']);
+		$product = $option['product'] ?? '';
+
+
+		// The core class name function validates that the product is enabled.  This is a necesary check
+		// because we don't want to run logic for disabled products -- it could be out of date with PHP
+		// and cause errors amoung many other reasons.  However we don't properly avoid displaying options
+		// for disabled products so we need to allow this for the moment.
+		if ($product == 'vBulletin' OR $product == '')
+		{
+			$product = 'vB';
+		}
+		$classname = $product . '_Options_Option_' . ucfirst(strtolower($name));
+//		$classname = vB::getVbClassName($product, $name, 'Options_Option', 'vB_Options_Option', false);
+
+		if (class_exists($classname))
+		{
+			if (!is_subclass_of($classname, 'vB_Options_Option'))
+			{
+				throw new Exception(sprintf('Class %s is not a subclass of vB_Options_Option', htmlspecialchars($classname)));
+			}
+
+			return new $classname($option);
+		}
+		else
+		{
+			return new vB_Options_Option($option);
+		}
+	}
+
+	protected function __construct(array $option)
+	{
+		$this->name = $option['varname'];
+		$this->validationcode = $option['validationcode'] ?? '';
+		$this->datatype = $option['datatype'] ?? '';
+	}
+
+	public function validate(mixed $value, bool $israw) : bool|string
+	{
+		// This needs to be sorted out as we go forward but for now preserving the existing behavior.
+		// The problem is that we have two distinct use cases for validation
+		// 1) On load we flag any saved values as out of validation (because we don't prevent admins
+		// 	from saving just because of validation).  This case we don't *have* a raw value and,
+		// 	in the case of username types, running the type coercion on the processed value will
+		// 	corrupt the stored data (I don't think we have any custom validation on username fields
+		// 	so it's more of hypothetical problem).
+		//
+		// 2) The on the fly validation via AJAX. In this case we have the raw value.  We can freely
+		// 	coerce that to the processed value but we lose some nuance.  The processed value may pass
+		// 	validation fine due to the coercion but it's valuable to flag that the value will change
+		// 	on save to *be* valid.  Along those lines we don't actually do any type validation despite
+		// 	the option for type being presented as validation.  We just force the raw input into something
+		// 	valid on save and do nothing to alert the user to this on the fly.
+		//
+		// Currently then only validation logic is the custom PHP validation code.  We resolve these conflicting
+		// use cases by passing both the raw and processed values if we have them and passing the processed value
+		// as "raw" if we don't.  This is probably not the best behavior but preserving for now and will
+		// revist as we refactor the custom logic to see how these values are actually being used.
+
+		$rawvalue = $value;
+		if ($israw)
+		{
+			$value = $this->forceType($rawvalue);
+		}
+
+		// This is a special value to deal with the problem of passing empty arrays in a query string
+		// (it can't actually be done in PHP).  Need a more comprehensive solution but for now
+		// we want to validate an empty array as empty.
+		if (is_array($rawvalue))
+		{
+			unset($rawvalue['vbulletin__ignore']);
+		}
+
+		$valid = $this->validateType($value, $rawvalue);
+
+		// if we passed the type check, check the validation code.
+		if ($valid === true AND trim($this->validationcode))
+		{
+			$rules = $this->getValidationRules($this->validationcode);
+			// Handle this special.  We don't want it in the map because it wants both parameters and
+			// because we don't want to match is as valid explicit rule.  It's ultimately going away
+			// anyway (deprecated).
+			if (isset($rules['eval']))
+			{
+				$valid = $this->exec_setting_validation_code($rules['eval'], $value, $rawvalue);
+			}
+			else
+			{
+				foreach ($rules AS $type => $rule)
+				{
+					$valid = [$this, $this->validationMap[$type]]($rule, $rawvalue);
+					if ($valid !== true)
+					{
+						break;
+					}
+				}
+			}
+		}
+
+		if ($valid === true)
+		{
+			return true;
+		}
+
+		$phrases = vB_Library::instance('phrase')->renderPhrases([
+			'error' => $valid,
+			'generic' => 'you_did_not_enter_a_valid_value',
+		]);
+
+		// The previous validation code allowed the custom validation function to return false (or null)
+		// and optionally define a custom error defined based on the type name.  We want to move away from
+		// this magic (since we need to do some dancing to figure out if the error phrase exists) particularly
+		// since we want to move the phrase rendering out of this class entirely but the caller needs to
+		// be able to assume that the phrase we pass it exists.
+		if ($this->phraseRendered($valid, $phrases['error']))
+		{
+			return $phrases['error'];
+		}
+		else
+		{
+			return $phrases['generic'];
+		}
+	}
+
+	// This is complicated by the fact that we want to interpret this either as a list of rules encoded as lines
+	// *or* as PHP code to be evaluated.  The latter is to support legacy add ons so we can't demand changes
+	// to it.
+	private function getValidationRules(string $validationCode) : array
+	{
+		$lines = preg_split("#(\r\n|\n|\r)#", $validationCode);
+		$rules = [];
+		foreach ($lines AS $line)
+		{
+			$validation = array_map(trim(...), explode(':', $line));
+			$validationType = $validation[0];
+			if (isset($this->validationMap[$validationType]))
+			{
+				$rules[$validationType] = $validation;
+			}
+		}
+
+		// If we don't match rules on any lines, assume PHP code.  This is deprecated.
+		if (trim($validationCode) AND count($rules) == 0)
+		{
+			$rules['eval'] = $validationCode;
+		}
+
+		return $rules;
+	}
+
+	private function phraseRendered(string|array $phrase, string $result) : bool
+	{
+		// If a phrase doesn't render properly then we return the phrasename but if there are
+		// so we can use that to detect if the phrase actually rendered (which the library doesn't
+		// really allow us to directly check) but we need to account for the case where the phrase
+		// is an array.
+	 	if (is_array($phrase))
+		{
+			$phrase = reset($phrase);
+		}
+
+		return $phrase != $result;
+	}
+
+	/**
+	 * Does a forced type but avoids repeating any non repeatable coercions
+	 *
+	 * Some of the force operations -- primirily string to id lookups -- are not repeatable
+	 * so if we want run type coercion on data already coerced we need to provide alternative
+	 * checks for certain types.  It's not possible to automatically determine which state
+	 * value is in.
+	 *
+	 * @param mixed value
+	 * @return mixed
+	 */
+	public function forceTypeStoredValue(mixed $value) : mixed
+	{
+		// The name => id swap is deeply problematic this deep in the code.  It's a bit dubious
+		// if we even need it since in one instance it's used it's not clear what the purpose
+		// of forcing the type is because it should already have been done.  In the other
+		// it's not clear that it should be assuming that the input value is an id and not a
+		// name -- I suspect it's currently a don't care because username values are not set
+		// via that function.  Both are in the datastore.  This in intended to preserve existing
+		// behavior without polluting the main function.
+
+		if ($this->datatype == 'username')
+		{
+			// The legacy code would trim this before returning.  But it's not entirely clear that
+			// was specifically desired and given that the actual usage suggests that if we get here
+			// the expected value is either false or a userid it's also not clear that trimming is the
+			// right move.
+			return $value;
+		}
+
+		return $this->forceType($value);
+	}
+
+	/**
+	 * Forcing a value to be corect for the setting type.
+	 *
+	 * Returns a value guarenteed to be of the "type" specified by the settings definition
+	 * normalizing input and providing defaults for garbage input
+	 *
+	 * @param mixed value
+	 * @return mixed
+	 */
+	// The whole notion of this type coercion is dubious, especially since the legacy code
+	// calls it validation which it emphatically is not.  However givent that the flow is to save
+	// option values no matter what and then, possibly, tell you that they are bad it's not clear
+	// that converting this to a validation is better.  We need to change the flow to flag bad values
+	// and only save if they are valid.  And the tradtional post => process => redisplay of a list
+	// makes the process tricky to preserve values that were not saved (especially if you have one item
+	// out of a list that fails validation).  It's not clear that fixing that workflow is worth the effort.
+	public function forceType(mixed $value) : mixed
+	{
+		//need to figure out what these are for.
+		$username_query = true;
+
+		switch ($this->datatype)
+		{
+			case 'number':
+				$value = $this->numberVal($value);
+				break;
+
+			case 'integer':
+				$value = intval($value);
+				break;
+
+			case 'posint':
+				$value = max(1, intval($value));
+				break;
+
+			// We always store booleans as ints for settings. Legacy code that had a flag for
+			// which to use but it was also passed to use ints.  Whatever purpose it served
+			// hasn't existed for some time.
+			case 'boolean':
+				$value = ($value ? 1 : 0);
+				break;
+
+			case 'arrayinteger':
+				// I don't trust array_map to preserve keys properly.
+				if (is_array($value))
+				{
+					foreach ($value AS $key => $element)
+					{
+						$value[$key] = intval($element);
+					}
+				}
+				else
+				{
+					$value = [];
+				}
+				break;
+
+			case 'arrayfree':
+				if (is_array($value))
+				{
+					foreach ($value AS $key => $element)
+					{
+						$value[$key] = $this->trimValue($element);
+					}
+				}
+				else
+				{
+					$value = [];
+				}
+				break;
+
+			case 'bitfield':
+				if (is_array($value))
+				{
+					$bitfield = 0;
+					foreach ($value AS $bitval)
+					{
+						$bitfield += $bitval;
+					}
+					$value = $bitfield;
+				}
+				else
+				{
+					$value = $this->numberVal($value);
+				}
+				break;
+
+			case 'username':
+				$value = $this->trimValue($value);
+				// I don't think we can ever get a result if $value is falsy but leaving in place out of an abundance of caution.
+				$userids = vB::getDbAssertor()->getColumn('user', 'userid', ['username' => htmlspecialchars_uni($value)]);
+				if (!$value)
+				{
+					$value = 0;
+				}
+				else if (count($userids) > 0)
+				{
+					$value = intval(reset($userids));
+				}
+				else
+				{
+					$value = false;
+				}
+				break;
+
+			// we should never actually hit an unhandled case, but if we do treat it as free.
+			case 'free':
+			default:
+				// e.g. checkboxlist
+				if (is_array($value))
+				{
+					foreach ($value AS $key => $element)
+					{
+						$value[$key] = $this->trimValue($element);
+					}
+
+					// dummy value to handle the problems with passing empty arrays through urls/posts.  We should probably handle this
+					// at a higher level.
+					unset($value['vbulletin__ignore']);
+				}
+				else
+				{
+					$value = $this->trimValue($value);
+				}
+		}
+
+		return $value;
+	}
+
+	private function validateType(mixed $value, mixed $rawvalue) : bool|string|array
+	{
+		// Freed doesn't have validation.  It's not clear what validation makes sense for boolean (and most boolean
+		if ($this->datatype == 'number')
+		{
+			if (!is_numeric($rawvalue))
+			{
+				return 'setting_validation_error_number';
+			}
+		}
+		else if ($this->datatype == 'integer')
+		{
+			if (!is_numeric($rawvalue) OR ($this->numberVal($rawvalue) != intval($rawvalue)))
+			{
+				return 'setting_validation_error_integer';
+			}
+		}
+		else if ($this->datatype == 'posint')
+		{
+			if (!is_numeric($rawvalue) OR ($this->numberVal($rawvalue) != intval($rawvalue)) OR (intval($rawvalue) <= 0))
+			{
+				return 'setting_validation_error_posint';
+			}
+		}
+		// The username type is the gift that keeps on giving. For the number types validating against the processed
+		// value instead of the rawvalue is less useful because the processing obscures validation errors.  But the username
+		// is simply wrong.  However the processed value -- which is always correctly available -- is generally useful.
+		// This is also used for precisely one option so maybe handling it as a oneoff will make things easier.
+		else if ($this->datatype == 'username')
+		{
+			// This is taken from the "welcomepm" setting code, which is the only setting of this type.  It's not clear
+			// what to do with values on load.  The massaged "false" value gets translated to a string which passes this
+			// check.  But we don't necesarily want to fail empty results (and we don't save what the user specifically typed)
+			// so we really only check this on the "raw" input validation but since we check for both we need to handle it.
+			if ($value === false)
+			{
+				return 'setting_validation_error_username';
+			}
+		}
+
+		return true;
+	}
+
+	private function validateRange(array $validation, mixed $rawvalue) : bool|string|array
+	{
+		$min = $validation[1] ?? '';
+		$max = $validation[2] ?? '';
+		$phrase = $validation[3] ?? '';
+
+		// Only check a bound if its specified to allow open ended ranges.  If neither bound is specified
+		// then congrats everything is in -inf to +inf
+		// This is intended for numeric values but we aren't going to make that a hard requirement
+		$result = true;
+
+		// $min or $max could be '0' which we want to treat as a set value
+		if ($min != '')
+		{
+			$result = ($rawvalue >= $min);
+		}
+
+		if ($max != '')
+		{
+			$result = ($result AND ($rawvalue <= $max));
+		}
+
+		if ($result)
+		{
+			return true;
+		}
+
+		// figure out which error phrase to return
+		if ($phrase)
+		{
+			return [$phrase, $min, $max];
+		}
+		else if ($min != '' AND $max != '')
+		{
+			return ['setting_validation_error_between', $min, $max];
+		}
+		else if ($min != '')
+		{
+			return ['setting_validation_error_gte', $min];
+		}
+		else
+		{
+			return ['setting_validation_error_lte', $max];
+		}
+	}
+	private function validateRangeExclusive(array $validation, mixed $rawvalue) : bool|string|array
+	{
+		$min = $validation[1] ?? '';
+		$max = $validation[2] ?? '';
+		$phrase = $validation[3] ?? '';
+
+		// Only check a bound if its specified to allow open ended ranges.  If neither bound is specified
+		// then congrats everything is in -inf to +inf
+		// This is intended for numeric values but we aren't going to make that a hard requirement
+		$result = true;
+
+		// $min or $max could be '0' which we want to treat as a set value
+		if ($min != '')
+		{
+			$result = ($rawvalue > $min);
+		}
+
+		if ($max != '')
+		{
+			$result = ($result AND ($rawvalue < $max));
+		}
+
+		if ($result)
+		{
+			return true;
+		}
+
+		// figure out which error phrase to return
+		if ($phrase)
+		{
+			return [$phrase, $min, $max];
+		}
+		else if ($min != '' AND $max != '')
+		{
+			return ['setting_validation_error_between_exclusive', $min, $max];
+		}
+		else if ($min != '')
+		{
+			return ['setting_validation_error_gt', $min];
+		}
+		else
+		{
+			return ['setting_validation_error_lt', $max];
+		}
+	}
+
+
+	private function validateRequired(array $validation, mixed $rawvalue) : bool|string|array
+	{
+		$phrase = $validation[1] ?? '';
+
+		// This is mostly intended for strings but could potentially be a lot of types let's do our best to
+		// figure out what a "blank" value looks like.  For instance 0 isn't really "blank" and is better checked
+		// via a range.  So really only empty strings (or only whitespace), empty arrays, or null should be considered blank.
+		// We can adjust as we refine actual cases.
+		if (
+			!is_null($rawvalue) AND
+			(
+				is_int($rawvalue) OR
+				is_float($rawvalue) OR
+				is_bool($rawvalue) OR
+				(is_string($rawvalue) AND trim($rawvalue) != '') OR
+				(is_array($rawvalue) AND count($rawvalue) > 0)
+			)
+		)
+		{
+			return true;
+		}
+
+		if ($phrase)
+		{
+			return $phrase;
+		}
+		else
+		{
+			return 'setting_validation_error_required';
+		}
+	}
+
+	private function validateUrl(array $validation, mixed $rawvalue) : bool|string|array
+	{
+		$phrase = $validation[1] ?? '';
+
+		// This value must be a string but allow blank values.  If blank values aren't allowed then
+		// it can be combined with a required validation
+		if (is_string($rawvalue))
+		{
+			$rawvalue = trim($rawvalue);
+			if (!$rawvalue OR preg_match('#^https?://.+[^/]$#i', $rawvalue))
+			{
+				return true;
+			}
+		}
+
+		if ($phrase)
+		{
+			return $phrase;
+		}
+		else
+		{
+			return 'setting_validation_error_url';
+		}
+
+		return true;
+	}
+
+	// This is intended to allow child classes to define a custom validation rule.
+	// The function here is just a stub.
+	protected function validateCustom(array $validation, mixed $rawvalue) : bool|string|array
+	{
+		return true;
+	}
+
+	// handle edge cases when types aren't right for the php trim function.
+	// currently will always return a string but we don't want to depend on that.
+	private function trimValue(mixed $value) : mixed
+	{
+		if (is_null($value) OR is_array($value))
+		{
+			return '';
+		}
+
+		return trim($value);
+	}
+
+	private function numberVal(mixed $value) : int|float
+	{
+		// This is complicated because we want to handle a lot of edge cases in ways that PHP doesn't explicitly
+		// allow.  It's very difficult to tell if a string value is a float or an int but we want to preserve that
+		// distinction if we can.  The only real way to do that is to use the internal typecasting in PHP which
+		// we can't invoke explicitly.  So ($x + 0) provide the correct value by casting $x to either an int or a float
+		// as appropriate and then adding 0 which doesn't change the value any.  Except for cases where casting $x
+		// to a numeric value is a fatal error (for instance [] + 0 or 'bogus' + 0).  Which is a problem.
+		//
+		// While using exceptions for normal operations is a bit tacky, trying to figure out what is going to
+		// trip up the type cast is complicated.  So just trap the type error and return 0 when the input is garbage
+
+		try
+		{
+			return $value + 0;
+		}
+		catch (TypeError)
+		{
+			return 0;
+		}
+	}
+
+	private function exec_setting_validation_code(string $validation_code, mixed $value, mixed $raw_value) : bool|string|array
+	{
+		//this is a terrible hack, but there aren't a lot of options for converting the code
+		//text to a function now that create_function is deprecated.  Longer term we should
+		//convert this to a function name or class/function pair and move the code out the
+		//db and into the filesystem
+		$validation_function = '';
+		eval("\$validation_function = function(&\$data, \$raw_data) { $validation_code };");
+		$validation_result = $validation_function($value, $raw_value);
+
+		if ($validation_result === false OR $validation_result === null)
+		{
+			return 'setting_validation_error_' . $this->name;
+		}
+		else if ($validation_result !== true)
+		{
+			return ['phrase_passthrough', $validation_result];
+		}
+
+		return true;
+	}
+}
+
+/*=========================================================================*\
+|| #######################################################################
+|| # Downloaded: 12:50, Tue Dec 24th 2024
+|| # CVS: $RCSfile$ - $Revision: 106777 $
+|| #######################################################################
+\*=========================================================================*/

@@ -1,0 +1,214 @@
+<?php
+/*========================================================================*\
+|| ###################################################################### ||
+|| # vBulletin 6.1.0 Alpha 4 Week 2 - Licence Number VBCW2VFT7A
+|| # ------------------------------------------------------------------ # ||
+|| # Copyright 2000-2024 MH Sub I, LLC dba vBulletin. All Rights Reserved.  # ||
+|| # This file may not be redistributed in whole or significant part.   # ||
+|| # ----------------- VBULLETIN IS NOT FREE SOFTWARE ----------------- # ||
+|| # http://www.vbulletin.com | http://www.vbulletin.com/license.html   # ||
+|| ###################################################################### ||
+\*========================================================================*/
+
+/**
+ * @package vBUtility
+ */
+
+// #############################################################################
+//this is used entirely by the template parser and should be considered part of the
+//parser code rather than a general class.
+class vB_DomDocument
+{
+	use vB_Utility_Trait_NoSerialize;
+
+	public $node_list = [];
+
+	public function __construct($node_list)
+	{
+		$this->node_list = $node_list;
+	}
+
+	public function childNodes()
+	{
+		$start = reset($this->node_list);
+		return array_map([$this, 'getDomNode'], $start['children']);
+	}
+
+	public function getDomNodes()
+	{
+		//we don't want to include the "start" node in list of "all" nodes.
+		return array_map([$this, 'getDomNode'], array_slice(array_keys($this->node_list), 1));
+	}
+
+
+	public function getDomNode($nodekey)
+	{
+		if ($this->node_list[$nodekey]['type'] == 'curly')
+		{
+			return new vB_CurlyNode($this->node_list[$nodekey], $this);
+		}
+		else
+		{
+			return new vB_DomNode($this->node_list[$nodekey], $nodekey, $this);
+		}
+	}
+}
+
+class vB_DomNode implements vB_Xml_Node
+{
+	use vB_Utility_Trait_NoSerialize;
+
+	public $type = '';
+	public $value = '';
+	public $attributes = [];
+
+	private $internal_id = null;
+	private $parent = null;
+	private $children = [];
+
+	private $document = null;
+
+	public function __construct($node, $internal_id, vB_DomDocument $document)
+	{
+		$this->internal_id = $internal_id;
+
+		$this->type = $node['type'];
+		$this->value = $node['value'] ?? '';
+		$this->attributes = $node['attributes'] ?? [];
+
+		$this->parent = $node['parent'] ?? null;
+		$this->children = $node['children'] ?? [];
+
+		$this->document = $document;
+	}
+
+	public function childNodes()
+	{
+		return array_map([$this->document, 'getDomNode'], $this->children);
+	}
+
+	public function parentNode()
+	{
+		if ($this->parent !== null)
+		{
+			return new vB_DomNode($this->document->node_list[$this->parent], $this->parent, $this->document);
+		}
+		else
+		{
+			return null;
+		}
+	}
+
+	public function previousSibling()
+	{
+		if ($this->parent !== null)
+		{
+			$siblings = $this->document->node_list[$this->parent]['children'];
+
+			$previous = null;
+			$found = false;
+
+			foreach ($siblings AS $sibling)
+			{
+				if ($sibling == $this->internal_id)
+				{
+					$found = true;
+					break;
+				}
+				$previous = $sibling;
+			}
+
+			if ($found AND $previous)
+			{
+				return new vB_DomNode($this->document->node_list["$previous"], $previous, $this->document);
+			}
+		}
+
+		return null;
+	}
+
+	public function nextSibling()
+	{
+		if ($this->parent !== null)
+		{
+			$siblings = $this->document->node_list[$this->parent]['children'];
+
+			$previous = null;
+			$next = null;
+			$found = false;
+
+			foreach ($siblings AS $sibling)
+			{
+				if ($previous == $this->internal_id)
+				{
+					$found = true;
+					$next = $sibling;
+					break;
+				}
+				$previous = $sibling;
+			}
+
+			if ($found AND $next)
+			{
+				return new vB_DomNode($this->document->node_list["$next"], $next, $this->document);
+			}
+		}
+
+		return null;
+	}
+}
+
+interface vB_Xml_Node
+{
+}
+
+class vB_CurlyNode implements vB_Xml_Node
+{
+	use vB_Utility_Trait_NoSerialize;
+
+	public $type = '';
+	public $value = '';
+	public $attributes = [];
+	public $refParam = false;
+
+	private $parent = null;
+
+	public function __construct($node, ?vB_DomDocument $document = null)
+	{
+		$this->type = $node['type'];
+		$this->value = $node['value'] ?? '';
+
+		$this->attributes = $node['attributes'] ?? [];
+		if ($this->attributes)
+		{
+			$this->attributes = $this->parseAttributes();
+		}
+
+		$this->parent = $node['parent'] ?? null;
+	}
+
+	private function parseAttributes()
+	{
+		$attributes = [];
+		foreach ($this->attributes AS $attribute)
+		{
+			if (is_array($attribute) AND $attribute['type'] == 'curly')
+			{
+				$attribute['value'] = $attribute['tag_name'];
+				$attributes[] = new vB_CurlyNode($attribute);
+			}
+			else
+			{
+				$attributes[] = $attribute;
+			}
+		}
+		return $attributes;
+	}
+}
+
+/*=========================================================================*\
+|| #######################################################################
+|| # Downloaded: 12:50, Tue Dec 24th 2024
+|| # CVS: $RCSfile$ - $Revision: 117557 $
+|| #######################################################################
+\*=========================================================================*/

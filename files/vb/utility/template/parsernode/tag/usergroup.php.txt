@@ -1,0 +1,61 @@
+<?php
+/*========================================================================*\
+|| ###################################################################### ||
+|| # vBulletin 6.1.0 Alpha 4 Week 2 - Licence Number VBCW2VFT7A
+|| # ------------------------------------------------------------------ # ||
+|| # Copyright 2000-2024 MH Sub I, LLC dba vBulletin. All Rights Reserved.  # ||
+|| # This file may not be redistributed in whole or significant part.   # ||
+|| # ----------------- VBULLETIN IS NOT FREE SOFTWARE ----------------- # ||
+|| # http://www.vbulletin.com | http://www.vbulletin.com/license.html   # ||
+|| ###################################################################### ||
+\*========================================================================*/
+
+/**
+ * @package vBUtility
+ */
+class vB_Utility_Template_ParserNode_Tag_Usergroup extends vB_Utility_Template_ParserNode_Tag
+{
+	public function validate() : array
+	{
+		$groupid = $this->main_node->attributes['groupid'] ?? null;
+		$notgroupid = $this->main_node->attributes['notgroupid'] ?? null;
+
+		$errors = [];
+
+		//if both are set then we have a problem
+		//if both are not set or are an empty string then we have a problem
+		//(Don't use empty() because we want to avoid triggering on a 0 value
+		if (!is_null($groupid) AND !is_null($notgroupid) OR (($groupid ?? '') === '' AND ($notgroupid ?? '') == ''))
+		{
+			$errors[] = 'groups_or_notgroup_condition';
+		}
+		return $errors;
+	}
+
+	public function compile() : string
+	{
+		$groupids = $this->main_node->attributes['groupid'] ?? $this->main_node->attributes['notgroupid'] ?? '';
+		$not = isset($this->main_node->attributes['notgroupid']);
+
+		$children = $this->parser->_parse_nodes($this->main_node->childNodes());
+
+		$groupids = implode(',', array_map('intval', explode(',', $groupids)));
+
+		//This depends on the user variable being defined but it's one of the global template vars.
+		//We might want to figure out a way to not depend on this variable existing.
+		$condition = ($not ? '!' : '') . 'is_member_of($user, [' . $groupids. '])';
+
+		$output = "''; if (" . $condition . ') {
+			' . $this->parser->outputVar . " .= " . $children . ";" . '
+		} ' . $this->parser->outputVar . " .= ''";
+
+		return $output;
+	}
+}
+
+/*=========================================================================*\
+|| #######################################################################
+|| # Downloaded: 12:50, Tue Dec 24th 2024
+|| # CVS: $RCSfile$ - $Revision: 115380 $
+|| #######################################################################
+\*=========================================================================*/

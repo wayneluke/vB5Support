@@ -1,0 +1,100 @@
+<?php
+/*========================================================================*\
+|| ###################################################################### ||
+|| # vBulletin 6.1.0 Alpha 4 Week 2 - Licence Number VBCW2VFT7A
+|| # ------------------------------------------------------------------ # ||
+|| # Copyright 2000-2024 MH Sub I, LLC dba vBulletin. All Rights Reserved.  # ||
+|| # This file may not be redistributed in whole or significant part.   # ||
+|| # ----------------- VBULLETIN IS NOT FREE SOFTWARE ----------------- # ||
+|| # http://www.vbulletin.com | http://www.vbulletin.com/license.html   # ||
+|| ###################################################################### ||
+\*========================================================================*/
+
+/**
+ * @package vBDatabase
+ */
+// This is a helper class to keep track of the state of highly modular queries.
+// We tend to use arrays for this, but keeping track of all of across multiple function
+// calls is a pain and either requires awkward class variables or a lot of array_merge
+// calls.  This is an attempt to get away for using arrays as ad hoc objects
+//
+// Note that this is not intended to be a query builder with complex logic to build from/where/field list values.
+// So, for instance, the join function doesn't specifiy the inner/outer or the join fields explicitly, it
+// just takes an entire join string.
+class vB_dB_QueryState
+{
+	use vB_Trait_NoSerialize;
+
+	private array $fields = [];
+	private array $joins = [];
+	private array $where = [];
+
+	/**
+	 *	Add a join to the query.  Allows building out the extra tables needed to support
+	 *	additional fields or filters without including them unnecesarily.
+	 *
+	 *	@param string $key -- keyvalue for the join.  Allows a table to be specified multiple
+	 *		times for multiple fields/filters without adding the join multiple times.  The
+	 *		join line should be identical in each case (or at least equivilant).  Which join
+	 *		for a given key used is undefined in this interface.
+	 *	@param string $join -- Then entire join line for a table
+	 */
+	public function addJoin(string $key, string $join)
+	{
+		$this->joins[$key] = $join;
+	}
+
+	/**
+	 * Add a filter.
+	 *
+	 * Each filter is an "AND" value.  If "OR" logic is needed make it internal to the filter.
+	 */
+	public function addFilter(string $filter) : void
+	{
+		$this->where[] = $filter;
+	}
+
+	public function addField(string $key, string $field) : void
+	{
+		$this->fields[$key] = $field;
+	}
+
+	public function hasJoin($key)
+	{
+		return !empty($this->joins[$key]);
+	}
+
+	public function hasField($key)
+	{
+		return !empty($this->fields[$key]);
+	}
+
+	public function getFieldString() : string
+	{
+		return implode(', ', $this->fields);
+	}
+
+	public function getJoinString() : string
+	{
+		return implode("\n", $this->joins);
+	}
+
+	public function getFilterString() : string
+	{
+		if (count($this->where) > 0)
+		{
+			return '(' . implode(') AND (', $this->where) . ')';
+		}
+		else
+		{
+			return '';
+		}
+	}
+}
+
+/*=========================================================================*\
+|| #######################################################################
+|| # Downloaded: 12:50, Tue Dec 24th 2024
+|| # CVS: $RCSfile$ - $Revision: 99787 $
+|| #######################################################################
+\*=========================================================================*/

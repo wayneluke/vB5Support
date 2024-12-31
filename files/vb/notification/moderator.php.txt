@@ -1,0 +1,172 @@
+<?php if (!defined('VB_ENTRY')) die('Access denied.');
+/*========================================================================*\
+|| ###################################################################### ||
+|| # vBulletin 6.1.0 Alpha 4 Week 2 - Licence Number VBCW2VFT7A
+|| # ------------------------------------------------------------------ # ||
+|| # Copyright 2000-2024 MH Sub I, LLC dba vBulletin. All Rights Reserved.  # ||
+|| # This file may not be redistributed in whole or significant part.   # ||
+|| # ----------------- VBULLETIN IS NOT FREE SOFTWARE ----------------- # ||
+|| # http://www.vbulletin.com | http://www.vbulletin.com/license.html   # ||
+|| ###################################################################### ||
+\*========================================================================*/
+
+abstract class vB_Notification_Moderator extends vB_Notification
+{
+	// even though this is abstract, we still use TYPENAME in the lookupid
+	const TYPENAME = 'Moderator';
+
+	protected static $updateEvents = [
+		'read_topic',
+		'read_channel',
+		'physically_deleted_node',
+		'deleted_user',
+	];
+
+	protected $usersToNotify = null;
+	protected $notifyBitfieldName = '';
+	protected $emailBitfieldName = '';
+
+	protected $hasEmailNotificationOption = true;
+
+	protected function validateProvidedRecipients($recipients)
+	{
+		// Recipients for this type will always be all moderators and admins,
+		// and are set by addAdditionalRecipients()
+		return [];
+	}
+
+	protected function overwriteRule()
+	{
+		// overwrite rule 'combine' works in conjunction with combineNotifications()
+		return 'combine';
+	}
+
+	protected function populateUsersToNotify()
+	{
+		if ($this->usersToNotify === null)
+		{
+			$this->usersToNotify = [
+				'notify' => [],
+				'email' => [],
+			];
+
+			$bf_misc_moderatornotificationoptions = vB::getDatastore()->getValue('bf_misc_moderatornotificationoptions');
+			$bf_misc_moderatoremailnotificationoptions = vB::getDatastore()->getValue('bf_misc_moderatoremailnotificationoptions');
+			foreach ($bf_misc_moderatornotificationoptions AS $bf_name => $bf_value)
+			{
+				$this->usersToNotify['notify'][$bf_name] = [];
+			}
+			foreach ($bf_misc_moderatoremailnotificationoptions AS $bf_name => $bf_value)
+			{
+				$this->usersToNotify['email'][$bf_name] = [];
+			}
+
+			$moderators = vB::getDbAssertor()->getRows('vBForum:getModeratorNotificationOptions');
+
+			foreach ($moderators AS $moderator)
+			{
+				foreach ($bf_misc_moderatornotificationoptions AS $bf_name => $bf_value)
+				{
+					if ($moderator['moderatornotificationoptions'] & $bf_value)
+					{
+						$this->usersToNotify['notify'][$bf_name][$moderator['userid']] = $moderator['userid'];
+					}
+				}
+				foreach ($bf_misc_moderatoremailnotificationoptions AS $bf_name => $bf_value)
+				{
+					if ($moderator['moderatoremailnotificationoptions'] & $bf_value)
+					{
+						$this->usersToNotify['email'][$bf_name][$moderator['userid']] = $moderator['userid'];
+					}
+				}
+			}
+		}
+	}
+
+	protected function getUserIdsToNotify()
+	{
+		return $this->getUserIdsToNotifyOrEmail('notify');
+	}
+
+	// Does not seem to be used. Instead, it seems like shouldSendEmailToUser() might be being used
+	// protected function getUserIdsToEmail()
+	// {
+	// 	return $this->getUserIdsToNotifyOrEmail('email');
+	// }
+
+	protected function getUserIdsToNotifyOrEmail($notificationType)
+	{
+		if (!in_array($notificationType, ['notify', 'email'], true))
+		{
+			throw new Exception('Invalid notification type.');
+		}
+
+		if (empty($this->notifyBitfieldName))
+		{
+			throw new Exception('Subclasses of vB_Notification_Moderator must define notifyBitfieldName.');
+		}
+
+		$this->populateUsersToNotify();
+
+		if (!isset($this->usersToNotify[$notificationType][$this->notifyBitfieldName]))
+		{
+			throw new Exception('Invalid or non-existent value used in notifyBitfieldName.');
+		}
+
+		return $this->usersToNotify[$notificationType][$this->notifyBitfieldName];
+	}
+
+	protected function addAdditionalRecipients()
+	{
+		return $this->getUserIdsToNotify();
+	}
+
+	protected function typeEnabledForUser($user)
+	{
+		return in_array($user['userid'], $this->getUserIdsToNotify());
+	}
+
+	protected function flagCombinedNotifications(&$addNotificationData, &$targetNotificationData, $addNotificationFromDb)
+	{
+		if ($targetNotificationData)
+		{
+			$targetNotificationData['combined_with_existing_db_notification'] = (bool) $addNotificationFromDb;
+		}
+	}
+
+	public function shouldSendEmailToUser($userid)
+	{
+		$recipientsCache = $this->getCachedRecipientData();
+		$recipientCache = $recipientsCache[$userid];
+		$bf_misc_moderatoremailnotificationoptions = vB::getDatastore()->getValue('bf_misc_moderatoremailnotificationoptions');
+		$bfOptionMask = $bf_misc_moderatoremailnotificationoptions[$this->emailBitfieldName];
+
+		// check the user email notification setting
+		$send = (bool) ($bfOptionMask & $recipientCache['moderatoremailnotificationoptions']);
+
+		// check if this is a duplicate notification
+		if (!empty($this->notificationData['combined_with_existing_db_notification']))
+		{
+			$send = false;
+		}
+
+		return $send;
+	}
+
+	protected static function normalizeCustomData($customData)
+	{
+		if (is_string($customData))
+		{
+			$customData = json_decode($customData, true);
+		}
+
+		return $customData;
+	}
+}
+
+/*=========================================================================*\
+|| #######################################################################
+|| # Downloaded: 12:50, Tue Dec 24th 2024
+|| # CVS: $RCSfile$ - $Revision: 116132 $
+|| #######################################################################
+\*=========================================================================*/

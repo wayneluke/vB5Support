@@ -1,0 +1,155 @@
+<?php
+/*========================================================================*\
+|| ###################################################################### ||
+|| # vBulletin 6.1.0 Alpha 4 Week 2 - Licence Number VBCW2VFT7A
+|| # ------------------------------------------------------------------ # ||
+|| # Copyright 2000-2024 MH Sub I, LLC dba vBulletin. All Rights Reserved.  # ||
+|| # This file may not be redistributed in whole or significant part.   # ||
+|| # ----------------- VBULLETIN IS NOT FREE SOFTWARE ----------------- # ||
+|| # http://www.vbulletin.com | http://www.vbulletin.com/license.html   # ||
+|| ###################################################################### ||
+\*========================================================================*/
+
+/**
+ * @package vBulletin
+ */
+class vB_Systemevent_Item_Content_Notification extends vB_Systemevent_Item
+{
+	//the serializable fields need to be protected so that the base class can searialize them
+	protected int $nodeid = 0;
+	protected int $triggeruserid = 0;
+	protected bool $isnew = false;
+	protected string $contenttype = '';
+	protected array $words = [];
+	protected string $failedapproval = '';
+	protected array $serializefields = ['triggeruserid', 'contenttype', 'nodeid', 'isnew', 'words', 'failedapproval'];
+
+	public static function create(int $triggeruserid, string $contenttype, int $nodeid, int $isnew) : self
+	{
+		$item = new self();
+
+		$item->triggeruserid = $triggeruserid;
+		$item->contenttype = $contenttype;
+		$item->nodeid = $nodeid;
+		$item->isnew = $isnew;
+
+		return $item;
+	}
+
+	public function getIsNew()
+	{
+		return $this->isnew;
+	}
+
+	public function getNodeid()
+	{
+		return $this->nodeid;
+	}
+
+	public function addMonitorWords($data)
+	{
+		//Check for monitored words set up for notification processing.
+		//We process the words now because it's relatively cheap and we don't want to store the entire post
+		//text until the system even runs just in case.  If we pull the current text on the node on run then
+		//we need to deal with
+		//1) The potential that the text changed between when we registered the event and when it ran
+		//2) The fact that we only trigger word events if the text provided.  The overall behavior of how we
+		//	handled this previously is weird and inconsistant but if anything we want to do more to avoid
+		//	alerts for monitored words when the text didn't change rather than less.
+		$textfields = ['title', 'rawtext', 'reason'];
+
+		// we only need to try description if rawtext is empty, otherwise it's just a duplicate of rawtext
+		// (This behavior depends on what content type we're dealing with)
+		if (empty($data['rawtext']) AND !empty($data['description']))
+		{
+			$textfields[] = 'description';
+		}
+
+		foreach ($textfields AS $field)
+		{
+			if (!empty($data[$field]))
+			{
+				$monitoredWords = vB_String::getMonitoredWords($data[$field]);
+				if ($monitoredWords)
+				{
+					$this->words[$field] = $monitoredWords;
+				}
+			}
+		}
+	}
+
+	//Note that we will only trigger one of "unapproved" or "spam" and the latter takes precendence.
+	//We could seperate the two and leave it to the caller but using one variable saves on serialized
+	//space and we don't want to send both notifications.
+	public function addUnapproved()
+	{
+		if($this->failedapproval != 'spam')
+		{
+			$this->failedapproval = 'unapproved';
+		}
+	}
+
+	public function addSpam()
+	{
+		$this->failedapproval = 'spam';
+	}
+
+	public function run() : void
+	{
+		$notificationLib = vB_Library::instance('notification');
+
+		if($this->isnew)
+		{
+			$contentLib = vB_Library_Content::getContentLib($this->contenttype);
+
+			$node = $contentLib->getFullContent($this->nodeid);
+			$node = reset($node);
+
+			//If this is a visitor message we always send a message
+			if ($contentLib->isVisitorMessage($this->nodeid) AND !empty($node['setfor']))
+			{
+				$notificationLib->triggerNotificationEvent('new-visitormessage', ['sentbynodeid' => $this->nodeid], $node['setfor']);
+			}
+			else if ($node['starter'] > 0)
+			{
+				/*
+				 * Warning: Currently the content library doesn't have a defined set of rules on whether
+				 * this particular node should generate notifications or not. For example, if this node is
+				 * a grand-child of a thread starter, it could be a comment or a photo in a gallery reply
+				 * but only comments should send out notifications.
+				 * At the moment, each photo added to a gallery doesn't generate individual notifications
+				 * because the front-end createcontent controller sets the skipNotifications option when
+				 * calling content_photo API's add().
+				 *
+				 * Note, each subclass of vB_Notification's validateAndCleanNotificationData() needs to check
+				 * the context data and prevent attachments etc from sending notifications.
+				*/
+				$notificationLib->triggerNotificationEvent('new-content', ['sentbynodeid' => $this->nodeid]);
+			}
+		}
+
+		foreach($this->words AS $subtype => $monitoredWords)
+		{
+			$notificationLib->triggerNotificationEvent('node-monitored-word-found', [
+				'sentbynodeid' => $this->nodeid,
+				'sender' => $this->triggeruserid,
+				'customdata' => [
+					'maintype' => 'node',
+					'subtypes' => [$subtype],
+					'words' => $monitoredWords,
+				],
+			]);
+		}
+
+		if($this->failedapproval)
+		{
+			$notificationLib->triggerNotificationEvent('node-' . $this->failedapproval . '-post', [
+				'sentbynodeid' => $this->nodeid,
+				'sender' => $this->triggeruserid,
+			]);
+		}
+
+		// Don't forget about calling insert!
+		$notificationLib->insertNotificationsToDB();
+	}
+}

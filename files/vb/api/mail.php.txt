@@ -1,0 +1,112 @@
+<?php if (!defined('VB_ENTRY')) die('Access denied.');
+/*========================================================================*\
+|| ###################################################################### ||
+|| # vBulletin 6.1.0 Alpha 4 Week 2 - Licence Number VBCW2VFT7A
+|| # ------------------------------------------------------------------ # ||
+|| # Copyright 2000-2024 MH Sub I, LLC dba vBulletin. All Rights Reserved.  # ||
+|| # This file may not be redistributed in whole or significant part.   # ||
+|| # ----------------- VBULLETIN IS NOT FREE SOFTWARE ----------------- # ||
+|| # http://www.vbulletin.com | http://www.vbulletin.com/license.html   # ||
+|| ###################################################################### ||
+\*========================================================================*/
+
+/**
+ * vB_Api_Mail
+ *
+ * @package vBApi
+ * @access public
+ */
+class vB_Api_Mail extends vB_Api
+{
+	/** sends a batch of emails
+	*
+	*	@param	mixed	array of recipients, or a semicolon-delimited string
+	* 	@param	string	subject of the message
+	* 	@param	string	content of message
+	*
+	* 	@return	mixed	either success => true, or array of sent, failed, errors, and message- the last is suitable for display to user.
+	*/
+	public function send($to, $subject, $message)
+	{
+		//This should only be used by admins
+		if (!vB::getUserContext()->hasAdminPermission('canadminusers'))
+		{
+			throw new vB_Exception_Api('no_permission');
+		}
+
+		if (!is_array($to))
+		{
+			if (strpos($to, ';'))
+			{
+				$to = explode(';', $to);
+			}
+			else
+			{
+				$to = array($to);
+			}
+		}
+		$errors = '';
+		$sent = array();
+		$failed = array();
+
+		// This is used by config-site.js for the "invite members" email feature.
+		// Presumably, admins would want to be able to specify HTML in this email, and this method
+		// has a canadminusers check to disable "general use". As such no escaping is done here.
+
+  		foreach ($to AS $toemail)
+		{
+			// Similar to the admincp inviteuser feature, these emails are likely NOT associated with
+			// users, so we're not checking isUserOptedOutOfEmail() or using vbmailWithUnsubscribe() here.
+			//The next function returns either true, false or an error string.
+			$result = vB_Mail::vbmail2($toemail, $subject, $message, false, '', '', '', true);
+
+			if (is_string($result))
+			{
+				$errors .= $result;
+			}
+				else if ($result)
+			{
+				$sent[] = $toemail;
+			}
+			else
+			{
+				$failed[] = $toemail;
+			}
+		}
+
+		if (empty($failed) AND empty($errors))
+		{
+			return array('success' => true);
+		}
+		$message = '';
+
+		if (!empty($errors))
+		{
+			$message = vB_Phrase::fetchSinglePhrase('error_x', $errors) . '. ';
+		}
+
+		if (!empty($sent))
+		{
+			$message .= vB_Phrase::fetchSinglePhrase('sent_to_x', implode(',', $sent));
+		}
+
+		if (!empty($failed))
+		{
+			$message .= vB_Phrase::fetchSinglePhrase('send_failed_to_x', implode(',', $failed));
+		}
+
+		return array (
+			'sent' => $sent,
+			'failed' => $failed,
+			'errors' => $errors,
+			'message' => $message,
+		);
+	}
+}
+
+/*=========================================================================*\
+|| #######################################################################
+|| # Downloaded: 12:50, Tue Dec 24th 2024
+|| # CVS: $RCSfile$ - $Revision: 115430 $
+|| #######################################################################
+\*=========================================================================*/

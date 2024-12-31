@@ -1,0 +1,302 @@
+<?php
+/*========================================================================*\
+|| ###################################################################### ||
+|| # vBulletin 6.1.0 Alpha 4 Week 2 - Licence Number VBCW2VFT7A
+|| # ------------------------------------------------------------------ # ||
+|| # Copyright 2000-2024 MH Sub I, LLC dba vBulletin. All Rights Reserved.  # ||
+|| # This file may not be redistributed in whole or significant part.   # ||
+|| # ----------------- VBULLETIN IS NOT FREE SOFTWARE ----------------- # ||
+|| # http://www.vbulletin.com | http://www.vbulletin.com/license.html   # ||
+|| ###################################################################### ||
+\*========================================================================*/
+
+/**
+ * @package vBulletin
+ */
+
+/**
+ * @package vBulletin
+ */
+abstract class vB_BbCode implements vB_Interface_BBCode
+{
+	use vB_Trait_NoSerialize;
+
+	// This should be the specific bbcode tag, e.g. 'Url', 'Video', 'Buy', etc.
+	public const TYPE = 'BbCode';
+
+	protected vB_BbCodeHelper $bbcodeHelper;
+
+	// Data fetched from the db record.
+	protected $record = [
+		// ?int
+		'id'      => null,
+		// ?int
+		'nodeid'  => null,
+		// string
+		'bbcode_type' => '',
+		// string
+		'hash'    => '',
+		// array
+		'data'    => [],
+		// unixtime
+		'expires' => 0,
+	];
+	// Hash is calculated via getHash(), and should not be set directly.
+	// id is autoincremented, and should not be changed by the caller
+	// bbcode_type should always be the the bbcode tag that this class
+	// handles, e.g. "Url", "Video", etc.
+	protected $writable = [
+		'nodeid'  => true,
+		'data'    => true,
+		'expires' => true,
+	];
+
+	// In order for a BBCode class to store and fetch $this->record into/from the `bbcode_data` table,
+	// * class::USES_DATA_STORAGE must be true
+	// * At some point, $modified must be set true to store/update the data during "fresh" construction
+	// * populate $this->record[] with the data you want to store.
+
+	public const USES_DATA_STORAGE = false;
+
+	// Only used if static::USES_DATA_STORAGE == true.
+	// Any set/updated data will only be stored into the database if this is set to true at some point
+	// during the construction or render.
+	protected bool $modified = false;
+
+	final public function getInsertData()
+	{
+		// Wish we could have a struct here that we can pass around and validate data with
+		// instead of an array. Without it, using a std obj or a class does not seem to
+		// provide much more benefits than arrays (except maybe type checking in IDEs via
+		// type hints) and infact has more overhead to make it possibly less desirable...
+		$record = $this->record;
+		$record['data'] = json_encode($record['data']);
+		$record['bbcode_type'] = static::getType();
+		return $record;
+	}
+
+	protected function __construct(vB_BbCodeHelper $bbCodeHelper, $record, $modified = false)
+	{
+		// While trying to make the bbcodes extendible, I ran into issues
+		// with how complex a basic bbcode class is, especially if it does
+		// not need to actually use any storage.
+		// I think that the constructor should probably be swapped with
+		// generateFreshFromDataAndOption(), and it should set $this->data
+		// (not to be confused with $this->record['data']) & $this->option
+		// for a [bbcode=option]data[/bbcode] instance. However, I don't
+		// think any of that will really matter once we switch to a bbcode
+		// tree, so not fully making that switch until we have an internal
+		// need for it.
+
+		$this->bbcodeHelper = $bbCodeHelper;
+		$this->setRecord($record, $modified);
+	}
+
+	private function setRecord(array $record, bool $modified = false) : void
+	{
+		$this->record = array_intersect_key($record, $this->record);
+		$this->modified = $modified;
+
+		if (static::USES_DATA_STORAGE)
+		{
+			$expired = $this->isDataExpired();
+			if (empty($this->record['data']) OR $expired)
+			{
+				// todo: replace this with the refreshExpiredDataAtConstruction(), as that's a better indication of the method's role.
+				$this->updateDataAndexpires();
+			}
+		}
+	}
+
+	/**
+	 * Set render options & context
+	 */
+	public function setRenderOptionsAndContext(array $renderOptions, array $renderContext) : void
+	{
+		// implement child specific logic as needed.
+	}
+
+	protected $usercontext;
+	final public function setUserContext(?vB_UserContext $usercontext) : void
+	{
+		$this->usercontext = $usercontext;
+	}
+
+	protected function isDataExpired() : bool
+	{
+		$now = time();
+		$expired = (
+			// expires == 0 is special for "never expires".
+			!empty($this->record['expires']) AND
+			$now >= $this->record['expires']
+		);
+
+		return $expired;
+	}
+
+	protected static function getDefaultRecord() : array
+	{
+		return [
+			'id'      => null,
+			'nodeid'  => null,
+			// remove vB_BbCode_ from class name.
+			'bbcode_type' => static::getType(),
+			'hash'    => '',
+			'data'    => [],
+			'expires' => 0,
+		];
+	}
+
+	// The first time this bbcode is rendered, or if this bbcode does not utilize `bbcode_data`, this method
+	// will be called. Use the $data & option to generate and return an instance of this bbcode class.
+	abstract public static function generateFreshFromDataAndOption(vB_BbCodeHelper $bbCodeHelper, string $data, ?string $option) : static;
+	/*
+	{
+		$record = static::getDefaultRecord();
+		// set hash
+		$record['hash'] = static::getHash($bbCodeHelper, $data, $option);
+
+		// Get data.
+		['expires' => $record['expires'], 'data' => $record['data']] = static::fetchDataAndExpiresFromRemote($data, $option);
+
+		$modified = true;
+		return new static($record, $modified);
+	}
+	*/
+
+	public static function restoreFromDBRecord(vB_BbCodeHelper $bbcodeHelper, $dbrecord) : static
+	{
+		$record = static::getDefaultRecord();
+		$record = array_intersect_key($dbrecord, $record);
+		$record['data'] = json_decode($dbrecord['data'], true);
+		$modified = false;
+
+		return new static($bbcodeHelper, $record, $modified);
+	}
+
+	final public static function determineClassname($type) : ?string
+	{
+		// If it's already fully qualified, e.g. 'vB_BbCode_Url', just return the class
+		if (class_exists($type) AND is_subclass_of($type, 'vB_BbCode'))
+		{
+			return $type::getCanonicalClassname();
+		}
+
+		$class = 'vB_BbCode_' . ltrim($type, '_');
+		if (!class_exists($class) OR !is_subclass_of($class, 'vB_BbCode'))
+		{
+			return null;
+		}
+
+		return $class::getCanonicalClassname();
+	}
+
+	final public static function getCanonicalClassname()
+	{
+		// this function exists just to ensure consistent capitalization ETC regardless of how
+		// we arrived at the class name.
+		return get_called_class();
+	}
+
+	final public static function getType() : string
+	{
+		return ucfirst(substr(get_called_class(), 10));
+	}
+
+	// isset & get for array_column() calls on basket
+	public function __isset(string $name) : bool
+	{
+		return isset($this->record[$name]);
+	}
+
+	public function __get(string $name) : mixed
+	{
+		//if (isset($this->record[$name]))
+		if (array_key_exists($name, $this->record))
+		{
+			// todo: hash needs to be calculated at the end of getInsertData()
+			return $this->record[$name];
+		}
+		// handle ->modified readonly check
+		else if ($name == 'modified')
+		{
+			return $this->modified;
+		}
+	}
+
+	// mixed $value (php8)
+	public function __set(string $name, $value) : void
+	{
+		if (array_key_exists($name, $this->record) AND array_key_exists($name, $this->writable) AND $value !== $this->record[$name])
+		{
+			$this->record[$name] = $value;
+			$this->modified = true;
+		}
+	}
+
+	// refetch stale data for a restored instance. This means that $this->data has to include information on where to refetch the data from
+	// e.g. the URL. Be sure to set $this->modified = true; if it updates data, otherwise the updated data will NOT BE SAVED
+	protected function refreshExpiredDataAtConstruction()  : void
+	{
+		// Override this method with your bbcode's custom logic. Remember to set $this->modified = true; and update
+		// $this->record['data'] & $this->record['expires'] if the expired data was refetched with updated data.
+
+		// Do not modify if your bbcode does not utilize `bbcode_data` storage.
+		return;
+
+	}
+
+	/**
+	 * @deprecated Use refreshExpiredDataAtConstruction() instead.
+	 */
+	protected function updateDataAndexpires()  : void
+	{
+		$this->refreshExpiredDataAtConstruction();
+		return;
+	}
+
+	// [bbcode:option]data[/bbcode]
+	abstract public static function getHash(vB_BbCodeHelper $bbCodeHelper, string $data, ?string $option) : string;
+
+	// Return true if this class can handle $data $option. Used for extendable
+	// bbcodes to identify which handler class will process a particular block.
+	abstract public function canHandleBbCode(string $data, ?string $option) : bool;
+
+	/** @var bool */
+	protected $rendered = false;
+	// [bbcode:option]data[/bbcode]
+	abstract public function renderBbCode(string $data, ?string $option) : string;
+	/*
+	// We actually need to be able to render for several contexts:
+	abstract public function render_for_forum();
+	abstract public function render_for_sourcemode();
+	abstract public function render_for_wysiwyg();
+	abstract public function render_for_email();
+	abstract public function render_for_plaintext();
+	*/
+
+	public function getRenderMetaData() : array
+	{
+		return [];
+	}
+
+	/*
+	public function hasAppend() : bool
+	{
+		return false;
+	}
+
+	// Meant for stuff going into append lists after the post content. Must be called after renderBbCode()
+	public function getAppend() : ?string
+	{
+		return null;
+	}
+	*/
+}
+
+/*=========================================================================*\
+|| #######################################################################
+|| # Downloaded: 12:50, Tue Dec 24th 2024
+|| # CVS: $RCSfile$ - $Revision: 107965 $
+|| #######################################################################
+\*=========================================================================*/

@@ -1,0 +1,105 @@
+<?php
+/*========================================================================*\
+|| ###################################################################### ||
+|| # vBulletin 6.1.0 Alpha 4 Week 2 - Licence Number VBCW2VFT7A
+|| # ------------------------------------------------------------------ # ||
+|| # Copyright 2000-2024 MH Sub I, LLC dba vBulletin. All Rights Reserved.  # ||
+|| # This file may not be redistributed in whole or significant part.   # ||
+|| # ----------------- VBULLETIN IS NOT FREE SOFTWARE ----------------- # ||
+|| # http://www.vbulletin.com | http://www.vbulletin.com/license.html   # ||
+|| ###################################################################### ||
+\*========================================================================*/
+
+/**
+ * @package vBulletin
+ */
+
+class vB_Language
+{
+	use vB_Trait_NoSerialize;
+
+	protected static $phraseGroups = [];
+	protected static $languageCache = [];
+
+	/**
+	 * Stores phrasegroups for later loading
+	 *
+	 * @param	array|string $phraseGroups
+	 * @return void
+	 */
+	public static function preloadPhraseGroups($phraseGroups)
+	{
+		if (!is_array($phraseGroups))
+		{
+			self::$phraseGroups[] = $phraseGroups;
+		}
+		else
+		{
+			self::$phraseGroups = array_merge(self::$phraseGroups, $phraseGroups);
+		}
+	}
+
+	public static function getPhraseInfo($languageId, $phraseGroups = [])
+	{
+		//if 0 is passed use the default language.
+		if (!$languageId)
+		{
+			$languageId = vB::getDatastore()->getOption('languageid');
+		}
+
+		$phrasegroups = array_unique(array_merge(self::$phraseGroups, $phraseGroups, ['global']));
+		sort($phrasegroups);
+		$params = [
+			'languageid' => $languageId,
+			'phrasegroups' => $phrasegroups,
+		];
+		self::$phraseGroups = [];
+
+		$cacheKey = md5(json_encode($params));
+		$phraseinfo = self::getPhraseCache($cacheKey);
+		if (!$phraseinfo)
+		{
+			$phraseinfo = vB::getDbAssertor()->getRow('fetchLanguage', $params);
+			if ($phraseinfo)
+			{
+				vB_Phrase::addPhrases(['global' => unserialize($phraseinfo['phrasegroup_global'])]);
+				self::setPhraseCache($cacheKey, $phraseinfo);
+			}
+		}
+		return $phraseinfo;
+	}
+
+	private static function getPhraseCache($cacheKey)
+	{
+		if (empty(self::$languageCache[$cacheKey]))
+		{
+			$result = vB_Cache::instance()->read($cacheKey);
+			if (!empty($result))
+			{
+				self::$languageCache[$cacheKey] = $result;
+				return $result;
+			}
+			else
+			{
+				return null;
+			}
+		}
+		else
+		{
+			return self::$languageCache[$cacheKey];
+		}
+	}
+
+	private static function setPhraseCache($cacheKey, $data)
+	{
+		self::$languageCache[$cacheKey] = $data;
+		vB_Cache::instance()->write($cacheKey, $data, false, 'vB_Language_languageCache');
+	}
+
+}
+/*=========================================================================*\
+|| #######################################################################
+|| # Downloaded: 12:50, Tue Dec 24th 2024
+|| # CVS: $RCSfile$ - $Revision: 115182 $
+|| #######################################################################
+\*=========================================================================*/

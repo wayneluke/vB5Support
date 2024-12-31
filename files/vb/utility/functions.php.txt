@@ -1,0 +1,205 @@
+<?php
+/*========================================================================*\
+|| ###################################################################### ||
+|| # vBulletin 6.1.0 Alpha 4 Week 2 - Licence Number VBCW2VFT7A
+|| # ------------------------------------------------------------------ # ||
+|| # Copyright 2000-2024 MH Sub I, LLC dba vBulletin. All Rights Reserved.  # ||
+|| # This file may not be redistributed in whole or significant part.   # ||
+|| # ----------------- VBULLETIN IS NOT FREE SOFTWARE ----------------- # ||
+|| # http://www.vbulletin.com | http://www.vbulletin.com/license.html   # ||
+|| ###################################################################### ||
+\*========================================================================*/
+
+/**
+ * Miscellanious functions that do not depend on the vBulletin Framework being initialized
+ *
+ * @package vBUtility
+ */
+
+//This is essentially a library of functions rather than a proper class.
+//It's implemented as a class of static functions in order to take adavantage of the class loader to manage
+//the code inclusion.  It also allows private helper functions.
+//Most of the functions in vB_Utilities should be moved here.
+abstract class vB_Utility_Functions
+{
+	use vB_Utility_Trait_NoSerialize;
+
+	//enforce the no instantiation rule.
+	private function __construct()
+	{
+	}
+
+	/**
+	 * Extract an integer from an array of params
+	 *
+	 * This is intended to replace some repeated multiline logic that is surprisingly difficult
+	 * to compress and make certain functions difficult to understand.  It also allows some more
+	 * rigorous checking that would require even more boilerplate code for stuff that doesn't come
+	 * up (for instance we generally don't check for negative numbers even though they usually
+	 * aren't valid.
+	 *
+	 * @param ArrayAccess|array $params
+	 * @param string|int $key -- The value to extract. $params[$key] will be cast to an int if it exists.
+	 * @param int $default -- this value will be used if $params[$key] doesn't exist or is <= 0 after converting to an int.
+	 * @param int $min -- A value less than the min will be returned as the min.  $min less than 1 will be treated as 1.
+	 * @param int $max -- A value more less than the max value will be returned as the max.
+	 *
+	 */
+	public static function getPositiveIntParam(ArrayAccess|array $params, string|int $key, int $default, int $min = 1, int $max = PHP_INT_MAX) : int
+	{
+		$value = 0;
+		if (!empty($params[$key]))
+		{
+			$value = intval($params[$key]);
+		}
+
+		//It's possible that if the default and min are both negative for the result to be negative.
+		//If the caller is that determined to get a bad result I'm not sure it's worth stopping them.
+		if ($value <= 0)
+		{
+			$value = $default;
+		}
+
+		//similarly if $max < $min this will produce weird results.
+		$value = max($value, $min);
+		$value = min($value, $max);
+
+		return $value;
+	}
+
+	/**
+	 * Extract an integer from an array of params
+	 *
+	 * Similar to the above, except that a value of 0 is allowed and will not trigger the default.
+	 * Non numeric values (using is_numeric) that will still trigger the default.
+	 *
+	 * @param ArrayAccess|array $params
+	 * @param string|int $key -- The value to extract. $params[$key] will be cast to an int if it exists.
+	 * @param int $default -- this value will be used if $params[$key] doesn't exist or is < 0 after converting to an int.
+	 * @param int $min -- A value less than the min will be returned as the min.  $min less than 0 will be treated as 0.
+	 * @param int $max -- A value more less than the max value will be returned as the max.
+	 *
+	 */
+	public static function getNonNegativeIntParam(ArrayAccess|array $params, string|int $key, int $default, int $min = 0, int $max = PHP_INT_MAX) : int
+	{
+		$value = $params[$key] ?? null;
+
+		//It's possible that if the default and min are both negative for the result to be negative.
+		//If the caller is that determined to get a bad result I'm not sure it's worth stopping them.
+		if (!is_numeric($value) OR $value < 0)
+		{
+			$value = $default;
+		}
+
+		//similarly if $max < $min this will produce weird results.
+		$value = max($value, $min);
+		$value = min($value, $max);
+
+		return $value;
+	}
+
+	/**
+	 * Call while supressing the error output
+	 *
+	 * Intended to replace @ suprression and ad hoc supressions of warnings of various kinds
+	 * we do.  In generally we want to avoid setting the error_reporting values everywhere and
+	 * overriding the user settings.  On the other hand there are cases where it just can't be
+	 * avoided easily when system functions are ill behaved or php libraries aren't fully
+	 * compatible with all versions.
+	 *
+	 * @param int $errorsToSuppress
+	 * @param callable $callback
+	 * @param mixed $args,...
+	 *
+	 * @return $mixed.
+	 */
+	public static function callSupressError(int $errorsToSuppress, callable $callback, ...$args) : mixed
+	{
+		$original = error_reporting();
+		error_reporting($original &~ $errorsToSuppress);
+		try
+		{
+			$result = $callback(...$args);
+		}
+		finally
+		{
+			error_reporting($original);
+		}
+		return $result;
+	}
+
+	/**
+	 * Call while supressing the error output
+	 *
+	 * The vardaic approach doesn't play nice with reference params (either no params are ref params or all of them
+	 * are which causes errors if you pass a constant.  This allows specific params to be labelled references within
+	 * the array.
+	 *
+	 * @param int $errorsToSuppress
+	 * @param callable $callback
+	 * @param array $args
+	 *
+	 * @return $mixed.
+	 */
+	public static function callSupressErrorArray(int $errorsToSuppress, callable $callback, array $args) : mixed
+	{
+		$original = error_reporting();
+		error_reporting($original &~ $errorsToSuppress);
+		try
+		{
+			$result = $callback(...$args);
+		}
+		finally
+		{
+			error_reporting($original);
+		}
+		return $result;
+	}
+
+	/**
+	 * Set the php execution time limit accounting for evironments where the php function may be disabled.
+	 *
+	 * @param int $time -- max execution time in seconds
+	 * @return bool -- true if successful/false otherwise
+	 */
+	public static function setPhpTimeout(int $time) : bool
+	{
+		if (function_exists('set_time_limit'))
+		{
+			//The documentation says that this will return false on failure but it's not
+			//clear under what circumstances this can happen.
+			return set_time_limit($time);
+		}
+		return false;
+	}
+
+	public static function isAbsolutePath($path)
+	{
+		if (!strlen($path))
+		{
+			return false;
+		}
+
+		//This is sufficient, but not necesary.
+		if (realpath($path) == $path)
+		{
+			return true;
+		}
+
+		//windows drive lettering
+		if (preg_match('#^[a-zA-Z]:\\\\#', $path))
+		{
+			return true;
+		}
+
+		// At this point, a path starting with / or \ is absolute; anything else is relative.
+		return ($path[0] == '/' || $path[0] == '\\');
+	}
+}
+
+/*=========================================================================*\
+|| #######################################################################
+|| # Downloaded: 12:50, Tue Dec 24th 2024
+|| # CVS: $RCSfile$ - $Revision: 104224 $
+|| #######################################################################
+\*=========================================================================*/

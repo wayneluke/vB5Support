@@ -1,0 +1,215 @@
+<?php
+/*========================================================================*\
+|| ###################################################################### ||
+|| # vBulletin 6.1.0 Alpha 4 Week 2 - Licence Number VBCW2VFT7A
+|| # ------------------------------------------------------------------ # ||
+|| # Copyright 2000-2024 MH Sub I, LLC dba vBulletin. All Rights Reserved.  # ||
+|| # This file may not be redistributed in whole or significant part.   # ||
+|| # ----------------- VBULLETIN IS NOT FREE SOFTWARE ----------------- # ||
+|| # http://www.vbulletin.com | http://www.vbulletin.com/license.html   # ||
+|| ###################################################################### ||
+\*========================================================================*/
+
+/**
+ * @package vBUtility
+ */
+
+class vB_Utility_Random
+{
+	use vB_Utility_Trait_NoSerialize;
+
+	private static $alphanum = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ' .
+		'abcdefghijklmnopqrstuvwxyz' .
+		'0123456789';
+
+	/**
+	* Generates a random string of alphanumeric characters
+	*
+	*	Calls the string function with an alphabet of lower case and upper case
+	*	latin characters and numbers
+	*
+	* @param integer $length
+  * @return string -- random string of length $length
+	*/
+	public function alphanumeric($length)
+	{
+		return $this->string(self::$alphanum, $length);
+	}
+
+	/**
+	 *	Generate a randon string from a given alphabet
+	 *
+	 *	@param string $characters -- the alphabet of characters to use
+	 *  @param integer $length
+	 *
+	 * 	@return string -- random string of length $length
+	 */
+	public function string($characters, $length)
+	{
+		if ($length <= 0 OR !is_int($length))
+		{
+			throw new Exception("Length must be a positive integer.");
+		}
+
+		if (!is_string($characters) OR !$characters)
+		{
+			throw new Exception("Charaacters must be a non empty string.");
+		}
+
+		$min = 0;
+		$max = strlen($characters) - 1;
+		/*
+			62 possible characters, 62^$length possible permutations.
+			Compared to a substr(sha1(), 0, $length), which would be  (16 possible characters) ^ $lenth permutations,
+			this is a larger pool. But in the context of a brute force attack, this isn't that much better.
+			Be sure to have ways to limit the rate of attack if the result is used for security purposes.
+			Usage for nonces should be fine.
+		 */
+
+		$output = '';
+		for ($i = 0; $i < $length; $i++)
+		{
+			$output .= $characters[random_int($min, $max)];
+		}
+		return $output;
+	}
+
+	// #############################################################################
+	/**
+	* Random hex token using a crypto random base.
+	*
+	* @param	integer	Length of desired hash
+	*/
+	public function hex($length = 32)
+	{
+		if ($length <= 0 OR !is_int($length))
+		{
+			throw new Exception('Length must be a positive integer.');
+		}
+		/*
+			BEWARE THAT random_bytes() COULD GIVE YOU UNPRINTABLE CHARACTERS IN WHATEVER
+			ENCODING YOU'RE HOPING TO USE. If you need to use the string as more than a hash seed,
+			convert it to something safe via bin2hex(), base64encode(), etc.
+			For further reading: http://haacked.com/archive/2012/01/30/hazards-of-converting-binary-data-to-a-string.aspx/
+		 */
+		$bytes = ceil($length / 2);
+		$printable_hex = bin2hex(random_bytes($bytes));
+		$digits = strlen($printable_hex);
+		if ($digits < $length)
+		{
+			// I don't think this will ever happen unless for some reason bin2hex goes nuts and starts
+			// returning single digits instead of 0x0[0-f] for bytes starting with 0b0000
+			throw new Exception('Unexpected error: Generated hex was shorter than expected');
+		}
+		else if ($digits > $length)
+		{
+			// This happens every time $length is odd.
+			$printable_hex = substr($printable_hex, 0, $length);
+		}
+
+		return $printable_hex;
+	}
+
+	/**
+	 * Generates a version 4 (random) UUID
+	 *
+	 * @return string
+	 */
+	public function uuid_v4() : string
+	{
+		// https://datatracker.ietf.org/doc/html/rfc9562#name-uuid-version-4
+		$uuid = bin2hex(random_bytes(16));
+		$printable_hex = sprintf('%08s-%04s-4%03s-%04x-%012s',
+			// random_a: first 48 bits -- random data
+			// split into 32 + 16 bits to match the dash split above.
+			substr($uuid, 0, 8),
+			substr($uuid, 8, 4),
+			// ver + random_b: <4-bit version 0b0100 (4)> + 12-bit random,
+			// Note the hard-coded 4 above for the "ver".
+			substr($uuid, 13, 3),
+			// var + random_c: <2-bit variant 0b10 (DCE 1.1)> + 62-bit random
+			// These 64 bits are split into 16-bits + 48 bits to match the dash split output above.
+			hexdec(substr($uuid, 16, 4)) & 0x3FFF | 0x8000,
+			substr($uuid, 20, 12)
+		);
+
+		return $printable_hex;
+	}
+
+	// #############################################################################
+	/**
+	 * vBulletin's hash fetcher, note this may change from a-f0-9 to a-z0-9 in future.
+	 *
+	 * Note that the caller should not depend on format of the returned string other
+	 * then it should be printable.  If a hex string is specificially needed, call
+	 * the hex function.
+	 *
+	 * @param	integer	Length of desired hash
+	 * @return string
+	 */
+	public function vbhash($length = 32)
+	{
+		//currently just an alias for hex.  But we want to be able to change that
+		return $this->hex($length);
+	}
+
+	/**
+	 * Generates a random string of alphanumeric characters.  Exactly like alphanumeric but
+	 * uses a random number generator that is not cryptographically secure.
+	 *
+	 * Calls the nonsecureString function with an alphabet of lower case and upper case
+	 * latin characters and numbers
+	 *
+	 * @param integer $length
+	 * @return string -- random string of length $length
+	 */
+	public function nonsecureAlphanumeric($length)
+	{
+		return $this->nonsecureString(self::$alphanum, $length);
+	}
+
+	/**
+	 *	This is the same as string, but uses a random generator that is not cryptographically secure
+	 *
+	 *	This function is faster than string and does not use up "entropy" in the secure random
+	 *	number generater.  Therefore it's preferred for uses that don't require cryptographic security
+	 *	(for example, unique identifiers that are entirely internal and therefore can't be guessed/spoofed or
+	 *	situations where we validate security in other ways -- such as were the id will only be accepted from
+	 *	a validated user account where we've already told the user what the id is).
+	 *
+	 * 	@param string $characters -- the alphabet of characters to use
+	 *  @param integer $length
+	 *
+	 * 	@return string -- random string of length $length
+	 */
+	public function nonsecureString($characters, $length)
+	{
+		if ($length <= 0 OR !is_int($length))
+		{
+			throw new Exception("Length must be a positive integer.");
+		}
+
+		if (!is_string($characters) OR !$characters)
+		{
+			throw new Exception("Characters must be a non empty string.");
+		}
+
+		$min = 0;
+		$max = strlen($characters) - 1;
+
+		$output = '';
+		for ($i = 0; $i < $length; $i++)
+		{
+			$output .= $characters[mt_rand($min, $max)];
+		}
+		return $output;
+	}
+}
+
+/*=========================================================================*\
+|| #######################################################################
+|| # Downloaded: 12:50, Tue Dec 24th 2024
+|| # CVS: $RCSfile$ - $Revision: 116667 $
+|| #######################################################################
+\*=========================================================================*/
+?>

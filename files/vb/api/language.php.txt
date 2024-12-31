@@ -1,0 +1,352 @@
+<?php
+/*========================================================================*\
+|| ###################################################################### ||
+|| # vBulletin 6.1.0 Alpha 4 Week 2 - Licence Number VBCW2VFT7A
+|| # ------------------------------------------------------------------ # ||
+|| # Copyright 2000-2024 MH Sub I, LLC dba vBulletin. All Rights Reserved.  # ||
+|| # This file may not be redistributed in whole or significant part.   # ||
+|| # ----------------- VBULLETIN IS NOT FREE SOFTWARE ----------------- # ||
+|| # http://www.vbulletin.com | http://www.vbulletin.com/license.html   # ||
+|| ###################################################################### ||
+\*========================================================================*/
+
+/**
+ * vB_Api_Language
+ *
+ * @package vBApi
+ */
+class vB_Api_Language extends vB_Api
+{
+	protected $disableWhiteList = ['fetchAll', 'fetchLanguageSelector'];
+
+	protected function __construct()
+	{
+		parent::__construct();
+
+		// Regenerate languagecache if datastore got nuked.  Not sure if we still need to do this here.
+		vB_Library::instance('language')->getLanguageCache();
+	}
+
+	/**
+	* Fetches either the entire languages array, or a single language
+	*
+	* @param	int	$languageid -- if not provided (or set to 0) then all languages will be returned.
+	* @param	bool $baseonly -- if true only fetch a subset of fields.
+	*
+	* @return	array -- either the array for the individual language or [id => language array for all]
+	*/
+	public function fetchAll($languageid = 0, $baseonly = false)
+	{
+		//we might want to change this to use the datastore but I'm not entirely clear where it's used
+		return vB_Library::instance('language')->getLanguages(intval($languageid), boolval($baseonly));
+	}
+
+	/**
+	 * Simplified version of the fetchAll function,
+	 *
+	 * Returns languages that are user selectable unless the user
+	 * has the "canadminlanguages" admin permission in which case
+	 * we show all languages.
+	 *
+	 * @return array languages that are user selectable.
+	 * @deprecated use getLanguageTitles
+	 */
+	public function fetchLanguageSelector()
+	{
+		$result = $this->getLanguageTitles();
+
+		$languages = [];
+		foreach ($result AS $languageid => $title)
+		{
+			$languages[] = [
+				'languageid' => $languageid,
+				'title' => $title,
+			];
+		}
+
+		return $languages;
+	}
+
+	/**
+	 * Simplified version of the fetchAll function,
+	 *
+	 * Returns languages that are user selectable unless the user
+	 * has the "canadminlanguages" admin permission in which case
+	 * we show all languages.
+	 *
+	 * @return array languages that are user selectable.
+	 */
+	public function getLanguageTitles($getall = true)
+	{
+		//specifically don't call checkHasAdminPermission or hasAdminPermission as
+		//the former will throw an exception and the latter checks for the cp session
+		//which we don't require for this.  Only check if we're requesting all of them.
+		$getall = ($getall AND vB::getUserContext()->hasAdminPermission('canadminlanguages'));
+
+		$result = vB_Library::instance('language')->getLanguageCache();
+		$languages = [];
+		foreach ($result AS $language)
+		{
+			if ($getall OR $language['userselect'])
+			{
+				$languages[$language['languageid']] = $language['title'];
+			}
+		}
+
+		asort($languages);
+		return $languages;
+	}
+
+	/**
+	 * Export language as xml
+	 *
+	 * @param int $languageid Language ID to be exported
+	 * @param string $product Product ID. Language of which product to be exported.
+	 * @param bool $just_phrases Whether to Just fetch phrases
+	 * @param bool $custom Whether to Include Custom Phrases
+	 * @param string $charset Export charset
+	 * @return string XML data
+	 */
+	public function export($languageid, $product = 'vbulletin', $just_phrases = false, $custom = false, $charset = 'ISO-8859-1')
+	{
+		$this->checkHasAdminPermission('canadminlanguages');
+
+		$languageid = intval($languageid);
+
+		require_once(DIR . '/includes/adminfunctions.php');
+		require_once(DIR . '/includes/adminfunctions_language.php');
+		return get_language_export_xml(
+			$languageid,
+			$product,
+			$custom,
+			$just_phrases,
+			$charset
+		);
+	}
+
+	/**
+	 * Import a language
+	 *
+	 * @param string $xml Language xml data
+	 * @param int $languageid Language ID to be overwrite. 0 means creating new language
+	 * @param string $title Title for Imported Language. Empty means to use the language title specified in the language xml
+	 * @param bool $anyversion Whether to Ignore Language Version
+	 * @param bool	Allow user-select of imported language
+	 * @param bool	Echo output..
+	 * @param bool	Deprecated
+	 * @return void
+	 */
+	public function import($xml, $languageid = 0, $title = '', $anyversion = false, $userselect = true, $output = true, $readcharset = false)
+	{
+		$this->checkHasAdminPermission('canadminlanguages');
+
+		require_once(DIR . '/includes/adminfunctions.php');
+		require_once(DIR . '/includes/adminfunctions_language.php');
+
+		xml_import_language($xml, $languageid, $title, $anyversion, $userselect, $output);
+
+		vB_Library::instance('language')->buildLanguageCache();
+	}
+
+	/**
+	 * Insert or update language
+	 *
+	 * @param array $data Language options to be inserted or updated
+	 * @param int $languageid If not 0, the language with the ID will be updated
+	 * @return int New language ID or the updated language ID
+	 */
+	public function save($data, $languageid = 0)
+	{
+		$this->checkHasAdminPermission('canadminlanguages');
+
+		$library = vB_Library::instance('language');
+
+		$langglobals = [
+			'title',
+			'userselect',
+			'options',
+			'languagecode',
+			'charset',
+			'locale',
+			'dateoverride',
+			'timeoverride',
+			'registereddateoverride',
+			'calformat1override',
+			'calformat2override',
+			'eventdateformatoverride',
+			'pickerdateformatoverride',
+			'logdateoverride',
+			'decimalsep',
+			'thousandsep'
+		];
+
+		$vbconfig = vB::getConfig();
+		if (!empty($vbconfig['Misc']['debug']))
+		{
+			$langglobals[] = 'vblangcode';
+			$langglobals[] = 'revision';
+		}
+
+		$bf_misc_languageoptions = vB::getDatastore()->getValue('bf_misc_languageoptions');
+
+		if (isset($data['options']))
+		{
+			$data['options'] = convert_array_to_bits($data['options'], $bf_misc_languageoptions);
+		}
+
+		$newlang = [];
+		foreach ($langglobals AS $val)
+		{
+			$newlang[$val] =& $data[$val];
+		}
+
+		if (empty($newlang['title']) OR empty($newlang['charset']))
+		{
+			throw new vB_Exception_Api('please_complete_required_fields');
+		}
+
+		// User has defined a locale.
+		if ($newlang['locale'] != '')
+		{
+			if (!setlocale(LC_TIME, $newlang['locale']) OR !setlocale(LC_CTYPE, $newlang['locale']))
+			{
+				throw new vB_Exception_Api('invalid_locale', [$newlang['locale']]);
+			}
+
+			if (
+				$newlang['dateoverride'] == '' OR
+				$newlang['timeoverride'] == '' OR
+				$newlang['registereddateoverride'] == '' OR
+				$newlang['calformat1override'] == '' OR
+				$newlang['calformat2override'] == '' OR
+				$newlang['eventdateformatoverride'] == '' OR
+				$newlang['pickerdateformatoverride'] == '' OR
+				$newlang['logdateoverride'] == ''
+			)
+			{
+				throw new vB_Exception_Api('locale_define_fill_in_all_overrides');
+			}
+		}
+
+		if (!$languageid)
+		{
+			/*insert query*/
+			$insertdata = [vB_dB_Query::TYPE_KEY => vB_dB_Query::QUERY_INSERT];
+			$insertdata += $newlang;
+
+			$languageid = vB::getDbAssertor()->assertQuery('language', $insertdata);
+
+			//it's not clear why we only call the rebuild on insert.  There was a call in the update
+			//that was removed, but it only triggered in some very specific instances that involved
+			//parameters that were never passed.
+			$library->rebuildLanguage($languageid);
+		}
+		else
+		{
+			if (empty($data['product']))
+			{
+				$data['product'] = 'vbulletin';
+			}
+
+			/* update query */
+			$updatedata = [vB_dB_Query::TYPE_KEY => vB_dB_Query::QUERY_UPDATE];
+			$updatewhere = [
+				vB_dB_Query::CONDITIONS_KEY => [
+					[
+						'field' => 'languageid',
+						'value' => $languageid,
+						'operator' => vB_dB_Query::OPERATOR_EQ
+					]
+				]
+			];
+
+			$updatedata += $newlang;
+			$updatedata += $updatewhere;
+			$updateprincipal = vB::getDbAssertor()->assertQuery('language', $updatedata);
+		}
+
+		$library->buildLanguageCache();
+		return $languageid;
+	}
+
+	/**
+	 * Delete a language
+	 * @param int $languageid Language ID to be deleted
+	 * @return standard success array
+	 */
+	public function delete($languageid)
+	{
+		$this->checkHasAdminPermission('canadminlanguages');
+
+		$default = vB::getDatastore()->getOption('languageid');
+		if ($languageid == $default)
+		{
+			throw new vB_Exception_Api('cant_delete_default_language');
+		}
+
+		$db =	vB::getDbAssertor();
+
+		$count = $db->getField('language', [
+			vB_dB_Query::TYPE_KEY => vB_dB_Query::QUERY_SUMMARY,
+			vB_dB_Query::COLUMNS_KEY => ['COUNT(*)'],
+		]);
+
+		if ($count == 1)
+		{
+			throw new vB_Exception_Api('cant_delete_last_language');
+		}
+
+		$db->update('user', ['languageid' => 0], ['languageid' => $languageid]);
+		$db->update('session', ['languageid' => 0], ['languageid' => $languageid]);
+		$db->delete('phrase', ['languageid' => $languageid]);
+		$db->delete('language', ['languageid' => $languageid]);
+
+		vB_Library::instance('language')->buildLanguageCache();
+		return ['success' => true];
+	}
+
+	/**
+	 * Rebuld languages
+	 * @return array -- standard success array
+	 */
+	public function rebuild()
+	{
+		$this->checkHasAdminPermission('canadminlanguages');
+
+		$library = vB_Library::instance('language');
+
+		$languages = $library->getLanguageCache();
+		foreach ($languages AS $language)
+		{
+			$library->rebuildLanguage($language['languageid']);
+		}
+
+		$library->buildLanguageCache();
+		return ['success' => true];
+	}
+
+	/**
+	 * Set language as default language
+	 * @param int $languageid Language ID to be set as default
+	 * @return array -- standard success array
+	 */
+	public function setDefault($languageid)
+	{
+		$this->checkHasAdminPermission('canadminlanguages');
+
+		$languageid = intval($languageid);
+
+		vB::getDbAssertor()->update('setting', ['value' => $languageid], ['varname' => 'languageid']);
+
+		vB::getDatastore()->build_options();
+		vB_Library::instance('language')->rebuildLanguage($languageid);
+		return ['success' => true];
+	}
+}
+
+/*=========================================================================*\
+|| #######################################################################
+|| # Downloaded: 12:50, Tue Dec 24th 2024
+|| # CVS: $RCSfile$ - $Revision: 115202 $
+|| #######################################################################
+\*=========================================================================*/

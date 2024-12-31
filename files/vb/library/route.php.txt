@@ -1,0 +1,134 @@
+<?php
+/*========================================================================*\
+|| ###################################################################### ||
+|| # vBulletin 6.1.0 Alpha 4 Week 2 - Licence Number VBCW2VFT7A
+|| # ------------------------------------------------------------------ # ||
+|| # Copyright 2000-2024 MH Sub I, LLC dba vBulletin. All Rights Reserved.  # ||
+|| # This file may not be redistributed in whole or significant part.   # ||
+|| # ----------------- VBULLETIN IS NOT FREE SOFTWARE ----------------- # ||
+|| # http://www.vbulletin.com | http://www.vbulletin.com/license.html   # ||
+|| ###################################################################### ||
+\*========================================================================*/
+
+class vB_Library_Route extends vB_Library
+{
+	private $alwaysAllowedPrefixes = [
+		'help',
+		'contact-us',
+		'lostpw',
+		'reset-password',
+		'register',
+		'activateuser',
+		'activateemail',
+		'admincp',
+		'coppa-form',
+		// also see fetchDedupedNamedWhitelistPrefices()
+		// 'terms-of-service',
+		// 'privacy',
+	];
+
+	private $excludeFromPageViewPerms = [];
+
+	// static `routenew` GUID for some named routes
+	public const GUID_HOME = 'vbulletin-4ecbdacd6a4ad0.58738735';
+	public const GUID_HOME_CLASSIC = 'vbulletin-route-homeclassic-5d5f1629cb5297.17711543';
+	public const GUID_HOME_COMMUNITY = 'vbulletin-route-homecommunity-5d6039ff5c14d0.86786683';
+	// other channels' route GUIDs
+	public const GUID_BLOGS = 'vbulletin-4ecbdacd6aac05.50909926';
+	public const GUID_ARTICLES = 'vbulletin-r-cmshome5229f999bcb705.52472433';
+	public const GUID_SOCIALGROUPS = 'vbulletin-4ecbdac93742a5.43676037';
+
+	protected function __construct()
+	{
+		parent::__construct();
+
+		$this->fetchDedupedNamedWhitelistPrefices();
+	}
+
+	private function fetchDedupedNamedWhitelistPrefices() : void
+	{
+		// getRouteByIdent() internally caches named routes via loadNameRoutes(), so calling it individually is ok.
+		$canBeDeduped = [
+			// guests need to be able to read & agree to these during registration
+			'terms-of-service',
+			'privacy',
+
+			// This is currently used for email-unsubscription. While it requires user-sign-in, SOME forums may have
+			// its own weird view perm rules on the home page. Whatever the case, we should not let the home channel perms
+			// affect accessing the dashboard.
+			// Furthermore, we may end up having some logic for guest actions, e.g. being able to click a link and unsubscribe
+			// WITHOUT having to log in.
+			'dashboard'
+		];
+		foreach ($canBeDeduped AS $__name)
+		{
+			$__check = vB5_Route::getRouteByIdent($__name);
+			if (!empty($__check['prefix']))
+			{
+				$this->alwaysAllowedPrefixes[] = $__check['prefix'];
+			}
+			else
+			{
+				// todo: if something went wrong, do we want to add the canonical prefix for the route?
+			}
+		}
+	}
+
+	public function getAlwaysAllowedPrefixes() : array
+	{
+		return $this->alwaysAllowedPrefixes;
+	}
+
+	public function getPageViewPermissionExcludedPrefixes() : array
+	{
+		if (empty($this->excludeFromPageViewPerms))
+		{
+			$this->excludeFromPageViewPerms = array_merge($this->alwaysAllowedPrefixes, [
+				'editphoto',
+				'settings',
+				'uploadmedia',
+				'blogs',
+				'social-groups',
+				'special/css-examples',
+				'special/api-form',
+				'special/markup-library',
+				'pmchat/chat',
+				'nativo/sponsoredpost',
+			]);
+
+			// getRouteByIdent() internally caches named routes via loadNameRoutes(), so calling it individually is ok.
+			$canBeDeduped = [
+				'homeclassic',
+				'homecommunity',
+			];
+			foreach ($canBeDeduped AS $__name)
+			{
+				$__check = vB5_Route::getRouteByIdent($__name);
+				if (!empty($__check['prefix']))
+				{
+					$this->excludeFromPageViewPerms[] = $__check['prefix'];
+				}
+				else
+				{
+					// todo: if something went wrong, do we want to add the canonical prefix for the route?
+				}
+			}
+
+			// We might need this for 3rd party...
+			// vB::getHooks()->invoke('hookSetPageViewPermissionExcludes', [
+			// 	'excludeFromPagePermControl' => &$list,
+			// ]);
+		}
+
+		return $this->excludeFromPageViewPerms;
+	}
+
+
+}
+
+/*=========================================================================*\
+|| #######################################################################
+|| # Downloaded: 12:50, Tue Dec 24th 2024
+|| # CVS: $RCSfile$ - $Revision: 101013 $
+|| #######################################################################
+\*=========================================================================*/

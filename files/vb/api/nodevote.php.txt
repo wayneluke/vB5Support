@@ -1,0 +1,127 @@
+<?php if (!defined('VB_ENTRY')) die('Access denied.');
+/*======================================================================*\
+|| #################################################################### ||
+|| # vBulletin 6.1.0 Alpha 4 Week 2 - Licence Number VBCW2VFT7A
+|| # ---------------------------------------------------------------- # ||
+|| # Copyright ?2000-2024 MH Sub I, LLC dba vBulletin. All Rights Reserved. ||
+|| # This file may not be redistributed in whole or significant part. # ||
+|| # ---------------- VBULLETIN IS NOT FREE SOFTWARE ---------------- # ||
+|| # http://www.vbulletin.com | http://www.vbulletin.com/license.html # ||
+|| #################################################################### ||
+\*======================================================================*/
+
+/**
+ * vB_Api_Nodevote
+ *
+ * @package vBLibrary
+ * @access public
+ */
+class vB_Api_Nodevote extends vB_Api
+{
+	/**
+	 *	DB Assertor object
+	 */
+	protected $assertor;
+
+	/** @var vB_Library_Nodevote */
+	protected $library;
+
+
+
+	protected function __construct()
+	{
+		parent::__construct();
+		$this->assertor = vB::getDbAssertor();
+
+		$this->library = vB_Library::instance('nodevote');
+	}
+
+
+	// todo: test api extensions. can private functions be extended?
+	private function canUnvoteNode($nodeid, $votetypeid)
+	{
+		[$currentUserid, $votetype, $votegroup, $node] = $this->library->digestVoteUnvoteRequest($nodeid, $votetypeid);
+
+		$can = true;
+		vB::getHooks()->invoke('hookCanUnvoteNode', [
+			'currentUserid' => $currentUserid,
+			'votetype' => $votetype,
+			'votegroup' => $votegroup,
+			'node' => $node,
+			'can' => &$can,
+		]);
+
+		return $can;
+	}
+
+	// todo: test api extensions. can private functions be extended?
+	private function canVoteNode($nodeid, $votetypeid)
+	{
+		[$currentUserid, $votetype, $votegroup, $node] = $this->library->digestVoteUnvoteRequest($nodeid, $votetypeid);
+
+		$can = true;
+		vB::getHooks()->invoke('hookCanVoteNode', [
+			'currentUserid' => $currentUserid,
+			'votetype' => $votetype,
+			'votegroup' => $votegroup,
+			'node' => $node,
+			'can' => &$can,
+		]);
+
+		return $can;
+	}
+
+
+	/**
+	 * @return [
+	 *   'success' => (bool) true,
+	 *   'nodevotes' => ['votes' => (int), 'ivoted' => 1|0],
+	 * ]
+	 */
+	public function unvoteNode($nodeid, $votetypeid)
+	{
+		if (!$this->canUnvoteNode($nodeid, $votetypeid))
+		{
+			throw new vB_Exception_Api('no_permission');
+		}
+
+		$this->library->unvoteNode($nodeid, $votetypeid);
+		$nodevotes = $this->library->getNodevoteCounts($nodeid);
+
+		return [
+			'success' => true,
+			'nodevotes' => $nodevotes[$nodeid] ?? [],
+		];
+	}
+
+	/**
+	 * @return [
+	 *   'success' => (bool) true,
+	 *   'voteid' => (int),
+	 *   'nodevotes' => ['votes' => (int), 'ivoted' => 1|0],
+	 * ]
+	 */
+	public function voteNode($nodeid, $votetypeid)
+	{
+		if (!$this->canVoteNode($nodeid, $votetypeid))
+		{
+			throw new vB_Exception_Api('no_permission');
+		}
+
+		$voteid = $this->library->voteNode($nodeid, $votetypeid);
+		$nodevotes = $this->library->getNodevoteCounts($nodeid);
+
+		return [
+			'success' => true,
+			'voteid' => $voteid,
+			'nodevotes' => $nodevotes[$nodeid] ?? [],
+		];
+	}
+}
+
+/*======================================================================*\
+|| ####################################################################
+|| # Downloaded: 12:50, Tue Dec 24th 2024
+|| # SVN: $Revision: 101013 $
+|| ####################################################################
+\*======================================================================*/

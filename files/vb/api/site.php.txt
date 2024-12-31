@@ -1,0 +1,278 @@
+<?php
+/*========================================================================*\
+|| ###################################################################### ||
+|| # vBulletin 6.1.0 Alpha 4 Week 2 - Licence Number VBCW2VFT7A
+|| # ------------------------------------------------------------------ # ||
+|| # Copyright 2000-2024 MH Sub I, LLC dba vBulletin. All Rights Reserved.  # ||
+|| # This file may not be redistributed in whole or significant part.   # ||
+|| # ----------------- VBULLETIN IS NOT FREE SOFTWARE ----------------- # ||
+|| # http://www.vbulletin.com | http://www.vbulletin.com/license.html   # ||
+|| ###################################################################### ||
+\*========================================================================*/
+
+/**
+ * vB_Api_Site
+ *
+ * @package vBApi
+ */
+
+class vB_Api_Site extends vB_Api
+{
+	protected $disableWhiteList = [
+		'loadHeaderNavbar',
+		'loadFooterNavbar',
+		'getAppManifest',
+	];
+
+	/**
+	 * Stores the header navbar data.
+	 *
+	 * @param	int			The storing data siteid.
+	 * @param	mixed		Array of elements containing data to be stored for header navbar. Elements might contain:
+	 * 			title		--	string		Site title. *required
+	 * 			url			--	string		Site url. *required
+	 * 			usergroups	--	array		Array of ints.
+	 * 			newWindow	--	boolean		Flag used to display site in new window. *required
+	 * 			subnav		--	mixed		Array of subnav sites (containing same site data structure).
+	 * 				id			--	int		Id of subnav site.
+	 * 				title		--	string	Title of subnav site.
+	 * 				url			--	string	Url of subnav site.
+	 * 				usergroups	--	array	Array of ints.
+	 * 				newWindow	--	boolean	Flag used to display subnav site in new window.
+	 * 				subnav		--	mixed	Array of subnav sites (containing same site data structure).
+	 * @return	boolean		To indicate if save was succesfully done.
+	 */
+	public function saveHeaderNavbar($siteId, $data)
+	{
+		$this->checkHasAdminPermission('canusesitebuilder');
+		return vB_Library::instance('site')->saveHeaderNavbar($siteId, $data);
+	}
+
+	/**
+	 * Stores the footer navbar data.
+	 *
+	 * @param	int			The storing data siteid.
+	 * @param	mixed		Array of data to be stored for footer navbar.
+	 * 			title		--	string		Site title.
+	 * 			url			--	string		Site url.
+	 * 			usergroups	--	array		Array of ints.
+	 * 			newWindow	--	boolean		Flag used to display site in new window.
+	 * 			subnav		--	mixed		Array of subnav sites (containing same site data structure).
+	 * 				id			--	int		Id of subnav site.
+	 * 				title		--	string	Title of subnav site.
+	 * 				url			--	string	Url of subnav site.
+	 * 				usergroups	--	array	Array of ints.
+	 * 				newWindow	--	boolean	Flag used to display subnav site in new window.
+	 * 				subnav		--	mixed	Array of subnav sites (containing same site data structure).
+	 * @return	boolean		To indicate if save was succesfully done.
+	 */
+	public function saveFooterNavbar($siteId, $data)
+	{
+		$this->checkHasAdminPermission('canusesitebuilder');
+		return vB_Library::instance('site')->saveFooterNavbar($siteId, $data);
+	}
+
+	/**
+	 * Gets the header navbar data
+	 *
+	 * @param	int		Site id requesting header data.
+	 * @param	string		URL
+	 * @param	int		Edit mode so allow all links if user can admin sitebuilder
+	 * @param	int		Channel ID (optional, used to determine current header navbar tab)
+	 *
+	 * @return	mixed	Array of header navbar data (Described in save method).
+	 */
+	public function loadHeaderNavbar($siteId, $url = false, $edit = false, $channelId = 0)
+	{
+		if ($this->disabled)
+		{
+			return [];
+		}
+
+		return vB_Library::instance('site')->loadHeaderNavbar($siteId, $url, $edit, $channelId);
+	}
+
+	/**
+	 * Gets the footer navbar data
+	 *
+	 * @param	int $sideid Site id requesting footer data.
+	 * @param	string $url
+	 * @param	int $edit Edit mode so allow all links if user can admin sitebuilder
+	 *
+	 * @return array Array of footer navbar data (Described in save method).
+	 */
+	public function loadFooterNavbar($siteId, $url = false, $edit = false)
+	{
+		if ($this->disabled)
+		{
+			return [];
+		}
+
+		return vB_Library::instance('site')->loadFooterNavbar($siteId, $url, $edit);
+	}
+
+	/**
+	 * Returns an array of general statistics for the site
+	 *
+	 * @return	array	Statistics.
+	 */
+	public function getSiteStatistics()
+	{
+		return vB_Library::instance('site')->getSiteStatistics();
+	}
+
+	/**
+	 * Returns a web app manifest for the site
+	 *
+	 * @return	array	['manifest' => Manifest].
+	 */
+	public function getAppManifest() : array
+	{
+		$vboptions = vB::getDatastore()->getValue('options');
+		$stringUtil = vB::getString();
+		// future feature: get current homepage's meta description & set it to $manifest->description
+		$homepage = [];
+
+		/** @var vB_Api_Style */
+		$styleApi = vB_Api::instanceInternal('style');
+		$styleVars = $styleApi->fetchStyleVars([$vboptions['styleid']]);
+
+
+		$frontendurl = $vboptions['frontendurl'];
+
+
+		// We may want to wrap this with a utility class.
+		// For now in an API method as the frontend needs easy access to this.
+
+
+		// For Chromium, you must provide at least a 192x192 pixel icon and a 512x512
+		// pixel icon. If only those two icon sizes are provided, Chrome automatically
+		// scales the icons to fit the device. If you'd prefer to scale your own icons,
+		// and adjust them for pixel-perfection, provide icons in increments of 48dp.
+		// src, sizes, type,  optional 'purpose': 'any maskable'
+		$iconsSetting = json_decode($vboptions['manifest_icon'] ?? '[]', true);
+		// Right now, we're expecting a _512 & _192, but we may add more in the future, esp
+		// if iOS or others *require* additional sizes.
+		$sizes = $iconsSetting['sizes'] ?? [512];
+		$firstSize = reset($sizes);
+		$firstFiledataid = $iconsSetting['filedataid_' . $firstSize] ?? 0;
+		if (!empty($firstFiledataid))
+		{
+			// If we have an SVG, we'll only have the one filedataid.
+			if (!empty($iconsSetting['isSVG']))
+			{
+				$icons = [
+					[
+						'src' => $frontendurl . '/filedata/fetch?filedataid=' . intval($firstFiledataid),
+						'sizes' => 'any',
+						'type' => 'image/svg+xml',
+					],
+				];
+			}
+			else
+			{
+				$icons = [];
+				foreach ($sizes AS $__size)
+				{
+					$__size = intval($__size);
+					if (!empty($iconsSetting['filedataid_' . $__size]))
+					$icons[] = [
+						'src' => $frontendurl . '/filedata/fetch?filedataid=' . intval($iconsSetting['filedataid_' . $__size]),
+						'sizes' => $__size . 'x' . $__size,
+						'type' => $iconsSetting['mimetype'],
+					];
+				}
+			}
+		}
+		else
+		{
+			// Default SVG square icon
+			$defaultIcon = $frontendurl . '/images/misc/vb_logo_square_darkblue.svg';
+			$icons = [
+				[
+					'src' => $defaultIcon,
+					'sizes' => 'any',
+					'type' => 'image/svg+xml',
+				],
+				// [
+				// 	'src' => $siteLogo,
+				// 	'sizes' => '512x512',
+				// 	'type' => 'image/svg+xml',
+				// ],
+			];
+		}
+
+		// at the moment, android seems to be inconsistent about brackets (& possibly other characters)
+		// in app names. For now, not escaping it, as the very first UI (install app) escapes it, so
+		// if we html-entity it'll double-escape and look ugly. From what I observed, the uninstall confirm
+		// & post-uninstall UIs seem to *not* escape it, so somethign like "<forum> abc" ends up saying
+		// "abc" are you sure you want to uninstall? ... "abc" uninstalled.
+
+		$manifest = new vB_Entity_WebManifest(
+			$stringUtil->toUtf8($vboptions['bbtitle']),
+			$icons,
+			$frontendurl,
+			'standalone'
+		);
+
+		return ['manifest' => (string)$manifest];
+	}
+
+	/**
+	 * Update bbtitle from sitebuilder quick setup.
+	 *
+	 * @param string $bbtitle        Site name
+	 *
+	 * @return array
+	 */
+	public function saveSiteNameAndUrl(?string $sitename = null) : array
+	{
+		// Note, the nullable checks were because I'm planning on possibly expanding
+		// this method to allow optionally saving sitename OR url OR both.
+		$update = [];
+		if (!is_null($sitename))
+		{
+			$this->checkHasAdminPermission(['canadminsettings', 'canadminsettingsall']);
+			$update['bbtitle'] = $sitename;
+		}
+
+		// Not implemented yet
+		// if (!is_null($siteurl))
+		// {
+		// 	$this->checkHasAdminPermission(['canadminsettingsall']);
+		// 	$update['frontendurl'] = $siteurl;
+		// }
+
+		/** @var vB_Library_Options */
+		$optionsLib = vB_Library::instance('options');
+
+		$i = 1;
+		$max = count($update);
+		foreach ($update AS $__varname => $__value)
+		{
+			$__rebuild = ($i++ == $max);
+			$optionsLib->updateValue($__varname, $__value, $__rebuild);
+		}
+
+		$datastore = vB::getDatastore();
+
+		// READING these perms don't require special perms, as they're public and needed for
+		// the site to function.
+		$bbtitle = $datastore->getOption('bbtitle');
+		$frontendurl = $datastore->getOption('frontendurl');
+
+
+		return [
+			'success' => true,
+			'bbtitle' => $bbtitle,
+			'frontendurl' => $frontendurl,
+		];
+	}
+}
+
+/*=========================================================================*\
+|| #######################################################################
+|| # Downloaded: 12:50, Tue Dec 24th 2024
+|| # CVS: $RCSfile$ - $Revision: 117034 $
+|| #######################################################################
+\*=========================================================================*/

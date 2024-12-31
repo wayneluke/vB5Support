@@ -1,0 +1,94 @@
+<?php
+/*========================================================================*\
+|| ###################################################################### ||
+|| # vBulletin 6.1.0 Alpha 4 Week 2 - Licence Number VBCW2VFT7A
+|| # ------------------------------------------------------------------ # ||
+|| # Copyright 2000-2024 MH Sub I, LLC dba vBulletin. All Rights Reserved.  # ||
+|| # This file may not be redistributed in whole or significant part.   # ||
+|| # ----------------- VBULLETIN IS NOT FREE SOFTWARE ----------------- # ||
+|| # http://www.vbulletin.com | http://www.vbulletin.com/license.html   # ||
+|| ###################################################################### ||
+\*========================================================================*/
+
+/**
+ * @package vBApi
+ */
+abstract class vB_Api_ExternalLogin_OAuth2Client extends vB_Api_ExternalLogin
+{
+	use vB_Trait_NoSerialize;
+
+	protected function __construct()
+	{
+		//We want to set the library variable to a subclass instead of the default behavior
+		//in the parent constructor, but that should be done in whatever specific class extends this one.
+		//No point in creating the library and then resetting it immediately.
+	}
+
+	public function getTokenRedirect()
+	{
+		return ['url' => $this->library->getTokenRedirect()];
+	}
+
+	public function confirmToken($code, $checkstate)
+	{
+		$this->library->confirmToken($code, $checkstate);
+		return ['success' => true];
+	}
+
+	public function verifyAuthAndLogin($url = '', $userid = null)
+	{
+		return $this->library->verifyAuthAndLogin($url, $userid);
+	}
+
+	public function canLinkCurrentUser()
+	{
+		//we don't care what the external user id is at this point (and we might not want to leak it)
+		//but if this doesn't throw an error then we can link the current account.
+		$this->library->getExternalUseridForLinking();
+		return ['success' => true];
+	}
+
+	//This relies on having a session with a confirmed token using the confirmToken function above.
+	//API security is maintained by only affected the validated user
+	public function linkCurrentUser()
+	{
+		$this->library->linkCurrentUserWithApp();
+		return ['success' => true];
+	}
+
+	//API security is maintained by only affected the validated user
+	public function unlinkCurrentUser()
+	{
+		$this->library->unlinkCurrentUserFromApp();
+		return ['success' => true];
+	}
+
+	public function getRegistrationData()
+	{
+		return $this->library->getRegistrationData();
+	}
+
+	public function forgetRegistrationData()
+	{
+		return $this->library->deleteSessionAuthRecord();
+	}
+
+	public function getState()
+	{
+		$userAuth = $this->library->getUserAuthRecord();
+		$enabled = $this->library->getEnabled();
+
+		return [
+			'enabled' => $enabled['enabled'],
+			'register_enabled' => $enabled['register_enabled'],
+			'external_userid' => $userAuth['external_userid'] ?? '',
+		];
+	}
+}
+
+/*=========================================================================*\
+|| #######################################################################
+|| # Downloaded: 12:50, Tue Dec 24th 2024
+|| # CVS: $RCSfile$ - $Revision: 111256 $
+|| #######################################################################
+\*=========================================================================*/

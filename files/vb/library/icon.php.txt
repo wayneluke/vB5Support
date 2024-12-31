@@ -1,0 +1,124 @@
+<?php if (!defined('VB_ENTRY')) die('Access denied.');
+/*========================================================================*\
+|| ###################################################################### ||
+|| # vBulletin 6.1.0 Alpha 4 Week 2 - Licence Number VBCW2VFT7A
+|| # ------------------------------------------------------------------ # ||
+|| # Copyright 2000-2024 MH Sub I, LLC dba vBulletin. All Rights Reserved.  # ||
+|| # This file may not be redistributed in whole or significant part.   # ||
+|| # ----------------- VBULLETIN IS NOT FREE SOFTWARE ----------------- # ||
+|| # http://www.vbulletin.com | http://www.vbulletin.com/license.html   # ||
+|| ###################################################################### ||
+\*========================================================================*/
+
+/**
+ * vB_Library_Language
+ *
+ * @package vBLibrary
+ * @access public
+ */
+
+class vB_Library_Icon extends vB_Library
+{
+	private $iconTypeInfo = [
+		'avatar' => [
+			'type' => 'avatar',
+			'typeplural' => 'avatars',
+			'catid' => 1,
+		],
+		'icon' => [
+			'type' => 'post_icon',
+			'typeplural' => 'post_icons',
+			'catid' => 2,
+		],
+		'smilie' => [
+			'type' => 'smilie',
+			'typeplural' => 'smilies',
+			'catid' => 3,
+		],
+	];
+
+	/**
+	 *	Set the the permissions for usergroups on an Icon category.
+	 *
+	 *	This is only valid for avatars (not currently implemented) and post icons.
+	 *	Attempting to update a smilie category will throw an error.
+	 *
+	 *	@param int $categoryid -- the icon category to update
+	 *	@param array $permissions -- [$usergroupid => (bool)]	map of the permissions to set.
+	 *		Usergroups not in the array will not be affected.
+	 */
+	public function setCategoryPermissions($categoryid, $permissions)
+	{
+		$db = vB::getDbAssertor();
+
+		$categoryinfo = $db->getRow('vBForum:imagecategory', [
+			'imagecategoryid' => $categoryid,
+			vB_dB_Query::COLUMNS_KEY => ['imagetype'],
+		]);
+
+		if(!$categoryinfo)
+		{
+			throw new vB_Exception_Api('invalid_data_w_x_y_z', [$categoryid, 'categoryid', __CLASS__, __FUNCTION__]);
+		}
+
+		if ($categoryinfo['imagetype'] == 3)
+		{
+			throw new vB_Exception_Api('smilie_categories_dont_support_permissions');
+		}
+
+		//note that we keep a record for imagecategory/usergroup combinations where
+		//the usergroup *doesn't* have permissions to use the category.  That's
+		//not particularly clear
+		$insert = [];
+		foreach($permissions AS $usergroupid => $canuse)
+		{
+			$usergroupid = intval($usergroupid);
+			if (!$canuse)
+			{
+				$insert[] = [$categoryid, $usergroupid];
+			}
+		}
+
+		//delete the groups we're updating -- we'll restore the ones that are supposed to be there
+		//it doesn't matter if there isn't a record for the usergroup.
+		$db->delete('vBForum:imagecategorypermission', [
+			'imagecategoryid' => $categoryid,
+			'usergroupid' => array_keys($permissions),
+		]);
+
+		if($insert)
+		{
+			//and add the values back based on the new permissions.  There shouldn't be any duplicates
+			//because we just deleting everything that could have been a dupe.
+			$db->assertQuery('vBForum:imagecategorypermission',[
+				vB_dB_Query::TYPE_KEY => vB_dB_Query::QUERY_MULTIPLEINSERT,
+				vB_dB_Query::FIELDS_KEY => ['imagecategoryid', 'usergroupid'],
+				vB_dB_Query::VALUES_KEY => $insert,
+			]);
+		}
+	}
+
+	// These should probably be private/internal functions.  However the code from the admincp
+	// hasn't been completely ported so we need these exposed for the time being.
+
+	/**
+	 *	@param string $type -- one of avatar, icon, or smilie
+	 */
+	public function getIconTypeInfo($type)
+	{
+		$result = $this->iconTypeInfo[$type] ?? null;
+		if($result)
+		{
+			return $result;
+		}
+
+		throw new vB_Exception_Api('invalid_table_specified');
+	}
+}
+
+/*=========================================================================*\
+|| #######################################################################
+|| # Downloaded: 12:50, Tue Dec 24th 2024
+|| # CVS: $RCSfile$ - $Revision: 105280 $
+|| #######################################################################
+\*=========================================================================*/

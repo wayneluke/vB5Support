@@ -1,0 +1,71 @@
+<?php if (!defined('VB_ENTRY')) die('Access denied.');
+/*========================================================================*\
+|| ###################################################################### ||
+|| # vBulletin 6.1.0 Alpha 4 Week 2 - Licence Number VBCW2VFT7A
+|| # ------------------------------------------------------------------ # ||
+|| # Copyright 2000-2024 MH Sub I, LLC dba vBulletin. All Rights Reserved.  # ||
+|| # This file may not be redistributed in whole or significant part.   # ||
+|| # ----------------- VBULLETIN IS NOT FREE SOFTWARE ----------------- # ||
+|| # http://www.vbulletin.com | http://www.vbulletin.com/license.html   # ||
+|| ###################################################################### ||
+\*========================================================================*/
+
+/**
+ * This is the query processor for delete queries.
+ *
+ * @package vBDatabase
+ */
+class vB_dB_Query_Delete extends vB_dB_Query
+{
+	public function __construct($queryid, &$db, $dbSlave)
+	{
+		parent:: __construct($queryid, $db, $dbSlave);
+
+		$this->query_type = self::QUERY_DELETE;
+		$this->table_query = true;
+	}
+
+	public function setQuery($params, $sortorder)
+	{
+		return parent::setTableQuery($params, $sortorder);
+	}
+
+	protected function buildQuery(array $values) : string
+	{
+		$queryBuilder = self::$queryBuilders[$this->db_type];
+		$params = $this->extractParamsFromValues($values);
+		$where = $this->getWhere($queryBuilder, $values);
+		$structure = $this->structure['structure'] ?? $this->structure;
+		return $queryBuilder->makeDeleteQuery($this->queryid, $where, $this->sortorder, $structure, $params);
+	}
+
+	public function execSQL()
+	{
+		return $this->doDeletes();
+	}
+
+	protected function doDeletes()
+	{
+		$results = [];
+		if ($this->structure)
+		{
+			if ($querystring = $this->buildQuery($this->params))
+			{
+				$this->db->query_write($querystring);
+				$this->error = $this->db->error();
+				$results = empty($this->error);
+			}
+			else
+			{
+				$results = false;
+			}
+		}
+		return $results;
+	}
+}
+/*=========================================================================*\
+|| #######################################################################
+|| # Downloaded: 12:50, Tue Dec 24th 2024
+|| # CVS: $RCSfile$ - $Revision: 115230 $
+|| #######################################################################
+\*=========================================================================*/

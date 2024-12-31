@@ -1,0 +1,109 @@
+<?php
+/*========================================================================*\
+|| ###################################################################### ||
+|| # vBulletin 6.1.0 Alpha 4 Week 2 - Licence Number VBCW2VFT7A
+|| # ------------------------------------------------------------------ # ||
+|| # Copyright 2000-2024 MH Sub I, LLC dba vBulletin. All Rights Reserved.  # ||
+|| # This file may not be redistributed in whole or significant part.   # ||
+|| # ----------------- VBULLETIN IS NOT FREE SOFTWARE ----------------- # ||
+|| # http://www.vbulletin.com | http://www.vbulletin.com/license.html   # ||
+|| ###################################################################### ||
+\*========================================================================*/
+
+/**
+ * @package vBulletin
+ */
+abstract class vB_Undo_Item implements JsonSerializable
+{
+	use vB_Trait_NoSerialize;
+
+	protected int $userid = 0;
+	protected ?int $undoid = null;
+	protected array $serializefields = [
+		'userid',
+	];
+
+	/**
+	 *	Restore and event from stored form.
+	 *
+	 *	@param string $data -- The string format. This should be the result of a previous call to getData
+	 */
+	public static function restoreFromData(int $undoid, string $data) : ?vB_Undo_Item
+	{
+		$dataArray = json_decode($data, true);
+		if($dataArray === false)
+		{
+			return null;
+		}
+
+		$class = $dataArray['class'];
+		//Make sure we aren't constructing unknown objects from serialized data. Even though we shouldn't be calling this
+		//on user data anyway.  Use is_a instead of instanceof because the latter doesn't work with class names and
+		//we don't want to instantiate the object until we don't were dealing with an event item.
+		if(!is_a($class, 'vB_Undo_Item', true))
+		{
+			return null;
+		}
+
+		$item = new $class();
+		$item->fromData($dataArray['data']);
+		// This is only available for restored items
+		$item->undoid = $undoid;
+
+		return $item;
+	}
+
+	//Because of the need to restore from the serialized string format we need to be able to call the constructor
+	//without parameters.  We can't really stop a child class from having a constructor with optional params
+	//(declaring the constructor as final is a little aggressive) but the intent is to use static factory
+	//methods to create the objects instead of directly calling the constructor.
+	protected function __construct() {}
+
+	public final function getData() : string
+	{
+		$data = [
+			'class' => get_class($this),
+			'data' => $this,
+		];
+		return json_encode($data);
+	}
+
+	public final function getClass() : string
+	{
+		return get_class($this);
+	}
+
+	public final function getUserid() : int
+	{
+		return $this->userid ?? 0;
+	}
+
+	public final function getUndoid() : ?int
+	{
+		return $this->undoid;
+	}
+
+
+	// Note that getData() relies on this
+	public function jsonSerialize() : mixed
+	{
+		$item = [];
+		foreach($this->serializefields AS $field)
+		{
+			$item[$field] = $this->{$field};
+		}
+
+		return $item;
+	}
+
+	//this assumps that $item was generated via jsonSerialize
+	protected function fromData(mixed $item) : void
+	{
+		foreach($this->serializefields AS $field)
+		{
+			$this->{$field} = $item[$field];
+		}
+	}
+
+	abstract public function run() : mixed;
+}

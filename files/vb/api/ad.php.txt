@@ -1,0 +1,991 @@
+<?php
+/*========================================================================*\
+|| ###################################################################### ||
+|| # vBulletin 6.1.0 Alpha 4 Week 2 - Licence Number VBCW2VFT7A
+|| # ------------------------------------------------------------------ # ||
+|| # Copyright 2000-2024 MH Sub I, LLC dba vBulletin. All Rights Reserved.  # ||
+|| # This file may not be redistributed in whole or significant part.   # ||
+|| # ----------------- VBULLETIN IS NOT FREE SOFTWARE ----------------- # ||
+|| # http://www.vbulletin.com | http://www.vbulletin.com/license.html   # ||
+|| ###################################################################### ||
+\*========================================================================*/
+
+/**
+ * @package vBApi
+ */
+class vB_Api_Ad extends vB_Api
+{
+	protected function getAdsByAdid() : array
+	{
+		$ads = vB::getDbAssertor()->getRows('ad', [], false, 'adid');
+
+		return $ads;
+	}
+
+	/**
+	 * Lists ads for a location
+	 *
+	 * @param  string     $adlocation The location we want to get ads for (string locations defined in templates)
+	 *
+	 * @return array Returns an array of ads (fields from the ad and adcriteria tables)
+	 */
+	public function listAdsByLocation($adlocation)
+	{
+		//$adlocation = vB::getCleaner()->clean($adlocation,  vB_Cleaner::TYPE_STR);
+		$this->checkHasAdminPermission('canadminads');
+
+		$db = vB::getDbAssertor();
+		// ATM each adlocation (widgetinstance, header|header2, first-post|last-post) can have only 1 instance of an adid. If that changes we need to change this keying.
+		$adinstances = $db->getRows('adinstance', ['adlocation' => $adlocation], 'displayorder', 'adid');
+		$adids = array_column($adinstances, 'adid');
+		// Note, having the returned $ads keyed by adid is critical for JS. See sb_page.js's openAdListDialog()
+		$ads = $this->getAdsByAdid();
+
+		$adCriteriaByAdId = $this->getAdCriteria();
+
+		// Future feature: For "warning, this ad is used in X other widgets /
+		// pages".. might need to fetch page names as well but that's gonna be
+		// annoying. Something like this will be useful for checking before
+		// deleting an ad used in other places, but is this strictly needed
+		// *here*? Do we want admins to be able to delete ads on the spot now?
+		// Since we do not yet have an admincp page for managing ads, we'll keep
+		// this here for now but we should re-evaluate if we get an admincp page
+		// & remove delete ad feature from the sitebuilder. Edit: Now it returns
+		// the widget instance titles, but not the page titles yet.
+		$otherInstanceInfo = $this->getOtherAdLocationsInfo($adlocation);
+
+
+		foreach ($ads AS $__adid => &$__ad)
+		{
+			$__instance = $adinstances[$__adid] ?? [
+				// defaults if this ad isn't instanced on this location
+				// note that column default for displayorder is 0, but this::save() defaults
+				//displayorder to 1 instead. Going with the latter.
+				'displayorder' => 1,
+				// If we don't have an instance record, it is inactive.
+				'active' => 0,
+			];
+			$__ad['displayorder'] = $__instance['displayorder'];
+			$__ad['active'] = $__instance['active'];
+			$__ad['criterias'] = $adCriteriaByAdId[$__adid] ?? [];
+			// "other locations" info
+			$otherInstanceInfo[$__adid] ??= ['count' => 0, 'locations' => []];
+			sort($otherInstanceInfo[$__adid]['locations']);
+			$__ad['otherlocationscount'] = $otherInstanceInfo[$__adid]['count'];
+			$__ad['otherlocations'] = $otherInstanceInfo[$__adid]['locations'];
+
+			// This is needed by sb_page.js's openAdListDialog() atm.
+			$__ad['adlocation'] = $adlocation;
+		}
+
+		return $ads;
+	}
+
+	private function getOtherAdLocationsInfo(string $excludeLocation) : array
+	{
+		$assertor = vB::getDbAssertor();
+		$query = $assertor->select('adinstance', [
+				['field' => 'adlocation', 'value' => $excludeLocation, 'operator' => vB_dB_Query::OPERATOR_NE],
+				// Note, we're only fetching ACTIVE adinstances, because there's practically no difference
+				// between an inactive adinstance & a non-existant adinstance, and trying to differentiate
+				// the two (e.g. for pre-delete warning) could get problematic/annoying.
+				['field' => 'active', 'value' => 1, 'operator' => vB_dB_Query::OPERATOR_EQ],
+			],
+			false,
+			['adlocation', 'adid']
+		);
+		$widgetinstanceids = [];
+		$infoByAdid = [];
+		$temp = [];
+		if ($query->valid())
+		{
+			foreach ($query AS ['adid' => $__adid, 'adlocation' => $__adlocation])
+			{
+				if (is_numeric($__adlocation))
+				{
+					$widgetinstanceids[$__adlocation] = $__adlocation;
+				}
+				$temp[] = [
+					'adid' => $__adid,
+					'location' => $__adlocation,
+				];
+			}
+		}
+
+		$query = $assertor->select('widgetinstance', ['widgetinstanceid' => $widgetinstanceids], false, ['widgetinstanceid', 'adminconfig']);
+		$titles = [];
+		if ($query->valid())
+		{
+			foreach ($query AS ['widgetinstanceid' => $__id, 'adminconfig' => $__config])
+			{
+				$__config = vb_unserialize($__config);
+				if (!empty($__config['title']))
+				{
+					$titles[$__id] = $__config['title'];
+				}
+				else
+				{
+					$titles[$__id] = 'Module ' . $__id;
+				}
+			}
+		}
+
+		$infoByAdid = [];
+		foreach ($temp AS $__row)
+		{
+			$infoByAdid[$__row['adid']] ??= ['count' => 0, 'locations' => []];
+			$infoByAdid[$__row['adid']]['count']++;
+
+			$infoByAdid[$__row['adid']]['locations'][] = $titles[$__row['location']] ?? $__row['location'];
+		}
+
+		return $infoByAdid;
+	}
+
+	/**
+	 * Fetches an ad by its ID
+	 *
+	 * @param  int              $adid Ad ID
+	 * @throws vB_Exception_Api invalidid if the specified ad id does not exist
+	 *
+	 * @return array            $ad Ad data (fields from the ad and adcriteria tables)
+	 * @deprecated
+	 */
+	public function fetch($adid)
+	{
+		// As far as I can tell, this function is only used by unit tests.
+		// For now, marking it as deprecated, but we should probably remove this
+		// unless we need it for adminCP use. If we continue using it I'd like to
+		// rename it more specifically (fetchAd()) so that grepping isn't a pain.
+		$this->checkHasAdminPermission('canadminads');
+
+		$db = vB::getDbAssertor();
+
+		$ad = $db->getRow('ad', [
+			'adid' => $adid
+		]);
+
+		if (!$ad)
+		{
+			throw new vB_Exception_Api('invalidid');
+		}
+
+		$criteria = $this->getAdCriteria(['adid' => $adid]);
+		$ad['criterias'] = $criteria[$adid] ?? [];
+
+		return $ad;
+	}
+
+	/**
+	 * Rebuilds the template for given ad locations
+	 *
+	 * @param array $adlocations array of adlocation strings to rebuild
+	 *
+	 * @return void
+	 */
+	private function rebuildAdTemplates(array $adlocations) : void
+	{
+		//these will be needed if we ever make this public.  It might be useful
+		//for the installer or on a maintenance page to force a rebuild (for example
+		//we change how we create the templates and want to force existing ads to conform).
+		//$locationids = vB::getCleaner()->clean($locationids,  vB_Cleaner::TYPE_ARRAY_NOHTML);
+		//$this->checkHasAdminPermission('canadminads');
+
+		$ad_cache = $this->getAdsByAdid();
+		$ad_criteria_cache = $this->getAdCriteria();
+
+		foreach($adlocations AS $__adlocation)
+		{
+			$__innerAdTemplate = $this->buildAdTemplate($__adlocation, $ad_cache, $ad_criteria_cache);
+			$__template = $this->wrapAdTemplate($__innerAdTemplate, $__adlocation);
+			$this->replaceAdTemplate(-1, $__adlocation, $__template, 'vbulletin');
+		}
+
+		vB_Library::instance('style')->buildAllStyles();
+	}
+
+	/**
+	 * Updates an existing ad or saves a new ad
+	 *
+	 * @param  int              $adid ID of Ad to be updated. Set to 0 to insert a new Ad
+	 * @param  array            $data Ad data
+	 *
+	 * @throws vB_Exception_Api invalid_title_specified if the title is missing
+	 *
+	 * @return int              Ad ID
+	 */
+	public function save($adid, $data)
+	{
+		$this->checkHasAdminPermission('canadminads');
+		$db = vB::getDbAssertor();
+
+		$adid = intval($adid);
+		if (!is_array($data))
+		{
+			throw new vB_Exception_Api('invalid_data_w_x_y_z', [$data, '$data', __CLASS__, __FUNCTION__]);
+		}
+
+		//do this before cleaning or we'll end up not being able to distinguish
+		//between "not set" and "0"
+		if (!isset($data['displayorder']) OR !is_numeric($data['displayorder']))
+		{
+			// The edit ad form that uses this currently doesn't have the displayorder. The displayorder gets saved through
+			// quickSave. Check existing & preserve displayorder -- otherwise every time the ad html / condition is saved the
+			// displayorder gets reset to 1, which is very annoying.
+			$existing = null;
+			if ($adid AND !empty($data['ad_location']))
+			{
+				$existing = $db->getColumn('adinstance', 'displayorder', ['adid' => $adid, 'adlocation' => $data['ad_location']]);
+				if ($existing)
+				{
+					$existing = reset($existing);
+				}
+			}
+			$data['displayorder'] = $existing ?? 1;
+		}
+
+		// This is potentially problematic because we're moving the active field
+		// off to adinstance, and it's not clear whether this should affect a
+		// specific adinstance or turn this off globally. For now, we are not
+		// implementing the global active feature (see $globalAdData below)
+		if (!isset($data['active']) OR !is_numeric($data['active']))
+		{
+			$data['active'] = 0;
+		}
+
+		// not sure wtf this was supposed to clean. leaving it alone for now.
+		$cleaner = vB::getCleaner();
+		$data = $cleaner->cleanArray($data, [
+			'criteria'            => vB_Cleaner::TYPE_ARRAY,
+			'title'               => vB_Cleaner::TYPE_STR,
+			'displayorder'        => vB_Cleaner::TYPE_UINT,
+			'active'              => vB_Cleaner::TYPE_UINT,
+			'ad_location'         => vB_Cleaner::TYPE_STR,
+			'ad_html'             => vB_Cleaner::TYPE_STR,
+			'ad_location_orig'    => vB_Cleaner::TYPE_STR,
+		]);
+
+		$criteria = $data['criteria'];
+		if (!$data['title'])
+		{
+			throw new vB_Exception_Api('invalid_title_specified');
+		}
+
+		// Reminder, this is crucial. raw ad text gets added to the ad_{location} template inside of <vb:literal>'s, so if they can
+		// break-out that compromises template security.
+		if (stripos($data['ad_html'], '</vb:literal>') !== false)
+		{
+			throw new vB_Exception_Api('no_permission');
+		}
+
+		// Copy 'active' into the two separate active columns, and move other 'instance' data off.
+		$globalAdData = [
+			'title' => $data['title'],
+			// 'adlocation' => $data['ad_location'],
+			// 'displayorder' => $data['displayorder'],
+			//'active' => $data['active'],
+			'globally_active' => $data['active'],
+			'snippet' => $data['ad_html'],
+		];
+		$instanceData = [
+			// Note, adid is assigned right before we replace the `adinstance`
+			// record below.
+			'active' => $data['active'],
+			'adlocation' => $data['ad_location'],
+			'displayorder' => $data['displayorder'],
+		];
+
+		if ($adid)
+		{
+			// Update ad record
+			$db->update('ad', $globalAdData, ['adid' => $adid]);
+		}
+		// we are adding a new ad
+		else
+		{
+			// insert ad record
+			$adid = $db->insert('ad', $globalAdData);
+			$adid = (int) $adid;
+		}
+
+		// Not sure if this can happen outside of the db going away which I *think* would throw its own exception.
+		// Just being cautious since insert() *could* hypothetically return false..
+		if (!$adid)
+		{
+			throw new vB_Exception_Api('invalid_data');
+		}
+
+		// insert/replace adinstance
+		$instanceData['adid'] = $adid;
+		$db->replace('adinstance', $instanceData);
+
+		$criteriadata = [];
+		foreach ($criteria AS $criteriaid => $criterion)
+		{
+			if (isset($criterion['active']) AND $criterion['active'])
+			{
+				$conditions = $this->getConditionsForSave($criteriaid, $criterion);
+				$criteriadata[] = [
+					$adid,
+					$criteriaid,
+					$conditions['condition1'],
+					$conditions['condition2'],
+					$conditions['condition3'],
+					$conditions['conditionjson'],
+				];
+			}
+		}
+
+		$db->delete('adcriteria', ['adid' => $adid]);
+		if ($criteriadata)
+		{
+			$db->insertMultiple('adcriteria', ['adid', 'criteriaid', 'condition1', 'condition2', 'condition3', 'conditionjson'], $criteriadata);
+		}
+
+		$updatedadlocations = $db->getColumn('adinstance', 'adlocation', ['adid' => $adid]);
+		$this->rebuildAdTemplates($updatedadlocations);
+
+		return $adid;
+	}
+
+	private function getConditionsForSave($criteriaid, $conditions)
+	{
+		//make sure that we have all of the conditions fields present in the array
+		//also make sure that we don't have any that we don't recognize.
+		$blank = ['condition1' => '', 'condition2' => '', 'condition3' => ''];
+		$newconditions = $blank;
+		foreach ($blank AS $key => $dummy)
+		{
+			if (isset($conditions[$key]))
+			{
+				$newconditions[$key] = $conditions[$key];
+			}
+		}
+
+		$this->cleanConditions($criteriaid, $newconditions);
+
+		if ($this->useJSONCondition($criteriaid))
+		{
+			$jsonconditions = json_encode($newconditions);
+			//if we are using json storage we don't want to set anything to the other fields.
+			$newconditions = $blank;
+			$newconditions['conditionjson'] = $jsonconditions;
+		}
+		else
+		{
+			$newconditions['conditionjson'] = '';
+		}
+
+		return $newconditions;
+	}
+
+	private function cleanConditions($criteriaid, &$conditions)
+	{
+		//allow criteria specific cleaning -- especially important before we start
+		//serializing complex data types (even if it's with the safer json_encode/decode
+		switch($criteriaid)
+		{
+			case 'browsing_forum_x':
+			case 'in_usergroup_x':
+			case 'not_in_usergroup_x':
+				if (empty($conditions['condition1']))
+				{
+					$conditions['condition1'] = [];
+				}
+				else
+				{
+					//this should always be an array, but let's handle a single value just in case.
+					if (!is_array($conditions['condition1']))
+					{
+						$conditions['condition1'] = [$conditions['condition1']];
+					}
+
+					$conditions['condition1'] = array_map('intval', $conditions['condition1']);
+				}
+
+				//these aren't used.  Make sure we don't use them
+				$conditions['condition2'] = '';
+				$conditions['condition3'] = '';
+				break;
+
+			//this is the legacy handling that was appied without regard to which criteria
+			default:
+				$conditions = array_map('trim', $conditions);
+				break;
+		}
+	}
+
+	private function getAdCriteria(array $conditions = []) : array
+	{
+		$assertor = vB::getDbAssertor();
+		// Default is to get all ad criteria.
+		$result = $assertor->select('adcriteria', $conditions);
+		if (!$result->valid())
+		{
+			return [];
+		}
+
+		// Note, there are multiple criteria records per adid (primary key / unique pair <adid, criteriaid>)
+		$adCriteriaByAdId = [];
+		foreach ($result AS $__row)
+		{
+			$this->expandJsonConditions($__row);
+			$__adid = $__row['adid'];
+			$adCriteriaByAdId[$__adid] ??= [];
+			$adCriteriaByAdId[$__adid][] = $__row;
+		}
+
+		return $adCriteriaByAdId;
+	}
+
+
+	private function expandJsonConditions(&$criterion)
+	{
+		//if this field is set to use the json store *and* there is a value in the json field
+		//otherwise assume it's legacy data and leave the old condition fields there
+		if ($this->useJSONCondition($criterion['criteriaid']) AND !empty($criterion['conditionjson']))
+		{
+			$jsonconditions = json_decode($criterion['conditionjson'], true);
+			if ($jsonconditions)
+			{
+				$criterion = array_merge($criterion, $jsonconditions);
+			}
+		}
+
+		unset($criterion['conditionjson']);
+	}
+
+	private function useJSONCondition($criteriaid)
+	{
+		//for now browsing_forum_x is the only one using the json field.
+		if (in_array($criteriaid, ['browsing_forum_x', 'in_usergroup_x', 'not_in_usergroup_x']))
+		{
+			return true;
+		}
+
+		return false;
+	}
+
+
+	/**
+	 * Saves the active status and display orders for multiple adinstances
+	 *
+	 * @param  array  $data Data to save. Format: [int adid => ['active' => $active, 'displayorder' => $displayorder], ...]
+	 * @param  string $adlocation
+	 *
+	 * @return bool  True on success
+	 */
+	public function quickSave($data, $adlocation) : bool
+	{
+		$this->checkHasAdminPermission('canadminads');
+
+		if (!is_array($data))
+		{
+			throw new vB_Exception_Api('invalid_data_w_x_y_z', [$data, '$data', __CLASS__, __FUNCTION__]);
+		}
+
+		$db = vB::getDbAssertor();
+		foreach ($data AS $adid => $value)
+		{
+			$db->replace('adinstance',
+				[
+					'adid' => intval($adid),
+					'adlocation' => $adlocation,
+					'active' => intval($value['active']),
+					'displayorder' => intval($value['displayorder']),
+				]
+			);
+		}
+
+		$this->rebuildAdTemplates([$adlocation]);
+
+		return true;
+	}
+
+	/**
+	 * Saves the number of header ads to use (this can be 1 or 2)
+	 *
+	 * @param  int  $number Number of header ads to show (1 or 2)
+	 *
+	 * @return bool True on success
+	 */
+	public function saveNumberOfHeaderAds($number)
+	{
+		$number = vB::getCleaner()->clean($number,  vB_Cleaner::TYPE_UINT);
+
+		$this->checkHasAdminPermission('canadminads');
+
+		if ($number > 1)
+		{
+			$number = 2;
+		}
+		else
+		{
+			$number = 1;
+		}
+
+		vB_Library::instance('options')->updateValue('headeradnum', $number);
+		return true;
+	}
+
+	/**
+	 * Deletes an ad
+	 *
+	 * @param  int  $adid Ad ID to delete
+	 *
+	 * @return bool Returns true on success
+	 */
+	public function delete($adid) : bool
+	{
+		$adid = intval($adid);
+
+		$this->checkHasAdminPermission('canadminads');
+
+		// get ad location
+		$assertor = vB::getDbAssertor();
+		$adlocations = $assertor->getColumn('adinstance', 'adlocation', ['adid' => $adid]);
+
+		// delete criteria
+		$assertor->delete('adcriteria', ['adid' => $adid]);
+
+		// delete ad
+		$assertor->delete('ad', ['adid' => $adid]);
+
+		$assertor->delete('adinstance', ['adid' => $adid]);
+
+		$this->rebuildAdTemplates($adlocations);
+
+		return true;
+	}
+
+	/**
+	 * Builds an ad template based on criteria
+	 *
+	 * @param  string $location Template location
+	 *
+	 * @return string Template string
+	 */
+	private function buildAdTemplate(string $location, array $ad_cache, array $ad_criteria_cache)
+	{
+		$this->checkHasAdminPermission('canadminads');
+
+		$template = '{vb:default adsshown, {vb:php array}}';
+		//$vboptions = vB::getDatastore()->getValue('options');
+		/** @var vB_Api_ContentType */
+		$contenttypeApi = vB_Api::instanceInternal('contenttype');
+		$channelcontenttypeid = $contenttypeApi->fetchContentTypeIdFromClass('Channel');
+		/** @var vB_Library_Node */
+		$nodelib = vB_Library::instance('node');
+
+		$assertor = vB::getDbAssertor();
+		$conditions = [
+			'adlocation' => $location,
+			'active' => 1,
+		];
+		$sort = [
+			'field' => 'displayorder',
+			'direction' => vB_dB_Query::SORT_ASC,
+		];
+		$adinstances = $assertor->select('adinstance', $conditions, $sort);
+
+		foreach ($adinstances AS $__row)
+		{
+			$__adid = $__row['adid'];
+			$__ad = $ad_cache[$__adid] ?? [];
+			// Not known to happen, but in case of weird errors and there's an orphaned adid reference, just skip it.
+			if (!$__ad)
+			{
+				throw new Exception('DEBUG -- ORPHANED ADID');
+				continue;
+			}
+
+			$criterion = $ad_criteria_cache[$__adid] ?? [];
+
+			// create the template conditionals
+			$conditional_prefix = "";
+			$conditional_postfix = "";
+
+			// The following code is to make browsing_forum_x and browsing_forum_x_and_children work concurrently. See VBV-4442
+
+			$browsing_channels = [];
+			foreach ($criterion AS $criteria)
+			{
+				switch($criteria['criteriaid'])
+				{
+					case 'in_usergroup_x':
+						$groups =  $criteria['condition1'];
+						//this should always be an array now, but some legacy data might still have it as a scalar.
+						if(!is_array($groups))
+						{
+							$groups = [$groups];
+						}
+						// This shouldn't be needed except for legacy non-array above (since hypothetically non-legacy data
+						// should've already been cleaned via cleanConditions()), but let's just keep it simple & clean
+						$groups = array_map('intval', $groups);
+						$conditional_prefix .= '<vb:if condition="is_member_of($' . 'user, [' . implode(',', $groups) . '])">';
+						$conditional_postfix .= "</vb:if>";
+						break;
+					case 'not_in_usergroup_x':
+						$groups =  $criteria['condition1'];
+						//this should always be an array now, but some legacy data might still have it as a scalar.
+						if(!is_array($groups))
+						{
+							$groups = [$groups];
+						}
+						$groups = array_map('intval', $groups);
+						$conditional_prefix .= '<vb:if condition="!is_member_of($' . 'user, [' . implode(',', $groups) . '])">';
+						$conditional_postfix .= "</vb:if>";
+						break;
+					case 'browsing_content_page':
+						if (!empty($criteria['condition1']))
+						{
+							$conditional_prefix .= '<vb:if condition="!empty($page[\'nodeid\'])">';
+						}
+						else
+						{
+							$conditional_prefix .= '<vb:if condition="empty($page[\'nodeid\'])">';
+						}
+						$conditional_postfix .= "</vb:if>";
+						break;
+					case 'browsing_forum_x':
+						$channel =  $criteria['condition1'];
+						//this should always be an array now, but some legacy data might still have it as a scalar.
+						if(!is_array($channel))
+						{
+							//if channel isn't an int (probably due to a bug) then it will break the template
+							//let's be sure that it is -- a value of 0 in the list will ultimately be harmless
+							$channel = [$channel];
+						}
+						$channel = array_map('intval', $channel);
+						$browsing_channels = array_merge($browsing_channels, $channel);
+						break;
+					case 'browsing_forum_x_and_children':
+						// find out who the children are:
+						$children = $nodelib->listNodes(intval($criteria['condition1']), 1, 100, 0, $channelcontenttypeid, []);
+						foreach ($children as $child)
+						{
+							$browsing_channels[] = intval($child['nodeid']);
+						}
+						$browsing_channels[] = intval($criteria['condition1']);
+						break;
+					case 'style_is_x':
+						$conditional_prefix .= '<vb:if condition="$preferred_styleid == ' . intval($criteria['condition1']) . '">';
+						$conditional_postfix .= "</vb:if>";
+						break;
+					// Not sure why we split the $ and the rest here but only for the user array (and inconsistently at that)... leaving it as is for now.
+					case 'no_visit_in_x_days':
+						$conditional_prefix .= '<vb:if condition="$' . 'user[\'lastactivity\'] < $timenow - (86400*' . intval($criteria['condition1']) . ')">';
+						$conditional_postfix .= "</vb:if>";
+						break;
+					case 'no_posts_in_x_days':
+						$conditional_prefix .= '<vb:if condition="$' . 'user[\'lastpost\'] < $timenow - (86400*' . intval($criteria['condition1']) . ') AND $user[\'lastpost\'] > 0">';
+						$conditional_postfix .= "</vb:if>";
+						break;
+					case 'has_x_postcount':
+						$conditional_prefix .= '<vb:if condition="$' . 'user[\'posts\'] > ' . intval($criteria['condition1']) . ' AND $' . 'user[\'posts\'] < ' . intval($criteria['condition2']) . '">';
+						$conditional_postfix .= "</vb:if>";
+						break;
+					case 'has_never_posted':
+						$conditional_prefix .= '<vb:if condition="$' . 'user[\'posts\'] == 0">';
+						$conditional_postfix .= "</vb:if>";
+						break;
+					case 'has_x_reputation':
+						$conditional_prefix .= '<vb:if condition="$' . 'user[\'reputation\'] > ' . intval($criteria['condition1']) . ' AND $' . 'user[\'reputation\'] < ' . intval($criteria['condition2']) . '">';
+						$conditional_postfix .= "</vb:if>";
+						break;
+					case 'pm_storage_x_percent_full':
+						$conditional_prefix .= '<vb:if condition="$' . 'pmboxpercentage = $' . 'user[\'pmtotal\'] / $' . 'user[\'permissions\'][\'pmquota\'] * 100"></vb:if>';
+						$conditional_prefix .= '<vb:if condition="$' . 'pmboxpercentage > ' . intval($criteria['condition1']) . ' AND $' . 'pmboxpercentage < ' . intval($criteria['condition2']) . '">';
+						$conditional_postfix .= "</vb:if>";
+						break;
+					case 'came_from_search_engine':
+						$conditional_prefix .= '<vb:if condition="is_came_from_search_engine()">';
+						$conditional_postfix .= "</vb:if>";
+						break;
+					case 'is_date':
+						if ($criteria['condition2'])
+						{
+							$conditional_prefix .= '<vb:if condition="gmdate(\'d-m-Y\', $timenow) == \'' . str_replace("'", "\'", $criteria['condition1']) .'\'">';
+							$conditional_postfix .= "</vb:if>";
+						}
+						else
+						{
+							$conditional_prefix .= '<vb:if condition="vbdate(\'d-m-Y\', $timenow, false, false) == \'' . str_replace("'", "\'", $criteria['condition1']) .'\'">';
+							$conditional_postfix .= "</vb:if>";
+						}
+						break;
+					case 'is_time':
+						if (preg_match('#^(\d{1,2}):(\d{2})$#', $criteria['condition1'], $start_time) AND preg_match('#^(\d{1,2}):(\d{2})$#', $criteria['condition2'], $end_time))
+						{
+							if ($criteria['condition3'])
+							{
+								$tz = 0;
+							}
+							else
+							{
+								$tz = "{vb:raw user.realtimezoneoffset}";
+							}
+
+							unset($start_time[0], $end_time[0]);
+
+							$offset = 0;
+							if ($end_time < $start_time)
+							{
+								$offset = 86400;
+							}
+
+							$conditional_prefix .= '{vb:set now, {vb:php time}}' .
+								'{vb:set start, {vb:php vbtzmktime, ' . $tz . ', ' . $start_time[1] . ', ' . $start_time[2] . '}}' .
+								'{vb:set end, {vb:php vbtzmktime, ' . $tz . ', ' . $end_time[1] . ', ' . $end_time[2] . '}}' .
+								'<vb:if condition="$now >= $start AND $now <= ($end + ' . $offset . ')">';
+
+							$conditional_postfix .= '</vb:if>';
+						}
+						break;
+					// I don't think this condition exists atm in vb5/vb6, but leavin git alone for now in case we want to restore it.
+					case 'ad_x_not_displayed':
+						// if no ads shown, OR ad x have not been shown, show the ad
+						$conditional_prefix .= '<vb:if condition="!in_array(' . intval($criteria['condition1']) . ', $adsshown)">';
+						$conditional_postfix .= '</vb:if>';
+						break;
+					default:
+						break;
+				}
+			}
+
+			if($browsing_channels)
+			{
+				$conditional_prefix .= '<vb:if condition="in_array(($page[\'channelid\'] ?? 0), [' . implode(',', $browsing_channels) . '])">';
+				$conditional_postfix .= "</vb:if>";
+			}
+
+			$conditional_postfix = '{vb:set dummy {vb:php array_push, {vb:raw adsshown}, ' . $__adid . '}}' . $conditional_postfix;
+
+			// wrap the conditionals around their ad snippet / template
+			$template .= $conditional_prefix . '<vb:literal>' . $__ad['snippet'] . '</vb:literal>' . $conditional_postfix;
+		}
+
+		return $template;
+	}
+
+	/**
+	 * Fetches display options
+	 *
+	 * @param  int   $adid (optinal) Ad ID
+	 *
+	 * @return array Array with two elements:
+	 *               criteria_options - array with criterion name => criterion info (type, data, default value)
+	 *               criteria_cache - not currently used
+	 */
+	public function fetchDisplayOptions($adid = 0)
+	{
+		$adid = vB::getCleaner()->clean($adid,  vB_Cleaner::TYPE_UINT);
+
+		try
+		{
+			$this->checkHasAdminPermission('canadminads');
+		}
+		catch (vB_Exception_Api $e)
+		{
+			// No permission, return empty array
+			return [];
+		}
+
+		require_once(DIR . '/includes/adminfunctions.php');
+
+		// If this is needed, we need to fetch criteria by adid via
+		// $this->getAdCriteria(['adid' => $adid]); . Not adding this for this
+		// ticket as it's out of scope & this is apparently not used.
+		$criteria_cache = [];
+
+		$usergroups = vB_Api::instanceInternal('usergroup')->fetchUsergroupList();
+		$usergroup_options = [];
+		foreach ($usergroups as $usergroup)
+		{
+			$usergroup_options[$usergroup['usergroupid']] = $usergroup['title'];
+		}
+
+		$vbphrase = vB_Api::instanceInternal('phrase')->fetch([
+			'content', 'non_content', 'user_timezone', 'utc_universal_time'
+		]);
+
+		$timenow = vB::getRequest()->getTimeNow();
+
+		$forum_chooser_options = construct_forum_chooser_options();
+
+		$criteria_options = [
+			'in_usergroup_x' => [
+				[
+					'type' => 'select_multiple',
+					'data' => $usergroup_options,
+					'default_value' => 2
+				]
+			],
+			'not_in_usergroup_x' => [
+				[
+					'type' => 'select_multiple',
+					'data' => $usergroup_options,
+					'default_value' => 6
+				]
+			],
+			'browsing_content_page' => [
+				[
+					'type' => 'select',
+					'data' => [
+				    	'1' => $vbphrase['content'],
+				   		'0' => $vbphrase['non_content'],
+				  ],
+					'default_value' => 1
+				]
+			],
+			'browsing_forum_x' => [
+				[
+					'type' => 'select_multiple',
+					'data' => $forum_chooser_options,
+					'default_index' => 0
+				]
+			],
+			'browsing_forum_x_and_children' => [
+				[
+					'type' => 'select',
+					'data' => $forum_chooser_options,
+					'default_index' => 0
+				]
+			],
+			'no_visit_in_x_days' => [
+				[
+					'type' => 'input',
+					'default_value' => 30
+				]
+			],
+			'no_posts_in_x_days' => [
+				[
+					'type' => 'input',
+					'default_value' => 30
+				]
+			],
+			'has_x_postcount' => [
+				[
+					'type' => 'input',
+					'default_value' => ''
+				],
+				[
+					'type' => 'input',
+					'default_value' => ''
+				]
+			],
+			'has_never_posted' => [],
+			'has_x_reputation' => [
+				[
+					'type' => 'input',
+					'default_value' => 100
+				],
+				[
+					'type' => 'input',
+					'default_value' => 200
+				]
+			],
+			'came_from_search_engine' => [],
+			'is_date' => [
+				[
+					'type' => 'input',
+					'default_value' => vbdate('d-m-Y', $timenow, false, false)
+				],
+				[
+					'type' => 'select',
+					'data' => [
+						'0' => $vbphrase['user_timezone'],
+						'1' => $vbphrase['utc_universal_time']
+					],
+					'default_value' => 0
+				]
+			],
+			'is_time' => [
+				[
+					'type' => 'input',
+					'default_value' => vbdate('H:i', $timenow, false, false)
+				],
+				[
+					'type' => 'input',
+					'default_value' => (($h = (intval(vbdate('H', $timenow, false, false)) + 1)) < 10 ? '0' . $h : $h) . vbdate(':i', $timenow, false, false)
+				],
+				[
+					'type' => 'select',
+					'data' => [
+						'0' => $vbphrase['user_timezone'],
+						'1' => $vbphrase['utc_universal_time']
+					],
+					'default_value' => 0
+				]
+			],
+			/*
+			* These are flagged for a future version
+			'userfield_x_equals_y' => [],
+			'userfield_x_contains_y' => [],
+			*/
+		];
+
+		return [
+			'options' => $criteria_options,
+			'cache' => $criteria_cache
+		];
+	}
+
+	/**
+	 * Wraps an ad template in a div with the correct id
+	 *
+	 * @param string $template  Template String
+	 * @param string $id_name   Ad location (global_header1)
+	 * @param string $id_prefix ID Prefix (Default: 'ad_')
+	 *
+	 * @return string Wrapped AD Template
+	 */
+	protected function wrapAdTemplate($template, $id_name, $id_prefix = 'ad_')
+	{
+		if (!$template)
+		{
+			return '';
+		}
+
+		// wrap the template in a div with the correct id
+		$template_wrapped = '<div class="' . htmlentities($id_prefix . $id_name . '_inner') . '">' . $template . '</div>';
+
+		return $template_wrapped;
+	}
+
+	/**
+	 * Replaces ad code into correct template
+	 *
+	 * @param string $styleid         Style for template
+	 * @param string $location        Ad location
+	 * @param string $template        Template compiled
+	 * @param string $product         Product that uses this template
+	 *
+	 * @return void
+	 */
+	protected function replaceAdTemplate($styleid, $location, $template, $product = 'vbulletin') : void
+	{
+		/** @var vB_Library_Template */
+		$templateLib = vB_Library::instance('template');
+
+		//we allow this autogeneration even if the user doesn't normally have full template permissions.
+		$templateOptions = ['compiletype' => 'full'];
+
+		$templateid = $templateLib->getTemplateID('ad_' . $location, $styleid);
+		if ($templateid)
+		{
+			$templateLib->update($templateid, 'ad_' . $location, $template, $product, false, false, '', false, $templateOptions);
+		}
+		else
+		{
+			$templateLib->insert($styleid, 'ad_' . $location, $template, $product, false, '', false, $templateOptions);
+		}
+	}
+}
+
+/*=========================================================================*\
+|| #######################################################################
+|| # Downloaded: 12:50, Tue Dec 24th 2024
+|| # CVS: $RCSfile$ - $Revision: 117092 $
+|| #######################################################################
+\*=========================================================================*/

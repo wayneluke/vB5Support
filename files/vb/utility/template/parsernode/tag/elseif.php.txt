@@ -1,0 +1,62 @@
+<?php
+/*========================================================================*\
+|| ###################################################################### ||
+|| # vBulletin 6.1.0 Alpha 4 Week 2 - Licence Number VBCW2VFT7A
+|| # ------------------------------------------------------------------ # ||
+|| # Copyright 2000-2024 MH Sub I, LLC dba vBulletin. All Rights Reserved.  # ||
+|| # This file may not be redistributed in whole or significant part.   # ||
+|| # ----------------- VBULLETIN IS NOT FREE SOFTWARE ----------------- # ||
+|| # http://www.vbulletin.com | http://www.vbulletin.com/license.html   # ||
+|| ###################################################################### ||
+\*========================================================================*/
+
+/**
+ * @package vBUtility
+ */
+
+// The elseif and if tags are a bit wierd because they don't contain their own content but do
+// affect the way the if tag compiles.  In fact they are never explicitly compiled (in a validating
+// template) because the if tag handles them without calling their compile functions and the validation
+// function checks to make sure they will always be direct children of an if tag.  It's a little wierd
+// that we validate the condition here but compile it in the parent if but not weird enough to want
+// to change at this point.
+class vB_Utility_Template_ParserNode_Tag_Elseif extends vB_Utility_Template_ParserNode_Tag
+{
+	public function validate() : array
+	{
+		$errors = [];
+
+		$parent = $this->main_node->parentNode();
+		if ($parent->value != 'if')
+		{
+			$errors[] = ['elseif_not_child_of_if'];
+		}
+
+		if (count($this->main_node->childNodes()) > 0)
+		{
+			$errors[] = ['tag_cannot_have_content', $this->main_node->value];
+		}
+
+		if (trim($this->main_node->attributes['condition'] ?? '') === '')
+		{
+			$errors[] = ['empty_if_condition'];
+		}
+		else
+		{
+			$errors = array_merge($errors, $this->validateCondition($this->main_node->attributes['condition']));
+		}
+
+		return $errors;
+	}
+
+	public function compile() : string
+	{
+		return "''";
+	}
+}
+/*=========================================================================*\
+|| #######################################################################
+|| # Downloaded: 12:50, Tue Dec 24th 2024
+|| # CVS: $RCSfile$ - $Revision: 115380 $
+|| #######################################################################
+\*=========================================================================*/

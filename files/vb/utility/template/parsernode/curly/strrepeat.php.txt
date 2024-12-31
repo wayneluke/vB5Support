@@ -1,0 +1,64 @@
+<?php
+/*========================================================================*\
+|| ###################################################################### ||
+|| # vBulletin 6.1.0 Alpha 4 Week 2 - Licence Number VBCW2VFT7A
+|| # ------------------------------------------------------------------ # ||
+|| # Copyright 2000-2024 MH Sub I, LLC dba vBulletin. All Rights Reserved.  # ||
+|| # This file may not be redistributed in whole or significant part.   # ||
+|| # ----------------- VBULLETIN IS NOT FREE SOFTWARE ----------------- # ||
+|| # http://www.vbulletin.com | http://www.vbulletin.com/license.html   # ||
+|| ###################################################################### ||
+\*========================================================================*/
+
+/**
+ * @package vBUtility
+ */
+class vB_Utility_Template_ParserNode_Curly_Strrepeat extends vB_Utility_Template_ParserNode_Curly
+{
+	public function validate() : array
+	{
+		$errors = [];
+
+		$attributecount = sizeof($this->main_node->attributes);
+
+		if ($attributecount == 0)
+		{
+			$errors[] = 'no_variable_specified';
+		}
+
+		if ($attributecount < 2)
+		{
+			$errors[] = 'too_few_attributes';
+		}
+
+		if ($attributecount > 2)
+		{
+			$errors[] = 'too_many_attributes';
+		}
+
+		return $errors;
+	}
+
+	public function compile() : string
+	{
+		//this is wildly different from other "var" rendering.  Need to get to consistency.
+		$var_name = $this->main_node->attributes[0];
+		if ($var_name instanceof vB_CurlyNode AND in_array($var_name->value, ['raw', 'var']))
+		{
+			$string = $this->compileVar($var_name->attributes[0]);
+		}
+		else
+		{
+			$string = '$' . $var_name;
+		}
+
+		$value = $this->attributeToString($this->main_node->attributes[1]);
+		return "''; $string = str_repeat($string, intval($value));" . ' $final_rendered .= \'\'';
+	}
+}
+/*=========================================================================*\
+|| #######################################################################
+|| # Downloaded: 12:50, Tue Dec 24th 2024
+|| # CVS: $RCSfile$ - $Revision: 115380 $
+|| #######################################################################
+\*=========================================================================*/

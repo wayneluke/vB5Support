@@ -1,0 +1,81 @@
+<?php
+/*========================================================================*\
+|| ###################################################################### ||
+|| # vBulletin 6.1.0 Alpha 4 Week 2 - Licence Number VBCW2VFT7A
+|| # ------------------------------------------------------------------ # ||
+|| # Copyright 2000-2024 MH Sub I, LLC dba vBulletin. All Rights Reserved.  # ||
+|| # This file may not be redistributed in whole or significant part.   # ||
+|| # ----------------- VBULLETIN IS NOT FREE SOFTWARE ----------------- # ||
+|| # http://www.vbulletin.com | http://www.vbulletin.com/license.html   # ||
+|| ###################################################################### ||
+\*========================================================================*/
+
+/**
+ * This is the query processor for replace queries.
+ *
+ * @package vBDatabase
+ */
+class vB_dB_Query_Replace extends vB_dB_Query
+{
+	public function __construct($queryid, &$db, $dbSlave)
+	{
+		parent:: __construct($queryid, $db, $dbSlave);
+
+		$this->query_type = self::QUERY_REPLACE;
+		$this->table_query = true;
+	}
+
+	public function setQuery($params, $sortorder)
+	{
+		return parent::setTableQuery($params, $sortorder);
+	}
+
+	protected function buildQuery(array $values) : string
+	{
+		$queryBuilder = self::$queryBuilders[$this->db_type];
+
+		// We don't use the special params at present for replace but if we have them
+		// we don't want to pass them to the query builder so extract them from the values
+		$params = $this->extractParamsFromValues($values);
+		return $queryBuilder->makeReplaceQuery($this->queryid, $values, $this->forcetext);
+	}
+
+	public function execSQL()
+	{
+		//If we don't have the data loaded, we can't execute.
+		if (!$this->data_loaded)
+		{
+			return false;
+		}
+
+		return $this->doInserts();
+	}
+
+	protected function doInserts()
+	{
+		$results = [];
+
+		if ($this->structure)
+		{
+			if ($querystring = $this->buildQuery($this->params))
+			{
+				$this->db->query_write($querystring);
+				$this->error = $this->db->error();
+				//$results[] = $this->db->insert_id();
+				return $this->db->insert_id();
+			}
+			else
+			{
+				return false;
+			}
+		}
+		return $results;
+	}
+}
+
+/*=========================================================================*\
+|| #######################################################################
+|| # Downloaded: 12:50, Tue Dec 24th 2024
+|| # CVS: $RCSfile$ - $Revision: 116751 $
+|| #######################################################################
+\*=========================================================================*/

@@ -1,0 +1,41 @@
+<?php
+/*========================================================================*\
+|| ###################################################################### ||
+|| # vBulletin 6.1.0 Alpha 4 Week 2 - Licence Number VBCW2VFT7A
+|| # ------------------------------------------------------------------ # ||
+|| # Copyright 2000-2024 MH Sub I, LLC dba vBulletin. All Rights Reserved.  # ||
+|| # This file may not be redistributed in whole or significant part.   # ||
+|| # ----------------- VBULLETIN IS NOT FREE SOFTWARE ----------------- # ||
+|| # http://www.vbulletin.com | http://www.vbulletin.com/license.html   # ||
+|| ###################################################################### ||
+\*========================================================================*/
+
+/**
+ * @package vBulletin
+ */
+class vB_Options_Option_Imagickpdfthumbnail extends vB_Options_Option
+{
+	protected function validateCustom(array $validation, mixed $rawvalue) : bool|string|array
+	{
+		if ($rawvalue)
+		{
+			$vboptions = vB::getDatastore()->getValue('options');
+			$pdfThumbOkay = false;
+
+			try
+			{
+				$image = new vB_Image_Imagick($vboptions);
+				$pdfThumbOkay = $image->canThumbnailPdf();
+			}
+			catch (Exception)
+			{
+			}
+
+			if (!$pdfThumbOkay)
+			{
+				return 'imagick_pdf_thumbnail_check_failed';
+			}
+		}
+		return true;
+	}
+}

@@ -1,0 +1,58 @@
+<?php
+/*========================================================================*\
+|| ###################################################################### ||
+|| # vBulletin 6.1.0 Alpha 4 Week 2 - Licence Number VBCW2VFT7A
+|| # ------------------------------------------------------------------ # ||
+|| # Copyright 2000-2024 MH Sub I, LLC dba vBulletin. All Rights Reserved.  # ||
+|| # This file may not be redistributed in whole or significant part.   # ||
+|| # ----------------- VBULLETIN IS NOT FREE SOFTWARE ----------------- # ||
+|| # http://www.vbulletin.com | http://www.vbulletin.com/license.html   # ||
+|| ###################################################################### ||
+\*========================================================================*/
+
+/**
+ * This is the query processor for count queries.
+ *
+ * @package vBDatabase
+ */
+class vB_dB_Query_Summary extends vB_dB_Query_Select
+{
+	public function __construct(string $queryid, vB_Database $db, bool $dbSlave)
+	{
+		parent:: __construct($queryid, $db, $dbSlave);
+
+		$this->query_type = self::QUERY_SUMMARY;
+		$this->table_query = true;
+	}
+
+	public function setQuery($params, $sortorder)
+	{
+		//we map the old QUERY_COUNT to this class but we need to make thing backwards compatable with those calls
+		if ($params[self::TYPE_KEY] == self::QUERY_COUNT)
+		{
+			$params[self::COLUMNS_KEY] = ['COUNT(*)'];
+		}
+
+		return parent::setQuery($params, $sortorder);
+	}
+
+	protected function buildQuery(array $values) : string
+	{
+		$queryBuilder = self::$queryBuilders[$this->db_type];
+
+		$params = $this->extractParamsFromValues($values);
+		$where = $this->getWhere($queryBuilder, $values);
+
+		$structure = $this->structure['structure'] ?? $this->structure;
+
+		//we should probably honor limits here.
+		return $queryBuilder->makeSummaryQuery($this->queryid, $where, $structure, $params);
+	}
+}
+
+/*=========================================================================*\
+|| #######################################################################
+|| # Downloaded: 12:50, Tue Dec 24th 2024
+|| # CVS: $RCSfile$ - $Revision: 106777 $
+|| #######################################################################
+\*=========================================================================*/

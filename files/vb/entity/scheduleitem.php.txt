@@ -1,0 +1,54 @@
+<?php
+/*========================================================================*\
+|| ###################################################################### ||
+|| # vBulletin 6.1.0 Alpha 4 Week 2 - Licence Number VBCW2VFT7A
+|| # ------------------------------------------------------------------ # ||
+|| # Copyright 2000-2024 MH Sub I, LLC dba vBulletin. All Rights Reserved.  # ||
+|| # This file may not be redistributed in whole or significant part.   # ||
+|| # ----------------- VBULLETIN IS NOT FREE SOFTWARE ----------------- # ||
+|| # http://www.vbulletin.com | http://www.vbulletin.com/license.html   # ||
+|| ###################################################################### ||
+\*========================================================================*/
+
+// helper class to transport & store "active" schedule data.
+class vB_Entity_ScheduleItem extends vB_Entity
+{
+	// PHP 8.1:
+	// public function __construct(
+	// 	public readonly int $startunixtime,
+	// 	public readonly int $endunixtime,
+	// 	public readonly int $priority,
+	// 	public readonly array $data
+	// )
+	// {}
+	// not sure if we want to add mixed $item for the actual vB_Entity_Styleschedule (or other schedule) item for
+	// reference later.. for now I'm assuming whoever holds this knows what context $scheduleid is in.
+	// Edit: decided to add data. Caller must still know what the data holds and be careful with it.
+	public function __construct(
+		protected int $startunixtime,
+		protected int $endunixtime,
+		protected int $priority,
+		protected array $data
+	)
+	{}
+
+	// Should we commit and make $data a vB_Entity??
+
+
+	public function isActiveAt(int $unixtimestamp) : bool
+	{
+		return ($this->startunixtime <= $unixtimestamp AND $unixtimestamp <= $this->endunixtime);
+	}
+
+	public static function createFromArray(array $data) : static
+	{
+		return new self($data['startunixtime'], $data['endunixtime'], $data['priority'], $data['data']);
+	}
+}
+
+/*=========================================================================*\
+|| #######################################################################
+|| # Downloaded: 12:50, Tue Dec 24th 2024
+|| # CVS: $RCSfile$ - $Revision: 113078 $
+|| #######################################################################
+\*=========================================================================*/

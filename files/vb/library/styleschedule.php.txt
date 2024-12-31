@@ -1,0 +1,387 @@
+<?php
+/*========================================================================*\
+|| ###################################################################### ||
+|| # vBulletin 6.1.0 Alpha 4 Week 2 - Licence Number VBCW2VFT7A
+|| # ------------------------------------------------------------------ # ||
+|| # Copyright 2000-2024 MH Sub I, LLC dba vBulletin. All Rights Reserved.  # ||
+|| # This file may not be redistributed in whole or significant part.   # ||
+|| # ----------------- VBULLETIN IS NOT FREE SOFTWARE ----------------- # ||
+|| # http://www.vbulletin.com | http://www.vbulletin.com/license.html   # ||
+|| ###################################################################### ||
+\*========================================================================*/
+
+/**
+ * @package vBLibrary
+ */
+class vB_Library_Styleschedule extends vB_Library
+{
+	public const DATASTOREKEY_CURRENTSCHEDULE = 'vbStyleSchedule';
+	private const DATASTOREKEY_SCHEDULEID_TO_STYLEID = 'vbStyleScheduleidMap';
+
+	/**
+	 *
+	 * @return int|false  Affected scheduleid, or false on failure
+	 */
+	public function saveStyleSchedule(vB_Entity_Styleschedule $newSchedule, bool $dorebuild = true) : mixed
+	{
+		// `scheduleid` SMALLINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+		// `styleid` SMALLINT UNSIGNED NOT NULL,
+		// `enabled` TINYINT NOT NULL DEFAULT '0',
+		// `startdate` date NOT NULL DEFAULT '0000-00-00',
+		// `enddate` date NOT NULL DEFAULT '0000-00-00',
+		// `useyear` TINYINT NOT NULL DEFAULT '0',
+		// `timezoneoffset` CHAR(4) NOT NULL DEFAULT '0',
+		// `priority` SMALLINT UNSIGNED NOT NULL DEFAULT '10',
+		// `overridechannelcustom` TINYINT NOT NULL DEFAULT '0',
+		// `overrideusercustom` TINYINT NOT NULL DEFAULT '0'
+
+		$params = $newSchedule->toArray();
+
+		// There's some object/array => DB cleanup logic needed..
+		$this->cleanStylescheuleArrayForDbInsert($params);
+
+
+		$db = vB::getDbAssertor();
+		// Relies on the scheduleid primary key being conditionally set + replace for either insert or update.
+		$id = $db->replace('styleschedule', $params);
+		if ($dorebuild)
+		{
+			$this->rebuildAllStyleScheduleDatastores();
+		}
+
+		return $id;
+	}
+
+	// I'm not sure if this should be in the entity class or this class... for now leaving it here as it requires
+	// knowledge about HOW the entity is stored, e.g. properties => columns vs json_encoded.
+	private function cleanStylescheuleArrayForDbInsert(&$params)
+	{
+		// if scheduleid is null, this is a new insert so we want to unset it, otherwise it'll try to insert the null value as string
+		// and weird things happen.
+		if (array_key_exists('scheduleid', $params) AND empty($params['scheduleid']))
+		{
+			unset($params['scheduleid']);
+		}
+
+		// Removing certain fields that are not part of the table, e.g. vbstartdate. Otherwise the assertor can run into errors
+		// as it'll try to escape it as string.
+		$unsetThese = [
+			'vbstartdate',
+			'vbenddate',
+		];
+		foreach ($unsetThese AS $k)
+		{
+			unset($params[$k]);
+		}
+	}
+
+	/**
+	 * @var vB_Entity_Styleschedule[] $newschedules
+	 *
+	 * @return array Array of int|false, affected scheduleid(s) or false(s) on DB failure.
+	 */
+	public function saveStyleSchedulesBulk(array $newschedules) : array
+	{
+		$return = [];
+		foreach ($newschedules AS $__key => $__new)
+		{
+			$return[$__key] = $this->saveStyleSchedule($__new, false);
+		}
+
+		$this->rebuildAllStyleScheduleDatastores();
+		return $return;
+	}
+
+	/**
+	 *
+	 * @var int $scheduleid
+	 *
+	 * @return  vB_Entity_Styleschedule  vB_Entity_Styleschedule instance
+	 * @throws vB_Exception_Api invalid_data_w_x_y_z if scheduleid wasn't found.
+	 */
+	public function getStyleSchedule(int $scheduleid) : ?vB_Entity_Styleschedule
+	{
+		$arr = $this->getStyleSchedules([$scheduleid]);
+		return $arr[$scheduleid];
+	}
+
+	/**
+	 *
+	 * @var int[] $scheduleids   Empty meants fetch all.
+	 *
+	 * @return  vB_Entity_Styleschedule[]  vB_Entity_Styleschedule instances keyed by scheduleid
+	 */
+	public function getStyleSchedules(array $scheduleids = []) : array
+	{
+		$scheduleids = array_unique($scheduleids);
+		$db = vB::getDbAssertor();
+		if (!empty($scheduleids))
+		{
+			$params = ['scheduleid' => $scheduleids];
+		}
+		else
+		{
+			$params = vB_dB_Query::CONDITION_ALL;
+		}
+		$orderby = ['field' => 'priority', 'direction' => vB_dB_Query::SORT_DESC];
+		$rows = $db->select('styleschedule', $params, $orderby);
+		$arr = [];
+		foreach($rows AS $__row)
+		{
+			$arr[$__row['scheduleid']] = vB_Entity_Styleschedule::createFromArray($__row);
+		}
+
+		if (!empty($scheduleids) AND count($scheduleids) != count($arr))
+		{
+			throw new vB_Exception_Api('invalid_data_w_x_y_z', [implode(',', $scheduleids), 'scheduleids', __CLASS__, __FUNCTION__]);
+		}
+
+		return $arr;
+	}
+
+	private function rebuildScheduleidStyleidMap() : array
+	{
+		$db = vB::getDbAssertor();
+		$rows = $db->getColumn('styleschedule', 'styleid', [vB_dB_Query::CONDITIONS_KEY => vB_dB_Query::CONDITION_ALL], false, 'scheduleid');
+
+		// cache *something* to avoid fetching over and over again unnecessarily in case of empty records
+		if (empty($rows))
+		{
+			$rows = [-1 => -1];
+		}
+
+		$ds = vB::getDatastore();
+		$ds->build(self::DATASTOREKEY_SCHEDULEID_TO_STYLEID, json_encode($rows), 0);
+
+		return $rows;
+	}
+
+	/**
+	 * @return [int scheduleid => int styleid,...]
+	 */
+	private function getScheduleidStyleidMap() : array
+	{
+		$cached = vB::getDatastore()->getValue(self::DATASTOREKEY_SCHEDULEID_TO_STYLEID);
+		$cached = ($cached ? json_decode($cached, true) : []);
+		if (!$cached)
+		{
+			return $this->rebuildScheduleidStyleidMap();
+		}
+
+		return $cached;
+	}
+
+	public function getStyleidFromScheduleid(int $scheduleid) : int
+	{
+		$map = $this->getScheduleidStyleidMap();
+		return $map[$scheduleid] ?? -1;
+	}
+
+	// not meant to be called frequently. Only when things change or "current" schedule
+	// expires
+	private function recalculateASAPSchedule() : vB_Entity_ScheduleItem
+	{
+		// For now goign with request gettimenow in case we need to change timenow for testing.
+		//$timenow = time();
+		$timenow = vB::getRequest()->getTimeNow();
+		// Not using getStyleSchedules() to keep that function simpler.
+		// Get all enabled schedules and descending priority order (order is important
+		// for logic below!)
+		$db = vB::getDbAssertor();
+		$params = ['enabled' => 1];
+		$orderby = ['field' => 'priority', 'direction' => vB_dB_Query::SORT_DESC];
+		$rows = $db->select('styleschedule', $params, $orderby);
+
+		// So there are a lot of moving parts that can make the schedule active or not.
+		// This does not seem like something we can easily sort out in just mysql, because
+		// we want the start & end times to be configurable to either EXACTLY (useyear),
+		// or relative to whatever this year is, in which case the start & end times have to
+		// be shifted by year(s) appropriately depending on what the relative positions on
+		// the year-timeline of the 3 points (start, end, timenow) are...
+		// My current thoughts are that the "date range" shifting is nontrivial, and the
+		// easiest thing to optimize is the priority -- as soon as we find the highest
+		// priority schedule that is currently active, we're done.
+
+		// PHP_INT_MAX: unixtimes are currently marked integers. There apparently isn't a
+		// PHP_INT_INF, and trying to use INF can get tricky if we ever have to set it into
+		// an int property (float -> int precision) and while it probably doesn't really
+		// matter whether we use INF vs PHP_INT_INF for most comparisons involving
+		// unixtimestamps, let's consistently use the PHP_INT_MAX for our "effective infinite".
+
+		// Starting off with a "Dud" that will not trigger. This allows us to store this
+		// in the datastore so that we can distinguish between "never built" vs "no schedule"
+		// to avoid constant rebuild attempts.
+		/** @var vB_Entity_ScheduleItem */
+		$nearestNextEnabled = new vB_Entity_ScheduleItem(PHP_INT_MAX, PHP_INT_MAX, 0, []);
+		// /** @var vB_Entity_ScheduleItem[] */
+		// $enabledSchdules = [];
+		foreach($rows AS $__row)
+		{
+			try
+			{
+				$__schedule = vB_Entity_Styleschedule::createFromArray($__row);
+				// Hypothetically, we could try calculating out the next several nearest schedules, but
+				// that gets a bit more complicated because
+				//$enabledSchedules[$__row['scheduleid']] = $__schedule;
+				[
+					'startunixtime' => $__start,
+					'endunixtime' => $__end
+				] = $__schedule->getNearestStartAndEndUnixtimes($timenow);
+
+				$__isActive = ($__start <= $timenow AND $timenow <= $__end);
+				if ($__isActive)
+				{
+					// Except for the very first iteration, $nearestNextEnabled->startunixtime is the
+					// future soonest start time of ANY higher priority schedule (note that we're iterating
+					// in order of descreasing priority per the query)
+					// Edit: Actually, above is only true iff $__schedule is not using useyear. With
+					// non-recurring events, we may have an enddate in the past, so we would have to check
+					// that to be certain. For the ACTIVE case though, we already checked it in the conditional
+					// above.
+					// This means if that higher priority schedule starts before this active schedule ends,
+					// it must interrupt this schedule.
+					//  E.g. Schedule A with priority 1, Jan 1 - 31, and Schedule B with priority 2,
+					//  Jan 3 - 5, and today is Jan 2, we need Schedule A, but expiry of Jan 3.
+					$effectiveEnd = min($nearestNextEnabled->startunixtime - 1, $__end);
+					// $effectiveEnd = ($nearestNextEnabled->startunixtime <= $timenow ? min($nearestNextEnabled->startunixtime, $__end) : $__end);
+					return new vB_Entity_ScheduleItem($__start, $effectiveEnd, $__schedule->priority, $__schedule->toArray());
+				}
+
+				// If we don't have a currently active schedule, we want to at least return the next soonest schedule.
+				// We don't want lower priorities to override UNLESS they start sooner.
+				// However, ignore non-recurring (useyear = 1) ones that are set in the past.
+				$__inthefuture = ($__start > $timenow AND $__end > $timenow);
+				if ($__inthefuture AND $__start < $nearestNextEnabled->startunixtime)
+				{
+					$effectiveEnd = min($nearestNextEnabled->startunixtime - 1, $__end);
+					$nearestNextEnabled = new vB_Entity_ScheduleItem($__start, $effectiveEnd, $__schedule->priority, $__schedule->toArray());
+				}
+			}
+			catch(Throwable $e)
+			{
+				// let's just ignore if trying to process throws any kinds of issues... usually they shouldn't
+				// since all of the exceptions should pop up at save time, but don't want to blow up the entire forum
+				// because of some schedule data corruption
+			}
+		}
+
+		// We'll queue this up in the datastore so that we don't have to do a rebuild until something expires OR a schedule record change is made.
+		return $nearestNextEnabled;
+	}
+
+
+	// private function getW3CDate(string $year, string $month, string $date, string $hour, string $minute, string $second, string $tzoffset) : DateTimeImmutable|false
+	// {
+	// 	return DateTimeImmutable::createFromFormat(DateTimeInterface::W3C, "{$year}-{$month}-{$date}T{$hour}:{$minute}:{$second}{$tzoffset}");
+	// }
+
+	public function getCurrentActiveScheduledStyle() : array
+	{
+		$default = [
+			'found' => false,
+			'styleid' => -1,
+			'overridechannelcustom' => false,
+			'overrideusercustom' => false,
+			'title' => '',
+			'expires' => 0,
+		];
+
+		try
+		{
+			$ds = vB::getDatastore();
+			$cached = $ds->getValue(self::DATASTOREKEY_CURRENTSCHEDULE);
+			$cached = ($cached ? vB_Entity_ScheduleItem::jsonDecode($cached) : null);
+			$timenow = vB::getRequest()->getTimeNow();
+
+			// If this was an active schedule, and it expired, we need to rebuild and grab a new one.
+			// This is also why we set the 'dud's endunixtime to INF, to avoid rebuilding the dud.
+			// The initial $cached check is to handle cases of datastore clear or very first-time after upgrade.
+			if (!$cached OR $cached->endunixtime < $timenow)
+			{
+				$cached = $this->rebuildCurrentScheduleDatastore();
+			}
+
+			if ($cached)
+			{
+				// This handles the cases where
+				// * $cached was active
+				// * $cached was rebuilt above and is now active
+				// * $cached was a future-queued one and is now active
+				if ($cached->isActiveAt($timenow) AND isset($cached->data['styleid']))
+				{
+					// Let's avoid unnecessarily instantiating this. The data SHOULD BE there.
+					// try
+					// {
+					// 	$item = vB_Entity_Styleschedule::createFromArray($cached->data);
+					// }
+					// catch (Throwable $e)
+					// {}
+					return [
+						'found' => true,
+						'styleid' => $cached->data['styleid'],
+						'overridechannelcustom' => $cached->data['overridechannelcustom'],
+						'overrideusercustom' => $cached->data['overrideusercustom'],
+						'title' => $cached->data['title'],
+						'expires' => $cached->endunixtime,
+					];
+
+				}
+
+				// If we're here, either we've stored a 'dud' because we have NO active `styleschedule`
+				// records (or init failed for some reason), or the valid, queued one is still not
+				// active yet. There's nothing to do in either case.
+			}
+		}
+		catch (Throwable $e)
+		{
+			// If we have any kinds of exceptions/errors, we could log it here, but we shouldn't break anything upstream
+			// because this is called every page load.
+			// Return default below.
+		}
+
+		return $default;
+	}
+
+	private function rebuildCurrentScheduleDatastore() : vB_Entity_ScheduleItem
+	{
+		$schedule = $this->recalculateASAPSchedule();
+		vB::getDatastore()->build(self::DATASTOREKEY_CURRENTSCHEDULE, json_encode($schedule), 0);
+
+		return $schedule;
+	}
+
+	public function rebuildAllStyleScheduleDatastores()
+	{
+		$this->rebuildScheduleidStyleidMap();
+		$this->rebuildCurrentScheduleDatastore();
+	}
+
+	public function disableSchedule(int $scheduleid)
+	{
+		$db = vB::getDbAssertor();
+		$db->update('styleschedule', ['enabled' => 0], ['scheduleid' => $scheduleid]);
+		$this->rebuildAllStyleScheduleDatastores();
+	}
+
+	public function enableSchedule(int $scheduleid)
+	{
+		$db = vB::getDbAssertor();
+		$db->update('styleschedule', ['enabled' => 1], ['scheduleid' => $scheduleid]);
+		$this->rebuildAllStyleScheduleDatastores();
+	}
+
+	public function deleteSchedule(int $scheduleid)
+	{
+		$db = vB::getDbAssertor();
+		$db->delete('styleschedule', ['scheduleid' => $scheduleid]);
+		$this->rebuildAllStyleScheduleDatastores();
+	}
+
+}
+
+/*=========================================================================*\
+|| #######################################################################
+|| # Downloaded: 12:50, Tue Dec 24th 2024
+|| # CVS: $RCSfile$ - $Revision: 102970 $
+|| #######################################################################
+\*=========================================================================*/

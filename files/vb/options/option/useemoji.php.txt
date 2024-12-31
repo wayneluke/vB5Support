@@ -1,0 +1,31 @@
+<?php
+/*========================================================================*\
+|| ###################################################################### ||
+|| # vBulletin 6.1.0 Alpha 4 Week 2 - Licence Number VBCW2VFT7A
+|| # ------------------------------------------------------------------ # ||
+|| # Copyright 2000-2024 MH Sub I, LLC dba vBulletin. All Rights Reserved.  # ||
+|| # This file may not be redistributed in whole or significant part.   # ||
+|| # ----------------- VBULLETIN IS NOT FREE SOFTWARE ----------------- # ||
+|| # http://www.vbulletin.com | http://www.vbulletin.com/license.html   # ||
+|| ###################################################################### ||
+\*========================================================================*/
+
+/**
+ * @package vBulletin
+ */
+class vB_Options_Option_Useemoji extends vB_Options_Option
+{
+	protected function validateCustom(array $validation, mixed $rawvalue) : bool|string|array
+	{
+		if ($rawvalue == 1)
+		{
+			$charsets = vB::getDbAssertor()->getDbCharsets('text', 'rawtext');
+			if ($charsets['effectiveCharset'] != 'utf8mb4')
+			{
+				return 'setting_validation_error_useemoj';
+			}
+		}
+
+		return true;
+	}
+}

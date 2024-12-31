@@ -1,0 +1,839 @@
+<?php
+/*========================================================================*\
+|| ###################################################################### ||
+|| # vBulletin 6.1.0 Alpha 4 Week 2 - Licence Number VBCW2VFT7A
+|| # ------------------------------------------------------------------ # ||
+|| # Copyright 2000-2024 MH Sub I, LLC dba vBulletin. All Rights Reserved.  # ||
+|| # This file may not be redistributed in whole or significant part.   # ||
+|| # ----------------- VBULLETIN IS NOT FREE SOFTWARE ----------------- # ||
+|| # http://www.vbulletin.com | http://www.vbulletin.com/license.html   # ||
+|| ###################################################################### ||
+\*========================================================================*/
+
+/**
+ * vB_Api_Options
+ *
+ * @package vBApi
+ */
+class vB_Api_Options extends vB_Api
+{
+	protected $disableWhiteList = ['fetch', 'fetchValues'];
+
+	private $library;
+
+	protected function __construct()
+	{
+		parent::__construct();
+		$this->library = vB_Library::instance('options');
+	}
+
+	public function checkApiState($method)
+	{
+		if (in_array($method, $this->disableFalseReturnOnly))
+		{
+			return false;
+		}
+		else if (!in_array($method, $this->disableWhiteList))
+		{
+			// we need to fetch options even without a session to verify
+			parent::checkApiState($method);
+		}
+
+		return true;
+	}
+
+	/**
+	 * This function returns the options data from the specified option groups,
+	 * in a multi dimensional array having the group name as key and the options
+	 * as values.
+	 *
+	 * This function is misnamed and/or placed in the wrong API class. It acually
+	 * returns any of the DATASTORE items, ONE of which is the vBulletin Options array.
+	 *
+	 * @param array $options The array of the DATASTORE items that you want to return.
+	 * 	If empty, it will return all allowed items. Currently allowed entries are
+	 * 		-- options (or publicoptions either will return the publicoptions values with the key 'options'
+	 * 		-- miscoptions
+	 * 	all other values will be ignored.
+	 *
+	 * @return array
+	 */
+	public function fetch($options = null)
+	{
+		//be very careful adding to this list.
+		//anything added here becomes available to the general public.
+		$whitelist = [
+			'options',
+			'publicoptions',
+			'miscoptions',
+		];
+
+		if (empty($options))
+		{
+			//keep in sync with whitelist
+			$options = [
+				'publicoptions',
+				'miscoptions',
+			];
+		}
+		else
+		{
+			if (!is_array($options))
+			{
+				$options = [$options];
+			}
+
+			$options = array_intersect($options, $whitelist);
+
+			foreach ($options AS $key => $option)
+			{
+				// if they requested the "options" group, we want to pull the
+				// "publicoptions" from the datastore instead
+				if ($option == 'options')
+				{
+					$options[$key] = 'publicoptions';
+					break;
+				}
+			}
+		}
+
+		$datastore = vB::getDatastore();
+		$datastore->preload($options);
+
+		$response = [];
+		foreach ($options AS $option)
+		{
+			// return the "publicoptions" datastore item as "options"
+			$responseKey = ($option == 'publicoptions' ? 'options' : $option);
+			$response[$responseKey] = $datastore->getValue($option);
+		}
+
+		return $response;
+	}
+
+	/**
+	 * Returns the requested vBulletin options as specified by the $options parameter.
+	 * Only returns public options. If a private option is requested, the returned
+	 * value for it will be null.
+	 *
+	 * @param  string|array Specify one option (as a string), or multiple options (as an array)
+	 * @return array        Array of $option name => $value
+	 */
+	public static function fetchStatic($options = null)
+	{
+		if (!isset($options) OR empty($options))
+		{
+			return [];
+		}
+		else if (!is_array($options))
+		{
+			$options = [$options];
+		}
+
+		$dsOptions =  vB::getDatastore()->getValue('publicoptions');
+		$response = [];
+		foreach ($options AS $option)
+		{
+			if (isset($dsOptions[$option]))
+			{
+				$response[$option] = $dsOptions[$option];
+			}
+			else
+			{
+				$response[$option] = null;
+			}
+		}
+
+		return $response;
+	}
+
+	/**
+	 * This function gets the settings for given product or vbulletin if not specified
+	 * @param string $product
+	 * @return array
+	 */
+	public function getSettingsXML($product = 'vbulletin')
+	{
+		$this->checkHasAdminPermission('canadminsettings');
+
+		require_once(DIR . '/includes/adminfunctions_options.php');
+		$response = [];
+
+		//Evaluate if product is valid
+		if (array_key_exists($product, vB::getDatastore()->getValue('products')))
+		{
+			$settings = get_settings_export_xml($product);
+			if (!$settings)
+			{
+				throw new vB_Exception_Api('settings_not_found');
+			}
+			$response['settings'] = $settings;
+		}
+		else
+		{
+			throw new vB_Exception_Api('invalid_product_specified');
+		}
+		return $response;
+	}
+
+	/**
+	 * This function gets a product or set vbulletin as default and prints
+	 * the XML file for it's options..
+	 * @param boolean $ignore_blacklist -- ignore the settings with blacklist =1
+	 * @param string $product
+	 * @return array response
+	 */
+	public function getGroupSettingsXML($ignore_blacklist, $product = 'vbulletin')
+	{
+		$this->checkHasAdminPermission('canadminsettingsall');
+
+		require_once(DIR . '/includes/adminfunctions_options.php');
+		$response = [];
+		//Evaluate if product is valid
+		if (array_key_exists($product, vB::getDatastore()->getValue('products')))
+		{
+			$xml = new vB_XML_Builder();
+			$xml->add_group('settings', ['product' => $product]);
+
+			$conditions = ['product' => $product];
+			if ($product == 'vbulletin')
+			{
+				$conditions['product'] = ['vbulletin', ''];
+			}
+
+			if ($ignore_blacklist)
+			{
+				$conditions['blacklist'] = 0;
+			}
+
+			$sets = vB::getDbAssertor()->select('setting', $conditions, ['field' => ['displayorder', 'varname']]);
+
+			if ($sets AND $sets->valid())
+			{
+				foreach ($sets AS $set)
+				{
+					$arr = ['varname' => $set['varname']];
+					$xml->add_group('setting', $arr);
+
+					if ($set['value'] != '')
+					{
+						$xml->add_tag('value', $set['value']);
+					}
+					$xml->close_group();
+				}
+			}
+
+			$xml->close_group();
+			$response['settings'] = $xml->output();
+			$xml = null;
+		}
+		else
+		{
+			throw new vB_Exception_Api('invalid_product_specified');
+		}
+		return $response;
+	}
+
+	/**
+	 * This function gets the settings for given product or vbulletin if not specified
+	 * @param string $settingsFile url
+	 * @param string $serverFile url
+	 * @param string $restore
+	 * @param boolean $blacklist
+	 * @return array
+	 */
+	public function importSettingsXML($settingsFile, $serverFile, $restore, $blacklist)
+	{
+		$this->checkHasAdminPermission('canadminsettingsall');
+
+		require_once(DIR . '/includes/adminfunctions.php');
+		require_once(DIR . '/includes/adminfunctions_options.php');
+		$response = [];
+		$xml = null;
+
+		// got an uploaded file?
+		if ($settingsFile)
+		{
+			if (is_uploaded_file($settingsFile['tmp_name']))
+			{
+				$check = vB_Library::instance('filescan')->scanFile($settingsFile['tmp_name']);
+				if (empty($check))
+				{
+					@unlink($settingsFile['tmp_name']);
+					throw new vB_Exception_Api('filescan_fail_uploaded_file');
+				}
+
+				$xml = file_read($settingsFile['tmp_name']);
+			}
+		}
+		// no uploaded file - got a local file?
+		else if ($serverFile)
+		{
+			if (file_exists($serverFile))
+			{
+				$xml = file_read($serverFile);
+			}
+		}
+		// no uploaded file and no local file - ERROR
+		else
+		{
+			throw new vB_Exception_Api('no_file_uploaded_and_no_local_file_found_gerror');
+		}
+
+		if ($xml)
+		{
+			if ($restore)
+			{
+				xml_restore_settings($xml, $blacklist);
+			}
+			else
+			{
+				xml_import_settings($xml);
+			}
+		}
+
+		$response['import'] = true;
+		return $response;
+	}
+
+	/**
+	 * Fetch option values
+	 *
+	 * @param array $options An array of option names to be fetched
+	 *
+	 * @return array Options' values
+	 */
+	public function fetchValues($options)
+	{
+		//fetch automatically converts this to publicoptions when it does the pull.
+		$allOptions = $this->fetch('options');
+		return array_intersect_key($allOptions['options'], array_flip($options));
+	}
+
+	/**
+	 * This function inserts a Settings value
+	 * @param array $setting ( varname, defaultvalue, product, volatile, title, description, username )
+	 * @return array $response
+	 */
+	public function insertSetting($setting)
+	{
+		$this->checkHasAdminPermission('canadminsettingsall');
+
+		require_once(DIR . '/includes/adminfunctions.php');
+
+		$db = vB::getDbAssertor();
+
+		//default any values that have useful defaults
+		$setting['product'] = $setting['product'] ?? 'vbulletin';
+		$setting['adminperm'] = $setting['adminperm'] ?? '';
+
+		//This is the list of all of the parms we want to insert
+		//we'll check the params we just defaulted to avoid dealing with
+		//two lists of things.
+		$mainfields = [
+			'varname',
+			'grouptitle',
+			'defaultvalue',
+			'optioncode',
+			'displayorder',
+			'volatile',
+			'datatype',
+			'product',
+			'validationcode',
+			'blacklist',
+			'ispublic',
+			'adminperm',
+		];
+
+		$otherfields = [
+			'title',
+			'description',
+		];
+
+		foreach (array_merge($mainfields, $otherfields) AS $field)
+		{
+			if (!isset($setting[$field]))
+			{
+				throw new vB_Exception_Api('invalid_data_w_x_y_z', ['unset', "\$setting['$field']", __CLASS__, __FUNCTION__]);
+			}
+		}
+
+		//additional validation beyond simply checking that fields are present
+		$row = $db->getRow('settinggroup', ['grouptitle' => $setting['grouptitle']]);
+		if (!$row)
+		{
+			throw new vB_Exception_Api('invalid_data_w_x_y_z', [$setting['grouptitle'], "\$setting['grouptitle']", __CLASS__, __FUNCTION__]);
+		}
+
+		$row = $db->getRow('setting', ['varname' => $setting['varname']]);
+		if ($row)
+		{
+			throw new vB_Exception_Api('there_is_already_setting_named_x', $setting['varname']);
+		}
+
+		if (!preg_match('#^[a-z0-9_]+$#i', $setting['varname'])) // match a-z, A-Z, 0-9, _ only
+		{
+			throw new vB_Exception_Api('invalid_phrase_varname');
+		}
+
+		// insert setting place-holder
+		$insert = array_intersect_key($setting, array_flip($mainfields));
+		$insert[vB_dB_Query::TYPE_KEY] = vB_dB_Query::QUERY_INSERT;
+		$insertSetting = $db->assertQuery('setting', $insert);
+
+		$phraselib = vB_Library::instance('phrase');
+		$phraselib->saveRoot($setting['product'], 'vbsettings', 'setting_' . $setting['varname'] . '_title', $setting['title'], !$setting['volatile'], true);
+		$phraselib->saveRoot($setting['product'], 'vbsettings', 'setting_' . $setting['varname'] . '_desc', $setting['description'], !$setting['volatile'], true);
+
+		vB::getDatastore()->build_options();
+
+		return ['insert' => true];
+	}
+
+	/**
+	 * This function updates specified settings
+	 * @param array $values
+	 *	'varname' => $vbulletin->GPC['varname'],
+	 *	'grouptitle' => $vbulletin->GPC['grouptitle'],
+	 *	'optioncode' => $vbulletin->GPC['optioncode'],
+	 *	'defaultvalue' => $vbulletin->GPC['defaultvalue'],
+	 *	'displayorder' => $vbulletin->GPC['displayorder'],
+	 *	'volatile' => $vbulletin->GPC['volatile'],
+	 *	'datatype' => $vbulletin->GPC['datatype'],
+	 *	'validationcode' => $vbulletin->GPC['validationcode'],
+	 *	'product' => $vbulletin->GPC['product'],
+	 *	'blacklist' => $vbulletin->GPC['blacklist'],
+	 *	'title' => $vbulletin->GPC['title'],
+	 *	'username' => $vbulletin->userinfo['username'],
+	 *	'description' => $vbulletin->GPC['description']
+	 * @return array, $response
+	 */
+	public function updateSetting($values)
+	{
+		$this->checkHasAdminPermission('canadminsettingsall');
+		return $this->library->updateSetting($values);
+	}
+
+	/**
+	 * This updates the attachpath value in datastore settings
+	 *
+	 * 	@param	mixed	the settings value
+	 *	@param	bool	whether to rebuild the datastore. Normally true
+	 *
+	 * 	@return	mixed	normally ['update' => 'true']
+	 */
+	public function updateAttachPath($value)
+	{
+		//This is a separate function because it checks a different permission
+		//The user needs both cansetserverconfig and canadminthreads, but not canadminsettings
+		$this->checkHasAdminPermission('cansetserverconfig');
+		$this->checkHasAdminPermission('canadminthreads');
+		return $this->library->updateValue('attachpath', $value);
+	}
+
+
+	/**
+	 * This updates the attachpath value in datastore settings
+	 *
+	 * 	@param	mixed	the settings value
+	 *	@param	bool	whether to rebuild the datastore. Normally true
+	 *
+	 * 	@return	mixed	normally ['update' => 'true']
+	 */
+	public function updateAttachSetting($value)
+	{
+		//This is a separate function because it checks a different permission
+		//The user needs both cansetserverconfig and canadminthreads, but not canadminsettings
+		$this->checkHasAdminPermission('cansetserverconfig');
+		$this->checkHasAdminPermission('canadminthreads');
+		return $this->library->updateValue('attachfile', $value);
+	}
+
+	/**
+	 * This function deletes specified settings
+	 * @param string $title
+	 * @return array
+	 */
+	public function killSetting($varname)
+	{
+		$this->checkHasAdminPermission('canadminsettings');
+
+		$db = vB::getDbAssertor();
+
+		require_once(DIR . '/includes/adminfunctions_options.php');
+		$response = [];
+		// get some info
+		$setting = $db->getRow('setting',	['varname' => $varname]);
+		if (!$setting)
+		{
+			$response['error'] = "invalid_setting";
+		}
+		else
+		{
+			$response['setting'] = $setting;
+		}
+
+		// We don't store the setting names in the language table so we don't need to rebuild here.
+		$phrasenames = [
+			'setting_' . $setting['varname'] . '_title',
+			'setting_' . $setting['varname'] . '_desc'
+		];
+		vB_Library::instance('phrase')->deleteByVarname($phrasenames, true);
+
+		// delete setting
+		$db->assertQuery('setting', [
+			vB_dB_Query::TYPE_KEY => vB_dB_Query::QUERY_DELETE,
+			'varname' => $setting['varname']
+		]);
+		vB::getDatastore()->build_options();
+
+		if (defined('DEV_AUTOEXPORT') AND DEV_AUTOEXPORT)
+		{
+			require_once(DIR . '/includes/functions_filesystemxml.php');
+			autoexport_write_settings_and_language(-1, $setting['product']);
+		}
+
+		$response['delete'] = true;
+		return $response;
+	}
+
+	/**
+	 * Delete group of settings
+	 * @param string $groupTitle
+	 * @return mixed response
+	 */
+	public function deleteGroupSettings($groupTitle)
+	{
+		$this->checkHasAdminPermission('canadminsettings');
+		$db = vB::getDbAssertor();
+
+		require_once(DIR . '/includes/adminfunctions_options.php');
+		$response = [];
+		// get some info
+		$group = $db->getRow('settinggroup', ['grouptitle' => $groupTitle]);
+
+		//check if the settings have different products from the group.
+		if (defined('DEV_AUTOEXPORT') AND DEV_AUTOEXPORT)
+		{
+			$products_to_export = [];
+			$products_to_export[$group['product']] = 1;
+
+			// query settings from this group
+			$settings = [];
+			$sets = $db->assertQuery('setting',	['grouptitle' => $group['grouptitle']]);
+			//while ($set = $vbulletin->db->fetch_array($sets))
+			if ($sets AND $sets->valid())
+			{
+				foreach ($sets AS $set)
+				{
+					$products_to_export[$set['product']] = 1;
+				}
+			}
+		}
+
+		// query settings from this group
+		$settings = [];
+		$sets = $db->assertQuery('setting',	['grouptitle' => $group['grouptitle']]);
+		//while ($set = $vbulletin->db->fetch_array($sets))
+		if ($sets AND $sets->valid())
+		{
+			foreach ($sets AS $set)
+			{
+				$settings[] = $set['varname'];
+			}
+		}
+
+		// build list of phrases to be deleted
+		$phrases = ["settinggroup_$group[grouptitle]"];
+		foreach ($settings AS $varname)
+		{
+			$phrases[] = 'setting_' . $varname . '_title';
+			$phrases[] = 'setting_' . $varname . '_desc';
+		}
+
+		vB_Library::instance('phrase')->deleteByVarname($phrases, true);
+
+		// delete settings
+		if (count($settings) >= 1)
+		{
+			$deleteSettings = $db->assertQuery('setting',	[
+				vB_dB_Query::TYPE_KEY => vB_dB_Query::QUERY_DELETE,
+				'varname' => $settings,
+			]);
+		}
+
+		// delete group
+		$deleteGroupSettings = $db->assertQuery('settinggroup',	[
+			vB_dB_Query::TYPE_KEY => vB_dB_Query::QUERY_DELETE,
+			'grouptitle' => $group['grouptitle'],
+		]);
+
+		vB::getDatastore()->build_options();
+
+		if (defined('DEV_AUTOEXPORT') AND DEV_AUTOEXPORT)
+		{
+			require_once(DIR . '/includes/functions_filesystemxml.php');
+			foreach (array_keys($products_to_export) as $product)
+			{
+				autoexport_write_settings_and_language(-1, $product);
+			}
+		}
+
+		$response['delete'] = true;
+		return $response;
+	}
+
+	/**
+	 * Insert group settings
+	 * @param array $group ( [grouptitle] , [title] , [product] , [displayorder] , [volatile] )
+	 * @return array response
+	 */
+	public function addGroupSettings($group)
+	{
+		if (!is_array($group))
+		{
+			throw new vB_Exception_Api('invalid_data_w_x_y_z', [$group, 'group', __CLASS__, __FUNCTION__]);
+		}
+
+		$this->checkHasAdminPermission('canadminsettings');
+
+		require_once(DIR . '/includes/adminfunctions.php');
+		$response = [];
+		// insert setting place-holder
+
+		$db = vB::getDbAssertor();
+		$existing = $db->getRow('settinggroup', ['grouptitle' => $group['grouptitle']]);
+		if ($existing)
+		{
+			throw new vB_Exception_Api('x_y_already_exists', ['Settings Group', $group['grouptitle']]);
+		}
+
+		$insertSetting = $db->assertQuery('settinggroup',	[
+			vB_dB_Query::TYPE_KEY => vB_dB_Query::QUERY_INSERT,
+			'grouptitle' => $group['grouptitle'],
+			'displayorder' => $group['displayorder'],
+			'volatile' => $group['volatile'],
+			'product' => $group['product'],
+		]);
+
+		if (!empty($insertSetting['errors']))
+		{
+			return $insertSetting['errors'];
+		}
+
+		$phraselib = vB_Library::instance('phrase');
+		$phraselib->saveRoot($group['product'], 'vbsettings', 'settinggroup_' . $group['grouptitle'], $group['title'], !$group['volatile'], true);
+		return ['insert' => true];
+	}
+
+	/**
+	 * This function updates group settings.
+	 * @param array $group Group values
+	 * @return array, $response
+	 */
+	public function updateGroupSettings($group, $username, $oldproduct = '', $adminperm = false)
+	{
+		$this->checkHasAdminPermission('canadminsettings');
+
+		require_once(DIR . '/includes/adminfunctions.php');
+		require_once(DIR . '/includes/adminfunctions_options.php');
+
+		$response = [];
+
+		$db = vB::getDbAssertor();
+
+		$existing = $db->getRow('settinggroup', ['grouptitle' => $group['grouptitle']]);
+		if (!empty($existing['adminperm']) AND (!vB::getUserContext()->hasAdminPermission($existing['adminperm'])))
+		{
+			throw new vB_Exception_Api('no_permission');
+		}
+
+		$updates = [
+			vB_dB_Query::TYPE_KEY => vB_dB_Query::QUERY_UPDATE,
+			'displayorder' => $group['displayorder'],
+			'volatile' => $group['volatile'],
+			'product' => $group['product'],
+			vB_dB_Query::CONDITIONS_KEY => ['grouptitle' => $group['grouptitle']],
+		];
+
+		if (($adminperm !== false) AND vB::getUserContext()->hasAdminPermission('canadminsettingsall'))
+		{
+			$adminperm = vB::getCleaner()->clean($adminperm, vB_Cleaner::TYPE_STR);
+
+			if (empty($adminperm))
+			{
+				$updates['adminperm'] = '';
+			}
+			else
+			{
+				$updates['adminperm'] = substr($adminperm, 0, 32);
+			}
+		}
+
+		$updateSetting = $db->assertQuery('settinggroup', $updates);
+
+		$phraselib = vB_Library::instance('phrase');
+		$phraselib->saveRoot($group['product'], 'vbsettings', 'settinggroup_' . $group['grouptitle'], $group['title'], !$group['volatile'], true);
+
+		// This is primarily to update the product for settings when the group product changes
+		// If we have settings for multiple products in the same group -- which we deliberately do for third party logins --
+		// then we don't want to blanket change the that.  So we'll assume that any settings that currently match the
+		// group product should match after the change.  It means that in some cases changing the group product repeatedly
+		// can "pick up" settings that didn't start off matching (if the group changes A -> B -> C then settings that were
+		// product B will send up as product C) but in practice the behavior mostly makes sense and avoids tediously changing
+		// settings in the common case where all of the settings should match the group.
+		$settingnames = [];
+		$phrasenames = [];
+		$settings = $db->assertQuery('setting',	[
+			'grouptitle' => $group['grouptitle'],
+			'product' => $oldproduct
+		]);
+
+		if ($settings AND $settings->valid())
+		{
+			foreach ($settings AS $setting)
+			{
+				$settingnames[] = $setting['varname'];
+				$phrasenames[] = 'setting_' . $setting['varname'] . '_desc';
+				$phrasenames[] = 'setting_' . $setting['varname'] . '_title';
+			}
+
+			$full_product_info = fetch_product_list(true);
+			$product_version = $full_product_info[$group['product']]['version'];
+
+			$db->assertQuery('setting',
+				[
+					vB_dB_Query::TYPE_KEY => vB_dB_Query::QUERY_UPDATE,
+					'product' => $group['product'],
+					vB_dB_Query::CONDITIONS_KEY => [
+						'varname' => $settingnames
+					]
+				]
+			);
+
+			$phraselib = vB_Library::instance('phrase');
+			$phraselib->updatePhraseMeta($group['product'], $phrasenames);
+		}
+
+		vB::getDatastore()->build_options();
+
+		if (defined('DEV_AUTOEXPORT') AND DEV_AUTOEXPORT)
+		{
+			require_once(DIR . '/includes/functions_filesystemxml.php');
+			autoexport_write_settings_and_language(-1, [$oldproduct, $group['product']]);
+		}
+		$response['update'] = true;
+		return $response;
+	}
+
+	/**
+	 * This function changes the search type for settings
+	 * @param string $implementation
+	 * @return array
+	 */
+	public function changeSearchType($implementation)
+	{
+		$this->checkHasAdminPermission('canadminsettingsall');
+
+		// This should be pused back to the option code (we currently don't have any binding validation
+		// for options but, perhaps, we should). And then we should have an API function to save options
+		// with all of the validation and custom logic that entails.
+		//
+		// fetch existing/enabled search implementations from backend instead of provided data.
+		$options = vB_Library::instance('options')->getSearchImplementations();
+		if (!array_key_exists($implementation, $options) OR !class_exists($implementation))
+		{
+			throw new vB_Exception_Api('invalid_search_implementation');
+		}
+
+		$this->library->updateValue('searchimplementation', $implementation);
+		return ['success' => true];
+	}
+
+	/**
+	 * Return whether the value for varname is valid according to option rules.
+	 *
+	 * @param string $varname
+	 * @param string $value
+	 * @return array
+	 */
+	public function validateSettings($varname, $value)
+	{
+		$this->checkHasAdminPermission('canadminsettings');
+
+		$response = [];
+		$settingrow = vB::getDbAssertor()->getRow('setting', ['varname' => $varname]);
+		if ($settingrow)
+		{
+			$settingobj = vB_Options_Option::createFromArray($settingrow);
+			$valid = $settingobj->validate($value, true);
+		}
+		else
+		{
+			//why is a setting that doesn't exist valid?
+			$valid = true;
+		}
+
+		return ['valid' => $valid];
+	}
+
+	/*
+	 *	Locations aren't worth their own library/api classes and are strongly tied to the privacy settings.
+	 *	So let's put this here.
+	 */
+
+	public function isLocationOptionSet($optionname)
+	{
+		$set = $this->library->isLocationOptionSet($optionname);
+		return ['isset' => $set];
+	}
+
+	public function getLocationList()
+	{
+		$this->checkHasAdminPermission(['canadminsettings', 'canadminsettingsall']);
+		$list = $this->library->getLocationList();
+		return ['locations' => $list];
+	}
+
+	public function getLocation($locationid)
+	{
+		$this->checkHasAdminPermission(['canadminsettings', 'canadminsettingsall']);
+		$location = $this->library->getLocation($locationid);
+		return ['location' => $location];
+	}
+
+	public function saveLocation($data)
+	{
+		$this->checkHasAdminPermission(['canadminsettings', 'canadminsettingsall']);
+		$locationid =  $this->library->saveLocation($data);
+		return ['locationid' => $locationid];
+	}
+
+	public function deleteLocation($locationid)
+	{
+		$this->checkHasAdminPermission(['canadminsettings', 'canadminsettingsall']);
+		$this->library->deleteLocation($locationid);
+		return ['success' => true];
+	}
+
+	public function getCountryCodes()
+	{
+		$this->checkHasAdminPermission(['canadminsettings', 'canadminsettingsall']);
+		$codes = $this->library->getCountryCodes();
+		return ['codes' => $codes];
+	}
+
+	public function getRegionCodes($countrycode)
+	{
+		$this->checkHasAdminPermission(['canadminsettings', 'canadminsettingsall']);
+		$codes = $this->library->getRegionCodes($countrycode);
+		return ['codes' => $codes];
+	}
+}
+
+/*=========================================================================*\
+|| #######################################################################
+|| # Downloaded: 12:50, Tue Dec 24th 2024
+|| # CVS: $RCSfile$ - $Revision: 117030 $
+|| #######################################################################
+\*=========================================================================*/

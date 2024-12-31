@@ -1,0 +1,37 @@
+<?php
+/*========================================================================*\
+|| ###################################################################### ||
+|| # vBulletin 6.1.0 Alpha 4 Week 2 - Licence Number VBCW2VFT7A
+|| # ------------------------------------------------------------------ # ||
+|| # Copyright 2000-2024 MH Sub I, LLC dba vBulletin. All Rights Reserved.  # ||
+|| # This file may not be redistributed in whole or significant part.   # ||
+|| # ----------------- VBULLETIN IS NOT FREE SOFTWARE ----------------- # ||
+|| # http://www.vbulletin.com | http://www.vbulletin.com/license.html   # ||
+|| ###################################################################### ||
+\*========================================================================*/
+
+/**
+ * @package vBUtility
+ */
+//this inheritance is a little awkward but the alternatives are
+//1) Duplicate a bunch of code that needs to stay in sync.
+//2) Create a raw object and delegate the common code -- which means not really using
+//	any of the class structure for the Var class at all
+//3) Translate the var to raw somewhere in the parser code instead of handling it as
+//	a seperate tag.
+//4) Create a common parent class
+//
+//This seems to be the best of a lot of not entirely optimal choices.
+class vB_Utility_Template_ParserNode_Curly_Var extends vB_Utility_Template_ParserNode_Curly_Raw
+{
+	public function compile() : string
+	{
+		return 'vB_Template_Runtime::vBVar(' .  parent::compile() . ')';
+	}
+}
+/*=========================================================================*\
+|| #######################################################################
+|| # Downloaded: 12:50, Tue Dec 24th 2024
+|| # CVS: $RCSfile$ - $Revision: 115380 $
+|| #######################################################################
+\*=========================================================================*/

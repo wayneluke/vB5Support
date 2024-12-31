@@ -1,0 +1,111 @@
+<?php
+/*========================================================================*\
+|| ###################################################################### ||
+|| # vBulletin 6.1.0 Alpha 4 Week 2 - Licence Number VBCW2VFT7A
+|| # ------------------------------------------------------------------ # ||
+|| # Copyright 2000-2024 MH Sub I, LLC dba vBulletin. All Rights Reserved.  # ||
+|| # This file may not be redistributed in whole or significant part.   # ||
+|| # ----------------- VBULLETIN IS NOT FREE SOFTWARE ----------------- # ||
+|| # http://www.vbulletin.com | http://www.vbulletin.com/license.html   # ||
+|| ###################################################################### ||
+\*========================================================================*/
+
+/**
+ * @package vBUtility
+ */
+
+// This intends to provide something of the same functionality as the vB_Exception_Api class
+// is a cleaner package.  As well as the ability to readily translate utility class exceptions
+// to API exceptions for the main app.
+//
+// The long term intent is to rebuild the API exception to be based on this class and make the
+// main exception handling play nice with chained exceptions, and potentially allow it to handle this class.
+// But for now this should allow us to make more extensive use of exceptions in the utility classes
+//
+// Note that the phrases we pass to this class are defined externally to the utilty module and
+// thus could be considered an external dependency (which we are trying to avoid) exactly how
+// phrases are defined and handled isn't specified so it really isn't (though which phrases
+// can by thrown as errors is implicitly part of the public interface that callers to the utility
+// module need to handle).
+//
+class vB_Utility_Exception_Phrase extends Exception
+{
+	use vB_Utility_Trait_NoSerialize;
+
+	protected $errors = [];
+
+	public static function createFromErrorList(array $errors, $code = 0, ?Throwable $previous = null) : static
+	{
+		//this is over complicated because there isn't a good way to distinguish between
+		//[errorstring1, errorstring2, errorstring3] and
+		//[errorstring, param1, param2]
+		//
+		//So the constructor treats the error as a single error.
+		//This also has the quirk that the stack trace will include this helper function.
+		$error = array_shift($errors);
+		$exception = new static($error, $code, $previous);
+		foreach ($errors AS $error)
+		{
+			$exception->addError($error);
+		}
+		return $exception;
+	}
+
+	//This matches the constructor for the base Exception with the message replaced.
+	//For whatever reason the $code doesn't have a type here.
+	public function __construct(string|array $error, $code = 0, ?Throwable $previous = null)
+	{
+		$this->addError($error);
+		// It would be nice to have the message be the rendered phrase, but we don't want to incur
+		// the overhead of rendering it now, the utility classes explicitly don't know how to render a phrase,
+		// and you aren't allowed to override the getMessage function anyway to do it on demand.
+		// So we'll add the phraseid string as the message to have something even though that's unlikely to
+		// be much use to anybody.
+		parent::__construct((is_array($error) ? reset($error) : $error), $code, $previous);
+	}
+
+	public function addError(string|array $error) : void
+	{
+		if (!is_array($error))
+		{
+			$error = [$error];
+		}
+
+		$this->errors[] = $error;
+	}
+
+	public function hasErrors() : bool
+	{
+		return !empty($this->errors);
+	}
+
+	public function getErrors() : array
+	{
+		return $this->errors;
+	}
+
+	public function hasError(string $phraseId) : bool
+	{
+		if (!$this->hasErrors())
+		{
+			return false;
+		}
+
+		foreach ($this->errors AS $error)
+		{
+			if ($error[0] == $phraseId)
+			{
+				return true;
+			}
+		}
+
+		return false;
+	}
+}
+
+/*=========================================================================*\
+|| #######################################################################
+|| # Downloaded: 12:50, Tue Dec 24th 2024
+|| # CVS: $RCSfile$ - $Revision: 104224 $
+|| #######################################################################
+\*=========================================================================*/

@@ -1,0 +1,543 @@
+<?php
+/*========================================================================*\
+|| ###################################################################### ||
+|| # vBulletin 6.1.0 Alpha 4 Week 2 - Licence Number VBCW2VFT7A
+|| # ------------------------------------------------------------------ # ||
+|| # Copyright 2000-2024 MH Sub I, LLC dba vBulletin. All Rights Reserved.  # ||
+|| # This file may not be redistributed in whole or significant part.   # ||
+|| # ----------------- VBULLETIN IS NOT FREE SOFTWARE ----------------- # ||
+|| # http://www.vbulletin.com | http://www.vbulletin.com/license.html   # ||
+|| ###################################################################### ||
+\*========================================================================*/
+
+/**
+ * @package vBLibrary
+ */
+class vB_Library_NodeField extends vB_Library
+{
+	/**
+	 * Save a category value.
+	 *
+	 * @param array $data --
+	 * 	int nodefieldcategoryid -- optional. If provided will update the category
+	 * 	string title -- the name of the category
+	 *
+	 * @return int -- the id of the saved category.
+	 */
+	public function saveCategory($data)
+	{
+		$db = vB::getDbAssertor();
+		$phraseLib = vB_Library::instance('phrase');
+
+		//Some fields that need special handling, but do validation now before we've made changes
+		$havechannels = isset($data['channelids']);
+		if ($havechannels)
+		{
+			$channelids = $data['channelids'];
+			if (!is_array($channelids))
+			{
+				throw new vB_Exception_Api('invalid_data_w_x_y_z', [$data['channelids'], "data['channelids']", __CLASS__, __FUNCTION__]);
+			}
+			//We might want to validate that the ids are valid channel ids.
+			unset($data['channelids']);
+		}
+
+		$havetitle = isset($data['title']);
+		if ($havetitle)
+		{
+			$title = $data['title'];
+			//if we *have* a title it can't be blank
+			if ($title === '')
+			{
+				throw new vB_Exception_Api('please_complete_required_fields');
+			}
+			unset($data['title']);
+		}
+
+		//need to validate the name if we're setting it.
+		if (isset($data['name']))
+		{
+			if ($data['name'] === '')
+			{
+				throw new vB_Exception_Api('please_complete_required_fields');
+			}
+
+			if (!$phraseLib->isValidPhraseSnippet($data['name']))
+			{
+				throw new vB_Exception_Api('invalid_string_id_alphanumeric');
+			}
+
+			$dupname = $db->getRow('vBForum:nodefieldcategory', ['name' => $data['name']]);
+			if ($dupname)
+			{
+				//if have a dup but it's the record we intend to update it's not a problem.
+				if (($data['nodefieldcategoryid'] ?? null) != $dupname['nodefieldcategoryid'])
+				{
+					throw new vB_Exception_Api('nodefield_category_exists', [$data['name']]);
+				}
+			}
+		}
+
+		if (!empty($data['nodefieldcategoryid']))
+		{
+			$existing = $this->getCategoryInternal($data['nodefieldcategoryid']);
+			if (!$existing)
+			{
+				throw new vB_Exception_Api('invalid_data_w_x_y_z', [$data['nodefieldcategoryid'], "data['nodefieldcategoryid']", __CLASS__, __FUNCTION__]);
+			}
+
+			//If we don't have anything aside from the id field there is nothing to update and the query will not be
+			//happy.  This is a valid use case if someone only wants to update the channel associations.
+			if (count($data) > 1)
+			{
+				$data[vB_dB_Query::TYPE_KEY] = vB_dB_Query::QUERY_UPDATE;
+				$db->assertQuery('vBForum:nodefieldcategory', $data);
+			}
+
+			if (isset($data['name']) AND $data['name'] != $existing['name'])
+			{
+				$phraseLib->renamePhrase($this->getCategoryPhrase($existing['name']), $this->getCategoryPhrase($data['name']));
+			}
+
+			$id = $data['nodefieldcategoryid'];
+		}
+		else
+		{
+			//if we are adding a category we need a title and a name.
+			if (!$havetitle OR empty($data['name']))
+			{
+				throw new vB_Exception_Api('please_complete_required_fields');
+			}
+
+			$id = $db->insert('vBForum:nodefieldcategory', $data);
+		}
+
+		//If we don't have the channels, do change anything.  If we do then replace the entire list
+		//We won't try to add/remove individual channels here.
+		if ($havechannels)
+		{
+			$db->delete('vBForum:nodefieldcategorychannel', ['nodefieldcategoryid' => $id]);
+
+			if (count($channelids) > 0)
+			{
+				$values = [];
+				foreach ($channelids AS $channelid)
+				{
+					$values[] = [$id, $channelid];
+				}
+
+				$db->insertMultiple('vBForum:nodefieldcategorychannel', ['nodefieldcategoryid', 'nodeid'], $values);
+			}
+		}
+
+		if ($havetitle)
+		{
+			//we should either have the name in the data or an existing record.
+			$name = $data['name'] ?? $existing['name'] ?? null;
+			if (is_null($name))
+			{
+				throw new vB_Exception_Api('nodefield_category_exists', ['Could not find nodefield category name for title update']);
+			}
+
+			//using the prefix phrase group for historical reasons.  should change this but need to makes sure we change it *everywhere*
+			$phraseLib->saveCustom('vbulletin', 'prefix', $this->getCategoryPhrase($name), $title);
+		}
+
+		return $id;
+	}
+
+	/**
+	 * Get the list of categories
+	 *
+	 * @return array -- array of category arrays
+	 */
+	public function getCategoryList()
+	{
+		$db = vB::getDbAssertor();
+		$list = $db->getRows('vBForum:nodefieldcategory', [], 'displayorder');
+		foreach ($list AS $key => $row)
+		{
+			$list[$key]['titlephrase'] = $this->getCategoryPhrase($row['name']);
+		}
+		return $list;
+	}
+
+	/**
+	 *	Get a category
+	 *	@param int $categoryid
+	 *	@return array
+	 */
+	public function getCategory($categoryid)
+	{
+		$row = $this->getCategoryInternal($categoryid);
+		if (!$row)
+		{
+			throw new vB_Exception_Api('invalid_data_w_x_y_z', [$categoryid, 'categoryid', __CLASS__, __FUNCTION__]);
+		}
+		return $row;
+	}
+
+	public function getCategoryInternal($categoryid)
+	{
+		$db = vB::getDbAssertor();
+		$row = $db->getRow('vBForum:nodefieldcategory', ['nodefieldcategoryid' => $categoryid]);
+		if (!$row)
+		{
+			return null;
+		}
+
+		$row['titlephrase'] = $this->getCategoryPhrase($row['name']);
+
+		//we might want to consider caching this as part of the main record in addition to seperate table
+		//but we may only really need it in the admincp in which case the extra query isn't huge issue.
+		$row['channelids'] = $db->getColumn('vBForum:nodefieldcategorychannel', 'nodeid', ['nodefieldcategoryid' => $categoryid]);
+		return $row;
+	}
+
+	public function deleteCategory($categoryid)
+	{
+		$db = vB::getDbAssertor();
+
+		$row = $this->getCategoryInternal($categoryid);
+		if (!$row)
+		{
+			throw new vB_Exception_Api('invalid_data_w_x_y_z', [$categoryid, 'categoryid', __CLASS__, __FUNCTION__]);
+		}
+
+		$db->assertQuery('vBForum:deleteCustomFieldCategoryAndChildren', ['nodefieldcategoryid' => $categoryid]);
+		vB_Library::instance('phrase')->deleteByVarname($this->getCategoryPhrase($row['name']));
+	}
+
+	public function saveField($data)
+	{
+		$db = vB::getDbAssertor();
+		$phraseLib = vB_Library::instance('phrase');
+
+		$havetitle = isset($data['title']);
+		if ($havetitle)
+		{
+			$title = $data['title'];
+			//if we *have* a title it can't be blank
+			if ($title === '')
+			{
+				throw new vB_Exception_Api('please_complete_required_fields');
+			}
+			unset($data['title']);
+		}
+
+		//need to validate the name if we're setting it.
+		if (isset($data['name']))
+		{
+			if ($data['name'] === '')
+			{
+				throw new vB_Exception_Api('please_complete_required_fields');
+			}
+
+			if (!$phraseLib->isValidPhraseSnippet($data['name']))
+			{
+				throw new vB_Exception_Api('invalid_string_id_alphanumeric');
+			}
+
+			$dupname = $db->getRow('vBForum:nodefield', ['name' => $data['name']]);
+			if ($dupname)
+			{
+				//We don't want to insert or update to a name that already exists.  However
+				//we want to account for the case where the name was passed but not changed
+				//(which means we'll have a "dup" record but it will be the record we are updating
+				if (($data['nodefieldid'] ?? null) != $dupname['nodefieldid'])
+				{
+					throw new vB_Exception_Api('nodefield_exists', [$data['name']]);
+				}
+			}
+		}
+
+		if (isset($data['required']))
+		{
+			$data['required'] = ($data['required'] ? 1 : 0);
+		}
+
+		if (!empty($data['nodefieldid']))
+		{
+			//checking the result of the update instead of an extra select seems attractive
+			//but we can't tell the difference between didn't match anything and didn't change anything
+			//and we don't want to throw an error in the latter case
+			$existing = $this->getFieldInternal($data['nodefieldid']);
+			if (!$existing)
+			{
+				throw new vB_Exception_Api('invalid_data_w_x_y_z', [$data['nodefieldid'], "data['nodefieldid']", __CLASS__, __FUNCTION__]);
+			}
+
+			//if we only have the id at this point there is nothing to update and this query will result in an error.
+			if (count($data) > 1)
+			{
+				$data[vB_dB_Query::TYPE_KEY] = vB_dB_Query::QUERY_UPDATE;
+				$db->assertQuery('vBForum:nodefield', $data);
+			}
+
+			if (isset($data['name']) AND $data['name'] != $existing['name'])
+			{
+				$phraseLib->renamePhrase($this->getFieldPhrase($existing['name']), $this->getFieldPhrase($data['name']));
+			}
+
+			$id = $data['nodefieldid'];
+		}
+		else
+		{
+			//if we are adding a category we need a title and a name.
+			if (!$havetitle OR empty($data['name']))
+			{
+				throw new vB_Exception_Api('please_complete_required_fields');
+			}
+
+			$id = $db->insert('vBForum:nodefield', $data);
+		}
+
+		if ($havetitle)
+		{
+			//we should either have the name in the data or an existing record.
+			$name = $data['name'] ?? $existing['name'] ?? null;
+			if (is_null($name))
+			{
+				throw new vB_Exception_Api('nodefield_category_exists', ['Could not find nodefield category name for title update']);
+			}
+
+			//using the prefix phrase group for historical reasons.  should change this but need to makes sure we change it *everywhere*
+			$phraseLib->saveCustom('vbulletin', 'prefix', $this->getFieldPhrase($name), $title);
+		}
+
+		return $id;
+	}
+
+	public function getFieldList($categoryid = null)
+	{
+		$db = vB::getDbAssertor();
+		$conditions = [];
+		if ($categoryid)
+		{
+			$conditions = ['nodefieldcategoryid' => $categoryid];
+		}
+
+		$rows = $db->getRows('vBForum:nodefield', $conditions, 'displayorder');
+		foreach ($rows AS $key => $row)
+		{
+			$rows[$key]['titlephrase'] = $this->getFieldPhrase($row['name']);
+		}
+		return $rows;
+	}
+
+	public function getFieldsForChannel($channelid)
+	{
+		$db = vB::getDbAssertor();
+		$result = $db->assertQuery('vBForum:getCustomNodeFieldsForChannel', ['channelid' => $channelid]);
+		return $this->getFieldsFromResult($result);
+	}
+
+	//this requires that the queries select the same fields from the joined tables
+	//but avoids duplicating code for some very similar queries.
+	private function getFieldsFromResult($result)
+	{
+		$categories = [];
+		foreach ($result AS $row)
+		{
+			$catid = $row['nodefieldcategoryid'];
+			if (!isset($categories[$catid]))
+			{
+				//the title should be the same for all rows
+				$categories[$catid] = [
+					'name' => $row['category_name'],
+					'titlephrase' => $this->getCategoryPhrase($row['category_name']),
+					'fields' => [],
+				];
+
+				if (isset($row['category_displayorder']))
+				{
+					$categories[$catid]['displayorder'] = $row['category_displayorder'];
+				}
+			}
+			unset($row['category_name'], $row['category_displayorder']);
+			$row['titlephrase'] = $this->getFieldPhrase($row['name']);
+			$categories[$catid]['fields'][$row['nodefieldid']] = $row;
+		}
+
+		return $categories;
+	}
+
+	public function getFieldsForNode($nodeid)
+	{
+		$nodeLib = vB_Library::instance('node');
+		$node = $nodeLib->getNode($nodeid);
+		if ($node['nodeid'] == $node['starter'])
+		{
+			$channelid = $node['parentid'];
+		}
+		else
+		{
+			$starter = $nodeLib->getNode($node['starter']);
+			$channelid = $starter['parentid'];
+		}
+
+		$fields = $this->getFieldsForChannel($channelid);
+		$values = $this->getFieldValues($nodeid);
+		foreach ($fields AS $catid => $cat)
+		{
+			foreach ($cat['fields'] AS $id => $field)
+			{
+				$fields[$catid]['fields'][$id]['value'] = $values[$id]['value'] ?? '';
+				unset($values[$id]);
+			}
+		}
+		//If we have some values leftover it means that this node has fields from categories
+		//that are not part of the channel it's in.  We want to continue to allow the user to
+		//edit them so let's add them here.  We'll also pull in the entire category for any fields
+		//that may have been added to that category since the node was last edited.
+		if (!empty($values))
+		{
+			$db = vB::getDbAssertor();
+			$result = $db->assertQuery('vBForum:getCustomNodeFieldsForValues', ['nodefieldid' => array_keys($values)]);
+
+			$nodefields = $this->getFieldsFromResult($result);
+			foreach ($nodefields AS $catid => $cat)
+			{
+				$fields[$catid] = $cat;
+				foreach ($cat['fields'] AS $id => $field)
+				{
+					$fields[$catid]['fields'][$id]['value'] = $values[$id]['value'] ?? '';
+					unset($values[$id]);
+				}
+			}
+
+			uasort($fields, function($a, $b) {return $a['displayorder'] <=> $b['displayorder'];});
+		}
+
+		return $fields;
+	}
+
+	public function getField($fieldid)
+	{
+		$row = $this->getFieldInternal($fieldid);
+		if (!$row)
+		{
+			throw new vB_Exception_Api('invalid_data_w_x_y_z', [$fieldid, 'fieldid', __CLASS__, __FUNCTION__]);
+		}
+		return $row;
+	}
+
+	private function getFieldInternal($fieldid)
+	{
+		$db = vB::getDbAssertor();
+		$row = $db->getRow('vBForum:nodefield', ['nodefieldid' => $fieldid]);
+		if (!$row)
+		{
+			return null;
+		}
+
+		$row['titlephrase'] = $this->getFieldPhrase($row['name']);
+		return $row;
+	}
+
+
+	public function deleteField($fieldid)
+	{
+		$db = vB::getDbAssertor();
+		$row = $this->getFieldInternal($fieldid);
+		if (!$row)
+		{
+			throw new vB_Exception_Api('invalid_data_w_x_y_z', [$fieldid, 'fieldid', __CLASS__, __FUNCTION__]);
+		}
+
+		$db->delete('vBForum:nodefield', ['nodefieldid' => $fieldid]);
+		$db->delete('vBForum:nodefieldvalue', ['nodefieldid' => $fieldid]);
+
+		vB_Library::instance('phrase')->deleteByVarname($this->getFieldPhrase($row['name']));
+	}
+
+	public function getFieldValues($nodeid)
+	{
+		$db = vB::getDbAssertor();
+		$rows = $db->getRows('vBForum:getCustomNodeFieldValues', ['nodeid' => $nodeid], false, 'nodefieldid');
+		return $rows;
+	}
+
+	public function getFieldValuesForDisplay($nodeid)
+	{
+		$db = vB::getDbAssertor();
+		$result = $db->assertQuery('vBForum:getCustomNodeFieldsWithValues', ['nodeid' => $nodeid]);
+		return $this->getFieldsFromResult($result);
+	}
+
+	public function saveFieldValues($nodeid, $values)
+	{
+		$db = vB::getDbAssertor();
+
+		$existing = $this->getFieldValues($nodeid);
+		$nodefields = $this->getFieldsForNode($nodeid);
+
+		//for this purpose we really don't care about the category so collapse the array.
+		$fields = [];
+		foreach ($nodefields AS $catid => $category)
+		{
+			foreach ($category['fields'] AS $id => $field)
+			{
+				$fields[$id] = $field;
+			}
+		}
+
+		foreach ($values AS $key => $value)
+		{
+			//this isn't a valid custom fields for this node.
+			if (!isset($fields[$key]))
+			{
+				//this should never happen, just use the generic error for it.
+				throw new vB_Exception_Api('invalid_data_w_x_y_z', [$key, 'values[customfieldid]', __CLASS__, __FUNCTION__]);
+			}
+
+			if ($fields[$key]['required'] AND !$value)
+			{
+				//we don't have a good way to compose phrases so we need to render the arguments.
+				$title = vB_Library::instance('phrase')->renderPhrases(['title' => $fields[$key]['titlephrase']])['title'];
+				throw new vB_Exception_Api('required_field_x_missing_or_invalid', $title);
+			}
+		}
+
+		$insert = [];
+		foreach ($values AS $key => $value)
+		{
+			if (isset($existing[$key]))
+			{
+				$db->update('vBForum:nodefieldvalue', ['value' => trim($value)], ['nodeid' => $nodeid, 'nodefieldid' => $key]);
+			}
+			else
+			{
+				$insert[] = [$key, $nodeid, $value];
+			}
+		}
+
+		if ($insert)
+		{
+			$db->insertMultiple('vBForum:nodefieldvalue', ['nodefieldid', 'nodeid', 'value'], $insert);
+		}
+	}
+
+	public function removeFieldValue($nodeid, $fieldid)
+	{
+		$db = vB::getDbAssertor();
+		$db->delete('vBForum:nodefieldvalue', ['nodeid' => $nodeid, 'nodefieldid' => $fieldid]);
+	}
+
+	private function getCategoryPhrase($name)
+	{
+		return 'nodefieldcat_' . $name . '_title';
+	}
+
+	private function getFieldPhrase($name)
+	{
+		return 'nodefieldfld_' . $name . '_title';
+	}
+}
+
+/*=========================================================================*\
+|| #######################################################################
+|| # Downloaded: 12:50, Tue Dec 24th 2024
+|| # CVS: $RCSfile$ - $Revision: 102970 $
+|| #######################################################################
+\*=========================================================================*/

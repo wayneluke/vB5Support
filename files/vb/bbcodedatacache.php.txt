@@ -1,0 +1,262 @@
+<?php
+/*========================================================================*\
+|| ###################################################################### ||
+|| # vBulletin 6.1.0 Alpha 4 Week 2 - Licence Number VBCW2VFT7A
+|| # ------------------------------------------------------------------ # ||
+|| # Copyright 2000-2024 MH Sub I, LLC dba vBulletin. All Rights Reserved.  # ||
+|| # This file may not be redistributed in whole or significant part.   # ||
+|| # ----------------- VBULLETIN IS NOT FREE SOFTWARE ----------------- # ||
+|| # http://www.vbulletin.com | http://www.vbulletin.com/license.html   # ||
+|| ###################################################################### ||
+\*========================================================================*/
+
+/**
+ * @package vBulletin
+ */
+
+/**
+ * @package vBulletin
+ */
+class vB_BbCodeDataCache
+{
+	use vB_Trait_NoSerialize;
+
+	/*
+		This class is meant for handling two issues:
+
+		1) When we first add a text node, we process the bbcodes before we have a nodeid yet, so
+		if we want to save bbcode data tied to a node, we have to generate the bbcode data, hold onto it
+		and wait until we have a nodeid (or save it to the db without a nodeid, then update those records
+		once we have a nodeid)
+
+		2) When we're rendering a post, we want to minimize the number of database roundtrips. So the more
+		we can bulk fetch & process the better. So the idea is, when rendering a given node, bulk fetch all
+		bbcode data associated with that nodeid, then hold onto it until each one is needed during render.
+		If each render requires additional data, we should try to pre-register the required data and fetch
+		in bulk before any individual render. For example, each user mention requires fetching a username
+		or displayname for each user (among other info), so we should register all required users, bulkfetch,
+		then dispatch the data when needed.
+		We should consolidate this for multiple nodes as well, so that we can do bulk fetches for an entire page
+		or thread, not just a single node.
+
+		For now, the functions here are meant to handle (1). Perhaps we need two separate classes for the above,
+		like EditBasket and RenderBasket, or something
+
+		Edit:
+		Due to various issues, we'll generate the basket during render time, and do our fetch & caching during render time.
+
+	 */
+
+	/*
+		Over time, this class has bloated into doing too many things.
+		This class is also handling the intermediary logic between the parser and individual BBCodes for bbcode extensions
+		-- i.e. custom bbcode(s) added by a vB5 product/package.
+
+		So there's friction between a few different ideas here:
+		1) BbCode extension -- we need to instantiate the correct class in order to render a custom bbcode. This instance must
+		at some point receive the render-ready "option" and "data", later of which is may not be known until render time, due
+		to bbcode nesting / internal content not being static text. This suggests each bbcode instance in a post should be
+		"unique".
+		2) BbCode Data Storage -- multiple bbcode instances may share the same record via sharing the same "hash". For exmaple,
+		if a post has multiple URL bbcodes with the same URL, for some reason.
+		Since (2) was written/used first, the hash logic assumes that we only care about that, and don't take (1) into consideration.
+		That is, a vB_BbCode instance may not actually have the full data required to render, because the sharing from (2) makes it
+		so that the "data" & "option" is detached from a given bbcode instance.
+
+		(2) was driven by the notion that we want to bulk fetch all of the bbcode data, so we did not want to offload "shared" data
+		into another table if that meant we would need secondary queries.
+		I think what we should do to handle that is just eat the storage cost, and duplicate the data so that we can bulk fetch (or
+		otherwise notate the bbcode data that it is "shared", and somehow guarantee the shared-source will not be deleted on its own),
+		then offload the "don't fetch the same URL/resource multiple times for no reason" into its own logic & table that's used
+		internally by the URL fetcher or data provider class(es), separate from the bbcode_data logic.
+	 */
+
+	/** @var vB_BBCode[] */
+	private $bbcodeInstances = [];
+	// int nodeid => string bbcode_type => string hash => int {$this->bbcodeInstances's keys}
+	private array $lookupMap = [];
+	// int nodeid => int {$this->bbcodeInstances's keys}
+	private array $nodeidMap = [];
+	// keys of $this->bbcodeInstances that were newly added and thus need saving.
+	/** @var int[] */
+	private array $newlyAdded = [];
+
+	/** @var int */
+	private $nodeid = 0;
+
+	// Accept a list of nodes
+	public function __construct(vB_BbCodeHelper $bbcodeHelper, public ?vB_Interface_UrlCache $urlCache = null, $nodeids = null)
+	{
+		if (!empty($nodeids))
+		{
+			$assertor = vB::getDbAssertor();
+			$query = $assertor->assertQuery('bbcode_data', ['nodeid' => $nodeids]);
+			$urlsToPrefetch = [];
+			foreach ($query AS $__row)
+			{
+				/** @var vB_BbCode */
+				$__class = vB_BbCode::determineClassname($__row['bbcode_type']);
+				if (!$__class)
+				{
+					continue;
+				}
+
+				//$__instance = new $__class($__row);
+				if ($__class::USES_DATA_STORAGE)
+				{
+					$__instance = $__class::restoreFromDBRecord($bbcodeHelper, $__row);
+					$this->registerInstance($__instance, $__row['nodeid'], $__row['hash']);
+					$__url = $__instance->data['url'] ?? null;
+					if ($__url)
+					{
+						$urlsToPrefetch[] = $__url;
+					}
+				}
+			}
+
+			// This is not complete. While we can pre-fetch URLs for already-saved nodes, we can't do so for newly added (or
+			// edited) posts because we don't have the bbcode_data records for it yet until we do a parse first. So for new posts,
+			// urlcache class will end up hitting the DB for every new URL within that post, which is less than ideal.
+			// Edit: To avoid this, frontend parseArray() now runs through the preparse array and generates a secondary prefetch
+			// list. That might mean this is redudant, so we might remove this in the near future and just rely on the parse-time
+			// prefetch...
+			if (count($urlsToPrefetch) AND $urlCache)
+			{
+				$urlCache->prefetchCachedUrls($urlsToPrefetch);
+			}
+		}
+	}
+
+	private function registerInstance(vB_BbCode $instance, int $nodeid, string $hash) : int
+	{
+		$classname = $instance::getCanonicalClassname();
+		$this->bbcodeInstances[] = $instance;
+		$lastKey = array_key_last($this->bbcodeInstances);
+		$this->lookupMap[$nodeid][$classname][$hash] = $lastKey;
+		$this->nodeidMap[$nodeid][] = $lastKey;
+
+		return $lastKey;
+	}
+
+	// [bbcode:option]data[/bbcode]
+	public function getBbcodeInstance(vB_BbCodeHelper $bbcodeHelper, int $nodeid, string $typeOrClass, string $data, ?string $option = null) : ?vB_BbCode
+	{
+		// We may have type or class, as the bbcode class may come from a custom product, e.g. Shopify_BbCode_Buy
+		// In such a case, we probably still need to track each type of the same name provided by different products
+		// separately (e.g. if two custom packages each provide their own [Buy] bbcode, and both are supposed to be
+		// active, we need both package1_Buy and package2_Buy uniquely identifiable).
+		// As such, for now we're going to go with just the shorthand (e.g. "Url") for default vB classes, but the
+		// fully qualified class name for custom ones (e.g. "CustomPackage_BbCode_Url")
+		/** @var vB_BbCode */
+		$class = vB_BbCode::determineClassname($typeOrClass);
+		if (!$class)
+		{
+			return null;
+		}
+
+		//$type = $class::TYPE;
+		// This is just to differentiate it from using $class above as a class instead of string for intellisense,
+		// because we use the classname string as array keys ETC below.
+		/** @var string */
+		$type = $class::getCanonicalClassname();
+
+		$hash = $class::getHash($bbcodeHelper, $data, $option);
+
+		if (!isset($this->lookupMap[$nodeid][$type][$hash]))
+		{
+			//$instance = new $class();
+			// Note, generateFreshFromDataAndOption (& setting nodeid) sets instance->modified = true.
+			// We use that as the cue for saving later.
+			$instance = $class::generateFreshFromDataAndOption($bbcodeHelper, $data, $option);
+			$instance->nodeid = $nodeid;
+			$addedkey = $this->registerInstance($instance, $nodeid, $hash);
+			$this->newlyAdded[] = $addedkey;
+		}
+
+		$key = $this->lookupMap[$nodeid][$type][$hash] ?? null;
+
+		return $this->bbcodeInstances[$key] ?? null;
+	}
+
+	public function cleanExisting($nodeid)
+	{
+		if (empty($nodeid))
+		{
+			return;
+		}
+
+		// property cache cleanup
+		foreach ($this->nodeidMap[$nodeid] ?? [] AS $__key)
+		{
+			unset($this->bbcodeInstances[$__key]);
+		}
+		$this->lookupMap[$nodeid] = [];
+		$this->nodeidMap[$nodeid] = [];
+
+		$assertor = vB::getDbAssertor();
+		$assertor->delete('bbcode_data', ['nodeid' => $nodeid]);
+	}
+
+	public function saveChanges()
+	{
+		$data = [];
+		foreach ($this->bbcodeInstances AS $__bbcode)
+		{
+			if ($__bbcode::USES_DATA_STORAGE)
+			{
+				if ($__bbcode->modified AND $__bbcode->nodeid AND $__bbcode->hash)
+				{
+					$data[] = $__bbcode->getInsertData();
+				}
+			}
+		}
+
+		$assertor = vB::getDbAssertor();
+		if (!empty($data))
+		{
+			$assertor->assertQuery('bulkUpsertBbCodeData', ['data' => $data]);
+		}
+	}
+
+	// Remove this for now, as we're no longer appending a list of links at the end of the post.
+	/*
+	public function fetchAppends(?int $nodeid, ?string $type = null) : string
+	{
+		if (!$nodeid)
+		{
+			// this happens during preview fetch, when we don't have a nodeid yet.
+			// we also should not save during preview, in case they cancel the edit.
+			return '';
+		}
+
+		$html = [];
+		if (is_null($type))
+		{
+			$bbcodeKeys = $this->nodeidMap[$nodeid] ?? [];
+		}
+		else
+		{
+			$this->canonicalizeType($type);
+			$bbcodeKeys = $this->lookupMap[$nodeid][$type] ?? [];
+		}
+		foreach ($bbcodeKeys AS $__key)
+		{
+			$__bbcode = $this->bbcodeInstances[$__key];
+			if ($__bbcode->hasAppend())
+			{
+				$html[] = $__bbcode->getAppend();
+			}
+		}
+
+		return implode("\n", $html);
+	}
+	*/
+
+}
+
+/*=========================================================================*\
+|| #######################################################################
+|| # Downloaded: 12:50, Tue Dec 24th 2024
+|| # CVS: $RCSfile$ - $Revision: 107965 $
+|| #######################################################################
+\*=========================================================================*/

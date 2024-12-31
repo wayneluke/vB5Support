@@ -1,0 +1,95 @@
+<?php
+/*========================================================================*\
+|| ###################################################################### ||
+|| # vBulletin 6.1.0 Alpha 4 Week 2 - Licence Number VBCW2VFT7A
+|| # ------------------------------------------------------------------ # ||
+|| # Copyright 2000-2024 MH Sub I, LLC dba vBulletin. All Rights Reserved.  # ||
+|| # This file may not be redistributed in whole or significant part.   # ||
+|| # ----------------- VBULLETIN IS NOT FREE SOFTWARE ----------------- # ||
+|| # http://www.vbulletin.com | http://www.vbulletin.com/license.html   # ||
+|| ###################################################################### ||
+\*========================================================================*/
+
+/**
+ * This class is used by collapsed interface and behaves exactly as a web session without cookies
+ *
+ * @package vBulletin
+ */
+class vB_Session_WebApi extends vB_Session_Web
+{
+
+	public static function getSession($userId, $sessionHash = '', $dBAssertor = null, $datastore = null, $config = null)
+	{
+		$dBAssertor = ($dBAssertor) ? $dBAssertor : vB::getDbAssertor();
+		$datastore = ($datastore) ? $datastore : vB::getDatastore();
+		$config = ($config) ? $config : vB::getConfig();
+
+		// Note, this $restoreSessionInfo doesn't do anything, because 'remembermetoken'.
+		// It's the session::set('userid'...) & session::fetch_userinfo() that seem to do the actual work of
+		// updating this session's data to the specified user's data. Our caller, e.g. vB_User::processNewLogin()
+		// does a few more setup like setting loggedin & bypass (possibly because the $restoreSessionInfo
+		// doesn't work here?) so beware that calling this function by itself may not be sufficient to do
+		// what you want.
+		$restoreSessionInfo = ['userid' => $userId];
+		$session = new vB_Session_WebApi($dBAssertor, $datastore, $config, $sessionHash, $restoreSessionInfo);
+		$session->set('userid', $userId);
+		$session->fetch_userinfo();
+		return $session;
+	}
+
+	public static function createSession($sessionhash= '', $userid = 0, $password = '')
+	{
+		$assertor = vB::getDbAssertor();
+		$datastore = vB::getDatastore();
+		$config = vB::getConfig();
+
+		$restoreSessionInfo = ['remembermetoken' => $password, 'userid' => $userid];
+		$session = new vB_Session_WebApi($assertor, $datastore, $config, $sessionhash, $restoreSessionInfo);
+		return $session;
+	}
+
+	/**
+	 *	Create a session for this page load
+	 *
+	 *	Should only be called from the Request code.
+	 *	Will use a reexisting session that matches the session hash
+	 *
+	 *	@param string $sessionhash -- the token given to the client for session handling.  If the client has this token they
+	 *		can use the session.
+	 *	@param array $restoreSessionInfo -- Information to handle "remember me" logic.
+	 *		* remembermetoken -- Token value for "remember me".  Stored in the "password" cookie for legacy reasons.  There are
+	 *			so special values to indicate that we should reauthentic via a method other than the internal vB remember me
+	 *			system.
+	 *		* userid -- user we are remembering
+	 *		* fbsr_{appid} (optional) -- Only valid if facebook is enabled, and only used if "remembermetoken" is "facebook".
+	 */
+	public static function createSessionNew($sessionhash, $restoreSessionInfo = [], $deferRememberMe = false)
+	{
+		$assertor = vB::getDbAssertor();
+		$datastore = vB::getDatastore();
+		$config = vB::getConfig();
+		$styleid = 0;
+		$languageid = 0;
+
+		//this looks weird but its valid.  Will create the an instance of whatever session class this was called
+		//on.  So vB_Session_Web::createSessionNew() will do the expected thing.
+		$session = new vB_Session_WebApi(
+			$assertor,
+			$datastore,
+			$config,
+			$sessionhash,
+			$restoreSessionInfo,
+			$styleid,
+			$languageid,
+			$deferRememberMe
+		);
+		return $session;
+	}
+}
+
+/*=========================================================================*\
+|| #######################################################################
+|| # Downloaded: 12:50, Tue Dec 24th 2024
+|| # CVS: $RCSfile$ - $Revision: 115152 $
+|| #######################################################################
+\*=========================================================================*/

@@ -1,0 +1,667 @@
+<?php
+/*========================================================================*\
+|| ###################################################################### ||
+|| # vBulletin 6.1.0 Alpha 4 Week 2 - Licence Number VBCW2VFT7A
+|| # ------------------------------------------------------------------ # ||
+|| # Copyright 2000-2024 MH Sub I, LLC dba vBulletin. All Rights Reserved.  # ||
+|| # This file may not be redistributed in whole or significant part.   # ||
+|| # ----------------- VBULLETIN IS NOT FREE SOFTWARE ----------------- # ||
+|| # http://www.vbulletin.com | http://www.vbulletin.com/license.html   # ||
+|| ###################################################################### ||
+\*========================================================================*/
+
+/**
+ * vB_Library_Options
+ *
+ * @package vBLibrary
+ */
+class vB_Library_Options extends vB_Library
+{
+	/**
+	 * Update an option.
+	 *
+	 * @param string $varname
+	 * @param mixed $value
+	 * @param bool $rebuild
+	 * @return array
+	 *
+	 * @deprecated No current replacement
+	 */
+	public function updateValue($varname, $value, $rebuild = true)
+	{
+		// This function doesn't do any validation nor does it handle any side effects of updating the
+		// option.  Which is a problem for general use.  However we don't currently have a save function
+		// in the API and the save logic in the legacy code we're using is still a mess.
+		$retVal = vB::getDbAssertor()->update('setting', ['value' => $value], ['varname' => $varname]);
+		if ($rebuild)
+		{
+			vB::getDatastore()->build_options();
+		}
+
+		return ['success' => $retVal];
+	}
+
+	/**
+	 * This function updates specified settings
+	 * @param array $values
+	 *	'varname' => $vbulletin->GPC['varname'],
+	 *	'grouptitle' => $vbulletin->GPC['grouptitle'],
+	 *	'optioncode' => $vbulletin->GPC['optioncode'],
+	 *	'defaultvalue' => $vbulletin->GPC['defaultvalue'],
+	 *	'displayorder' => $vbulletin->GPC['displayorder'],
+	 *	'volatile' => $vbulletin->GPC['volatile'],
+	 *	'datatype' => $vbulletin->GPC['datatype'],
+	 *	'validationcode' => $vbulletin->GPC['validationcode'],
+	 *	'product' => $vbulletin->GPC['product'],
+	 *	'blacklist' => $vbulletin->GPC['blacklist'],
+	 *	'title' => $vbulletin->GPC['title'],
+	 *	'username' => $vbulletin->userinfo['username'],
+	 *	'description' => $vbulletin->GPC['description']
+	 * @return array
+	 */
+	public function updateSetting($values)
+	{
+		vB::getDbAssertor()->assertQuery('setting', [
+			vB_dB_Query::TYPE_KEY => vB_dB_Query::QUERY_UPDATE,
+			'varname' => $values['varname'],
+			'grouptitle' => $values['grouptitle'],
+			'optioncode' => $values['optioncode'],
+			'defaultvalue' => $values['defaultvalue'],
+			'displayorder' => $values['displayorder'],
+			'volatile' => $values['volatile'],
+			'datatype' => $values['datatype'],
+			'validationcode' => $values['validationcode'],
+			'product' => $values['product'],
+			'blacklist' => $values['blacklist'],
+			'ispublic' => $values['ispublic'],
+			'adminperm' => $values['adminperm'] ?? '',
+		]);
+
+		$titlephrase = 'setting_' . $values['varname'] . '_title';
+		$descphrase = 'setting_' . $values['varname'] . '_desc';
+
+		$phraseLib = vB_Library::instance('phrase');
+
+		$phraseLib->saveRoot($values['product'], 'vbsettings', $titlephrase, $values['title'], !$values['volatile'], true);
+		$phraseLib->saveRoot($values['product'], 'vbsettings', $descphrase, $values['description'], !$values['volatile']);
+
+		vB::getDatastore()->build_options();
+
+		// Not sure if anybody cares other than the API passes this through and API functions are supposed to return an array
+		return ['update' => true];
+	}
+
+	//this is a hack.  We need to sort out handling "array" options in a systematic
+	//way but it appears that we never have before.  This, at least, sweeps the nasty
+	//little details under the rug.
+	public function getLocationOption($optionname)
+	{
+		$datastore = vB::getDatastore();
+		$value = $datastore->getOption($optionname);
+
+		if (!is_null($value))
+		{
+			$value = json_decode($value, true);
+		}
+
+		if (!is_array($value))
+		{
+			$value = [];
+		}
+
+		return $value;
+	}
+
+	public function isLocationOptionSet($optionname)
+	{
+		$option = $this->getLocationOption($optionname);
+		return count($option);
+	}
+
+	/*
+	 *	Locations aren't worth their own library/api classes and are strongly tied to the privacy settings.
+	 *	So let's put this here.
+	 */
+	public function getLocationList()
+	{
+		$db = vB::getDbAssertor();
+		$locations = $db->getRows('location', [vB_dB_Query::COLUMNS_KEY => ['locationid', 'title']], 'title', 'locationid');
+		return $locations;
+	}
+
+	public function getLocationCache()
+	{
+		$datastore = vB::getDatastore();
+		$locations = $datastore->getValue('locations');
+
+		if (!is_array($locations))
+		{
+			$locations = $this->updateLocationCache();
+		}
+
+		return $locations;
+	}
+
+	//we could probably fix this to allow updating deltas without the extra DB queries since
+	//we'll have the info in most cases to adjust the cache without the extra query (aside
+	//from the initial load or a hard rebuild) but it shouldn't change very much or in
+	//performance critical contexts.  Doing this way makes it less likely that something will
+	//get out of sync and not recover.
+	//
+	//we only really need to store any locations used in the options, but that would require
+	//updating the cache any time the options change.  This is simpler and I don't anticipate the
+	//locations getting out of hand.
+	private function updateLocationCache()
+	{
+		$db = vB::getDbAssertor();
+		$locations = $db->getColumn('location', 'locationcodes', [], false, 'locationid');
+
+		foreach ($locations AS $key => $locationCodes)
+		{
+			$locations[$key] = explode(',', $locationCodes);
+		}
+
+		vB::getDatastore()->build('locations', serialize($locations), 1);
+		return $locations;
+	}
+
+	public function getLocation($locationid)
+	{
+		$db = vB::getDbAssertor();
+		$location = $db->getRow('location', ['locationid' => $locationid]);
+
+		if (!$location)
+		{
+			throw new vB_Exception_Api('invalid_data_w_x_y_z', [$locationid, '$locationid', __CLASS__, __FUNCTION__]);
+		}
+
+		$location['locationcodes'] = explode(',', $location['locationcodes']);
+		return $location;
+	}
+
+	public function saveLocation($data)
+	{
+		if (is_array($data['locationcodes']))
+		{
+			$data['locationcodes'] = implode(',', array_map('trim', $data['locationcodes']));
+		}
+
+		if (empty($data['title']))
+		{
+			throw new vB_Exception_Api('invalid_title_specified');
+		}
+
+		$db = vB::getDbAssertor();
+		if (isset($data['locationid']))
+		{
+			$values = $data;
+			$values[vB_dB_Query::TYPE_KEY] = vB_dB_Query::QUERY_UPDATE;
+			$db->assertQuery('location', $values);
+			$id = $data['locationid'];
+		}
+		else
+		{
+			$id = $db->insert('location', $data);
+		}
+
+		$this->updateLocationCache();
+		return $id;
+	}
+
+	public function deleteLocation($locationid)
+	{
+		$locationSettings = [
+			'enable_privacy_guest',
+			'enable_privacy_registered',
+			'block_eu_visitors',
+			'enable_account_removal',
+		];
+
+		foreach ($locationSettings AS $setting)
+		{
+			$locOption = $this->getLocationOption($setting);
+			if (in_array($locationid, $locOption))
+			{
+				throw new vB_Exception_Api('location_is_in_use');
+			}
+		}
+
+		$db = vB::getDbAssertor();
+		$db->delete('location', ['locationid' => $locationid]);
+
+		$this->updateLocationCache();
+	}
+
+	/**
+	 * Return an array of location codes for countries.
+	 *
+	 * Currently we hardcode the name are returned as English names.  In the future this may change.
+	 *
+	 * @return array -- of the form code => country name
+	 */
+	public function getCountryCodes()
+	{
+		$countries = [
+			'AD' => 'Andorra',
+			'AE' => 'United Arab Emirates',
+			'AF' => 'Afghanistan',
+			'AG' => 'Antigua and Barbuda',
+			'AI' => 'Anguilla',
+			'AL' => 'Albania',
+			'AM' => 'Armenia',
+			'AO' => 'Angola',
+			'AQ' => 'Antarctica',
+			'AR' => 'Argentina',
+			'AS' => 'American Samoa',
+			'AT' => 'Austria',
+			'AU' => 'Australia',
+			'AW' => 'Aruba',
+			'AX' => 'Aland Islands',
+			'AZ' => 'Azerbaijan',
+			'BA' => 'Bosnia and Herzegovina',
+			'BB' => 'Barbados',
+			'BD' => 'Bangladesh',
+			'BE' => 'Belgium',
+			'BF' => 'Burkina Faso',
+			'BG' => 'Bulgaria',
+			'BH' => 'Bahrain',
+			'BI' => 'Burundi',
+			'BJ' => 'Benin',
+			'BL' => 'Saint Barthelemy',
+			'BM' => 'Bermuda',
+			'BN' => 'Brunei',
+			'BO' => 'Bolivia',
+			'BQ' => 'Bonaire, Sint Eustatius, and Saba',
+			'BR' => 'Brazil',
+			'BS' => 'Bahamas',
+			'BT' => 'Bhutan',
+			'BV' => 'Bouvet Island',
+			'BW' => 'Botswana',
+			'BY' => 'Belarus',
+			'BZ' => 'Belize',
+			'CA' => 'Canada',
+			'CC' => 'Cocos (Keeling) Islands',
+			'CD' => 'Democratic Republic of the Congo',
+			'CF' => 'Central African Republic',
+			'CG' => 'Congo',
+			'CH' => 'Switzerland',
+			'CI' => 'Ivory Coast',
+			'CK' => 'Cook Islands',
+			'CL' => 'Chile',
+			'CM' => 'Cameroon',
+			'CN' => 'China',
+			'CO' => 'Colombia',
+			'CR' => 'Costa Rica',
+			'CU' => 'Cuba',
+			'CV' => 'Cabo Verde',
+			'CW' => 'Curacao',
+			'CX' => 'Christmas Island',
+			'CY' => 'Cyprus',
+			'CZ' => 'Czechia',
+			'DE' => 'Germany',
+			'DJ' => 'Djibouti',
+			'DK' => 'Denmark',
+			'DM' => 'Dominica',
+			'DO' => 'Dominican Republic',
+			'DZ' => 'Algeria',
+			'EC' => 'Ecuador',
+			'EE' => 'Estonia',
+			'EG' => 'Egypt',
+			'EH' => 'Western Sahara',
+			'ER' => 'Eritrea',
+			'ES' => 'Spain',
+			'ET' => 'Ethiopia',
+			'FI' => 'Finland',
+			'FJ' => 'Fiji',
+			'FK' => 'Falkland Islands (Malvinas)',
+			'FM' => 'Micronesia',
+			'FO' => 'Faroe Islands',
+			'FR' => 'France',
+			'GA' => 'Gabon',
+			'GB' => 'United Kingdom',
+			'GD' => 'Grenada',
+			'GE' => 'Georgia',
+			'GF' => 'French Guiana',
+			'GG' => 'Guernsey',
+			'GH' => 'Ghana',
+			'GI' => 'Gibraltar',
+			'GL' => 'Greenland',
+			'GM' => 'Gambia',
+			'GN' => 'Guinea',
+			'GP' => 'Guadeloupe',
+			'GQ' => 'Equatorial Guinea',
+			'GR' => 'Greece',
+			'GS' => 'South Georgia and the South Sandwich Islands',
+			'GT' => 'Guatemala',
+			'GU' => 'Guam',
+			'GW' => 'Guinea-Bissau',
+			'GY' => 'Guyana',
+			'HK' => 'Hong Kong',
+			'HM' => 'Heard Island and McDonald Islands',
+			'HN' => 'Honduras',
+			'HR' => 'Croatia',
+			'HT' => 'Haiti',
+			'HU' => 'Hungary',
+			'ID' => 'Indonesia',
+			'IE' => 'Ireland',
+			'IL' => 'Israel',
+			'IM' => 'Isle of Man',
+			'IN' => 'India',
+			'IO' => 'British Indian Ocean Territory',
+			'IQ' => 'Iraq',
+			'IR' => 'Iran',
+			'IS' => 'Iceland',
+			'IT' => 'Italy',
+			'JE' => 'Jersey',
+			'JM' => 'Jamaica',
+			'JO' => 'Jordan',
+			'JP' => 'Japan',
+			'KE' => 'Kenya',
+			'KG' => 'Kyrgyzstan',
+			'KH' => 'Cambodia',
+			'KI' => 'Kiribati',
+			'KM' => 'Comoros',
+			'KN' => 'Saint Kitts and Nevis',
+			'KP' => 'North Korea',
+			'KR' => 'South Korea',
+			'KW' => 'Kuwait',
+			'KY' => 'Cayman Islands',
+			'KZ' => 'Kazakhstan',
+			'LA' => 'Laos',
+			'LB' => 'Lebanon',
+			'LC' => 'Saint Lucia',
+			'LI' => 'Liechtenstein',
+			'LK' => 'Sri Lanka',
+			'LR' => 'Liberia',
+			'LS' => 'Lesotho',
+			'LT' => 'Lithuania',
+			'LU' => 'Luxembourg',
+			'LV' => 'Latvia',
+			'LY' => 'Libya',
+			'MA' => 'Morocco',
+			'MC' => 'Monaco',
+			'MD' => 'Moldova, Republic of',
+			'ME' => 'Montenegro',
+			'MF' => 'Saint Martin (French part)',
+			'MG' => 'Madagascar',
+			'MH' => 'Marshall Islands',
+			'MK' => 'North Macedonia',
+			'ML' => 'Mali',
+			'MM' => 'Myanmar',
+			'MN' => 'Mongolia',
+			'MO' => 'Macao',
+			'MP' => 'Northern Mariana Islands',
+			'MQ' => 'Martinique',
+			'MR' => 'Mauritania',
+			'MS' => 'Montserrat',
+			'MT' => 'Malta',
+			'MU' => 'Mauritius',
+			'MV' => 'Maldives',
+			'MW' => 'Malawi',
+			'MX' => 'Mexico',
+			'MY' => 'Malaysia',
+			'MZ' => 'Mozambique',
+			'NA' => 'Namibia',
+			'NC' => 'New Caledonia',
+			'NE' => 'Niger',
+			'NF' => 'Norfolk Island',
+			'NG' => 'Nigeria',
+			'NI' => 'Nicaragua',
+			'NL' => 'Netherlands',
+			'NO' => 'Norway',
+			'NP' => 'Nepal',
+			'NR' => 'Nauru',
+			'NU' => 'Niue',
+			'NZ' => 'New Zealand',
+			'OM' => 'Oman',
+			'PA' => 'Panama',
+			'PE' => 'Peru',
+			'PF' => 'French Polynesia',
+			'PG' => 'Papua New Guinea',
+			'PH' => 'Philippines',
+			'PK' => 'Pakistan',
+			'PL' => 'Poland',
+			'PM' => 'Saint Pierre and Miquelon',
+			'PN' => 'Pitcairn',
+			'PR' => 'Puerto Rico',
+			'PS' => 'Palestine, State of',
+			'PT' => 'Portugal',
+			'PW' => 'Palau',
+			'PY' => 'Paraguay',
+			'QA' => 'Qatar',
+			'RE' => 'Reunion',
+			'RO' => 'Romania',
+			'RS' => 'Serbia',
+			'RU' => 'Russian Federation',
+			'RW' => 'Rwanda',
+			'SA' => 'Saudi Arabia',
+			'SB' => 'Solomon Islands',
+			'SC' => 'Seychelles',
+			'SD' => 'Sudan',
+			'SE' => 'Sweden',
+			'SG' => 'Singapore',
+			'SH' => 'Saint Helena, Ascension and Tristan da Cunha',
+			'SI' => 'Slovenia',
+			'SJ' => 'Svalbard and Jan Mayen',
+			'SK' => 'Slovakia',
+			'SL' => 'Sierra Leone',
+			'SM' => 'San Marino',
+			'SN' => 'Senegal',
+			'SO' => 'Somalia',
+			'SR' => 'Suriname',
+			'SS' => 'South Sudan',
+			'ST' => 'Sao Tome and Principe',
+			'SV' => 'El Salvador',
+			'SX' => 'Sint Maarten (Dutch part)',
+			'SY' => 'Syrian Arab Republic',
+			'SZ' => 'Eswatini',
+			'TC' => 'Turks and Caicos Islands',
+			'TD' => 'Chad',
+			'TF' => 'French Southern Territories',
+			'TG' => 'Togo',
+			'TH' => 'Thailand',
+			'TJ' => 'Tajikistan',
+			'TK' => 'Tokelau',
+			'TL' => 'Timor-Leste',
+			'TM' => 'Turkmenistan',
+			'TN' => 'Tunisia',
+			'TO' => 'Tonga',
+			'TR' => 'Turkey',
+			'TT' => 'Trinidad and Tobago',
+			'TV' => 'Tuvalu',
+			'TW' => 'Taiwan',
+			'TZ' => 'Tanzania',
+			'UA' => 'Ukraine',
+			'UG' => 'Uganda',
+			'UM' => 'United States Minor Outlying Islands',
+			'US' => 'United States',
+			'UY' => 'Uruguay',
+			'UZ' => 'Uzbekistan',
+			'VA' => 'Vatican',
+			'VC' => 'Saint Vincent and the Grenadines',
+			'VE' => 'Venezuela',
+			'VG' => 'Virgin Islands (British)',
+			'VI' => 'Virgin Islands (U.S.)',
+			'VN' => 'Vietnam',
+			'VU' => 'Vanuatu',
+			'WF' => 'Wallis and Futuna',
+			'WS' => 'Samoa',
+			'YE' => 'Yemen',
+			'YT' => 'Mayotte',
+			'ZA' => 'South Africa',
+			'ZM' => 'Zambia',
+			'ZW' => 'Zimbabwe',
+			//Some IPs come from a "generic europe" source and some geoip providers will return an "EU" code for these.
+			'EU' => 'Unknown Europe',
+		];
+
+		return $countries;
+	}
+
+	/**
+	 *	Get the region codes for a country
+	 *
+	 *	Geoip providers are not consistent with the subregion codes returned for non US countries
+	 *	(many countries have region structures that don't really fit in the country, state paradigm
+	 *	that geoip providers tend to use and thus what the "regions" are end up ambiguous and different
+	 *	implementations make different decisions).  Given that, and the fact that we don't have explicit
+	 *	requirements for subregion designation outside of the US right now,
+	 *
+	 * @param string $countrycode -- The country to get the sub regions for.  If we don't have supported
+	 * 	subregions for that country then an empty array will be returned.  Currently only the US is supported.
+	 * @return array -- of the form countrycode:regioncode => name
+	 */
+	public function getRegionCodes($countrycode)
+	{
+		$regions = [
+			'US' => [
+				'US:AL' => 'Alabama',
+				'US:AK' => 'Alaska',
+				'US:AZ' => 'Arizona',
+				'US:AR' => 'Arkansas',
+				'US:CA' => 'California',
+				'US:CO' => 'Colorado',
+				'US:CT' => 'Connecticut',
+				'US:DE' => 'Delaware',
+				'US:DC' => 'District of Columbia',
+				'US:FL' => 'Florida',
+				'US:GA' => 'Georgia',
+				'US:HI' => 'Hawaii',
+				'US:ID' => 'Idaho',
+				'US:IL' => 'Illinois',
+				'US:IN' => 'Indiana',
+				'US:IA' => 'Iowa',
+				'US:KS' => 'Kansas',
+				'US:KY' => 'Kentucky',
+				'US:LA' => 'Louisiana',
+				'US:ME' => 'Maine',
+				'US:MD' => 'Maryland',
+				'US:MA' => 'Massachusetts',
+				'US:MI' => 'Michigan',
+				'US:MN' => 'Minnesota',
+				'US:MS' => 'Mississippi',
+				'US:MO' => 'Missouri',
+				'US:MT' => 'Montana',
+				'US:NE' => 'Nebraska',
+				'US:NV' => 'Nevada',
+				'US:NH' => 'New Hampshire',
+				'US:NJ' => 'New Jersey',
+				'US:NM' => 'New Mexico',
+				'US:NY' => 'New York',
+				'US:NC' => 'North Carolina',
+				'US:ND' => 'North Dakota',
+				'US:OH' => 'Ohio',
+				'US:OK' => 'Oklahoma',
+				'US:OR' => 'Oregon',
+				'US:PA' => 'Pennsylvania',
+				'US:RI' => 'Rhode Island',
+				'US:SC' => 'South Carolina',
+				'US:SD' => 'South Dakota',
+				'US:TN' => 'Tennessee',
+				'US:TX' => 'Texas',
+				'US:UT' => 'Utah',
+				'US:VT' => 'Vermont',
+				'US:VA' => 'Virginia',
+				'US:WA' => 'Washington',
+				'US:WV' => 'West Virginia',
+				'US:WI' => 'Wisconsin',
+				'US:WY' => 'Wyoming',
+			],
+		];
+
+		return $regions[$countrycode] ?? [];
+	}
+
+	public function getContentTypesList($doAll = false, $onlySuffix = false)
+	{
+		/*
+		todo: Implement the $onlySuffix & consolidate with
+			vB_Api_Widget::_getContentTypeSelectOptions() . The phrases
+			aren't as structured for "only" (discussions_only)
+			Also, the plurality aren't standard. E.g.
+			content_type_Text = Discussion (singular)
+			discussions_only = Discussions Only (plural)
+		 */
+		/*
+			@TODO when VBV-17118 is fixed, this content type information should
+			come from a function call instead of being hard-coded.
+		*/
+
+		$types = [
+			[
+				'value'   => 'vBForum_Text',
+				'phrase'  => "content_type_Text",
+				'special' => false,
+			],
+			[
+				'value'   => 'vBForum_Gallery',
+				'phrase'  => "content_type_Gallery",
+				'special' => false,
+			],
+			[
+				'value'   => 'vBForum_Video',
+				'phrase'  => "content_type_Video",
+				'special' => false,
+			],
+			[
+				'value'   => 'vBForum_Link',
+				'phrase'  => "content_type_Link",
+				'special' => false,
+			],
+			[
+				'value'   => 'vBForum_Poll',
+				'phrase'  => "content_type_Poll",
+				'special' => false,
+			],
+			[
+				'value'   => 'vBForum_Event',
+				'phrase'  => "content_type_Event",
+				'special' => false,
+			],
+		];
+
+		if ($doAll)
+		{
+			array_unshift($types, [
+				'value'   => 'show_all',
+				'phrase'  => 'all',
+				'special' => true,
+			]);
+		}
+
+		return $types;
+	}
+
+	public function getSearchImplementations()
+	{
+		$options['vBFulltextSearch_Core'] = 'fulltext_search_implementation';
+		$options['vBDBSearch_Core'] = 'db_search_implementation';
+		$options['vBSphinxSearch_Core'] = 'sphinx_search_implementation';
+
+		//set any additional options
+		// Going with "hookSearchOptions" instead of "hookAdminSearchOptions" since
+		// this is no longer only in admin code...
+		vB::getHooks()->invoke('hookSearchOptions', [
+			'options' => &$options,
+		]);
+
+		$phrases = vB_Api::instance('phrase')->fetch($options);
+		foreach ($options AS $__key => $__phraseid)
+		{
+			if (!empty($phrases[$__phraseid]))
+			{
+				$options[$__key] = $phrases[$__phraseid];
+			}
+		}
+
+
+		return $options;
+
+	}
+}
+/*=========================================================================*\
+|| #######################################################################
+|| # Downloaded: 12:50, Tue Dec 24th 2024
+|| # CVS: $RCSfile$ - $Revision: 117030 $
+|| #######################################################################
+\*=========================================================================*/

@@ -1,0 +1,30 @@
+<?php
+/*========================================================================*\
+|| ###################################################################### ||
+|| # vBulletin 6.1.0 Alpha 4 Week 2 - Licence Number VBCW2VFT7A
+|| # ------------------------------------------------------------------ # ||
+|| # Copyright 2000-2024 MH Sub I, LLC dba vBulletin. All Rights Reserved.  # ||
+|| # This file may not be redistributed in whole or significant part.   # ||
+|| # ----------------- VBULLETIN IS NOT FREE SOFTWARE ----------------- # ||
+|| # http://www.vbulletin.com | http://www.vbulletin.com/license.html   # ||
+|| ###################################################################### ||
+\*========================================================================*/
+
+/**
+ * @package vBulletin
+ */
+class vB_Options_Option_Sitemappath extends vB_Options_Option
+{
+	protected function validateCustom(array $validation, mixed $rawvalue) : bool|string|array
+	{
+		// This is a candidate for a common rule.  This is the only option that uses it but probably not the
+		// only what that should.
+		$rawvalue = trim($rawvalue);
+		if ($rawvalue AND !is_writable(resolve_server_path($rawvalue)))
+		{
+			return 'you_did_not_enter_a_valid_value';
+		}
+
+		return true;
+	}
+}

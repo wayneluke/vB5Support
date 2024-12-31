@@ -1,0 +1,438 @@
+<?php
+/*========================================================================*\
+|| ###################################################################### ||
+|| # vBulletin 6.1.0 Alpha 4 Week 2 - Licence Number VBCW2VFT7A
+|| # ------------------------------------------------------------------ # ||
+|| # Copyright 2000-2024 MH Sub I, LLC dba vBulletin. All Rights Reserved.  # ||
+|| # This file may not be redistributed in whole or significant part.   # ||
+|| # ----------------- VBULLETIN IS NOT FREE SOFTWARE ----------------- # ||
+|| # http://www.vbulletin.com | http://www.vbulletin.com/license.html   # ||
+|| ###################################################################### ||
+\*========================================================================*/
+
+// helper class for styleschedule & standardizing datetime stamps
+class vB_Entity_Datetime extends vB_Entity implements Stringable
+{
+	use vB_Trait_NoSerialize;
+
+	// PHP 8.1:
+	// public readonly string $datetime_mysql;
+	// public readonly string $year;
+	// public readonly string $month;
+	// public readonly string $day;
+	// public readonly string $hour;
+	// public readonly string $minute;
+	// public readonly string $second;
+	// public readonly string $tzoffset;
+	// public readonly string $tzoffset_raw;
+
+	protected string $datetime_mysql;
+	protected string $year;
+	protected string $month;
+	protected string $day;
+	protected string $hour;
+	protected string $minute;
+	protected string $second;
+	// E.g. '-09:00', '+00:00', '+04:00'
+	protected string $tzoffset;
+	// E.g. '-9.5', '0', '4'
+	protected string $tzoffset_raw;
+
+	public const DATETIME_MYSQL = 'Y-m-d H:i:s';
+
+	public const TIMEZONES = [
+		'-12'  => 'timezone_gmt_minus_1200',
+		'-11'  => 'timezone_gmt_minus_1100',
+		'-10'  => 'timezone_gmt_minus_1000',
+		'-9.5' => 'timezone_gmt_minus_0930',
+		'-9'   => 'timezone_gmt_minus_0900',
+		'-8'   => 'timezone_gmt_minus_0800',
+		'-7'   => 'timezone_gmt_minus_0700',
+		'-6'   => 'timezone_gmt_minus_0600',
+		'-5'   => 'timezone_gmt_minus_0500',
+		'-4.5' => 'timezone_gmt_minus_0430',
+		'-4'   => 'timezone_gmt_minus_0400',
+		'-3.5' => 'timezone_gmt_minus_0330',
+		'-3'   => 'timezone_gmt_minus_0300',
+		'-2'   => 'timezone_gmt_minus_0200',
+		'-1'   => 'timezone_gmt_minus_0100',
+		'0'    => 'timezone_gmt_plus_0000',
+		'1'    => 'timezone_gmt_plus_0100',
+		'2'    => 'timezone_gmt_plus_0200',
+		'3'    => 'timezone_gmt_plus_0300',
+		'3.5'  => 'timezone_gmt_plus_0330',
+		'4'    => 'timezone_gmt_plus_0400',
+		'4.5'  => 'timezone_gmt_plus_0430',
+		'5'    => 'timezone_gmt_plus_0500',
+		'5.5'  => 'timezone_gmt_plus_0530',
+		'5.75' => 'timezone_gmt_plus_0545',
+		'6'    => 'timezone_gmt_plus_0600',
+		'6.5'  => 'timezone_gmt_plus_0630',
+		'7'    => 'timezone_gmt_plus_0700',
+		'8'    => 'timezone_gmt_plus_0800',
+		'8.5'  => 'timezone_gmt_plus_0830',
+		'8.75' => 'timezone_gmt_plus_0845',
+		'9'    => 'timezone_gmt_plus_0900',
+		'9.5'  => 'timezone_gmt_plus_0930',
+		'10'   => 'timezone_gmt_plus_1000',
+		'10.5' => 'timezone_gmt_plus_1030',
+		'11'   => 'timezone_gmt_plus_1100',
+		'12'   => 'timezone_gmt_plus_1200',
+	];
+
+	public function __construct(string $dateOrDatetime, string $tzoffset = "0", string $defaultHourMinuteSecond = '00:00:00')
+	{
+		$this->tzoffset_raw = $this->__cleanTzoffsetRaw($tzoffset);
+		$this->tzoffset = self::_getStandardizedTimezoneOffsetString($this->tzoffset_raw);
+
+		$data = self::_standardizeDatetime($dateOrDatetime, $this->tzoffset, $defaultHourMinuteSecond);
+		if (!$data)
+		{
+			throw new vB_Exception_Api('invalid_data');
+		}
+		$this->datetime_mysql = $data['datetime_mysql'];
+		$data = $data['bits'];
+		$this->year = $data['year'];
+		$this->month = $data['month'];
+		$this->day = $data['day'];
+		$this->hour = $data['hour'];
+		$this->minute = $data['minute'];
+		$this->second = $data['second'];
+	}
+
+	private static function _convertTimestampToMysqlDatetime(int $timestamp, string $tzoffset) : string
+	{
+		$tzoffset = self::_getStandardizedTimezoneOffsetString($tzoffset);
+		$timezone = new DateTimeZone($tzoffset);
+		$datetime = new DateTime('@' . $timestamp, $timezone);
+		// For both DateTime & DateTimeImmutable:
+		//"The $timezone parameter and the current timezone are ignored when the $datetime parameter either is a UNIX timestamp (e.g. @946684800)
+		// or specifies a timezone (e.g. 2010-01-28T15:00:00+02:00)."
+		// So we have to do this the hard way.
+		$datetime = $datetime->setTimezone($timezone);
+
+		return $datetime->format(vB_Entity_Datetime::DATETIME_MYSQL);
+	}
+
+	/**
+	 * Generate a DateTimeImmutable object from this vB_Entity_Datetime class, using the specified tzoffset
+	 *
+	 * @param bool $leapForward  True: if month/day is 02/29 but year is not a leap year, use 03/01
+	 *                           False: if month/day is 02/29 but year is not a leap year, use 02/28
+	 */
+	private function _getDateTimeImmutable(bool $leapForward = true, ?int $year = null, ?int $month = null, ?int $day = null) : DateTimeImmutable
+	{
+		$year ??= $this->year;
+		$month ??= $this->month;
+		$day ??= $this->day;
+		if ($this->isLeapDateIgnoreYear() AND !self::isLeapYear($year))
+		{
+			// PHP DateTime seems to always use 03/01 for leap days on non-leap-years, but we want to
+			// be able to fall back or forward, depending on which side of the start-end interval we're on.
+			if ($leapForward)
+			{
+				$month = '03';
+				$day = '01';
+			}
+			else
+			{
+				$month = '02';
+				$day = '28';
+			}
+		}
+		// DateTimeInterface::W3C == DateTimeInterface::RFC3339 == DateTimeInterface::ATOM == Y-m-d\TH:i:sP
+		$datetimeString = "{$year}-{$month}-{$day}T{$this->hour}:{$this->minute}:{$this->second}{$this->tzoffset}";
+		return DateTimeImmutable::createFromFormat(DateTimeInterface::W3C, $datetimeString);
+	}
+
+	/**
+	 * Calculate unixtime
+	 *
+	 * @param bool $leapForwards   If month/day is 02/29, whether to use 03/01 or 02/28
+	 *                             if $year is not a leap year. Generally speaking, you will
+	 *                             want $leapForwards = true for start date & false for end date.
+	 *
+	 * @return int unixtimestamp
+	 */
+	public function getUnixTimestamp(bool $leapForwards) : int
+	{
+		return $this->_getDateTimeImmutable($leapForwards)->getTimestamp();
+	}
+
+	/**
+	 * Calculate unixtime for "equivalent" month/day hh:mm:ss for a different year
+	 *
+	 * @param int $year
+	 * @param bool $leapForwards   If month/day is 02/29, whether to use 03/01 or 02/28
+	 *                             if $year is not a leap year. Generally speaking, you will
+	 *                             want $leapForwards = true for start date & false for end date.
+	 *
+	 * @return int unixtimestamp
+	 */
+	public function getUnixTimestampForYear(int $year, bool $leapForwards) : int
+	{
+		return $this->_getDateTimeImmutable($leapForwards, $year)->getTimestamp();
+	}
+
+	/**
+	 * Accept date or datetime strings like '1999-5-12' or '2023-01-31 23:59' or '2023-01-31T23:59:59' and converts
+	 * to mysql datetime format 'YYYY-MM-DD HH-MM-SS' (year month date hour minute second).
+	 * The date component is always assumed to be 4-digit year followed by 1 or 2-digit month followed by 1 or 2-digit day.
+	 * The time component, if provided is always assumed to be 24 hour, 2-digits without decimals.
+	 *
+	 * @param string $dateOrDatetime
+	 * @param string $defaultHourMinuteSecond  (Optional) usually '00:00:00' or '23:59:59', and only used if $dateOrDatetime
+	 *                                         did not include a time component. If time component is provided but missing
+	 *                                         the seconds, '00' is always used for the seconds and this param is ignored.
+	 *
+	 * @return array|false [
+	 *    'datetime_mysql' => string mysql datetime string,
+	 *    'bits' => [
+	 *       'year',
+	 *       'month',
+	 *       'day',
+	 *       'hour',
+	 *       'minute',
+	 *       'second',
+	 *    ]
+	 * ] or FALSE if either parameter was not in an expected format.
+	 */
+	private static function _standardizeDatetime(string $dateOrDatetime, string $tzoffset, string $defaultHourMinuteSecond = '00:00:00') : array|false
+	{
+		// unixtime ones look like '@12345' or '1234'
+		$datetimeregex = '#^@?(?<timestamp>\d+)$#';
+		if (!str_contains($dateOrDatetime, '-') AND preg_match($datetimeregex, $dateOrDatetime, $matches))
+		{
+			$matches['timestamp'];
+			$dateOrDatetime = self::_convertTimestampToMysqlDatetime($matches['timestamp'], $tzoffset);
+			unset($matches);
+		}
+
+		$matches = self::_explodeDatetime($dateOrDatetime, $defaultHourMinuteSecond);
+		if ($matches === false)
+		{
+			return false;
+		}
+
+		return [
+			'datetime_mysql' => "{$matches['year']}-{$matches['month']}-{$matches['day']} {$matches['hour']}:{$matches['minute']}:{$matches['second']}",
+			'bits' => $matches,
+		];
+	}
+
+	/**
+	 * Accept date or datetime strings like '1999-5-12' or '2023-01-31 23:59' or '2023-01-31T23:59:59' and retrieves each
+	 * component separately.
+	 * The date component is always assumed to be 4-digit year followed by 1 or 2-digit month followed by 1 or 2-digit day.
+	 * The time component, if provided is always assumed to be 24 hour format, 2-digits without decimals.
+	 *
+	 * @param string $dateOrDatetime
+	 * @param string $defaultHourMinuteSecond  (Optional) usually '00:00:00' or '23:59:59', and only used if $dateOrDatetime
+	 *                                         did not include a time component. If time component is provided but missing
+	 *                                         the seconds, '00' is always used for the seconds and this param is ignored.
+	 *
+	 * @return array|false [
+	 *     'year',
+	 *     'month',
+	 *     'day',
+	 *     'hour',
+	 *     'minute',
+	 *     'second',
+	 * ] OR false if $dateOrDatetime or $defaultHourMinuteSecond was not in the minimal expected format.
+	 */
+	private static function _explodeDatetime(string $dateOrDatetime, string $defaultHourMinuteSecond = '00:00:00') : array|false
+	{
+		$datetimeregex = '#(?<year>\d{4})-(?<month>\d{1,2})-(?<day>\d{1,2})[T ]?(?:(?<hour>\d{2})\:(?<minute>\d{2})(?:\:(?<second>\d{2}))?)?#';
+		if (!preg_match($datetimeregex, $dateOrDatetime, $matches))
+		{
+			return false;
+		}
+		$matches['month'] = str_pad($matches['month'], 2, '0', STR_PAD_LEFT);
+		$matches['day'] = str_pad($matches['day'], 2, '0', STR_PAD_LEFT);
+
+		// make sure the provided default is valid too.
+		if (!preg_match('#^\d{2}\:\d{2}\:\d{2}$#', $defaultHourMinuteSecond))
+		{
+			return false;
+		}
+
+		if (($matches['hour'] ?? '') !== '' AND ($matches['minute'] ?? '' ) !== '')
+		{
+			$matches['second'] ??= '00';
+		}
+		else
+		{
+			[$matches['hour'], $matches['minute'], $matches['second']] = explode(':', $defaultHourMinuteSecond, 3);
+		}
+
+		// Remove the rest of the preg match results and only return the relevant keys
+		$keys = [
+			'year' => 1,
+			'month' => 1,
+			'day' => 1,
+			'hour' => 1,
+			'minute' => 1,
+			'second' => 1,
+		];
+		$matches = array_intersect_key($matches, $keys);
+
+		return $matches;
+	}
+
+	// 1) Accept only tzoffsets specified in the known list ['-12', ... '12'], OR already in correct format, e.g. 01:00 or -02:00
+	// 2) Prepend '+' for positives for use in datetime strings
+	private static function _getStandardizedTimezoneOffsetString(string $tzoffset) : string
+	{
+		// strpos check is meant to allow skipping the more expensive regex in most cases
+		if (strpos($tzoffset, ':') === FALSE OR
+			!preg_match('#(?<sign>[\-\+])?(?<hour>\d{1,2})\:(?<minute>\d{2})#', $tzoffset, $matches)
+		)
+		{
+			$keys = array_keys(self::TIMEZONES);
+			$tzOffsets = array_combine($keys, $keys);
+			$tzoffset = trim($tzoffset, ". \n\r\t\v\x00");
+			$tzoffset = $tzOffsets[$tzoffset] ?? '0';
+
+			$minus = ($tzoffset < 0);
+			$hour = abs(intval($tzoffset));
+			$decimal = abs(floatval($tzoffset)) - $hour;
+			$minute = intval($decimal * 60);
+
+			return ($minus ? '-' : '+') . str_pad($hour, 2, '0', STR_PAD_LEFT) . ':' . str_pad($minute, 2, '0', STR_PAD_LEFT);
+		}
+		else
+		{
+			return (!empty($matches['sign']) ? $matches['sign'] : '+') . str_pad($matches['hour'], 2, '0', STR_PAD_LEFT) . ':' . $matches['minute'];
+		}
+	}
+
+	private function __cleanTzoffsetRaw(string $tzoffset) : string
+	{
+		if (isset(self::TIMEZONES[$tzoffset]))
+		{
+			return $tzoffset;
+		}
+
+		// inverse of _getStandardizedTimezoneOffsetString()
+		if (!preg_match('#(?<sign>[\-\+])?(?<hour>\d{1,2})\:(?<minute>\d{2})#', $tzoffset, $matches))
+		{
+			return '0';
+		}
+
+		$sign = '';
+		if (($matches['sign'] ?? '') === '-')
+		{
+			$sign = '-';
+		}
+
+		// get rid of leading 0's.
+		$hour = intval($matches['hour']);
+
+		// currently we only accept specific minutes :30, :45
+		$decimal = '';
+		if ($matches['minute'] == '30')
+		{
+			$decimal = '.5';
+		}
+		else if ($matches['minute'] == '45')
+		{
+			$decimal = '.75';
+		}
+		else if ($matches['minute'] == '00')
+		{
+			$decimal = '';
+		}
+		else
+		{
+			// not sure what we might end up with, but this will likely fail the isset() check below.
+			$decimal =  $matches['minute'] / 60;
+			$decimal = empty($decimal) ? '' : '.' . $decimal;
+		}
+
+		$tzoffset = $sign . $hour . $decimal;
+		if (!isset(self::TIMEZONES[$tzoffset]))
+		{
+			return '0';
+		}
+
+		return $tzoffset;
+	}
+
+	// private static function standardTzoffsetStringToSeconds(string $tzoffset) : int
+	// {
+	// 	if (!preg_match('#[\+\-]\d{1,2}\:?\d{2}?#', $tzoffset))
+	// 	{
+	// 		return 0;
+	// 	}
+	// 	[$hour, $minute] = explode(':', $tzoffset, 2);
+	// 	return ($hour * 3600 + $minute * 60);
+	// }
+
+	public function __toString(): string
+	{
+		return $this->datetime_mysql;
+	}
+
+
+	public function isLeapDateIgnoreYear() : bool
+	{
+		return ($this->month == 2 AND $this->day == 29);
+	}
+
+	public static function isLeapYear(int $year) : bool
+	{
+		return (
+			($year % 4 == 0) AND
+			!(
+				($year % 100 == 0) AND
+				($year % 400 != 0)
+			)
+		);
+	}
+
+	public static function calculateNextLeapYear(int $year) : int
+	{
+		$try = $year - ($year % 4) + 4;
+
+		// catch if it's a / 100 but not / 400 case
+		if (self::isLeapYear($try))
+		{
+			return $try;
+		}
+		else
+		{
+			return $try + 4;
+		}
+	}
+
+	public static function calculatePrevLeapYear(int $year) : int
+	{
+		// Force past if $year is leapyear
+		$year--;
+		$remainder = ($year % 4);
+
+		$try = $year - $remainder;
+
+		// catch if it's a / 100 but not / 400 case
+		if (self::isLeapYear($try))
+		{
+			return $try;
+		}
+		else
+		{
+			return $try - 4;
+		}
+	}
+
+	public static function createFromArray(array $dbrecord) : static
+	{
+		return new vB_Entity_Datetime($dbrecord['datetime_mysql'], $dbrecord['tzoffset_raw']);
+	}
+}
+
+/*=========================================================================*\
+|| #######################################################################
+|| # Downloaded: 12:50, Tue Dec 24th 2024
+|| # CVS: $RCSfile$ - $Revision: 113078 $
+|| #######################################################################
+\*=========================================================================*/

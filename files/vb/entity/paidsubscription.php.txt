@@ -1,0 +1,74 @@
+<?php
+/*========================================================================*\
+|| ###################################################################### ||
+|| # vBulletin 6.1.0 Alpha 4 Week 2 - Licence Number VBCW2VFT7A
+|| # ------------------------------------------------------------------ # ||
+|| # Copyright 2000-2024 MH Sub I, LLC dba vBulletin. All Rights Reserved.  # ||
+|| # This file may not be redistributed in whole or significant part.   # ||
+|| # ----------------- VBULLETIN IS NOT FREE SOFTWARE ----------------- # ||
+|| # http://www.vbulletin.com | http://www.vbulletin.com/license.html   # ||
+|| ###################################################################### ||
+\*========================================================================*/
+
+// helper class for styleschedule & standardizing datetime stamps
+class vB_Entity_Paidsubscription extends vB_Entity implements Stringable
+{
+	use vB_Trait_NoSerialize;
+
+	// TODO: probably should make these readonly after php 8.1
+	public string $currency;
+
+    public function __construct(
+		string $currency,
+		public float $cost,
+		public bool $recurring,
+		public float $duration,
+		public string $duration_units,
+		public int $subscriptionid,
+		public int $subscriptionsubid,
+		public int $userid,
+		public string $vbhash
+	)
+	{
+		// todo: whitelist specific currency codes?
+		$this->currency = strtoupper($currency);
+
+	}
+
+	public static function createFromArray(array $dbrecord) : static
+	{
+		return new vB_Entity_Paidsubscription(
+			$dbrecord['currency'],
+			$dbrecord['cost'],
+			$dbrecord['recurring'],
+			$dbrecord['duration'],
+			$dbrecord['duration_units'],
+			$dbrecord['subscriptionid'],
+			$dbrecord['subscriptionsubid'],
+			$dbrecord['userid'],
+			$dbrecord['vbhash']
+		);
+	}
+
+	public function __toString(): string
+	{
+		return json_encode([
+			'currency' => $this->currency,
+			'cost' => $this->cost,
+			'recurring' => $this->recurring,
+			'duration' => $this->duration,
+			'duration_units' => $this->duration_units,
+			'subscriptionid' => $this->subscriptionid,
+			'subscriptionsubid' => $this->subscriptionsubid,
+			'userid' => $this->userid,
+			'vbhash' => $this->vbhash,
+		]);
+	}
+}
+
+/*=========================================================================*\
+|| #######################################################################
+|| # Downloaded: 12:50, Tue Dec 24th 2024
+|| # CVS: $RCSfile$ - $Revision: 113078 $
+|| #######################################################################
+\*=========================================================================*/

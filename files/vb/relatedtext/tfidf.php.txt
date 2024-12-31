@@ -1,0 +1,95 @@
+<?php
+/*========================================================================*\
+|| ###################################################################### ||
+|| # vBulletin 6.1.0 Alpha 4 Week 2 - Licence Number VBCW2VFT7A
+|| # ------------------------------------------------------------------ # ||
+|| # Copyright 2000-2024 MH Sub I, LLC dba vBulletin. All Rights Reserved.  # ||
+|| # This file may not be redistributed in whole or significant part.   # ||
+|| # ----------------- VBULLETIN IS NOT FREE SOFTWARE ----------------- # ||
+|| # http://www.vbulletin.com | http://www.vbulletin.com/license.html   # ||
+|| ###################################################################### ||
+\*========================================================================*/
+
+/**
+ * @package	vBulletin
+ *
+ */
+
+/**
+ * Calculate TfIdf values from a data array and a vocabulary object. This is structured to allow batch processing of data arrays
+ * without necesarily considering all of the data records at once, but the all documents need to be processed into the vocabulary
+ * object before using it for the transform.  The vocabulary object keeps all of the "universe" level statistics in addition to
+ * an ordinal to word mapping.
+ */
+// There are a lot of variations on the TdIdf model to handle various problems and limitations
+// This follows the formula in the Python Gensim library (the original script uses). As far I can tell.
+//
+// The confusion arises from the smartirs parameter which says it defaults to 'nfc' but that's not clear how that
+// iteracts with the wlocal and wglobal functions for computing the tf and idf values respectively.  Looking at the
+// code, however, the default for smartirs is "None" and it appears that the actual behavior is that it is ignored
+// if not explicitly passed and the wlocal and wglobal functions are ignored if it is.
+//
+// The IDF is calcuated as log2(N/n) where N is the total document count and n is the number of documents the term appears in.
+//
+// The TF is simply the raw count of the terms (this is the only option for the PHP Rubix library and the default for the Gensim library)
+//
+// The Gensim library also applies a normilization calculation that we do not by default (the Rubix library does not have this as an option).
+// This appears to be intended to make the values more comparible across documents (the term counts are inflated in larger documents because there
+// are simply more simply more terms).  We don't compare these values across documents at present.
+//
+// Note that the python implementation uses the defaults for the gemsim library and it does not appear that
+// a great deal of consideration went into choosing specific IDF calcuations used so it would be mistake
+// to over estimate the importance of the spefific options used.
+
+class vB_RelatedText_TfIdf
+{
+	use vB_Trait_NoSerialize;
+
+	//private vB_RelatedText_TfIdf $vocabularly;
+	private array $idf;
+
+	/**
+	 * @param vB_RelatedText_Vocabulary $vocabularly -- the vocabularly that represents the universe of all
+	 * 	documents to be considered.
+	 */
+	public function __construct(vB_RelatedText_Vocabulary $vocabularly)
+	{
+		$this->idf = $this->calculateIdf($vocabularly);
+	}
+
+	/**
+	 * Transforms a data array in the form of [$recordid => [word vector array] to a TfIdf array
+	 *
+	 * @param array &$data -- transform in place to reduce memory footprint.  We are not likly to need the
+	 * 	frequence vectors after we get the TdIdf values.
+	 */
+	public function transform(array &$data) : void
+	{
+		foreach ($data AS &$record)
+		{
+			foreach ($record AS $ordinal => $count)
+			{
+				$record[$ordinal] = $count * $this->idf[$ordinal];
+			}
+		}
+	}
+
+	private function calculateIdf(vB_RelatedText_Vocabulary $vocabulary) : array
+	{
+		$total = $vocabulary->getTotalDocCount();
+		$idf = [];
+		foreach ($vocabulary->getDocCounts() AS $ordinal => $count)
+		{
+			$idf[$ordinal] = log($total/$count, 2);
+		}
+
+		return $idf;
+	}
+}
+
+/*=========================================================================*\
+|| #######################################################################
+|| # Downloaded: 12:50, Tue Dec 24th 2024
+|| # CVS: $RCSfile$ - $Revision: 108523 $
+|| #######################################################################
+\*=========================================================================*/

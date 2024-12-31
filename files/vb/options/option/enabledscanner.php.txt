@@ -1,0 +1,39 @@
+<?php
+/*========================================================================*\
+|| ###################################################################### ||
+|| # vBulletin 6.1.0 Alpha 4 Week 2 - Licence Number VBCW2VFT7A
+|| # ------------------------------------------------------------------ # ||
+|| # Copyright 2000-2024 MH Sub I, LLC dba vBulletin. All Rights Reserved.  # ||
+|| # This file may not be redistributed in whole or significant part.   # ||
+|| # ----------------- VBULLETIN IS NOT FREE SOFTWARE ----------------- # ||
+|| # http://www.vbulletin.com | http://www.vbulletin.com/license.html   # ||
+|| ###################################################################### ||
+\*========================================================================*/
+
+/**
+ * @package vBulletin
+ */
+class vB_Options_Option_Enabledscanner extends vB_Options_Option
+{
+	protected function validateCustom(array $validation, mixed $rawvalue) : bool|string|array
+	{
+		if (count($rawvalue) == 0)
+		{
+			return true;
+		}
+
+		$errors = vB_Library::instance('filescan')->validateEnabledScanners($rawvalue);
+		if (!empty($errors))
+		{
+			// Some errors may be due to the fact that the old vboptions that are available to the filescan instance do not have valid values yet, and
+			// the new settings that are being saved right now may resolve them. However we do not have a way for one setting's validation to access
+			// the "new" values of other settings, let's throw up a warning for now.
+
+			// We can have many errors but need to return one so render and collapse.
+			$rendered = vB_Library::instance('phrase')->renderPhrases($errors);
+			return ['enabled_filescanners_error_preface', implode("<br/>", $rendered)];
+		}
+
+		return true;
+	}
+}

@@ -1,0 +1,537 @@
+<?php
+/*========================================================================*\
+|| ###################################################################### ||
+|| # vBulletin 6.1.0 Alpha 4 Week 2 - Licence Number VBCW2VFT7A
+|| # ------------------------------------------------------------------ # ||
+|| # Copyright 2000-2024 MH Sub I, LLC dba vBulletin. All Rights Reserved.  # ||
+|| # This file may not be redistributed in whole or significant part.   # ||
+|| # ----------------- VBULLETIN IS NOT FREE SOFTWARE ----------------- # ||
+|| # http://www.vbulletin.com | http://www.vbulletin.com/license.html   # ||
+|| ###################################################################### ||
+\*========================================================================*/
+
+class vB_Library_Reactions extends vB_Library
+{
+	// You can consider each reaction or emoji corresponding to a single nodevotetype
+	// Each `nodevotetype` record is tied to a single `nodevotegroup` record.
+	// Multiple `nodevotetypes` may be tied to the same `nodevotegroup` record. Having the
+	// group label is useful for fetching and bulk operating on the group of nodevotetypes.
+	public const VOTE_GROUP = 'reactions.emojis';
+
+	const REACTIONS_ENABLEDONLY_DS_KEY = 'vb_reactions_enabled';
+	const REACTIONS_ALL_ORDERED_DS_KEY = 'vb_reactions_byorder';
+	const REACTIONS_ALL_BY_LABEL_DS_KEY = 'vb_reactions_bylabel';
+	// some old ones that I decided to remove. Some of them only existed within alpha versions.
+	// const EMOJI_ENABLED_DS_KEY = 'vb_emoji_enabled_byid';
+	// const REACTIONS_USER_REPUTABLES = 'vb_reactions_userreputables';
+	// const REACTIONS_USER_COUNTABLES = 'vb_reactions_usercountables';
+	// This one hasn't been removed yet as this data used to ONLY exist in datastore before we
+	// had the reactionoption table, so it remains for now in case we have to reload some data
+	// during refactors in 603. We can probably remove it in a few versions if no issues are
+	// found.
+	const EMOJI_ENABLED_LEGACY_DS_KEY = 'vb_emoji_enabled';
+
+	// We may add a "forum" countables separately. USER_CONTABLES contributes to user.totallikes,
+	// while currently forum's node.votes counts all votes.
+	// add any new DS keys to purgeReactionsDatastore() list.
+
+	const THUMBS_UP_LABEL = 'thumbs up';
+	private $cached_thumbsup_reaction = [];
+	private $reactionoptions = [];
+
+	public function purgeReactionCaches()
+	{
+		// These were called separately at some point in dev when different levels of data depended on
+		// different tables. Keeping them separate for now while still refactoring but we might be able
+		// to combine these two
+		$this->purgeReactionsPropertiesCache();
+		$this->purgeReactionsDatastoreCache();
+	}
+
+	private function purgeReactionsPropertiesCache()
+	{
+		$this->reactionoptions = [];
+		$this->cached_thumbsup_reaction = [];
+	}
+
+	private function purgeReactionsDatastoreCache()
+	{
+		$datastore = vB::getDatastore();
+		$datastore->delete(static::REACTIONS_ENABLEDONLY_DS_KEY);
+		$datastore->delete(static::REACTIONS_ALL_ORDERED_DS_KEY);
+		$datastore->delete(static::REACTIONS_ALL_BY_LABEL_DS_KEY);
+	}
+
+	public function addReaction(string $label, array $options = []) : int
+	{
+		if (empty($label))
+		{
+			throw new vB_Exception_Api('invalid_data_w_x_y_z', [$label, 'label', __CLASS__, __FUNCTION__]);
+		}
+
+		// We need either emojihtml or filedataid, otherwise the reaction is going to show blank...
+		if (empty($options['emojihtml']) AND empty($options['filedataid']))
+		{
+			throw new vB_Exception_Api('invalid_data_w_x_y_z', [$options, 'options.emojihtml', __CLASS__, __FUNCTION__]);
+		}
+
+		/** @var vB_Library_Nodevote */
+		$nodevoteLib = vB_Library::instance('nodevote');
+		$votegroup = vB_Library_Reactions::VOTE_GROUP;
+
+		$votetypeid = $nodevoteLib->addVotetype($label, $votegroup);
+		// purge some datastore items
+		$datastore = vB::getDatastore();
+		$datastore->delete(vB_Library_Reactions::REACTIONS_ALL_ORDERED_DS_KEY);
+		$datastore->delete(vB_Library_Reactions::REACTIONS_ALL_BY_LABEL_DS_KEY);
+		// The following are rebuilt or deleted by saveReactionOptions()
+		// EMOJI_ENABLED_DS_KEY
+		// REACTIONS_ENABLEDONLY_DS_KEY
+		// REACTIONS_USER_REPUTABLES
+		// REACTIONS_USER_COUNTABLES
+
+		// Ensure reactionoption record will exist.
+		$options['votetypeid'] = $votetypeid;
+		$this->saveReactionOptions($options);
+
+		return $votetypeid;
+	}
+
+	// There's a lot of modularized data in the datastore. Chances are, if we fetch ONE
+	// of them, we'll probably end up fetching the others.
+	// Let's preload them so we grab them in 1 bulk instead of individually. Trading off
+	// memory for db roundtrip. (should we use fastDS?)
+	private function fetchItemFromDatastore($key) : mixed
+	{
+		$datastore = vB::getDatastore();
+		$storeItems = [
+			static::REACTIONS_ALL_ORDERED_DS_KEY,
+			static::REACTIONS_ALL_BY_LABEL_DS_KEY,
+			static::REACTIONS_ENABLEDONLY_DS_KEY,
+		];
+		$datastore->preload($storeItems);
+
+		return $datastore->getValue($key);
+	}
+
+
+	// Consider this helper function internal to saveReactionOptions().
+	private function isReactionOptionChanged(array $current, array $new) : bool
+	{
+		foreach ($current AS $__key => $__val)
+		{
+			if ($__key == 'votetypeid')
+			{
+				continue;
+			}
+			// specifically checking isset, since empty values are valid values
+			if (isset($new[$__key]) AND $new[$__key] != $__val)
+			{
+				return true;
+			}
+		}
+		return false;
+	}
+
+	/**
+	 * Save reaction options (enabled, reputable, countable).
+	 * Used internally by admincp/managereactions.php, & install script
+	 *
+	 * @param array $delta  array of options, each element may contain
+	 *                       int    'votetypeid'          Required
+	 *                       int    'enabled'             0|1
+	 *                       int    'user_rep_factor'     0|1
+	 *                       int    'user_like_countable' 0|1
+	 *                       string 'emojihtml'           Relevant HTML reprsenting this reaction
+	 *                       int    'system'              1 for system defaults. 0 for custom
+	 *                       string 'guid'                usually the emoji label
+	 *                       int     'order'              Display order
+	 */
+	public function saveReactionOptions(array $delta) : void
+	{
+		// convert singular to plural.
+		if (isset($delta['votetypeid']))
+		{
+			$delta = [$delta];
+		}
+
+		$assertor = vB::getDbAssertor();
+		$current = $assertor->getRows('reactionoption', [], false, 'votetypeid');
+		foreach ($delta AS $__data)
+		{
+			if (!isset($__data['votetypeid']))
+			{
+				throw new vB_Exception_Api('invalid_data_w_x_y_z', [$delta, 'delta', __CLASS__, __FUNCTION__]);
+			}
+			$__id = $__data['votetypeid'];
+
+			// Only change options that are set.
+			$__values = [];
+			$possibleKeys = [
+				'enabled',
+				'user_rep_factor',
+				'user_like_countable',
+				'emojihtml',
+				'system',
+				'guid',
+				'order',
+				'filedataid',
+			];
+			foreach ($possibleKeys AS $__key)
+			{
+				if (isset($__data[$__key]))
+				{
+					$__values[$__key] = $__data[$__key];
+				}
+			}
+
+			if (!isset($current[$__id]))
+			{
+				$__values['votetypeid'] = $__id;
+				$assertor->insert('reactionoption', $__values);
+			}
+			else if ($this->isReactionOptionChanged($current[$__id], $__values))
+			{
+				$assertor->update('reactionoption', $__values, ['votetypeid' => $__id]);
+			}
+		}
+
+		// Purge caches that depend on reactionoptions
+		$this->purgeReactionCaches();
+	}
+
+	private function getReactionOptions() : array
+	{
+		// Rethinking some of the datastore items.. unless we have thousands of reactions,
+		// I think the only thing worth caching is the database access, not some of the
+		// processing (e.g. array_column).
+		if (empty($this->reactionoptions))
+		{
+			$assertor = vB::getDbAssertor();
+			$query = $assertor->assertQuery('getReactionOptionsWithFiledataDimensions');
+			$this->reactionoptions = [];
+			foreach ($query AS $__row)
+			{
+				$__votetypeid = $__row['votetypeid'];
+				// This used to be a separate query and was loaded into a subarray, which is what the templates now expect.
+				// Massage the data into the same format.
+				if ($__row['filedataid'] > 0)
+				{
+					// Add explicit width & height for images for CLS
+					$__row['filedata'] = [
+						'width' => $__row['width'],
+						'height' => $__row['height'],
+					];
+				}
+				unset($__row['width'], $__row['height']);
+
+				$this->reactionoptions[$__votetypeid] = $__row;
+			}
+		}
+
+		return $this->reactionoptions;
+	}
+
+
+	// Warning, this returns ALL emojis' enabled status, NOT "only enabled emojis". See fetchEnabledReactionsListByOrder() for the latter.
+	public function getEmojisEnabledStatus() : array
+	{
+		$options = $this->getReactionOptions();
+		// Unless we get thousands of reactions, I don't think this operation is going to be very expensive to redo multiple times a page load.
+		// Trying to reduce some unnecessary datastore items.
+		$enabled = array_column($options, 'enabled', 'votetypeid');
+
+		return $enabled;
+	}
+
+	/**
+	 * Return reactions nodevote & emojis data. Array is keyed by $type.
+	 * This function is different from loadSourceEmojisData() in that this only returns the subset
+	 * of emojis that are actually inserted as nodevotetypes. If you want the emoji data for the full
+	 * range provided by the source file, use loadSOurceEmojisData() instead.
+	 *
+	 * @param string $type 'ordered'|'labeled'
+	 *
+	 * @return array
+	 */
+	public function getReactionsEmojisData($type = 'ordered') : array
+	{
+		$map = [
+			'ordered' => static::REACTIONS_ALL_ORDERED_DS_KEY,
+			'labeled' => static::REACTIONS_ALL_BY_LABEL_DS_KEY,
+		];
+		$dskey = $map[$type] ?? null;
+
+		if (!$dskey)
+		{
+			throw new vB_Exception_Api('invalid_data_w_x_y_z', [$type, 'type', __CLASS__, __FUNCTION__]);
+		}
+
+		$reactions = $this->fetchItemFromDatastore($dskey);
+		if (!empty($reactions))
+		{
+			return json_decode($reactions, true);
+		}
+
+		$rebuilt = $this->rebuildReactionsEmojiData();
+		return $rebuilt[$type] ?? [];
+	}
+
+
+	private function rebuildReactionsEmojiData()
+	{
+		$reactionsByLabel = [];
+		$reactionsOrdered = [];
+		$reactionsEnabledOrdered = [];
+		//['fulldata' => $emojionlydata] = $this->loadSourceEmojisData();
+
+		// Only include emojis that have been inserted as nodevotetypes
+		$nodevotetypes = $this->getReactionsNodevotetypes();
+		$nodevotetypesById = array_column($nodevotetypes, null, 'votetypeid');
+
+		// This may cause some weird issues with the upgrader (refering to certain columns before
+		// defaults are filled), but extremely difficult to work around it, now that we have customized
+		// reactions. Be sure to clear out the datastore items when filling reaction options.
+		$reactionoptions = $this->getReactionOptions();
+
+		// $reactionoptions should already be sorted by order ASC, so let's go with that.
+		foreach ($reactionoptions AS $__data)
+		{
+			// store nodevotetype data necessary for voting & display: `votetypeid`, `label`, `emojihtml`, `votegroupid`.
+			// Also available: int `order`, bool `enabled`, int `user_rep_factor`, bool `user_like_countable`.
+			// $__data provides `emojihtml`, `order`, from the `reactionoption` table.
+			// These fields are not available as part of the nodevote data, and instead is provided by this reactions layer.
+			// $nodevotetypesById provides votetypeid, votegroupid, & label from the `nodevote` table.
+
+			// Unset some data that's currently unnecessary for display.
+			unset($__data['system']);
+			unset($__data['guid']);
+
+			$__data = array_merge($__data, $nodevotetypesById[$__data['votetypeid']]);
+			// Since order set by admincp can conflict, we do NOT want to use the actual 'order' column.
+			$reactionsOrdered[] = $__data;
+			$reactionsByLabel[$__data['label']] = $__data;
+			if (!empty($__data['enabled']))
+			{
+				$reactionsEnabledOrdered[] = $__data;
+			}
+		}
+		// This function used to load the source emojis (thousands of emojis) and filter through them, which was not
+		// something we wanted to do very frequently. A lot of data has been moved out to the reactionoption table
+		// as a much smaller subset, so there's less processing involved in this function.
+		// We may not have to cache these results as aggresively as before, but kept them as they still seem decently
+		// useful (skip a few database queries and above processing in worst case).
+		$datastore = vB::getDatastore();
+		$datastore->build(static::REACTIONS_ALL_ORDERED_DS_KEY, json_encode($reactionsOrdered), 0);
+		$datastore->build(static::REACTIONS_ALL_BY_LABEL_DS_KEY, json_encode($reactionsByLabel), 0);
+		$datastore->build(static::REACTIONS_ENABLEDONLY_DS_KEY, json_encode($reactionsEnabledOrdered), 0);
+
+		return [
+			'ordered' => $reactionsOrdered,
+			'labeled' => $reactionsByLabel,
+			'enabledonly' => $reactionsEnabledOrdered,
+		];
+	}
+
+	// This loads the full set of emojis data from the emojis txt file, of which a small subset may
+	// be currently inserted as nodevotetypes & enabled as reactions.
+	// Public for use by upgrade steps, where we want certain data to populate the reactionoption data.
+	public function loadSourceEmojisData($versionCutoff = '12') : array
+	{
+		$file = vB::getLibraryFile('misc/emoji/emoji-ordering.txt');
+		if (!is_file($file))
+		{
+			return ['fulldata' => []];
+		}
+
+		$content = file_get_contents($file);
+		$regex = '@^(?<unicode>[^#;]*) +; (?<version>[\d\.]+) +# +(?<emoji>[^ ]*) +(?<label>.*?)\s*$@m';
+		preg_match_all($regex, $content, $matches);
+
+		//$ordering = array_flip($matches['label']);
+		// For some reason, the json file & the file from unicode.org disagree on the labelings of a few emojis...
+		// so we have to go the hard way and use their unicode as the keys
+		//$ordering = [];
+		//$labels = [];
+		$fulldata = [];
+		foreach ($matches['unicode'] AS $__order => $__unicode)
+		{
+			// This htmlentitize-logic is SPECIFIC to the emoji-ordering.txt file v15 from unicode.org.
+			$__html = strtoupper(str_replace(' ', '', str_replace('U+', '&#x', $__unicode)));
+			// we can use this only if the forum is in utf-8...
+			$__emoji = $matches['emoji'][$__order];
+			$__unicode = strtoupper(str_replace('U+', '', $__unicode));
+			$__label = trim($matches['label'][$__order]);
+			$__version = floatval($matches['version'][$__order]);
+			/*
+			$ordering[$__unicode] = $__order;
+			$labels[$__unicode] = $matches['label'][$__order];
+			*/
+			// In my testing, emojis added after 13.0+ do not seem to work on most browers & OS's
+			if ($versionCutoff <= $__version)
+			{
+				continue;
+			}
+
+			$fulldata[$__order] = [
+				'order'     => $__order,
+				'label'     => $__label,
+				'emojihtml' => $__html,
+				'emojiutf8' => $__emoji,
+			];
+		}
+
+		return [
+			//'ordering' => $ordering,
+			//'labels' => $labels,
+			'fulldata' => $fulldata,
+		];
+	}
+
+	/**
+	 * Return nodevotetype data for topic reactions
+	 *
+	 * @return array key {label} => value array [
+	 *                 'votetypeid'  => int     e.g. 12345
+	 *                 'label'       => string  e.g. "grinning face"
+	 *                 'votegroupid' => int     e.g. 123
+	 *              ]
+	 *
+	 *
+	 */
+	public function getReactionsNodevotetypes()
+	{
+		/** @var vB_Library_Nodevote */
+		$lib = vB_Library::instance('nodevote');
+		//$lib->reloadNodevoteMetaDataFromDB();
+		$all = $lib->getVoteMetaData('votetypesByGroupAndTypeLabels');
+		// let's sparsify it
+		$reactions = $all[self::VOTE_GROUP];
+		$reactionsByLabel = array_column($reactions, null, 'label');
+
+		return $reactionsByLabel;
+	}
+
+	/**
+	 * Fetch votetypeids for only the enabled reactions.
+	 *
+	 * @return int[] votetypeids
+	 */
+	public function fetchOnlyEnabledReactionsVotetypeid() : array
+	{
+		// helper function because this is turning out to be a common expression
+		$enabled = $this->fetchEnabledReactionsListByOrder();
+		$enabledvotetypeids = array_column($enabled, 'votetypeid');
+		return $enabledvotetypeids;
+	}
+
+	/**
+	 * Return nodevotetype data and emoji html for enabled topic reactions
+	 *
+	 * @return array  each element is a subarray [
+	 *                 'votetypeid'  => int     e.g. 12345
+	 *                 'label'       => string  e.g. "grinning face"
+	 *                 'emojihtml'   => string  e.g.
+	 *                   and also
+	 *                 'votegroupid' => int     e.g. 123
+	 *              ]
+	 *
+	 *
+	 */
+	public function fetchEnabledReactionsListByOrder()
+	{
+		$ordered = $this->fetchItemFromDatastore(static::REACTIONS_ENABLEDONLY_DS_KEY);
+		if ($ordered)
+		{
+			$ordered = json_decode($ordered, true);
+			if ($ordered)
+			{
+				return $ordered;
+			}
+		}
+
+		['enabledonly' => $ordered, ] = $this->rebuildReactionsEmojiData();
+		return $ordered;
+	}
+
+	/**
+	 * The thumbs up emoji is special, because it uniquely maps to the "Like" system from vB5.
+	 * So there are occassions when we will have to fetch it.
+	 *
+	 * @return array [
+	 *       'order'       => (int),
+	 *       'label'       => (string)  'thumbs up',
+	 *       'emojihtml'   => (string)  '&#X1F44D',
+	 *       'votetypeid'  => (int),
+	 *       'votegroupid' => (int),
+	 * ]
+	 */
+	public function getThumbsUp() : array
+	{
+		if (empty($this->cached_thumbsup_reaction))
+		{
+			$reactions = $this->getReactionsEmojisData('labeled');
+			$this->cached_thumbsup_reaction = $reactions[self::THUMBS_UP_LABEL] ?? [];
+		}
+
+		return $this->cached_thumbsup_reaction;
+	}
+
+	/**
+	 * Get the votetypeid => reputation_factor array
+	 *
+	 * @return array  [
+	 *      int {votetypeid} => float {factor},
+	 *      ...
+	 * ]
+	 */
+	public function getReputableTypesAndFactors() : array
+	{
+		$options = $this->getReactionOptions();
+		$userreputables = array_column($options, 'user_rep_factor', 'votetypeid');
+
+		return $userreputables;
+	}
+
+	/**
+	 * Return list of votetypeids that should count towards totalreactions counts, e.g.
+	 * `user`.`totallikes`.
+	 * Note that `node`.`votes` counts ALL votetypes, not just these.
+	 *
+	 * @return array  [
+	 *      int {votetypeid} => float {factor},
+	 *      ...
+	 * ]
+	 */
+	public function getUserRepCountableTypes()
+	{
+		$options = $this->getReactionOptions();
+		$usercountables = array_column($options, 'user_like_countable', 'votetypeid');
+
+		return $usercountables;
+	}
+
+	/**
+	 * Return sparse list of votetypeids that should generate a "vB_Notification_LikedNode"
+	 * notification.
+	 *
+	 * @return array  [
+	 *      int {votetypeid} => {votetypeid},
+	 *      ...
+	 * ]
+	 */
+	public function getNotifiableTypes()
+	{
+		$enabled = $this->fetchEnabledReactionsListByOrder();
+		$enabledvotetypeids = array_column($enabled, 'votetypeid', 'votetypeid');
+		// Previously, this used to be only reputable types. Now, it is all (enabled) types.
+		return $enabledvotetypeids;
+	}
+}
+
+/*=========================================================================*\
+|| #######################################################################
+|| # Downloaded: 12:50, Tue Dec 24th 2024
+|| # CVS: $RCSfile$ - $Revision: 101013 $
+|| #######################################################################
+\*=========================================================================*/

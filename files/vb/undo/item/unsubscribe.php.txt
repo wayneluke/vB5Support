@@ -1,0 +1,103 @@
+<?php
+/*========================================================================*\
+|| ###################################################################### ||
+|| # vBulletin 6.1.0 Alpha 4 Week 2 - Licence Number VBCW2VFT7A
+|| # ------------------------------------------------------------------ # ||
+|| # Copyright 2000-2024 MH Sub I, LLC dba vBulletin. All Rights Reserved.  # ||
+|| # This file may not be redistributed in whole or significant part.   # ||
+|| # ----------------- VBULLETIN IS NOT FREE SOFTWARE ----------------- # ||
+|| # http://www.vbulletin.com | http://www.vbulletin.com/license.html   # ||
+|| ###################################################################### ||
+\*========================================================================*/
+
+/**
+ * @package vBulletin
+ */
+class vB_Undo_Item_Unsubscribe extends vB_Undo_Item
+{
+	use vB_Trait_NoSerialize;
+
+	// userid inherited
+
+	protected array $subscribediscussion = [];
+	protected array $serializefields = [
+		'userid',
+		'subscribediscussion',
+	];
+
+	public static function create(int $userid, array $subscribediscussion) : self
+	{
+		foreach ($subscribediscussion AS $__row)
+		{
+			if (!isset($__row['discussionid']) OR !isset($__row['emailupdate']))
+			{
+				throw new Exception('invalid_data');
+			}
+		}
+
+		$item = new self();
+
+		$item->userid = $userid;
+		$item->subscribediscussion = $subscribediscussion;
+
+		return $item;
+	}
+
+	public function run() : mixed
+	{
+		if (empty($this->userid))
+		{
+			return null;
+		}
+
+		$db = vB::getDbAssertor();
+		$nodeLib = vB_Library::instance('node');
+
+		$nodeids = [];
+		$noperms = [];
+		foreach ($this->subscribediscussion AS $__row)
+		{
+			if (!isset($__row['discussionid']) OR !isset($__row['emailupdate']))
+			{
+				continue;
+			}
+
+			$__nodeid = $__row['discussionid'];
+
+			// Perhaps we should just go through the follow API rather than a direct query...
+			$params = [
+				vB_dB_Query::TYPE_KEY => vB_dB_Query::QUERY_INSERT,
+				'userid' => $this->userid,
+				'discussionid' => $__nodeid,
+				// I'm not actually sure if this is properly implemented/used, but just in case, restore
+				// the emailupdate field too
+				'emailupdate' => $__row['emailupdate'],
+			];
+			// ignore if similar record already exists.
+			$dupecheck = $db->assertQuery('vBForum:subscribediscussion', ['userid' => $this->userid, 'discussionid' => $__nodeid]);
+			if (!$dupecheck->valid())
+			{
+				// Checking view perms before re-subscribing.
+				$__node = $nodeLib->getNodeBare($__nodeid);
+				/** @var vB_Library_Content */
+				$__contentLib = vB_Library_Content::getContentLib($__node['contenttypeid']);
+				if ($__contentLib->validate($__node, vB_Library_Content::ACTION_VIEW, $__nodeid, [$__nodeid => $__node], $this->userid))
+				{
+					$db->assertQuery('vBForum:subscribediscussion', $params);
+					$nodeids[] = $__nodeid;
+				}
+				else
+				{
+					$noperms[] = $__nodeid;
+				}
+			}
+		}
+
+		// It's a bit hard to genericize the run return since each undo will probably have its own data that must return
+		// for messaging etc. Perhaps different return structs to help managing data expectations?
+		return [
+			'discussionids' => $nodeids,
+			'noperms' => $noperms,
+		];
+	}
+}

@@ -1,0 +1,1453 @@
+<?php
+/*========================================================================*\
+|| ###################################################################### ||
+|| # vBulletin 6.1.0 Alpha 4 Week 2 - Licence Number VBCW2VFT7A
+|| # ------------------------------------------------------------------ # ||
+|| # Copyright 2000-2024 MH Sub I, LLC dba vBulletin. All Rights Reserved.  # ||
+|| # This file may not be redistributed in whole or significant part.   # ||
+|| # ----------------- VBULLETIN IS NOT FREE SOFTWARE ----------------- # ||
+|| # http://www.vbulletin.com | http://www.vbulletin.com/license.html   # ||
+|| ###################################################################### ||
+\*========================================================================*/
+
+/**
+ * vB_Api_Content_Channel
+ *
+ * @package vBApi
+ */
+class vB_Api_Content_Channel extends vB_Api_Content
+{
+	//override in client- the text name
+	protected $contenttype = 'vBForum_Channel';
+
+	//The table for the type-specific data.
+	protected $tablename = 'channel';
+
+	//We need the primary key field name.
+	protected $primarykey = 'nodeid';
+
+
+	/**
+	 * Normal constructor- protected to prevent direct instantiation
+	 */
+	protected function __construct()
+	{
+		parent::__construct();
+		$this->library = vB_Library::instance('Content_Channel');
+	}
+
+	/**
+	 * Adds a new channel.
+	 *
+	 * @param  mixed   Array of field => value pairs which define the record.
+	 * @param  array   Array of options for the content being created.
+	 * 	skipTransaction,
+	 * 	skipFloodCheck,
+	 * 	floodchecktime,
+	 * 	skipDupCheck,
+	 * 	skipNotification
+	 * 	nodeonly: Boolean indicating whether extra info for channel should be created
+	 * 		(page, routes, etc). Used for importing channels
+	 *
+	 * @return integer the new nodeid
+	 */
+	public function add($data, $options = array())
+	{
+		// prevent adding top level channels
+		if (!empty($data['parentid']))
+		{
+			$channel = $this->fetchChannelById($data['parentid']);
+			if ($channel['guid'] == vB_Channel::MAIN_CHANNEL)
+			{
+				throw new vB_Exception_Api('cant_add_channel_to_root');
+			}
+		}
+		else
+		{
+			// The library has some code to "support" adding channels without a parentid (VBV-833)
+			// but that complicates (icon) permission checks and ATM it defaults the parent to the "Special"
+			// channel which is probably a mistake. The current UI no longer allows skipping the parent when
+			// creating channels in AdminCP, so I'm going to no longer support it in the API, and eventually
+			// remove the library code.
+			throw new vB_Exception_Api('invalid_data');
+		}
+
+		if (!isset($data['displayorder']))
+		{
+			$data['displayorder'] = 1;
+		}
+
+		if (isset($data['filedataid']))
+		{
+			$this->validateIcon($data['parentid'], array('filedataid' => $data['filedataid']));
+		}
+
+		return parent::add($data, $options);
+	}
+
+
+	/**
+	 * Returns a channel record based on its node id
+	 *
+	 * @param  int   Node ID
+	 * @return array Channel information
+	 */
+	public function fetchChannelById($nodeid)
+	{
+		$nodeid = intval($nodeid);
+		$nodes = $this->getContent($nodeid);
+		$data = [];
+		if (!$this->library->validate($data, vB_Library_Content::ACTION_VIEW, $nodeid, $nodes))
+		{
+			throw new vB_Exception_Api('no_permission');
+		}
+
+		return $nodes[$nodeid];
+	}
+
+	/**
+	 * Returns a channel record based on its node guid
+	 *
+	 * @param  string Channel GUID
+	 *
+	 * @return array  Channel information
+	 */
+	public function fetchChannelByGUID($guid)
+	{
+		// This doesn't seem to be locked behind perm checks because it only returns the `channel` record info, which does not
+		// contain a lot of information.
+		return vB_Library::instance('content_channel')->fetchChannelByGUID($guid);
+	}
+
+	/**
+	 * Returns a channel id based on its node guid
+	 *
+	 * @param  string Channel GUID
+	 *
+	 * @return int    Channel id
+	 */
+	public function fetchChannelIdByGUID($guid)
+	{
+		return vB_Library::instance('content_channel')->fetchChannelIdByGUID($guid);
+	}
+
+	/**
+	 * Returns an array with bbcode options for the node.
+	 *
+	 * @param  int   $nodeId
+	 *
+	 * @return array Array of Bbcodee options from the datastore
+	 */
+	public function getBbcodeOptions($nodeId)
+	{
+		//not clear if we should return a blank value array, an array of all options defaulted, or
+		//throw an error if the nodeId isn't valid.  For now go with the first option as the least
+		//invasive change.  But nothing good will come of accessing a key on null.
+		$record = $this->assertor->getRow('vBForum:channel', ['nodeid' => $nodeId]);
+
+		$result = [];
+
+		if($record)
+		{
+			$options = vB::getDatastore()->getValue('bf_misc_forumoptions');
+			foreach($options AS $optionName => $optionVal)
+			{
+				$result[$optionName] = (bool)($record['options'] & $optionVal);
+			}
+		}
+
+		return $result;
+	}
+
+	/**
+	 * Get a blog icon
+	 *
+	 * @param  int    The channel or nodeid
+	 * @param  string Thumbnail version/size requested (SIZE_* constanst in vB_Api_Filedata)
+	 *
+	 * @return mixed  the raw content of the image.
+	 */
+	function fetchChannelIcon($nodeid, $type = vB_Api_Filedata::SIZE_FULL)
+	{
+		if (!vB::getUserContext()->getChannelPermission('forumpermissions', 'canview', $nodeid))
+		{
+			return $this->getDefaultChannelIcon($nodeid);
+		}
+
+		$channel = $this->assertor->getRow('vBForum:channel', array('nodeid' => $nodeid));
+		if(!$channel)
+		{
+			throw new vB_Exception_Api('invalid_data_w_x_y_z', array($nodeid, 'nodeid', __CLASS__, __FUNCTION__));
+		}
+
+		if ($channel['filedataid'])
+		{
+			$params = array('filedataid' => $channel['filedataid'], 'type' => $type);
+			$record = vB::getDbAssertor()->getRow('vBForum:getFiledataContent', $params);
+
+			if (!empty($record))
+			{
+				return vB_Image::instance()->loadFileData($record, $type, true);
+			}
+		}
+		//If we don't have a valid custom icon, return the default.
+		return $this->getDefaultChannelIcon($nodeid);
+	}
+
+	/**
+	 * Returns the default channel icon for the passed channel node ID
+	 *
+	 * @param  int   Channel Node ID
+	 *
+	 * @return array The array of icon information.
+	 */
+	private function getDefaultChannelIcon($nodeid)
+	{
+		$is_sg = vB_Api::instanceInternal('socialgroup')->isSGChannel($nodeid);
+		$is_blog = $def_icon = false;
+		if (!empty($is_sg))
+		{
+			$def_icon = "default_sg_large.png";
+		}
+		else
+		{
+			$is_blog = vB_Api::instanceInternal('blog')->isBlogNode($nodeid);
+			if (!empty($is_blog))
+			{
+				$def_icon = "default_blog_large.png";
+			}
+		}
+		if (!empty($def_icon))
+		{
+			return [
+				'filesize' => filesize(DIR . "/images/default/$def_icon"),
+				'dateline' => vB::getRequest()->getTimeNow(),
+				'headers' => vB_Library::instance('content_attach')->getAttachmentHeaders('png'),
+				'filename' => $def_icon,
+				'extension' => 'png',
+				'filedataid' => 0,
+				'is_default' => 1,
+				'filedata' => file_get_contents(DIR . "/images/default/$def_icon")
+			];
+		}
+		else
+		{
+			$cleargif = DIR . '/clear.gif';
+			$clearinfo = pathinfo($cleargif);
+			return [
+				'filesize' => filesize($cleargif),
+				'dateline' => vB::getRequest()->getTimeNow(),
+				'headers' => vB_Library::instance('content_attach')->getAttachmentHeaders($clearinfo['extension']),
+				'filename' => $clearinfo['basename'],
+				'extension' => $clearinfo['extension'],
+				'is_default' => 2,
+				'filedataid' => 0,
+				'filedata' => file_get_contents($cleargif)
+			];
+		}
+	}
+
+	/**
+	 * Returs the contributors for a channel
+	 *
+	 * @param  int   Channel Node ID
+	 *
+	 * @return array List of channel contributors/authors.
+	 */
+	public function getContributors($nodeId)
+	{
+		// Should this info be locked behind canview?
+		// For now, leaving it alone in case there's some kind of "contact moderator to join" feature or something somewhere.
+
+
+		$db = vB::getDbAssertor();
+
+		$users = array();
+
+		// fetch relevant usergroups
+		$systemgroups = array();
+		$usergroups = $db->assertQuery('vBForum:usergroup', array(
+			vB_dB_Query::TYPE_KEY => vB_dB_Query::QUERY_SELECT,
+			'systemgroupid' => array(
+				vB_Api_UserGroup::CHANNEL_OWNER_SYSGROUPID,
+				vB_Api_UserGroup::CHANNEL_MODERATOR_SYSGROUPID,
+				vB_Api_UserGroup::CHANNEL_MEMBER_SYSGROUPID
+			)
+		));
+		foreach ($usergroups as $usergroup)
+		{
+			$systemgroups[$usergroup['systemgroupid']] = $usergroup['usergroupid'];
+		}
+		$userids = array();
+		// fetch active contributors
+		$active = $db->assertQuery('vBForum:fetchActiveChannelContributors', array('nodeid' => $nodeId));
+		if ($active AND $active->valid())
+		{
+			foreach($active AS $a)
+			{
+				switch ($a['systemgroupid'])
+				{
+					case vB_Api_UserGroup::CHANNEL_OWNER_SYSGROUPID:
+						$role = 'owner';
+						break;
+					case vB_Api_UserGroup::CHANNEL_MODERATOR_SYSGROUPID:
+						$role = 'moderator';
+						break;
+					case vB_Api_UserGroup::CHANNEL_MEMBER_SYSGROUPID:
+						$role = 'member';
+						break;
+					default:
+						continue 2;
+				}
+
+				$result['active'][$role][] = array(
+					'usergroupid' => $a['usergroupid'],
+					'userid' => $a['userid'],
+					'username' => $a['username'],
+					'displayname' => $a['displayname'],
+				);
+			}
+		}
+
+		// fetch pending contributors
+		$pending = $db->assertQuery('vBForum:fetchPendingChannelContributors', array('nodeid' => $nodeId));
+
+		if ($pending AND $pending->valid())
+		{
+			foreach($pending AS $p)
+			{
+				switch ($p['about'])
+				{
+					case vB_Api_Node::REQUEST_TAKE_OWNER:
+					case vB_Api_Node::REQUEST_SG_TAKE_OWNER:
+						$role = 'owner';
+						$usergroupid = $systemgroups[vB_Api_UserGroup::CHANNEL_OWNER_SYSGROUPID];
+						break;
+					case vB_Api_Node::REQUEST_TAKE_MODERATOR:
+					case vB_Api_Node::REQUEST_SG_TAKE_MODERATOR:
+						$role = 'moderator';
+						$usergroupid = $systemgroups[vB_Api_UserGroup::CHANNEL_MODERATOR_SYSGROUPID];
+						break;
+					default:
+						continue 2;
+				}
+
+				$result['pending'][$role][] = array(
+					'usergroupid' => $usergroupid,
+					'userid' => $p['recipientid'],
+					'username' => $p['username'],
+					'displayname' => $p['displayname'],
+				);
+			}
+		}
+
+		return $result;
+	}
+
+	/**
+	 * Converts a channel from a forum to a category or vice versa.
+	 *
+	 * @param  bool $makeCategory If true it will convert the channel to a category, if false to a forum.
+	 * @param  int  $nodeId Channel Node ID.
+	 *
+	 * @return bool
+	 */
+	public function switchForumCategory($makeCategory, $nodeId)
+	{
+		$this->checkHasAdminPermission('canadminforums');
+
+		//Only continue if we are switching.
+		$channel = $this->library->getContent($nodeId);
+
+		if ((bool)$channel[$nodeId]['category'] == (bool)$makeCategory)
+		{
+			return true;
+		}
+		// can't convert a top level channel
+		if (
+			in_array($nodeId, $this->library->fetchTopLevelChannelIds()) OR
+			// Also disallow converting nodeid=1 to a non-category, because bad things happen.
+			// Allowing the other way around in case someone already has bad data and they're
+			// trying to change it back. Note however that if they already posted topics under,
+			// nodeid=1, they'll need to delete them before the library will let them.
+			($channel[$nodeId]['guid'] == vB_Channel::MAIN_CHANNEL AND !$makeCategory)
+		)
+		{
+			throw new vB_Exception_Api('cannot_modify_system_channel');
+		}
+
+		return $this->library->switchForumCategory($makeCategory, $nodeId);
+	}
+
+	/**
+	 * Fetches the top level Channels/Categories
+	 *
+	 * @return array Array of channel information
+	 */
+	public function fetchTopLevelChannelIds()
+	{
+		return $this->library->fetchTopLevelChannelIds();
+	}
+
+	/**
+	 * Fetches the top level Channel/Category for a node/nodes
+	 *
+	 * @param  int|array        $nodeids An integer Node ID or an array of int Node IDs.
+	 *
+	 * @throws vB_Exception_Api 'invalid_data'
+	 *
+	 * @return int|false        Returns false on failure or the top level channel node ID.
+	 */
+	public function getTopLevelChannel($nodeids)
+	{
+		if (!is_array($nodeids))
+		{
+			$nodeids = array($nodeids);
+		}
+		$toplevel = $this->library->fetchTopLevelChannelIds();
+		$parent = false;
+		foreach ($nodeids AS $nodeid)
+		{
+			$parents = vB::getDbAssertor()->getRow(
+				'vBForum:closure',
+				array('child' => $nodeid, 'parent' => $toplevel),
+				array('field' => 'depth', 'direction' => vB_dB_Query::SORT_DESC)
+			);
+
+			// the nodes belog to different top level channels
+			if (!empty($parent) AND ($parents['parent'] != $parent))
+			{
+				throw new vB_Exception_Api('invalid_data');
+			}
+
+			$parent = empty($parents) ? false : $parents['parent'];
+		}
+
+		return $parent;
+	}
+
+	/**
+	 * Tells whether or not the current user can add a new channel for the given node
+	 *
+	 * @param  int              Nodeid to check
+	 *
+	 * @throws vB_Exception_Api 'invalid_data_w_x_y_z', 'no_permission'
+	 *
+	 * @return array            Array containing checks information. It contains two keys or the standard error array:
+	 *                          'can' -- to indicate if user can or can not add channel to the node.
+	 *                          'exceeded' -- value indicating if user already reached the max channels allowed at node level.
+	 */
+	public function canAddChannel($nodeid)
+	{
+		if (!is_numeric($nodeid) OR ($nodeid < 1))
+		{
+			throw new vB_Exception_Api('invalid_data_w_x_y_z', [$nodeid, '$nodeid', __CLASS__, __FUNCTION__]);
+		}
+
+		$usercontext = vB::getUserContext();
+
+		if (
+			!$usercontext->getChannelPermission('createpermissions', 'vbforum_channel', $nodeid) OR
+			!$usercontext->getChannelPermission('forumpermissions', 'canjoin', $nodeid) OR
+			!$usercontext->getChannelPermission('forumpermissions', 'canview', $nodeid)
+		)
+		{
+			throw new vB_Exception_Api('no_permission');
+		}
+
+		$queryParams = ['parent' => $nodeid, 'userid' => $usercontext->fetchUserId()];
+		$total = vB::getDbAssertor()->getRow('vBForum:getUserChannelsCount', $queryParams);
+		$totalCount = $total['totalcount'];
+		$maxchannels = $usercontext->getChannelLimits($nodeid, 'maxchannels');
+
+		if(($maxchannels > 0) AND ($totalCount >= $maxchannels))
+		{
+			return ['can' => false, 'exceeded' => $maxchannels];
+		}
+
+		return ['can' => true, 'exceeded' => 0];
+	}
+
+	/**
+	 * Checks the permissions to upload a channel icon
+	 *
+	 * @param  int   $nodeid
+	 * @param  array $data
+	 *
+	 * @return true  Returns true if the icon is acceptible
+	 */
+	public function validateIcon($nodeid, $data)
+	{
+		if (empty($nodeid) OR !intval($nodeid))
+		{
+			throw new vB_Exception_Api('invalid_data');
+		}
+
+		if (!vB::getUserContext()->getChannelPermission('forumpermissions', 'canuploadchannelicon', $nodeid))
+		{
+			throw new vB_Exception_Api('can_not_use_channel_icon');
+		}
+
+		// special case, we're unsetting an icon, for which we only need to
+		// check the canuploadchannelicon permission above.
+		if (isset($data['filedataid']) AND empty($data['filedataid']))
+		{
+			return true;
+		}
+
+		// todo: if we're gonna trust the caller on data.filesize, this might be more
+		// appropriate as a library function
+		if (!empty($data['filedata']) AND !empty($data['filesize']))
+		{
+			$filedata = $data;
+		}
+		else if (!empty($data['filedataid']))
+		{
+			$filedata = vB_Api::instanceInternal('filedata')->fetchImageByFiledataid($data['filedataid']);
+		}
+
+		// TODO: fix this check?
+		// Is the image animated? This is how it is checked in vB_Image_GD::fetchImageInfo
+		// For some reason some animated GIFs are uploaded unanimated, I couldn't find the cause
+		if ((strpos($filedata['filedata'], 'NETSCAPE2.0') !== false) AND
+			!vB::getUserContext()->getChannelPermission('forumpermissions', 'cananimatedchannelicon', $nodeid))
+		{
+			throw new vB_Exception_Api('can_not_use_animated_channel_icon');
+		}
+
+		$imageLimit = vB::getUserContext()->getChannelLimits($nodeid, 'channeliconmaxsize');
+
+		/*
+			todo: the help text for channeliconmaxsize says
+			"Note: Channel Image Icons are always limited to 200px by 200px."
+			but it doesn't seem like we're enforcing that anywhere.
+		 */
+
+		if ($imageLimit > 0 AND $filedata['filesize'] > $imageLimit)
+		{
+			// the channel icon upload (blogs/groups) checks for this exception
+			// and attempts to resize the icon so that it's within the size limits
+			// in the uploadAttachment function in the attach library.
+			throw new vB_Exception_Api(
+				'upload_file_exceeds_limit',
+				array(
+					vb_number_format($filedata['filesize'], 1, true),
+					vb_number_format($imageLimit, 1, true)
+				)
+			);
+		}
+
+		return true;
+	}
+
+	/**
+	 * Updates the given channel
+	 *
+	 * @param  int  $nodeid
+	 * @param  int  $data
+	 *
+	 * @return bool
+	 */
+	public function update($nodeid, $data)
+	{
+		// we might be setting filedataid = 0 to remove a previous icon
+		if (isset($data['filedataid']))
+		{
+			$this->validateIcon($nodeid, array('filedataid' => $data['filedataid']));
+
+			$oldChannelData = $this->fetchChannelById($nodeid);
+		}
+
+		$ret = parent::update($nodeid, $data);
+
+		// Do we want to move this into the library instead? ATM I think the only UI for this in admincp calls the API so it works for now...
+		if (isset($data['filedataid']))
+		{
+			$assertor = vB::getDbAssertor();
+
+			if (!empty($data['filedataid']))
+			{
+				$assertor->assertQuery('incrementFiledataRefcountAndMakePublic', array('filedataid' => $data['filedataid']));
+			}
+
+			if (!empty($oldChannelData))
+			{
+				$assertor->assertQuery('decrementFiledataRefcount', array('filedataid' => $oldChannelData['filedataid']));
+			}
+		}
+
+		return $ret;
+	}
+
+	/**
+	 * Cleans the input in the $data array, directly updating $data.
+	 *
+	 * @param mixed     Array of fieldname => data pairs, passed by reference.
+	 * @param int|false Nodeid of the node being edited, false if creating new
+	 */
+	public function cleanInput($data, $nodeid = false)
+	{
+		$parentid = empty($data['parentid']) ? $nodeid : $data['parentid'];
+		$userCanUseHtml = false;
+		if (!empty($parentid))
+		{
+			$userCanUseHtml = vB::getUserContext()->getChannelPermission('forumpermissions2', 'canusehtml', $parentid);
+		}
+		// We're only allowing html in titles and descriptions for channels.
+		// htmltitle not included because if it was provided, it should still not have html in it anyway.
+		$htmlFields = array('title', 'description');
+		$htmlData = array();
+		$cleaner = vB::getCleaner();
+
+		if ($userCanUseHtml)
+		{
+			foreach ($htmlFields as $fieldname)
+			{
+				if (isset($data[$fieldname]))
+				{
+					$htmlData[$fieldname] = $cleaner->clean($data[$fieldname], vB_Cleaner::TYPE_STR);
+				}
+			}
+		}
+
+		$data = parent::cleanInput($data, $nodeid);
+
+		// Let vB_Api_Content cleanInput do it's thing, then just replace the html fields if they were set.
+		foreach ($htmlData AS $fieldname => $value)
+		{
+			$data[$fieldname] = $value;
+		}
+
+		return $data;
+	}
+
+
+	/**
+	 * Determines if the current user can moderate the passed node
+	 *
+	 * @param int|array Node ID or array of Node IDs.
+	 */
+	public function getCanModerate($node)
+	{
+		if (is_array($node))
+		{
+			return $this->library->getCanModerate($node);
+		}
+		else if (intval($node))
+		{
+			return $this->library->getCanModerate(null, null, null, $node);
+		}
+
+		return false;
+	}
+
+	/**
+	 * Permanently deletes a node
+	 *
+	 * @param  integer The nodeid of the record to be deleted
+	 *
+	 * @return boolean
+	 */
+	public function delete($nodeid)
+	{
+		$nodecontent = $this->getContent($nodeid);
+		if (isset($nodecontent[$nodeid]))
+		{
+			$nodecontent = $nodecontent[$nodeid];
+		}
+		else
+		{
+			throw new vB_Exception_Api('invalid_node_id');
+		}
+
+		// Note: The library delete has a check to prevent top level channels from being deleted, but
+		// that excludes channels like the root channel, or the special, privatemessage or vm channels.
+		$guids = vB_Channel::getProtectedChannelGuids();
+		if (in_array($nodecontent['guid'], array_values($guids)))
+		{
+			throw new vB_Exception_Api('can_not_remove_default_channel');
+		}
+
+		// the reason there is no permission check in this function is because the parent (vB_Api_Content) performs the checks
+		return parent::delete($nodeid);
+	}
+
+	/**
+	 * Returns array of data indicating user's view permissions for the report & infraction channels.
+	 * Used by template widget_privatemessage_navigation
+	 *
+	 * @return Array
+	 *				- Array		'result'
+	 *						- bool 	'can_view_reports'		True if user can view the report channel
+	 *						- bool	'can_view_infractions'	True if user can view the infraction channel
+	 *				Ex:
+	 *				array('result' => array('can_view_reports' => true, 'can_view_infractions' => false))
+	 */
+	public function canViewReportsAndInfractions()
+	{
+		$reportChannelid = $this->fetchChannelIdByGUID(vB_Channel::REPORT_CHANNEL);
+		$infractionChannelid = $this->fetchChannelIdByGUID(vB_Channel::INFRACTION_CHANNEL);
+
+		// We need some dummy variable since the first param is passed by reference, even though we don't use it.
+		$data = array();
+		$canViewReports = $this->library->validate($data, vB_Library_Content::ACTION_VIEW, $reportChannelid);
+		$data = array();	// ATM this isn't even used for ACTION_VIEW and its contents are not changed, but just in case that changes in the future...
+		$canViewInfractions = $this->library->validate($data, vB_Library_Content::ACTION_VIEW, $infractionChannelid);
+
+
+		$return = array(
+			'result' => array(
+				'can_view_reports' => $canViewReports,
+				'can_view_infractions' => $canViewInfractions,
+			),
+		);
+
+		return $return;
+	}
+
+	/**
+	 * Get autocomplete results for channels.
+	 *
+	 * @param string $searchStr -- Will return channels that match this as a prefix.
+	 * @param int $limitstart -- Place to start in the list.
+	 * @param int $limitnumber -- Place to start in the list.
+	 *
+	 * @return array
+	 */
+	public function getAutocomplete($searchStr, $limitstart = 0, $limitnumber = 15)
+	{
+		$results = $this->library->getAutoComplete($searchStr, $limitstart, $limitnumber, true);
+		return ['suggestions' => $results];
+	}
+
+	/**
+	 * Run heuristics to try to figure out which of the top level channels (articles, forum, blog, groups)
+	 * are currently considered "selected" in the sitebuilder quick setup.
+	 *
+	 * @return array [
+	 *             'forum' => ['active' => bool],
+	 *             'articles' => ['active' => bool],
+	 *             'blog' => ['active' => bool],
+	 *             'groups' => ['active' => bool]
+	 *         ]
+	 */
+	public function getChannelSelectedStatus() : array
+	{
+		// This is called in an early template that's included for admins, and will just
+		// error out if the admin is not logged into admincp.
+		//$this->checkHasAdminPermission('canadminforums');
+		$this->checkHasAdminPermissionNoCpSession('canadminforums');
+
+		// admin might've changed things in the meanwhile, but let's assume that if REGISTERED USER has canview = 0, and
+		// displayorder to 0, the channel was de-selected via quickToggleChannel().
+		$status = [];
+		$channelNames = ['articles', 'forum', 'blog', 'groups'];
+		$topChannels = $this->library->fetchTopLevelChannelIds();
+
+		$usergroups = vB::getDatastore()->getValue('usergroupcache');
+		$usergroupidsBySystemid = array_column($usergroups, 'usergroupid', 'systemgroupid');
+		$registeredUsergroupid = $usergroupidsBySystemid[vB_Api_UserGroup::REGISTERED_SYSGROUPID];
+
+		foreach ($channelNames as $__channelName)
+		{
+			$__channelId = $topChannels[$__channelName];
+			$__canview = $this->usergroupHasPermission($registeredUsergroupid, $__channelId, 'forumpermissions', 'canview');
+
+			// For now, let's just check the canview...
+			// $__channel = $this->fetchChannelById($__channelId);
+			// $__active = ($__canview AND $__channel['displayorder'] > 0);
+
+			$status[$__channelName] = [
+				'active' => $__canview,
+			];
+		}
+
+		return $status;
+	}
+
+	private function usergroupHasPermission(int $usergroupid, int $channelid, string $permgroup, string $permname) : bool
+	{
+		$perms = vB_ChannelPermission::instance()->fetchPermissions($channelid, $usergroupid);
+		$perms = reset($perms);
+		$datastore = vB::getDatastore();
+		$bitfield = $datastore->getValue('bf_ugp_' . $permgroup);
+		$bitmask = $bitfield[$permname] ?? 0;
+		assert($bitmask > 0, 'Invalid permission name');
+
+		return ($perms[$permgroup] & $bitmask) > 0;
+	}
+	/**
+	 * Toggle a channel's canview on or off for most usergroups. For sitebuilder's quick setup.
+	 *
+	 * @param array<string, bool> $activeChannelsMap  Map of string channel name => bool activate
+	 *
+	 * @return array
+	 */
+	public function quickToggleChannel(array $activeChannelsMap) : array
+	{
+		$this->checkHasAdminPermission('canadminforums');
+
+		$topChannels = $this->library->fetchTopLevelChannelIds();
+		$allowedChannels = ['articles', 'forum', 'blog', 'groups'];
+		$currentState = $this->getChannelSelectedStatus();
+		$activeCount = 0;
+		foreach ($activeChannelsMap AS $__channelName => $__doActivate)
+		{
+			if (!in_array($__channelName, $allowedChannels) OR !isset($topChannels[$__channelName]))
+			{
+				throw new vB_Exception_Api('invalid_data');
+			}
+		}
+		// Partially specifying $activeChannelsMap is allowed. At the end of it all, we need at least one
+		// channel to be active.
+		foreach ($allowedChannels AS $__channelName)
+		{
+			$__active = ($activeChannelsMap[$__channelName] ?? $currentState[$__channelName]['active']);
+			if ($__active)
+			{
+				$activeCount++;
+			}
+		}
+
+		if ($activeCount == 0)
+		{
+			throw new vB_Exception_Api('one_channel_must_be_active');
+		}
+
+		// if $doActivate
+		//  set displayorder to 1
+		//  restore default canview channel perms for usergroups
+		//  re-add tab to navigation bar
+
+		// else
+		//  set displayorder to 0
+		//  set canview to 0 for all usergroups except admin.
+		//  do we want to store this change so we can more easily revert later?
+		//         Edit: no, we'll just use the default permissions based on the admincp/forumpermissions.php's "reset" feature.
+		//  remove tab to navigation bar
+
+
+		// First, let's deal with all of the perm changes first, because there's a possibility that the navbar logic might run
+		// some permission dependent queries (for subnav usergroup specifying, see vB_Library_Site::getDefaultHeaderNavbarItems())
+		// Most likely, they won't really be impacted differentially in most cases, but custom groups might be affected if a
+		// channel gets re-activated.
+		/** @var bool */
+		$changedPermissions = false;
+		foreach ($activeChannelsMap AS $__channelName => $__doActivate)
+		{
+			// Only process channels that changed states.
+			$__currentlyActive = $currentState[$__channelName]['active'];
+			if ($__currentlyActive == $__doActivate)
+			{
+				continue;
+			}
+
+			$__channelid = $topChannels[$__channelName];
+			// Set displayorder
+			// However, if we're activating a channel that already has a displayorder > 0, leave it alone.
+			$__existingChannel = $this->getContent($__channelid);
+			$__existingChannel = $__existingChannel[$__channelid];
+			$__newDisplayorder = ($__doActivate ? max(1, $__existingChannel['displayorder']) : 0);
+			if ($__newDisplayorder != $__existingChannel['displayorder'])
+			{
+				$this->update($__channelid, ['displayorder' => $__newDisplayorder]);
+			}
+
+			// Set canview for all "regular" usergroups
+			$keyedUsergroups = $this->getQuickToggleAffectedUsergroups();
+			$usergroupids = array_keys($keyedUsergroups);
+			$this->toggleCanviewPermissions($usergroupids, $__channelid, $__doActivate);
+
+			$changedPermissions = true;
+		}
+
+		if ($changedPermissions)
+		{
+			// reset caches since we changed perms by direct queries.
+			vB_Cache::instance()->event('perms_changed');
+			vB::getUserContext()->rebuildGroupAccess();
+		}
+
+		// toggle navbar tab
+		$this->toggleDefaultHeaderNavbars($activeChannelsMap);
+		$currentState = $this->getChannelSelectedStatus();
+
+		return [
+			'success' => true,
+			'state' => $currentState,
+		];
+	}
+
+	/**
+	 * Fetch the current home `routenew` record and a string channel label for the home if it is associated with a top-level
+	 * channel. If home is not a top-level channel, the label will be "custom".
+	 *
+	 * @return array{homechannel: string, homeroute: array{routeid:int,...}}
+	 *           homechannel: "forum|blog|articles|groups|custom"
+	 */
+	private function getHomepageChannel() : array
+	{
+		// these are the route GUIDs for the default homepages that are associated with "Forums"
+		$homepage = vB_Library_Route::GUID_HOME;
+		$homepageClassic = vB_Library_Route::GUID_HOME_CLASSIC;
+		$homepageCommunity = vB_Library_Route::GUID_HOME_COMMUNITY;
+		// other channels' route GUIDs
+		$blogs = vB_Library_Route::GUID_BLOGS;
+		$articles = vB_Library_Route::GUID_ARTICLES;
+		$groups = vB_Library_Route::GUID_SOCIALGROUPS;
+
+		$assertor = vB::getDbAssertor();
+		$homeroute = $assertor->getRow('routenew', ['ishomeroute' => 1]);
+
+		switch($homeroute['guid'])
+		{
+			case $homepage:
+			case $homepageClassic:
+			case $homepageCommunity:
+				$home = 'forum';
+				break;
+			case $blogs:
+				$home = 'blog';
+				break;
+			case $articles:
+				$home = 'articles';
+				break;
+			case $groups:
+				$home = 'groups';
+				break;
+			default:
+				$home = 'custom';
+				break;
+		}
+
+		return [
+			'homechannel' => $home,
+			'homeroute' => $homeroute,
+		];
+	}
+
+	// This might be better off as a site library function, but atm it's strictly used by the quickToggleChannel method.
+	private function toggleDefaultHeaderNavbars(array $activeChannelsMap) : void
+	{
+		/** @var vB_Library_Site */
+		$siteLib = vB_Library::instance('site');
+		$defaultHeaders = $siteLib->getDefaultHeaderNavbarItems(true);
+		$currentHeaders = $siteLib->loadHeaderNavbar(1);
+		$channelHeaderAssociations = $siteLib->associateChannelsWithNavbarItems($currentHeaders);
+
+		[
+			'homechannel' => $homeChannel,
+			'homeroute' => $homeRoute,
+		] = $this->getHomepageChannel();
+
+
+		$homekey = $channelHeaderAssociations['home'] ?? null;
+
+		/** @var bool */
+		$changedHeaders = false;
+
+		// need to figure out a way to simplify this, because it feels unreadable...
+		// The basic premise is that when we activate a channel, we want to insert the default tab for that channel if it doesn't
+		// already exist (doesn't have an entry in $channelInCurrentHeaders)
+		// And when we deactivate a channel, we want to remove its default tab if it exists.
+		// This is complicated by the fact that usually, one of these tabs (forums in default) is also the "home" tab, and removing
+		// a home tab can cause undefined (inconsistent and usually not great) behavior, such as having the wrong tab selected,
+		// or having a "ghost" tab without a title selected.
+		// So what we do is, also try to detect when we're either going to be missing a channel-as-home tab and inject it, or
+		// vice versa if we have a home tab and we're going to restore a channel-as-home tab, we merge the two into one.
+		foreach ($activeChannelsMap AS $__channelname => $__doActivate)
+		{
+			// If this channel doesn't have an associated header navbar tab, skip.
+			if(!isset($defaultHeaders[$__channelname]))
+			{
+				continue;
+			}
+
+			$__currentHeadersKey = $channelHeaderAssociations[$__channelname] ?? null;
+			$__channelHasTab = !is_null($__currentHeadersKey);
+			$__currentChannelIsHomeTab = (!is_null($homekey) AND $homekey == $__currentHeadersKey);
+
+			if ($__doActivate)
+			{
+				if (
+					!$__channelHasTab
+				)
+				{
+					$currentHeaders[] = $defaultHeaders[$__channelname];
+					$channelHeaderAssociations[$__channelname] = array_key_last($currentHeaders);
+					$changedHeaders = true;
+				}
+				// The heuristic in checkNavbarForDefaultItems() is far from perfect, so we might have marked a home tab that
+				// doesn't actually have the default 'forum' tab items as the forum channel (e.g. because routeid matches). In
+				// that case, we'll end up keeping the sparse home tab instead of restoring the default tab info. To get
+				// around this, forcibly inject in the default data as a new tab.
+				// The de-dupe will happen below.
+				else if ($__currentChannelIsHomeTab)
+				{
+					$this->mergeHomeTabWithDefaultTab($currentHeaders, $homekey, $defaultHeaders[$__channelname]);
+					$changedHeaders = true;
+				}
+			}
+			else
+			{
+				if ($__channelHasTab)
+				{
+					unset($currentHeaders[$__currentHeadersKey]);
+					unset($channelHeaderAssociations[$__channelname]);
+					$changedHeaders = true;
+
+					// If we just removed the channel-as-home tab, inject the sparse home tab.
+					if ($__currentChannelIsHomeTab)
+					{
+						$homekey = $this->addSimpleHomeTab($currentHeaders, $homeRoute['routeid']);
+						$channelHeaderAssociations['home'] = $homekey;
+					}
+				}
+			}
+		}
+
+
+		// If we never had a home tab, and one of the activated channels is NOT home-associated, inject it.
+		// This usually happens if the "home page" is changed to classic or community,
+		// and the forum channel is deactivated.
+		if (is_null($homekey) AND empty($activeChannelsMap[$homeChannel]))
+		{
+			$homekey = $this->addSimpleHomeTab($currentHeaders, $homeRoute['routeid']);
+			$channelHeaderAssociations['home'] = $homekey;
+		}
+
+		if ($changedHeaders)
+		{
+			$this->sortDefaultHeaders($currentHeaders, $channelHeaderAssociations, $defaultHeaders);
+
+			try
+			{
+				// Apparently, we have to have at least 1 header or else saveHeaderNavbar() will
+				// throw an exception...
+				assert(count($currentHeaders) > 0);
+				$siteLib->saveHeaderNavbar(1, $currentHeaders, true);
+			}
+			catch (Throwable $e)
+			{
+				assert(false, $e);
+			}
+		}
+	}
+
+	private function addSimpleHomeTab(array &$currentHeaders, int $homerouteid) : int|string
+	{
+		$simpleHome = [
+			// Currently navbar_home is "Forums". navbar_homepage is "Home".
+			// If we want to change the label for navbar_home, we'd also need to add a step to change existing sites' navbars
+			// using this phrase.
+			'title' => 'navbar_homepage',
+			'url' => '/',
+			'newWindow' => 0,
+			'subnav' => [],
+			'routeid' => $homerouteid,
+		];
+		$currentHeaders[] = $simpleHome;
+		$homekey = array_key_last($currentHeaders);
+
+		return $homekey;
+	}
+
+	/**
+	 * Merge an existing home tab with a default tab for a channel being reactivated.
+	 * It will prefer the default tab's routeid/route_guid, but will merge the subnavs.
+	 *
+	 * @param array $currentHeaders
+	 * @param int|string $homekey
+	 * @param array $defaultHeader
+	 *
+	 * @return void
+	 */
+	private function mergeHomeTabWithDefaultTab(array &$currentHeaders, int|string $homekey, array $defaultHeader) : void
+	{
+		$currentHomeTab = $currentHeaders[$homekey] ?? [];
+		// Currently this method is not called in a state where we don't have a home tab, but covering the case in case of future
+		// changes.
+		if (empty($currentHomeTab))
+		{
+			$currentHomeTab = $defaultHeader;
+			$currentHeaders[$homekey] = $currentHomeTab;
+			return;
+		}
+
+		// We might want to try to preserve the home tab title, in case the admin modified it..
+		// question here is can we detect that case??
+		// if ($currentHomeTab['title'] != 'navbar_homepage')
+		// {
+		// 	$defaultHeader['title'] = $currentHomeTab['title'];
+		// 	if (isset($currentHomeTab['phrase']))
+		// 	{
+		// 		$defaultHeader['phrase'] = $currentHomeTab['phrase'];
+		// 	}
+		// }
+
+		// Merge the subnavs.
+		$currentHomeTab['subnav'] ??= [];
+		//Let's try to make a token attempt and deduping, assuming that if the title & url are the same, it's the same
+		//item.
+		$mergedSubnavs = $currentHomeTab['subnav'];
+		$titleToUrl = array_column($currentHomeTab['subnav'], 'url', 'title');
+		foreach ($defaultHeader['subnav'] AS $__item)
+		{
+			if (!isset($titleToUrl[$__item['title']]) OR $titleToUrl[$__item['title']] != $__item['url'])
+			{
+				$mergedSubnavs[] = $__item;
+			}
+		}
+		$defaultHeader['subnav'] = $mergedSubnavs;
+
+		// By overwriting with $defaultHeader here, we're preferring the channel-specific tab's data (particularly, routeid,
+		// route_guid) for non-merged data (subnav).
+		$currentHeaders[$homekey] = $defaultHeader;
+	}
+
+	private function sortDefaultHeaders(array &$headerNav, array $channelToHeaderAssocations, array $defaultHeaderNav) : void
+	{
+		$defaultTabs = [];
+		$customTabs = [];
+		// For default installs, the "home" tab and "forum" tab are the same. Remove home before we array_flip it to avoid
+		// overriding. Holding onto a copy in case we need it later.
+		$hometab = null;
+		if (isset($channelToHeaderAssocations['home']))
+		{
+			$hometab = $channelToHeaderAssocations['home'];
+			$check = array_keys($channelToHeaderAssocations, $hometab);
+			if (count($check) > 1)
+			{
+				unset($channelToHeaderAssocations['home']);
+			}
+		}
+		$keyToChannelName = array_flip($channelToHeaderAssocations);
+		$defaultOrder = [
+			'home' => 0,
+			'forum' => 1,
+			'blog' => 2,
+			'articles' => 3,
+			'groups' => 4,
+		];
+
+		foreach ($headerNav AS $__key => $__navitem)
+		{
+			// if ($hometab == $__key)
+			// {
+			// 	$defaultTabs[0] = $__navitem;
+			// 	continue;
+			// }
+
+			if (!isset($keyToChannelName[$__key]))
+			{
+				$customTabs[] = $__navitem;
+				continue;
+			}
+
+			$__channelname = $keyToChannelName[$__key];
+
+			// note that subnav merging for home tab is now done in the caller.
+
+			$defaultTabs[$defaultOrder[$__channelname]] = $__navitem;
+		}
+		ksort($defaultTabs);
+
+		// For now, let's just always put the default tabs before any custom tabs.
+		// We could, however, keep track of when the first default vs first custom tab is encountered,
+		// and go with that order instead.
+		$headerNav = array_merge($defaultTabs, $customTabs);
+	}
+
+	private function toggleCanviewPermissions(array $usergroupids, int $channelid, bool $canview) : void
+	{
+		$datastore = vB::getDatastore();
+		$bf_ugp_forumpermissions = $datastore->getValue('bf_ugp_forumpermissions');
+		$canviewBit = $bf_ugp_forumpermissions['canview'];
+		$defaultpermissions = vB_ChannelPermission::loadDefaultChannelPermissions();
+		$assertor = vB::getDbAssertor();
+		$existingPerms = $assertor->getRows('vBForum:permission', ['nodeid' => $channelid], false, 'groupid');
+		// Keep track of any not found, as that means we'll need to insert a `permission` record for one previously inheriting
+		// from a parent node.
+		$usergroupids = array_combine($usergroupids, $usergroupids);
+		$notfound = $usergroupids;
+		foreach ($existingPerms AS $__usergroupid => $__permissions)
+		{
+			if (!isset($usergroupids[$__usergroupid]))
+			{
+				continue;
+			}
+			unset($notfound[$__usergroupid]);
+
+			$__forumperms = $__permissions['forumpermissions'];
+
+			if ($canview)
+			{
+				// Turn on canview, but only for the ones that would have it on by default.
+				// This might be overkill, since "banned" usergroup is one of the groups we're skipping, and it's probably the
+				// most likely to have canview = 0.
+				$__canviewBit = $this->getDefaultBitForChannelAndGroup(
+					$channelid,
+					$__usergroupid,
+					$defaultpermissions,
+					'forumpermissions',
+					$canviewBit
+				);
+				// If this is not defined in the default, assume it's a custom usergroup, and enable the canview bit.
+				if (is_null($__canviewBit))
+				{
+					$__canviewBit = $canviewBit;
+				}
+				$__forumperms |= $__canviewBit;
+			}
+			else
+			{
+				// Don't need the fancy check above for turning off canview.
+				$__forumperms &= ~$canviewBit;
+			}
+
+			$__values = [
+				'forumpermissions' => $__forumperms,
+			];
+			$__conditions = [
+				'nodeid' => $channelid,
+				'groupid' => $__usergroupid,
+			];
+			$assertor->update('vBForum:permission', $__values, $__conditions);
+		}
+
+		// todo: get this from the assertor somehow?
+		$permTableKeys = [
+			'groupid',
+			// nodeid intentionally skipped, as we'll overwrite it.
+			//'nodeid',
+			'forumpermissions',
+			'moderatorpermissions',
+			'createpermissions',
+			'forumpermissions2',
+			'edit_time',
+			'maxtags',
+			'maxstartertags',
+			'maxothertags',
+			'maxattachments',
+			'maxchannels',
+			'channeliconmaxsize',
+		];
+		// This actually happens for default installs and the root "Forum" channel (nodeid = 2)
+		foreach ($notfound AS $__usergroupid)
+		{
+			$__inheritedPerms = vB_ChannelPermission::instance()->fetchPermissions($channelid, $__usergroupid);
+			$__inheritedPerms = reset($__inheritedPerms);
+			assert(!empty($__inheritedPerms));
+			if (!$__inheritedPerms)
+			{
+				// This is not known to happen and is here just in case. If this does happen the permissiosn are probably
+				// really screwed up...
+				continue;
+			}
+
+			$__inheritedPerms = array_filter(
+				$__inheritedPerms,
+				fn($k) => in_array($k, $permTableKeys, true),
+				ARRAY_FILTER_USE_KEY
+			);
+			$__inheritedPerms['nodeid'] = $channelid;
+
+			// copy of above loop's logic... should try to refactor this.
+			$__forumperms = $__inheritedPerms['forumpermissions'];
+			if ($canview)
+			{
+				$__canviewBit = $this->getDefaultBitForChannelAndGroup(
+					$channelid,
+					$__usergroupid,
+					$defaultpermissions,
+					'forumpermissions',
+					$canviewBit
+				);
+				if (is_null($__canviewBit))
+				{
+					$__canviewBit = $canviewBit;
+				}
+				$__forumperms |= $__canviewBit;
+			}
+			else
+			{
+				$__forumperms &= ~$canviewBit;
+			}
+			$__inheritedPerms['forumpermissions'] = $__forumperms;
+
+			$assertor->insert('vBForum:permission', $__inheritedPerms);
+		}
+	}
+
+	private function getQuickToggleAffectedUsergroups() : array
+	{
+		$usergroupcache = vB::getDatastore()->getValue('usergroupcache');
+		$skip = [
+			vB_Api_UserGroup::ADMINISTRATOR,
+			vB_Api_UserGroup::SUPER_MODERATOR,
+			vB_Api_UserGroup::MODERATOR,
+			// The banned usergroup already has canview => No for the top level channels,
+			// so there's no point in mucking around with them.
+			vB_Api_UserGroup::BANNED,
+
+			// Blogs -- Generally, we don't want to mess with these "special" usergroups
+			vB_Api_UserGroup::CHANNEL_OWNER_SYSGROUPID,
+			vB_Api_UserGroup::CHANNEL_MODERATOR_SYSGROUPID,
+			vB_Api_UserGroup::CHANNEL_MEMBER_SYSGROUPID,
+
+			// Articles -- Generally, we don't want to mess with these "special" usergroups
+			vB_Api_UserGroup::CMS_AUTHOR_SYSGROUPID,
+			vB_Api_UserGroup::CMS_EDITOR_SYSGROUPID,
+		];
+		// usergroucache is keyed by usergroupid.
+		$keyedUsergroups = array_filter($usergroupcache, fn($row) => !in_array($row['systemgroupid'], $skip));
+
+		return $keyedUsergroups;
+	}
+
+	private function getDefaultBitForChannelAndGroup(
+		int $channelid,
+		int $groupid,
+		array $defaultpermissions,
+		string $permgroup,
+		int $bitmask
+	) : ?int
+	{
+		$perms = $defaultpermissions['node_' . $channelid]['group_' . $groupid] ?? null;
+		if (!isset($perms[$permgroup]))
+		{
+			// We *may* have an inherited default permission set.
+			$parentid = vB::getUserContext()->getPermissionsFrom($groupid, $channelid);
+			$check = $defaultpermissions['node_' . $parentid]['group_' . $groupid] ?? null;
+			if (isset($check[$permgroup]))
+			{
+				$perms = $check;
+			}
+			else
+			{
+				return null;
+			}
+		}
+
+		assert($bitmask > 0);
+
+		$masked = ($perms[$permgroup] & $bitmask);
+
+		return $masked;
+	}
+
+	/**
+	 * Make a channel specified by $channelid public or private.
+	 * Public: Can be viewed by Guest, Users Awaiting Email Confirmation, and Users Awaiting Moderation.
+	 * Private: Cannot be viewed by Guest, Users Awaiting Email Confirmation, or Users Awaiting Moderation.
+	 *
+	 * @param string $action 'public' or 'private'
+	 * @param int $channelid
+	 *
+	 * @return array{'success' => bool}
+	 */
+	public function toggleChannelPublic(string $action, int $channelid) : array
+	{
+		$this->checkHasAdminPermission('canadminforums');
+
+		if (!in_array($action, ['public', 'private']))
+		{
+			throw new vB_Exception_Api('invalid_data');
+		}
+
+		$channel = $this->fetchChannelById($channelid);
+		if (!$channel)
+		{
+			throw new vB_Exception_Api('invalid_data');
+		}
+
+		$usergroupids = $this->getUsergroupsForToggleForumPublicPrivate();
+
+		$canview = ($action == 'public');
+		$this->toggleCanviewPermissions($usergroupids, $channelid, $canview);
+		// reset caches since we changed perms by direct queries.
+		vB_Cache::instance()->event('perms_changed');
+		vB::getUserContext()->rebuildGroupAccess();
+
+		return [
+			'success' => true,
+		];
+	}
+
+	/**
+	 * @return int[]
+	 */
+	private function getUsergroupsForToggleForumPublicPrivate() : array
+	{
+		$usergroupcache = vB::getDatastore()->getValue('usergroupcache');
+		$update = [
+			vB_Api_UserGroup::UNREGISTERED_SYSGROUPID,
+			vB_Api_UserGroup::AWAITINGEMAIL_SYSGROUPID,
+			vB_Api_UserGroup::AWAITINGMODERATION_SYSGROUPID,
+		];
+		// usergroucache is keyed by usergroupid.
+		$keyedUsergroups = array_filter($usergroupcache, fn($row) => in_array($row['systemgroupid'], $update));
+		$usergroupids = array_keys($keyedUsergroups);
+
+		return $usergroupids;
+	}
+
+	/**
+	 * Run heuristics to try to figure out which of the top level forums (channels under "Forums")
+	 * are currently considered "public" or "private" in the sitebuilder quick setup.
+	 *
+	 * @return array<int, string public|private|unknown>
+	 */
+	public function getChannelPublicStatus(array $forums) : array
+	{
+		// This is called in an early template that's included for admins, and will just
+		// error out if the admin is not logged into admincp.
+		//$this->checkHasAdminPermission('canadminforums');
+		$this->checkHasAdminPermissionNoCpSession('canadminforums');
+
+		/** @var int[] */
+		$nodeids = array_column($forums, 'nodeid');
+		$usergroupids = $this->getUsergroupsForToggleForumPublicPrivate();
+
+		$return = [];
+		foreach ($nodeids AS $__nodeid)
+		{
+			$__canview = null;
+			foreach ($usergroupids AS $__usergroupid)
+			{
+				$__check = $this->usergroupHasPermission($__usergroupid, $__nodeid, 'forumpermissions', 'canview');
+				if (!is_null($__canview) AND $__check != $__canview)
+				{
+					// If we have a mix of canview and cannotview, we'll consider it "mixed" and not make a determination.
+					$__canview = null;
+					break;
+				}
+				$__canview = $__check;
+			}
+
+			if (is_null($__canview))
+			{
+				$__type = 'unknown';
+			}
+			else if ($__canview)
+			{
+				$__type = 'public';
+			}
+			else
+			{
+				$__type = 'private';
+			}
+
+			$return[$__nodeid] = $__type;
+		}
+
+		return $return;
+	}
+}
+
+/*=========================================================================*\
+|| #######################################################################
+|| # Downloaded: 12:50, Tue Dec 24th 2024
+|| # CVS: $RCSfile$ - $Revision: 117155 $
+|| #######################################################################
+\*=========================================================================*/

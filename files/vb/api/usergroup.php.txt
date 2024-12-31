@@ -1,0 +1,1001 @@
+<?php
+/*========================================================================*\
+|| ###################################################################### ||
+|| # vBulletin 6.1.0 Alpha 4 Week 2 - Licence Number VBCW2VFT7A
+|| # ------------------------------------------------------------------ # ||
+|| # Copyright 2000-2024 MH Sub I, LLC dba vBulletin. All Rights Reserved.  # ||
+|| # This file may not be redistributed in whole or significant part.   # ||
+|| # ----------------- VBULLETIN IS NOT FREE SOFTWARE ----------------- # ||
+|| # http://www.vbulletin.com | http://www.vbulletin.com/license.html   # ||
+|| ###################################################################### ||
+\*========================================================================*/
+
+/**
+ * vB_Api_UserGroup
+ *
+ * @package vBApi
+ * @access public
+ */
+class vB_Api_UserGroup extends vB_Api
+{
+	const UNREGISTERED_SYSGROUPID = 1;
+	const REGISTERED_SYSGROUPID = 2;
+	const AWAITINGEMAIL_SYSGROUPID = 3;
+	const AWAITINGMODERATION_SYSGROUPID = 4;
+	const ADMINISTRATOR = 6;
+	const SUPER_MODERATOR = 5;
+	const MODERATOR = 7;	// Taken from mysql-schema file that defines 7 as moderators group's systemgroupid
+	const BANNED = 8;
+
+	// these are used for blogs
+	const CHANNEL_OWNER_SYSGROUPID = 9;
+	const CHANNEL_MODERATOR_SYSGROUPID = 10;
+	const CHANNEL_MEMBER_SYSGROUPID = 11;
+
+	// @TODO we already removed usages of this in the system but still some references in upgrader.
+	// Need to figure it out what to do on those upgrade steps (a28 a29).
+	const SG_OWNER_SYSGROUPID = 12;
+	const SG_MODERATOR_SYSGROUPID = 13;
+	const SG_MEMBER_SYSGROUPID = 14;
+
+	//For articles
+	const CMS_AUTHOR_SYSGROUPID = 15;
+	const CMS_EDITOR_SYSGROUPID = 16;
+
+	private $privateGroups = [
+		self::CHANNEL_OWNER_SYSGROUPID,
+		self::CHANNEL_MODERATOR_SYSGROUPID,
+		self::CHANNEL_MEMBER_SYSGROUPID,
+	];
+
+	/**
+	 * Returns a list of all user groups.
+	 *
+	 * Returns extra fields if the user has canadminpermissions
+	 *
+	 * @param boolean $flushcache -- no longer used.
+	 *
+	 * @return	array -- array of groups each with the fields:
+	 *	* canoverride
+	 *	* closetag
+	 *	* description
+	 *	* opentag
+	 *	* systemgroupid
+	 *	* title
+	 *	* usergroupid
+	 *	* usertitle
+	 *
+	 * 	(Admin only)
+	 *	* adminpermissions
+	 *	* albummaxpics
+	 *	* albummaxsize
+	 *	* albumpermissions
+	 *	* albumpicmaxheight
+	 *	* albumpicmaxwidth
+	 *	* attachlimit
+	 *	* avatarmaxheight
+	 *	* avatarmaxsize
+	 *	* avatarmaxwidth
+	 *	* createpermissions
+	 *	* forumpermissions
+	 *	* forumpermissions2
+	 *	* genericoptions
+	 *	* genericpermissions
+	 *	* genericpermissions2
+	 *	* groupiconmaxsize
+	 *	* maximumsocialgroups
+	 *	* passwordhistory
+	 *	* passwordexpires
+	 *	* pmpermissions
+	 *	* pmquota
+	 *	* pmsendmax
+	 *	* pmthrottlequantity
+	 *	* sigmaxchars
+	 *	* sigmaximages
+	 *	* sigmaxlines
+	 *	* sigmaxrawchars
+	 *	* sigmaxsizebbcode
+	 *	* signaturepermissions
+	 *	* sigpicmaxheight
+	 *	* sigpicmaxsize
+	 *	* sigpicmaxwidth
+	 *	* socialgrouppermissions
+	 *	* usercsspermissions
+	 *	* visitormessagepermissions
+	 *	* wolpermissions
+	 */
+	public function fetchUsergroupList($flushcache = false)
+	{
+		$usergroupcache = vB_Library::instance('usergroup')->getCache();
+
+		$list = [];
+		foreach ($usergroupcache AS $key => $group)
+		{
+			$list[] = $this->sanitizeUserGroup($group);
+		}
+		usort($list, function ($group1, $group2) {
+			return strcasecmp($group1['title'], $group2['title']);
+		});
+
+		return $list;
+	}
+
+	/**
+	 * Fetch the special groups. Used by permissions check. Each is a systemgroupid in the usergroups table
+	 *
+	 * 	@return	array -- usergroup ids
+	 *
+	 */
+	public function fetchPrivateGroups()
+	{
+		return $this->privateGroups;
+	}
+
+	/**
+	 * Fetch usergroup information by its ID
+	 *
+	 * Returns extra fields if the user has canadminpermissions
+	 *
+	 * @param int $usergroupid Usergroup ID
+	 * @return array Usergroup information -- returns usergroup array
+	 * @see fetchUsergroupList for fields
+	 */
+	public function fetchUsergroupByID($usergroupid)
+	{
+		$usergroupcache = vB_Library::instance('usergroup')->getCache();
+		if (isset($usergroupcache[$usergroupid]))
+		{
+			return $this->sanitizeUserGroup($usergroupcache[$usergroupid]);
+		}
+		else
+		{
+			throw new vB_Exception_Api('invalidid', ['usergroupid']);
+		}
+	}
+
+	private function sanitizeUserGroup($groupinfo)
+	{
+		if (!$this->hasAdminPermission('canadminusers'))
+		{
+			$userFields = [
+				'canoverride' => 1,
+				'closetag' => 1,
+				'description' => 1,
+				'opentag' => 1,
+				'systemgroupid' => 1,
+				'title' => 1,
+				'usergroupid' => 1,
+				'usertitle' => 1,
+			];
+			return array_intersect_key($groupinfo, $userFields);
+		}
+		else
+		{
+			//includes user fields
+			$adminFields = [
+				'canoverride' => 1,
+				'closetag' => 1,
+				'description' => 1,
+				'opentag' => 1,
+				'systemgroupid' => 1,
+				'title' => 1,
+				'usergroupid' => 1,
+				'usertitle' => 1,
+				'adminpermissions' => 1,
+	 			'albummaxpics' => 1,
+	 			'albummaxsize' => 1,
+				'albumpermissions' => 1,
+	 			'albumpicmaxheight' => 1,
+	 			'albumpicmaxwidth' => 1,
+	 			'attachlimit' => 1,
+	 			'avatarmaxheight' => 1,
+	 			'avatarmaxsize' => 1,
+	 			'avatarmaxwidth' => 1,
+				'forumpermissions' => 1,
+				'forumpermissions2' => 1,
+				'genericoptions' => 1,
+				'genericpermissions' => 1,
+				'genericpermissions2' => 1,
+	 			'groupiconmaxsize' => 1,
+	 			'maximumsocialgroups' => 1,
+				'passwordhistory' => 1,
+				'passwordexpires' => 1,
+				'pmpermissions' => 1,
+	 			'pmquota' => 1,
+	 			'pmsendmax' => 1,
+	 			'pmthrottlequantity' => 1,
+	 			'sigmaxchars' => 1,
+	 			'sigmaximages' => 1,
+	 			'sigmaxlines' => 1,
+	 			'sigmaxrawchars' => 1,
+	 			'sigmaxsizebbcode' => 1,
+				'signaturepermissions' => 1,
+	 			'sigpicmaxheight' => 1,
+	 			'sigpicmaxsize' => 1,
+	 			'sigpicmaxwidth' => 1,
+				'socialgrouppermissions' => 1,
+				'usercsspermissions' => 1,
+				'visitormessagepermissions' => 1,
+				'wolpermissions' => 1,
+			];
+
+			//add custom permission fields from products.  This will duplicate some of the fields
+			//above which belong to the "vbulletin" product, but that's not really a problem.
+			$ugp = vB::getDatastore()->getValue('bf_ugp');
+			foreach ($ugp AS $key => $dummy)
+			{
+				$adminFields[$key] = 1;
+			}
+
+			return array_intersect_key($groupinfo, $adminFields);
+		}
+	}
+
+
+	/**
+	 * Fetch usergroup information by its SystemID
+	 *
+	 * @param int $systemgroupid
+	 * @return array Usergroup information -- returns usergroup array
+	 * @see fetchUsergroupList for fields
+	 */
+	public function fetchUsergroupBySystemID($systemgroupid)
+	{
+		$usergroup = vB_Library::instance('usergroup')->getUsergroupBySystemID($systemgroupid);
+		if ($usergroup !== false)
+		{
+			return $this->sanitizeUserGroup($usergroup);
+		}
+
+		//if we got here, the request is invalid
+		throw new vB_Exception_Api('invalidid', [$systemgroupid]);
+	}
+
+	/**
+	 * Insert a new usergroup or update an existing usergroup
+	 *
+	 * @param array $usergroup Usergroup information to be inserted or updated
+	 * @param int $ugid_base Usergroup ID. New inserted usergroup's forum permission will based on this usergroup.
+	 * @param int $usergroupid when updating an existing usergroup, pass usergroup ID as this parameter
+	 * @return int New or existing usergroup ID
+	 */
+	public function save($usergroup, $ugid_base = 0, $usergroupid = 0)
+	{
+		$this->checkHasAdminPermission('canadminpermissions');
+
+		$usergroupLib = vB_Library::instance('usergroup');
+		$db = vB::getDbAssertor();
+		$datastore = vB::getDatastore();
+
+		$bf_ugp = $datastore->getValue('bf_ugp');
+		$bf_ugp_genericpermissions = $datastore->getValue('bf_ugp_genericpermissions');
+		$bf_ugp_genericoptions = $datastore->getValue('bf_ugp_genericoptions');
+		$bf_misc_useroptions = $datastore->getValue('bf_misc_useroptions');
+		$bf_misc_prefixoptions = $datastore->getValue('bf_misc_prefixoptions');
+		$bf_misc_intperms = $datastore->getValue('bf_misc_intperms');
+
+		$bf_cancontrolpanel = $bf_ugp['adminpermissions']['cancontrolpanel'];
+
+		$usergroupcache =	$usergroupLib->getCache();
+
+		//figure out the base group.  If this is an update we never want to reference it.  If it's an insert and
+		//use the passed value or attempt to use the registered users group.
+		if ($usergroupid > 0)
+		{
+			$ugid_base = 0;
+			$basegroup = [];
+		}
+		else
+		{
+			if ($ugid_base <= 0)
+			{
+				$registeredGroup = $usergroupLib->getUsergroupBySystemID(self::REGISTERED_SYSGROUPID);
+				if ($registeredGroup !== false)
+				{
+					$ugid_base = $registeredGroup['usergroupid'];
+				}
+			}
+			//Do not use the fetch group function for this.  It will present a coherent view of the values
+			//such as not showing a "sigmax" values if the group doesn't allow signatures at all.  This works
+			//after a fashion but if we copy the "denied" sig values and then allow signatures we don't get the
+			//same results as allowing signatures on the base group.  So make sure we copy the raw values.
+			$basegroup = $db->getRow('usergroup', ['usergroupid' => $ugid_base]) ?? [];
+		}
+
+		$usergroup = $this->getUpdateFields($usergroup, $bf_ugp, $bf_misc_intperms, $basegroup);
+		if ($usergroupid > 0)
+		{
+			$oldusergroup = $usergroupcache[$usergroupid];
+
+			//if this is an update and we don't have a title passed assume we just want to keep what we have.
+			if (isset($usergroup['title']) AND trim($usergroup['title']) == '')
+			{
+				throw new vB_Exception_Api('usergroup_title_required');
+			}
+
+			//if we didn't set the admin permission field this didn't change.
+			$adminstatuschanged = false;
+			if (isset($usergroup['adminpermissions']))
+			{
+				$newgroupisadmin = $usergroup['adminpermissions'] & $bf_cancontrolpanel;
+				$oldgroupisadmin = $oldusergroup['adminpermissions'] & $bf_cancontrolpanel;
+				$adminstatuschanged = ($newgroupisadmin != $oldgroupisadmin);
+			}
+
+			//only super admins can change the admin status of a group
+			if ($adminstatuschanged AND !vB::getUserContext()->isSuperAdmin())
+			{
+				throw new vB_Exception_Api('superadmin_required_to_change_cancontrolpanel');
+			}
+
+			//Don't allow the main admin group to be changed or the last admin group to be deleted.
+			//The second check is older and is probably now redundant.
+			if ($adminstatuschanged AND !$newgroupisadmin)
+			{
+				// stop them turning no control panel for usergroup 6, seems the most sensible thing
+				if ($usergroupid == 6)
+				{
+					throw new vB_Exception_Api('invalid_usergroup_specified');
+				}
+
+				// check that not removing last admin group
+				$checkadmin = $db->getField('usergroup_checkadmin', [
+					'cancontrolpanel' => $bf_cancontrolpanel,
+					'usergroupid' => $usergroupid,
+				]);
+
+				if (!$checkadmin)
+				{
+					throw new vB_Exception_Api('cant_delete_last_admin_group');
+				}
+			}
+
+			$data = [
+				vB_dB_Query::TYPE_KEY => vB_dB_Query::QUERY_UPDATE,
+				vB_dB_Query::CONDITIONS_KEY => ['usergroupid' => $usergroupid]
+			];
+			$data = array_merge($data, $usergroup);
+			$db->assertQuery('usergroup', $data);
+
+			//There is only something to do if we changed the values that control if a user can set the visibile flag
+			if (isset($usergroup['genericpermissions']) OR isset($usergroup['genericoptions']))
+			{
+				$caninvisiblebit = $bf_ugp_genericpermissions['caninvisible'];
+				$allowmembergroupsbit = $bf_ugp_genericoptions['allowmembergroups'];
+
+				//if we didn't change it then use the value from before we updated.
+				$genericpermissions = $usergroup['genericpermissions'] ?? $oldusergroup['genericpermissions'];
+				$genericoptions = $usergroup['genericoptions'] ?? $oldusergroup['genericoptions'];
+
+				$caninvisible = $genericpermissions & $caninvisiblebit;
+				$allowmembergroup = $genericoptions & $allowmembergroupsbit;
+
+				//if the group doesn't allow invisible then make the members visible.
+				if (!$caninvisible)
+				{
+					$oldcaninvisible = $oldusergroup['genericpermissions'] & $caninvisiblebit;
+					$oldallowmembergroup = $oldusergroup['genericoptions'] & $allowmembergroupsbit;
+
+					if (!$allowmembergroup)
+					{
+						//If we changed the allow invisible flag then we need to make all users in the group visible
+						//they're no longer allowed.  If we changed the allow secondary groups flag we might have users
+						//that were invisible based on secondary groups and that's no longer allowed.
+						//If we didn't change either, then no users could have been invisible before so there isn't anything
+						//to do.
+						if ($oldcaninvisible OR $oldallowmembergroup)
+						{
+							//this might be able to be a table query now.
+							//make the users in this group visible
+							$db->assertQuery('usergroup_makeuservisible', [
+								'invisible' => $bf_misc_useroptions['invisible'],
+								'usergroupid' => $usergroupid,
+							]);
+						}
+					}
+					else
+					{
+						//We don't care what the secondary group status was here.
+						//If it wasn't allowed then the invisible status was based on the prior primary
+						//group flag and if that wasn't allowed then no users could be invisible and
+						//we're done.
+						//
+						//If was allowed we didn't change it and we only have anything to do if we
+						//changed the primary group invisible flag.
+						if ($oldcaninvisible)
+						{
+							// update the invisble flag taking into account the other groups
+							$db->assertQuery('updateInvisible', [
+								'caninvisible' => $caninvisiblebit,
+								'invisible' => $bf_misc_useroptions['invisible'],
+								'usergroupid' => $usergroupid,
+							]);
+						}
+					}
+				}
+			}
+
+			//if we didn't change the adminpermission field, don't mess with the admin permissions
+			if ($adminstatuschanged)
+			{
+				//we've set the group to be an admin group and it wasn't already
+				if ($newgroupisadmin)
+				{
+					$this->addAdminUsersForGroup($db, $usergroupid);
+				}
+				//it used to be an admin group but it no longer is.
+				else if ($oldgroupisadmin)
+				{
+					//we might want to update this farther upstream, but the value in the cache is likely
+					//wrong and affects the update process.
+					$usergroupcache[$usergroupid]['adminpermissions'] = $usergroup['adminpermissions'];
+
+					// lets find admin usergroupids
+					$ausergroupids = [];
+					foreach ($usergroupcache AS $ausergroupid => $ausergroup)
+					{
+						if ($ausergroup['adminpermissions'] & $bf_cancontrolpanel)
+						{
+							$ausergroupids[] = $ausergroupid;
+						}
+					}
+
+					$this->removeAdminUsersForGroup($db, $ausergroupids, $usergroupid);
+				}
+			}
+
+			vB_Cache::allCacheEvent('perms_changed');
+			vB::getUserContext()->clearChannelPermissions($usergroupid);
+		}
+		else
+		{
+			//if this is an insert then we really need a title
+			if (!isset($usergroup['title']) OR trim($usergroup['title']) == '')
+			{
+				throw new vB_Exception_Api('usergroup_title_required');
+			}
+
+			//only super admins can create a group with admin privs
+			if (isset($usergroup['adminpermissions']) AND $usergroup['adminpermissions'] & $bf_cancontrolpanel AND !vB::getUserContext()->isSuperAdmin())
+			{
+				throw new vB_Exception_Api('superadmin_required_to_change_cancontrolpanel');
+			}
+
+			// insert
+			$newugid = $db->insert('usergroup', $usergroup);
+
+
+			if ($ugid_base > 0)
+			{
+				//this appears to be unused. need to check.
+				$fperms = $db->assertQuery('vBForum:forumpermission', ['usergroupid' => $ugid_base]);
+				foreach ($fperms as $fperm)
+				{
+					unset($fperm['forumpermissionid']);
+					$fperm['usergroupid'] = $newugid;
+					$db->insert('vBForum:forumpermission', $fperm);
+				}
+
+				$perms = $db->assertQuery('vBForum:permission', ['groupid' => $ugid_base]);
+				foreach ($perms AS $perm)
+				{
+					unset($perm['permissionid']);
+					$perm['groupid'] = $newugid;
+					$db->insert('vBForum:permission', $perm);
+				}
+
+				vB::getUserContext()->clearChannelPermissions();
+			}
+
+			$db->assertQuery('usergroup_insertprefixpermission', [
+				'newugid' => $newugid,
+				'deny_by_default' => $bf_misc_prefixoptions['deny_by_default'],
+			]);
+
+			$db->assertQuery('usergroup_inserteventhighlightpermission', ['newugid' => $newugid]);
+		}
+
+		$markups = $db->getRows('usergroup_fetchmarkups', []);
+		$usergroupmarkup = [];
+		foreach ($markups AS $markup)
+		{
+			$usergroupmarkup[$markup['usergroupid']]['opentag'] = $markup['opentag'];
+			$usergroupmarkup[$markup['usergroupid']]['closetag'] = $markup['closetag'];
+		}
+
+		$usergroupLib->buildDatastore();
+		vB::getUserContext()->rebuildGroupAccess();
+		vB_Library::instance('user')->buildBirthdays();
+
+		/*
+			We need to update the in-memory values that have just been modified since they were created in the constructor.
+			While there's probably no bugs that out-of-date class vars yet in normal usage, there are definitely
+			unit test bugs, as a bunch of usergroup changes can happen in the same session w/o class reconstruction.
+
+			Incidentally, fetchusergroupList(true) resets the 2 vars I'm aware of atm, but this below might need to change
+			to independently reset all values...
+		 */
+		$this->fetchUsergroupList(true);
+
+		if (!empty($newugid))
+		{
+			return $newugid;
+		}
+		else
+		{
+			return $usergroupid;
+		}
+	}
+
+	private function getUpdateFields($usergroup, $bf_ugp, $bf_misc_intperms, $basegroup)
+	{
+		//There are some fields we don't want to copy, but there are some that we do that aren't permission fields.
+		//In particular we shouldn't copy usergroupid or system group id or bad things will happen.  We probably
+		//don't want to copy title or description -- if they aren't passed then leave them blank with whatever
+		//consquences.
+		$additionalfields = [
+			'usertitle',
+			'passwordhistory',
+		];
+
+		foreach ($additionalfields AS $fieldname)
+		{
+			if (!isset($usergroup[$fieldname]) AND isset($basegroup[$fieldname]))
+			{
+				$usergroup[$fieldname] = $basegroup[$fieldname];
+			}
+		}
+
+		//copy the int value permissions if we have them in the base and don't already have
+		//them in the data to be saved.
+		foreach ($bf_misc_intperms AS $permname => $dummy)
+		{
+			if (!isset($usergroup[$permname]) AND isset($basegroup[$permname]))
+			{
+				$usergroup[$permname] = $basegroup[$permname];
+			}
+		}
+
+		// create bitfield values
+		foreach ($bf_ugp AS $permissiongroup => $fields)
+		{
+			//not clear why we don't allow these permission fields specifically
+			if ($permissiongroup == 'createpermissions' OR $permissiongroup == 'forumpermissions2')
+			{
+				//this is wierd, but if we have these fields in the base group then we should set the value
+				//when creating a new group with a basegroup just for consistency.  If the field isn't in the
+				//table it won't be in the base group either.
+				if (!isset($usergroup[$permissiongroup]) AND isset($basegroup[$permissiongroup]))
+				{
+					$usergroup[$permissiongroup] = $basegroup[$permissiongroup];
+				}
+
+				continue;
+			}
+
+			if (isset($usergroup[$permissiongroup]))
+			{
+				if (isset($basegroup[$permissiongroup]))
+				{
+					$group = convert_bits_to_array($basegroup[$permissiongroup], $fields);
+					$usergroup[$permissiongroup] = array_merge($group, $usergroup[$permissiongroup]);
+				}
+
+				$usergroup[$permissiongroup] = convert_array_to_bits($usergroup[$permissiongroup], $fields);
+			}
+			else if (isset($basegroup[$permissiongroup]))
+			{
+				$usergroup[$permissiongroup] = $basegroup[$permissiongroup];
+			}
+		}
+		return $usergroup;
+	}
+
+	//This group is an admin group.  Make sure all of its users have admin records.
+	private function addAdminUsersForGroup($db, $usergroupid)
+	{
+		$ausers = $db->assertQuery('usergroup_fetchausers', ['usergroupid' => $usergroupid]);
+		foreach ($ausers AS $auser)
+		{
+			$admindm = new vB_DataManager_Admin(vB_DataManager_Constants::ERRTYPE_SILENT);
+			$admindm->set('userid', $auser['userid']);
+			$admindm->save();
+			unset($admindm);
+		}
+	}
+
+	//We removed admin permisssions from a group, remove admin record for users unles
+	//they are in another admin group.
+	private function removeAdminUsersForGroup($db, $adminUsergroupIds, $usergroupid)
+	{
+		$ausers = $db->assertQuery('fetchAdminusersFromUsergroup', [
+			'ausergroupids' => $adminUsergroupIds,
+			'usergroupid' => $usergroupid,
+		]);
+
+		foreach ($ausers as $auser)
+		{
+			$userids[] = $auser['userid'];
+			$admindm = new vB_DataManager_Admin(vB_DataManager_Constants::ERRTYPE_SILENT);
+			$admindm->set_existing(['userid' => $auser['userid']]);
+			$admindm->delete();
+			unset($admindm);
+		}
+	}
+
+	/**
+	 * Delete an usergroup
+	 *
+	 * @param int $usergroupid Usergroup ID to be deleted
+	 * @return array -- standard success array
+	 */
+	public function delete($usergroupid)
+	{
+		$this->checkHasAdminPermission('canadminpermissions');
+
+		$db = vB::getDbAssertor();
+		// update users who are in this usergroup to be in the registered usergroup
+		$db->update('user', ['usergroupid' => 2], ['usergroupid' => $usergroupid]);
+		$db->update('user', ['displaygroupid' => 0], ['displaygroupid' => $usergroupid]);
+		$db->update('user', ['infractiongroupid' => 0], ['infractiongroupid' => $usergroupid]);
+		$db->update('useractivation', ['usergroupid' => 2], ['usergroupid' => $usergroupid]);
+		$db->update('vBForum:subscription', ['nusergroupid' => -1], ['nusergroupid' => $usergroupid]);
+		$db->update('vBForum:subscriptionlog', ['pusergroupid' => -1], ['pusergroupid' => $usergroupid]);
+
+		// now get on with deleting stuff...
+		$db->delete('usergroup', ['usergroupid' => $usergroupid]);
+		$db->delete('vBForum:forumpermission', ['usergroupid' => $usergroupid]);
+		$db->delete('vBForum:permission', ['groupid' => $usergroupid]);
+
+		vB_Library::instance('userrank')->deleteForUsergroup($usergroupid);
+
+		$db->delete('userpromotion', ['usergroupid' => $usergroupid]);
+		$db->assertQuery('deleteUserPromotion', ['usergroupid' => $usergroupid]);
+		$db->delete('vBForum:imagecategorypermission', ['usergroupid' => $usergroupid]);
+		$db->delete('vBForum:attachmentpermission', ['usergroupid' => $usergroupid]);
+		$db->delete('vBForum:prefixpermission', ['usergroupid' => $usergroupid]);
+		$db->delete('vBForum:eventhighlightpermission', ['usergroupid' => $usergroupid]);
+		$db->delete('infractiongroup', ['usergroupid' => $usergroupid]);
+		$db->delete('infractiongroup', ['orusergroupid' => $usergroupid]);
+		$db->delete('infractionban', ['usergroupid' => $usergroupid]);
+		$db->delete('infractionban', ['banusergroupid' => $usergroupid]);
+		$db->delete('pageviewpermission', ['usergroupid' => $usergroupid]);
+		$db->delete('vBForum:usergroup_channel_subscription', ['usergroupid' => $usergroupid]);
+
+		vB_Library::instance('usergroup')->buildDatastore();
+
+		require_once(DIR . '/includes/adminfunctions.php');
+		build_attachment_permissions();
+
+		// remove this group from users who have this group as a membergroup
+		$updateusers = [];
+		$casesql = '';
+
+		$users = $db->getRows('usergroup_fetchmemberstoremove', ['usergroupid' => $usergroupid]);
+		if (count($users))
+		{
+			$db->assertQuery('updateMemberForDeletedUsergroup', [
+				'users' => $users,
+				'usergroupid' => $usergroupid,
+			]);
+		}
+
+		vB_Cache::allCacheEvent('perms_changed');
+		vB_Library::instance('usergroup')->buildDatastore();
+		vB::getUserContext()->rebuildGroupAccess();
+		return ['success' => true];
+	}
+
+	/**
+	 * Fetch a list of usergroup promotions
+	 *
+	 * @param int $usergroupid Fetch promotions for only this usergroup
+	 * @return array Promotions information
+	 */
+	public function fetchPromotions($usergroupid = 0)
+	{
+		$this->checkHasAdminPermission('canadminpermissions');
+
+		$promotions = [];
+		$getpromos = vB::getDbAssertor()->assertQuery('fetchPromotions', [
+			'usergroupid' => intval($usergroupid)
+		]);
+		foreach ($getpromos as $promotion)
+		{
+			$promotions["$promotion[usergroupid]"][] = $promotion;
+		}
+
+		return $promotions;
+
+	}
+
+	/**
+	 * Insert a new usergroup promotion or update an existing one
+	 *
+	 * @param array $promotion Promotion information with fields:
+	 *  * usergroupid
+	 *  * reputation
+	 *  * date
+	 *  * posts
+	 * 	* strategy
+	 * 	* type
+	 * 	* reputationtype
+	 * 	* joinusergroupid
+	 * @param int $usergroupid
+	 * @param int $userpromotionid Existing Usergroup promotion ID to be updated
+	 * @return int new or existing userpromotion ID
+	 */
+	public function savePromotion($promotion, $usergroupid, $userpromotionid = 0)
+	{
+		$cleaner = vB::getCleaner();
+		$promotion = $cleaner->clean($promotion, vB_Cleaner::TYPE_ARRAY);
+		$usergroupid = $cleaner->clean($usergroupid, vB_Cleaner::TYPE_INT);
+		$userpromotionid = $cleaner->clean($userpromotionid, vB_Cleaner::TYPE_INT);
+
+		$this->checkHasAdminPermission('canadminpermissions');
+
+		$usergroupid = intval($usergroupid);
+		$userpromotionid = intval($userpromotionid);
+
+		if (!isset($promotion['joinusergroupid']) OR $promotion['joinusergroupid'] == -1)
+		{
+			throw new vB_Exception_Api('invalid_usergroup_specified');
+		}
+
+		// days_since_lastpost must be >= 0... but more specifically, it only matters if it's used.
+		// If the strategy utilizes days_since_lastpost, it must be positive, as a check of 0 doesn't really make sense..
+		if ($promotion['strategy'] == vB_Library_Usergroup::PROMOTION_STRATEGY_DAYS_SINCE_LAST_POST AND
+			$promotion['days_since_lastpost'] <= 0)
+		{
+			throw new vB_Exception_Api('invalid_data_w_x_y_z', [$promotion['days_since_lastpost'], '$fieldname.days_since_lastpost', get_class($this), __FUNCTION__]);
+		}
+		if ($promotion['strategy'] == vB_Library_Usergroup::PROMOTION_STRATEGY_DAYS_SINCE_LAST_POST AND
+			($promotion['reputationtype'] ?? 0) > 0)
+		{
+			// ATM we don't support the flipped (<) check .. maybe we should?
+			throw new vB_Exception_Api('invalid_data_w_x_y_z', [$promotion['reputationtype'], '$fieldname.reputationtype', get_class($this), __FUNCTION__]);
+		}
+
+
+		// type -- 1: change user's primary usergroupid, 2: change/add to user's membergroup
+		if (!in_array($promotion['type'], [1, 2]))
+		{
+			throw new vB_Exception_Api('invalid_data_w_x_y_z', [$promotion['type'], '$fieldname.type', get_class($this), __FUNCTION__]);
+		}
+
+		// reputationtype -- 0: user.reputation >= userpromotion.reputation, 1: user.reputation < userpromotion.reputation
+		if (!in_array(($promotion['reputationtype'] ?? 0), [0, 1]))
+		{
+			throw new vB_Exception_Api('invalid_data_w_x_y_z', [$promotion['reputationtype'], '$fieldname.reputationtype', get_class($this), __FUNCTION__]);
+		}
+
+		// This +8 offset is used internally to flip the comparison, see vB_Library_Usergroup::promoteUsers()
+		if (!empty($promotion['reputationtype']) AND $promotion['strategy'] <= 16)
+		{
+			$promotion['strategy'] += 8;
+		}
+		unset($promotion['reputationtype']);
+
+		// update
+		if (!empty($userpromotionid))
+		{
+			if ($usergroupid == $promotion['joinusergroupid'])
+			{
+				throw new vB_Exception_Api('promotion_join_same_group');
+			}
+			$data = [
+				vB_dB_Query::TYPE_KEY => vB_dB_Query::QUERY_UPDATE,
+				vB_dB_Query::CONDITIONS_KEY => [
+					'userpromotionid' => $userpromotionid,
+				]
+			];
+			$data += $promotion;
+			vB::getDbAssertor()->assertQuery('userpromotion', $data);
+
+			return $userpromotionid;
+		}
+		// insert
+		else
+		{
+			$usergroupid = $promotion['usergroupid'];
+			if ($usergroupid == $promotion['joinusergroupid'])
+			{
+				throw new vB_Exception_Api('promotion_join_same_group');
+			}
+			/*insert query*/
+			$data = [vB_dB_Query::TYPE_KEY => vB_dB_Query::QUERY_INSERT];
+			$data += $promotion;
+			$promotion_id = vB::getDbAssertor()->assertQuery('userpromotion', $data);
+			return $promotion_id;
+		}
+	}
+
+	/**
+	 * Delete an usergroup promotion
+	 *
+	 * @param  $userpromotionid
+	 * @return void
+	 */
+	public function deletePromotion($userpromotionid)
+	{
+		$this->checkHasAdminPermission('canadminpermissions');
+
+		vB::getDbAssertor()->delete('userpromotion', ['userpromotionid' => intval($userpromotionid)]);
+	}
+
+	/**
+	 * Update user's display group
+	 *
+	 * @param  $userid User ID
+	 * @param  $usergroupid Usergroup ID to be used as display group
+	 * @return array -- standard success array
+	 */
+	public function updateDisplayGroup($userid, $usergroupid)
+	{
+		$userid = (int) $userid;
+		$usergroupid = (int) $usergroupid;
+
+		//this whole function should probably be in the user API.  It's currently unused
+		//so it's not entirely clear what permissions it should have.  The admin
+		//canadminusers is sufficient, but we may also want to open this up to allow
+		//users to change their own display group -- but that may have its own permissions
+		//associated with it.  For now, lock it down.
+		$this->checkHasAdminPermission('canadminusers');
+
+		$userinfo = vB_Api::instanceInternal('user')->fetchUserinfo($userid);
+
+		$membergroups = fetch_membergroupids_array($userinfo);
+		if ($usergroupid == 0)
+		{
+			throw new vB_Exception_Api('invalidid', ['usergroupid']);
+		}
+
+		if (!in_array($usergroupid, $membergroups))
+		{
+			throw new vB_Exception_Api('notmemberofdisplaygroup');
+		}
+		else
+		{
+			$context = vB::getUserContext($userid);
+			$usergroupcache = vB_Library::instance('usergroup')->getCache();
+			$display_usergroup = $usergroupcache[$usergroupid];
+
+			//I'm  not sure why we require canoverride to set the display group... this is *not* required
+			//by the the admincp user interface which uses a different method of saving.
+			if ($usergroupid == $userinfo['usergroupid'] OR $display_usergroup['canoverride'])
+			{
+				$userinfo['displaygroupid'] = $usergroupid;
+
+				// init user data manager
+				$userdata = new vB_DataManager_User(vB_DataManager_Constants::ERRTYPE_ARRAY_UNPROCESSED);
+				$userdata->set_existing($userinfo);
+
+				$userdata->set('displaygroupid', $usergroupid);
+
+				if (!$userinfo['customtitle'])
+				{
+					$userdata->set_usertitle(
+						$userinfo['customtitle'] ? $userinfo['usertitle'] : '',
+						false,
+						$display_usergroup,
+						$context->hasPermission('genericpermissions', 'canusecustomtitle'),
+						$context->hasPermission('admincpermissions', 'cancontrolpanel')
+					);
+				}
+
+				$userdata->save();
+			}
+			else
+			{
+				throw new vB_Exception_Api('usergroup_invaliddisplaygroup');
+			}
+		}
+
+		return ['success' => true];
+	}
+
+	/**
+	 * Fetch a list of banned usergroups
+	 */
+	public function fetchBannedUsergroups()
+	{
+		//fall back on the check admin error handling which has logic to determine which
+		//error we should return based on the state of the session.  If we remove the
+		//admin check we may need to sort out how to handle mod permission checks
+		//properly (including checking for the CP login and correctly prompting if
+		//it's not there).
+		if (!vB::getUserContext()->hasModeratorPermission('canbanusers'))
+		{
+			$this->checkHasAdminPermission('cancontrolpanel');
+		}
+
+		$bf_ugp_genericoptions = vB::getDatastore()->getValue('bf_ugp_genericoptions');
+
+		$usergroupcache = vB_Library::instance('usergroup')->getCache();
+
+		$bannedusergroups = [];
+		foreach ($usergroupcache AS $usergroup)
+		{
+			if (!($usergroup['genericoptions'] & $bf_ugp_genericoptions['isnotbannedgroup']))
+			{
+				$bannedusergroups[$usergroup['usergroupid']] = $usergroup;
+			}
+		}
+
+		return $bannedusergroups;
+	}
+
+	/**
+	 * Returns the usergroupid for moderator group
+	 *
+	 * @return false|int
+	 */
+	public function getModeratorGroupId()
+	{
+		try
+		{
+			$group = $this->fetchUsergroupBySystemID(self::CHANNEL_MODERATOR_SYSGROUPID);
+			return $group['usergroupid'];
+		}
+		catch(vB_Exception_Api $e)
+		{
+			return false;
+		}
+	}
+
+	/**
+	 * Returns the usergroupid for owner group
+	 *
+	 * @return false|int
+	 */
+	public function getOwnerGroupId()
+	{
+		try
+		{
+			$group = $this->fetchUsergroupBySystemID(self::CHANNEL_OWNER_SYSGROUPID);
+			return $group['usergroupid'];
+		}
+		catch(vB_Exception_Api $e)
+		{
+			return false;
+		}
+	}
+
+	/**
+	 * Returns the usergroupid for member group
+	 *
+	 * @return false|int
+	 */
+	public function getMemberGroupId()
+	{
+		try
+		{
+			$group = $this->fetchUsergroupBySystemID(self::CHANNEL_MEMBER_SYSGROUPID);
+			return $group['usergroupid'];
+		}
+		catch(vB_Exception_Api $e)
+		{
+			return false;
+		}
+	}
+
+	/**
+	 * Returns the usergroupids for multiple specified SYSGROUPID constants
+	 *
+	 * @param array $groups -- int, the systemIDs to look up the db ids from
+	 * @return array -- usergroup ids -- NOTE: The usergroups in the return
+	 *                  array are in the same order as in the input array.
+	 *                  Some callers depend on this behavior.
+	 */
+	public function getMultipleGroupIds($groups)
+	{
+		return vB_Library::instance('usergroup')->getMultipleGroupIds($groups);
+	}
+}
+
+/*=========================================================================*\
+|| #######################################################################
+|| # Downloaded: 12:50, Tue Dec 24th 2024
+|| # CVS: $RCSfile$ - $Revision: 116902 $
+|| #######################################################################
+\*=========================================================================*/

@@ -1,0 +1,333 @@
+<?php if (!defined('VB_ENTRY')) die('Access denied.');
+/*========================================================================*\
+|| ###################################################################### ||
+|| # vBulletin 6.1.0 Alpha 4 Week 2 - Licence Number VBCW2VFT7A
+|| # ------------------------------------------------------------------ # ||
+|| # Copyright 2000-2024 MH Sub I, LLC dba vBulletin. All Rights Reserved.  # ||
+|| # This file may not be redistributed in whole or significant part.   # ||
+|| # ----------------- VBULLETIN IS NOT FREE SOFTWARE ----------------- # ||
+|| # http://www.vbulletin.com | http://www.vbulletin.com/license.html   # ||
+|| ###################################################################### ||
+\*========================================================================*/
+
+/**
+ * vB_Api_Content_Video
+ *
+ * @package vBApi
+ */
+class vB_Api_Content_Video extends vB_Api_Content_Text
+{
+	//override in client- the text name
+	protected $contenttype = 'vBForum_Video';
+
+	//The table for the type-specific data.
+	protected $tablename = array('video', 'text');
+
+	//Is text required for this content type?
+	protected $textRequired = false;
+
+	const THUMBNAIL_TTL = 432000; //5 days
+
+	/**
+	 * Constructor, no external instantiation
+	 */
+	protected function __construct()
+	{
+		parent::__construct();
+		$this->library = vB_Library::instance('Content_Video');
+	}
+
+
+	/**
+	 * Adds a new node.
+	 *
+	 * @param  mixed   Array of field => value pairs which define the record.
+	 * @param  array   Array of options for the content being created.
+	 *                 Understands skipTransaction, skipFloodCheck, floodchecktime, skipDupCheck, skipNotification, nl2br, autoparselinks.
+	 *                 - nl2br: if TRUE, all \n will be converted to <br /> so that it's not removed by the html parser (e.g. comments).
+	 *                 - wysiwyg: if true convert html to bbcode.  Defaults to true if not given.
+	 *
+	 * @return integer the new nodeid
+	 */
+	public function add($data, $options = [])
+	{
+		vB_Api::instanceInternal('hv')->verifyToken($data['hvinput'] ?? null, 'post');
+
+		if (
+			(vB_Api::instanceInternal('node')->fetchAlbumChannel() == $data['parentid']) AND
+			(!vB::getUserContext()->hasPermission('albumpermissions', 'picturefollowforummoderation'))
+		)
+		{
+			$data['approved'] = 0;
+			$data['showapproved'] = 0;
+		}
+
+		return parent::add($data, $options);
+	}
+
+	/**
+	 * Get information from video's URL.
+	 * This method makes use of bbcode_video table to get provider information
+	 *
+	 * @param  string     $url
+	 *
+	 * @return array|bool Video data. False if the url is not supported or invalid
+	 */
+	public function getVideoFromUrl($url)
+	{
+		return $this->library->getVideoFromUrl($url);
+	}
+
+	/**
+	 *	Will attempt to get the thumbnail url based on provider specific rules
+	 *	otherwise will fall back to the page scraping behavior.
+	 */
+	public function getVideoThumbnailFromProvider($provider, $code, $url, $nodeid = false, $getAlts = false)
+	{
+		$result = [
+			'use_thumb' => true,
+			'url' => '',
+			'url_alts' => [],
+		];
+
+		//we should really revisit our bbcode_video_*.xml rules.
+		//we have too many exceptions in the code here.  Ideally we should have a modular
+		//class based approach to handle different methods (the current one assumes scraping
+		//the main url link which is cumbersome in a lot of ways.
+		if ($provider == 'videofile')
+		{
+			$result['use_thumb'] = false;
+		}
+		else if ($provider == 'youtube' OR $provider == 'youtube_share')
+		{
+			// Based on https://stackoverflow.com/a/50993079
+			// It would be nice if maxresdefault was guaranteed, but apparently only
+			// high-res videos have them. Most recently uploaded videos probably will,
+			// but I don't think we can just assume yet.
+			// Only solution I can think of is to assume that video thumbnails will not have
+			// transparency (these are jpgs so they won't), and stack them. If the first one
+			// doesn't load, the second will that loads will be shown. Unfortunately this
+			// means both images will be loaded in many cases...
+			$defaultUrl = 'https://img.youtube.com/vi/' . $code . '/hqdefault.jpg';
+			$maxResUrl = 'https://img.youtube.com/vi/' . $code . '/maxresdefault.jpg';
+			$result['url'] = $defaultUrl;
+			if ($getAlts)
+			{
+				$result['url'] = $maxResUrl;
+				$result['url_alts'] = [
+					$defaultUrl
+				];
+			}
+		}
+		else if ($provider == 'vimeo')
+		{
+			// We should try to get the actual width/height from the caller.  But hopefully the defaults for vimeo
+			// represent the maximum size and we'll just scale down if smaller.
+			// Note that the documentation says that the width/height don't work for premium accounts who can
+			// set their own values without being overridden -- not really clear on the implications and don't have
+			// a way to test that.
+			$jsonurl = "https://vimeo.com/api/oembed.json?width=640&height=360&url=" . urlencode($url);
+			$result['url'] = $this->getVideoThumbnailInternal(
+				$jsonurl,
+				$nodeid,
+				function ($url) {return $this->getThumbnailFromJson($url, 'thumbnail_url');}
+			);
+		}
+		else
+		{
+			$result['url'] = $this->getVideoThumbnailInternal($url, $nodeid, $this->getThumbnailFromMeta(...));
+			// todo: fill alt thumbnails for other types of videos pending feedback...
+			// This is not implemented atm because esp for the cached thumbnails, we
+			// would need to refactor to fetch two sizes, one for "thumb" and another
+			// for a bigger format for the content slider.
+		}
+
+		return $result;
+	}
+
+	/**
+	 * Extracts the thumbnail from og:image meta data
+	 *
+	 * @param  string $url
+	 * @param  int $nodeid -- optional
+	 *
+	 * @return string|false
+	 * @deprecated use getVideoThumbnailFromProvider
+	 */
+	public function getVideoThumbnail($url, $nodeid = false)
+	{
+		return $this->getVideoThumbnailInternal($url, $nodeid, $this->getThumbnailFromMeta(...));
+	}
+
+	public function getVideoThumbnailInternal($url, $nodeid, $callback)
+	{
+		// Order of operations is a little odd but
+		// 1) Try to look up video node from the nodeid if we have one
+		// 2) Get the thumbnail from url cache
+		// 3) Get video record via the url is that fails.
+
+		$video = null;
+		//Note that this is called from the template, and often there will be no nodeid
+		if ($nodeid)
+		{
+			$video = $this->getContent($nodeid);
+			if ($video)
+			{
+				$video = reset($video);
+			}
+		}
+
+		if (!$video)
+		{
+			//Try to get from cache first.
+			$cacheKey = 'vB_Vid' . md5($url);
+			$cache = vB_Cache::instance(vB_Cache::CACHE_LARGE);
+
+			$thumbnail = $cache->read($cacheKey);
+			if ($thumbnail)
+			{
+				return $thumbnail;
+			}
+
+			$video = $this->assertor->getRow('vBForum:video', ['url' => $url]);
+		}
+
+		//check if we have the thumbnail in the video
+		//I suspect that the fields are always defined but need to do the research before removing the wrappers.
+		$havevideothumbnail = ($video AND !empty($video['thumbnail']));
+		if (
+			$havevideothumbnail AND
+			!empty($video['thumbnail_date']) AND
+			//if the thumbnail is too old we need to fetch a fresh one, it might have been updated
+			($video['thumbnail_date'] >= (vB::getRequest()->getTimeNow() - self::THUMBNAIL_TTL))
+		)
+		{
+			return $video['thumbnail'];
+		}
+
+		// Try fetching it from the URL.
+		$thumbnail = $callback($url);
+
+		//save the thumbnail so we don't have to fetch it next time it's needed
+		if ($thumbnail)
+		{
+			if (!empty($video))
+			{
+				//there is a video record.  Put it there.
+				$this->assertor->update('vBForum:video',
+					[
+						'thumbnail' => $thumbnail,
+						'thumbnail_date' => vB::getRequest()->getTimeNow(),
+					],
+					['nodeid' => $video['nodeid']]
+				);
+				vB_Cache::allCacheEvent('nodeChg_' . $video['nodeid']);
+			}
+			else
+			{
+				vB_Cache::instance(vB_Cache::CACHE_LARGE)->write($cacheKey, $thumbnail,  self::THUMBNAIL_TTL);
+			}
+			return $thumbnail;
+		}
+		// if we have an out of date video thumbnail then use it if we can't load an update date one.
+		else if ($havevideothumbnail)
+		{
+			return $video['thumbnail'];
+		}
+
+		// we should probably have a default placeholder we can return in case no image is found..
+		return false;
+	}
+
+	private function getThumbnailFromJson(string $url, string $path) : false | string
+	{
+		// Unlike the page scraping we do (in the link class) we'll assume that the JSON doc is reasonably
+		// short and not try to limit the size.  If that proves a bad assumption we'll need to figure out
+		// what limit to put on it
+		$vurl = vB::getUrlLoader();
+		$vurl->setOption(vB_Utility_Url::FOLLOWLOCATION, 1);
+
+		$page = $vurl->get($url);
+		if (!$page OR !$page['body'])
+		{
+			return false;
+		}
+
+		$thumbnail = json_decode($page['body'], true);
+		if (!$thumbnail)
+		{
+			return false;
+		}
+
+		// fetch the actual thumbnail value from the data array according to the path.
+		if ($path)
+		{
+			foreach (explode('.', $path) AS $segment)
+			{
+				if (!is_array($thumbnail))
+				{
+					return false;
+				}
+
+				$thumbnail = $thumbnail[$segment] ?? false;
+			}
+		}
+
+		// if we didn't get all the way down to a scalar value, bail.
+		if (is_array($thumbnail))
+		{
+			return false;
+		}
+
+		// this should be a string but make sure.
+		return strval($thumbnail);
+	}
+
+	private function getThumbnailFromMeta($url)
+	{
+		$thumbnail = false;
+
+		/*
+			Special case - facebook. Their regular video pages has several layers of black magic. Basically the entire relevant element is inside a comment unless
+			you specify ?_fb_noscript=1 query param, and even then, the thumbnail is likely the 2nd or 3rd image with no good way of identifying which image is
+			best from the DOM. Using the graph API would get us the thumbnail instantly, but that requires an access token, or in other words each forum owner has
+			to set up a facebook app for their forum.
+			Thankfully, using their "embeddable link" (which is what we use for the bbcode_video) seems to work fairly well with the logic below of "return the first
+			image and hope for the best."
+		 */
+		// strpos is cheaper than preg_match, skip latter if URL has nothing to do with facebook
+		if (strpos($url, 'facebook.com') !== false)
+		{
+			// more sophisticated check
+			// Facebook's newest video URLs (video.php?v=... URLs now redirect to these) seem to be in the format of
+			// www.facebook.com/{profile name}/videos/{video id}
+
+			preg_match("#^(?<url>(?:https?\:\/\/)?(?:www.)?facebook\.com\/[^\/]*\/videos\/[0-9]+\/?.*)$#", $url, $matches);
+			if (!empty($matches['url']))
+			{
+				$url = "https://www.facebook.com/plugins/video.php?href=" . urlencode($url);
+			}
+		}
+
+		$data = vB_Api::instance('content_link')->parsePage($url);
+		if (!empty($data['images']))
+		{
+			$thumbnail = $data['images'];
+
+			// only return the first image. May want to change this later after product audit?
+			if (is_array($thumbnail))
+			{
+				$thumbnail = $thumbnail[0];
+			}
+		}
+
+		return $thumbnail;
+	}
+}
+
+/*=========================================================================*\
+|| #######################################################################
+|| # Downloaded: 12:50, Tue Dec 24th 2024
+|| # CVS: $RCSfile$ - $Revision: 116986 $
+|| #######################################################################
+\*=========================================================================*/

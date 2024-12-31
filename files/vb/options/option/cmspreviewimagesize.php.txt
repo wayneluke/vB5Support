@@ -1,0 +1,42 @@
+<?php
+/*========================================================================*\
+|| ###################################################################### ||
+|| # vBulletin 6.1.0 Alpha 4 Week 2 - Licence Number VBCW2VFT7A
+|| # ------------------------------------------------------------------ # ||
+|| # Copyright 2000-2024 MH Sub I, LLC dba vBulletin. All Rights Reserved.  # ||
+|| # This file may not be redistributed in whole or significant part.   # ||
+|| # ----------------- VBULLETIN IS NOT FREE SOFTWARE ----------------- # ||
+|| # http://www.vbulletin.com | http://www.vbulletin.com/license.html   # ||
+|| ###################################################################### ||
+\*========================================================================*/
+
+/**
+ * @package vBulletin
+ */
+class vB_Options_Option_Cmspreviewimagesize extends vB_Options_Option
+{
+	protected function validateCustom(array $validation, mixed $rawvalue) : bool|string|array
+	{
+		// We don't generally validate that the picklist types match one of the values in the picklist
+		// and it's not clear why we do that here or how critical that is in general.  An admin could
+		// force a bad value into the config by doing this, but why would they want it.  Since failing
+		// validation doesn't stop saving this wouldn't stop them in any event.
+		//
+		// This will cause weidness if the options are changed and this validation it not.  It feels like
+		// we should either
+		// 1) Remove this entirely as not needed
+		// 2) Validation option fields against the option list automatically (or provide a rule to do so)
+		// 	so that we don't need custom logic for this and we don't validate against a different list
+		// 	than is presented to the user.
+		//
+		// For now preserving legacy behavior.
+		if (!in_array($rawvalue, ['icon', 'thumb', 'small', 'medium', 'large'], true))
+		{
+			// probably want a better message but... what?  You somehow generated a value you weren't offered,
+			// don't do that?
+			return 'you_did_not_enter_a_valid_value';
+		}
+
+		return true;
+	}
+}

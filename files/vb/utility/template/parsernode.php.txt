@@ -1,0 +1,472 @@
+<?php
+/*========================================================================*\
+|| ###################################################################### ||
+|| # vBulletin 6.1.0 Alpha 4 Week 2 - Licence Number VBCW2VFT7A
+|| # ------------------------------------------------------------------ # ||
+|| # Copyright 2000-2024 MH Sub I, LLC dba vBulletin. All Rights Reserved.  # ||
+|| # This file may not be redistributed in whole or significant part.   # ||
+|| # ----------------- VBULLETIN IS NOT FREE SOFTWARE ----------------- # ||
+|| # http://www.vbulletin.com | http://www.vbulletin.com/license.html   # ||
+|| ###################################################################### ||
+\*========================================================================*/
+
+/**
+ * @package vBUtility
+ */
+abstract class vB_Utility_Template_ParserNode
+{
+	use vB_Utility_Trait_NoSerialize;
+
+	protected vB_Utility_Template_Parser $parser;
+	protected vB_Xml_Node $main_node;
+
+	//these should only be needed for createNode -- so let's not encourage their further use
+	private array|bool $allowedTags = [];
+	private array|bool $allowedCurlies = [];
+
+	// Functions safe for use in conditionals.  These functions should include those that alter variables
+	// (aside from changing the interal array iterator)
+	// Array is allowed in conditonals as a language construct but is still needed to pass the vb:php validation
+	// so is listed there (even if isn't really a function).
+	protected static array $safeFunctions = [
+		'isset',
+		'empty',
+		'defined',
+		'ceil',
+		'min',
+		'max',
+		'preg_match',
+
+		//date/time functions
+		'date',
+		'gmdate',
+		'mktime',
+		'gmmktime',
+		'time',
+
+		//type checking functions
+		'is_array',
+		'is_numeric',
+		'is_string',
+
+		//string functions
+		'substr',
+		'strpos',
+		'strlen',
+		'ltrim',
+		'rtrim',
+		'trim',
+
+		//array functions
+		'array_reverse',
+		'array_key_exists',
+		'count',
+		'size',
+		'in_array',
+		'current',
+		'end',
+		'prev',
+		'next',
+		'reset',
+
+		//type casting functions
+		'intval',
+		'boolval',
+
+		// vBulletin-defined functions
+		'can_moderate',
+		'is_browser',
+		'is_member_of',
+		'is_came_from_search_engine',
+		'vbdate',
+		'vbtzmktime',
+	];
+
+	// Additional functions allowed by the PHP curly.  These are kept here even though the are specific
+	// to a child class because we want to keep these lists in sync.
+	// The php curly also allows everything on the safeFunctions list so they do not (and should not)
+	// be duplicated here.
+	protected static $safePhpFunctions = [
+		'base64_encode',
+		'json_decode',
+		'json_encode',
+		'phpversion',
+		'range',
+		'uniqid',
+
+		//string functions
+		'explode',
+		'implode',
+		'sprintf',
+		'str_pad',
+		'str_repeat',
+		'strip_tags',
+		'strtolower',
+		'strtoupper',
+
+		//array functions
+		'array',
+		'array_fill_keys',
+		'array_intersect',
+		'array_intersect_key',
+		'array_keys',
+		'array_merge',
+		'array_pop',
+		'array_push',
+		'array_shift',
+		'array_unshift',
+		'array_sum',
+		'array_unique',
+
+		//vbulletin defined functions
+		'vB_String::parseUrl',
+		'vB5_String::parseUrl',
+		'vB_String::jsonEncodeLocalCharset',
+		'vB5_String::jsonEncodeLocalCharset',
+		'vB_String::getUrlIdent',
+		'vbstrtolower',
+	];
+
+	// this is a copy of the list from the condition parser class but it's deliberately not consolidated
+	// because they aren't quite the same case -- the condition parser is read access and while we probaby shouldn't
+	// allow *any* direct dependency on these values it's a lot less fraught than allowing assigment.
+	private static $invalidVars = [
+		'$GLOBALS',
+		'$_SERVER',
+		'$_GET',
+		'$_POST',
+		'$_FILES',
+		'$_COOKIE',
+		'$_SESSION',
+		'$_REQUEST',
+		'$_ENV',
+		'$this',
+	];
+
+	public static function createFromNode(vB_Xml_Node $main_node, array|bool $allowedTags, array|bool $allowedCurlies, vB_Utility_Template_Parser $parser) : self
+	{
+		//We want to use array|true for the type declarations but that isn't supported until PHP 8.2 so fake it here.
+		//This should allow us to make the change when we can support it without worrying about somebody relying on passing false.
+		if ($allowedTags === false OR $allowedCurlies === false)
+		{
+			throw new TypeError('False is not allowed for $allowedTags or $allowedCurlies');
+		}
+
+		// treat elments that aren't allowed as null but flag that they are actually valid for reporting purposes.
+		if ($main_node->type == 'curly')
+		{
+			$nodeAllowed = ($allowedCurlies === true OR in_array($main_node->value, $allowedCurlies));
+		}
+		else if ($main_node->type == 'tag')
+		{
+			$nodeAllowed = ($allowedTags === true OR in_array($main_node->value, $allowedTags));
+		}
+		else
+		{
+			$nodeAllowed = true;
+		}
+
+		$nodeClass = '';
+		if ($nodeAllowed);
+		{
+			// the autoload process will validate invalid classnames so we don't need to worry overmuch about what that
+			// class name string looks like if it's garbage -- class_exists will sort it out.
+
+			$nodeClass = 'vB_Utility_Template_ParserNode_' . ucfirst($main_node->type);
+
+			//for now all tags are handled from the base tag class.
+			if ($main_node->type == 'curly' OR $main_node->type == 'tag')
+			{
+				$nodeClass .= '_' . ucfirst($main_node->value);
+			}
+		}
+
+		if (!($nodeAllowed AND class_exists($nodeClass)))
+		{
+			// if we don't have the correct class then just create a null class.
+			return new ('vB_Utility_Template_ParserNode_' . ucfirst($main_node->type) . '_Null')($main_node, $allowedTags, $allowedCurlies, $parser, !class_exists($nodeClass));
+		}
+
+		return new $nodeClass($main_node, $allowedTags, $allowedCurlies, $parser);
+	}
+
+	//Internal cover for createFromNode that handles propagating reference information down the chain with the
+	//intent of hiding that information in case we are able to make it go away.  Eventually would like to move the translation
+	//from vB_Xml_Node to vB_Utility_Template_ParserNode to the parser which would eliminate much of this
+	protected function createNode(vB_Xml_Node $node) : self
+	{
+		return self::createFromNode($node, $this->allowedTags, $this->allowedCurlies, $this->parser);
+	}
+
+	/**
+	 * @param vB_Xml_Node $main_node
+	 * @param vB_Utility_Template_Parser $parser
+	 */
+	public function __construct(vB_Xml_Node $main_node, array|bool$allowedTags, array|bool $allowedCurlies, vB_Utility_Template_Parser $parser)
+	{
+		$this->allowedTags = $allowedTags;
+		$this->allowedCurlies = $allowedCurlies;
+
+		$this->main_node = $main_node;
+		$this->parser = $parser;
+	}
+
+	/**
+	 * Validate the use of this tag. Can validate any aspects of the tag,
+	 * including attributes, siblings, parents, and children
+	 *
+	 * @return	array	Array of errors
+	 */
+	abstract public function validate() : array;
+
+	/**
+	 * Compile this tag. Note that you must account for children as well.
+	 *
+	 * @return	string 	Evalable string
+	 */
+	abstract public function compile() : string;
+
+	/**
+	 *	Return a formated name for node, primarily for use in error messages.
+	 */
+	abstract protected function nodename() : string;
+
+	/**
+	 * Compile / Convert dot notation variable into proper array syntax.
+	 * e.g. myvar.element becomes $myvar['element']
+	 *
+	 * @param string $main_var raw varname
+	 * @return string PHP friendly varname
+	 */
+	protected function compileVar(string $main_var) : string
+	{
+		$temp_var = trim($main_var);
+		$parts = explode('.', $temp_var);
+		$output = $parts[0];
+
+		if (isset($parts[1]))
+		{
+			for ($i = 1; $i < sizeof($parts); $i++)
+			{
+				$dollarpos = strpos($parts[$i], '$');
+				if ($dollarpos === false)
+				{
+					//basic array key.
+					$output .= "['" . $parts[$i] . "']";
+				}
+				else if ($dollarpos == 0)
+				{
+					//this is a variable so treat it as such.  It's a bit of a nasty hack the way
+					//we allow PHP style variables in some places and not others but this isn't
+					//the time to address that.
+					$output .= '[' . $parts[$i] . ']';
+				}
+				else
+				{
+					//this appears to be to allow interpolation of strings.  I don't know if it works
+					//or if we use it or if we really should.  But preserving prior behavior.
+					$output .= '["' . $parts[$i] . '"]';
+				}
+			}
+		}
+
+		return ($output[0] !== '$' ? '$' : '') . $output;
+	}
+
+	protected function compileVarStrict(string $main_var) : string
+	{
+		$parts = explode('.', $main_var);
+
+		//first part is the varname
+		$varname = '$' . $parts[0];
+
+		// Remaining parts are the array keys.  For the string compile we'll force these to be strings
+		// which should be properly enforced by the validation anyway.  We'll need to figure out better
+		// ways of handling more general array access.
+		for ($i = 1; $i < count($parts); $i++)
+		{
+			$value = var_export($parts[1], true);
+			$varname .= '[' . $value . ']';
+		}
+
+		return $varname;
+	}
+
+	protected function validateVar(string $main_var, bool $allow_array = true) : bool
+	{
+		$temp_var = trim($main_var);
+
+		// Cannot be empty
+		if (!$temp_var)
+		{
+			return false;
+		}
+
+		// Allow leading $
+		if (substr($temp_var, 0, 1) == '$')
+		{
+			$temp_var = substr($temp_var, 1);
+		}
+
+		// Cannot start with .
+		if (substr($temp_var, 0, 1) == '.')
+		{
+			return false;
+		}
+
+		// Cannot start with a number
+		if (intval(substr($temp_var, 0, 1)))
+		{
+			return false;
+		}
+
+		// Cannot finish with .
+		if (substr($temp_var, -1, 1) == '.')
+		{
+			return false;
+		}
+
+		preg_match_all('#\W#i', $temp_var, $matches);
+		$check = str_replace(' ', '#', implode('', $matches[0]));
+
+		if (strlen($check))
+		{
+			if (!$allow_array)
+			{
+				return false;
+			}
+
+			if (trim(str_replace('.' , '', $check)))
+			{
+				return false;
+			}
+		}
+
+		return true;
+	}
+
+	protected function validateVarStrict(string $main_var, bool $allow_array = true) : bool
+	{
+		$testVar = trim($main_var);
+		// Cannot be empty
+		if (!$testVar)
+		{
+			return false;
+		}
+
+		$parts = explode('.', $testVar);
+
+		if (!$allow_array)
+		{
+			return false;
+		}
+
+		foreach ($parts AS $part)
+		{
+			// Instead of trying to use a regular expression we'll validate against the actual PHP parser
+			// The main variable must be a valid PHP variable (sans the $) but in theory the subsequent elements
+			// needn't be.  However it's cleaner and safer if we do that.  This will prevent things like
+			// variable.1.fieldname for arrays that we sort of depend on right now due to deficiencies in array
+			// handling. Or worse variable.$varfield.fieldname for variable array access which absolutely shouldn't
+			// be allowed but we don't really have another way to do.  But this is for new code so we can try to do it
+			// right.
+			$tokens = PhpToken::tokenize("<?php\n$" . $part);
+			$tokens = array_values(array_filter($tokens, function($t) {return !($t->isIgnorable() AND $t->is(T_WHITESPACE));}));
+			if (count($tokens) != 2)
+			{
+				return false;
+			}
+
+			if (!($tokens[0]->is(T_OPEN_TAG) AND $tokens[1]->is(T_VARIABLE)))
+			{
+				return false;
+			}
+		}
+
+		$varname = '$' . $parts[0];
+		if (in_array($varname, self::$invalidVars) OR $varname == $this->parser->outputVar)
+		{
+			return false;
+		}
+
+		return true;
+	}
+
+	protected function validateCondition(string $condition) : array
+	{
+		if ($this->parser->getOption('strictconditionals'))
+		{
+			$parser = new vB_Utility_Template_ConditionParser($condition, self::$safeFunctions, $this->parser->outputVar);
+			$errors = $parser->validate();
+			if ($errors !== true)
+			{
+				// condition errors *have* to be a fatal error because it's impossible to know if a failed
+				// validation will allow malicious PHP through.  At least so long as we'll compile and save
+				// code when the validation fails.
+				throw vB_Utility_Template_Parser_FatalError::createFromErrorList($errors);
+			}
+
+			// in theory there could be non fatal errors to return someday, but currently there are not
+			return [];
+		}
+		else
+		{
+			return $this->validateConditionLegacy($condition);
+		}
+	}
+
+	private function validateConditionLegacy(string $condition) : array
+	{
+		// we've cleaned up the parsing so that we no longer have to pretend some things are functions for the
+		// purpose of validating the expression so we've removed them from the list.  But we need to add them
+		// back here to keep the legacy validations working as it was.
+		$additional = [
+			//not actually functions but handle the case of ($x AND ($y or $z))
+			'and',                   // logical and
+			'or',                    // logical or
+			'xor',                   // logical xor
+
+			//other language constructs
+			'array',
+		];
+
+		if (strpos($condition, '`') !== false)
+		{
+			throw new vB_Utility_Template_Parser_FatalError([
+				'expression_contains_backticks_x_please_rewrite_without',
+				htmlspecialchars('<if condition="' . stripslashes($condition) . '">')
+			]);
+		}
+
+		if (preg_match_all('#([a-z0-9_\x7f-\xff\\\\{}$>-\\]]+)(\s|/\*.*\*/|(\#|//)[^\r\n]*(\r|\n))*\(#si', $condition, $matches))
+		{
+			$functions = [];
+			foreach ($matches[1] AS $key => $match)
+			{
+				if (!in_array(strtolower($match), array_merge($additional, self::$safeFunctions)))
+				{
+					$funcpos = strpos($condition, $matches[0][$key]);
+					$functions[] = [
+						'func' => stripslashes($match),
+						'usage' => stripslashes(substr($condition, $funcpos, (strpos($condition, ')', $funcpos) - $funcpos + 1))),
+					];
+				}
+			}
+
+			if (!empty($functions))
+			{
+				throw new vB_Utility_Template_Parser_FatalError(['template_contains_unsafe_function', implode(', ', array_column($functions, 'func')), $condition]);
+			}
+		}
+
+		// in theory there could be non fatal errors to return, but currently there are not
+		return [];
+	}
+}
+
+/*=========================================================================*\
+|| #######################################################################
+|| # Downloaded: 12:50, Tue Dec 24th 2024
+|| # CVS: $RCSfile$ - $Revision: 115380 $
+|| #######################################################################
+\*=========================================================================*/

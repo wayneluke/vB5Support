@@ -1,0 +1,154 @@
+<?php
+/*========================================================================*\
+|| ###################################################################### ||
+|| # vBulletin 6.1.0 Alpha 4 Week 2 - Licence Number VBCW2VFT7A
+|| # ------------------------------------------------------------------ # ||
+|| # Copyright 2000-2024 MH Sub I, LLC dba vBulletin. All Rights Reserved.  # ||
+|| # This file may not be redistributed in whole or significant part.   # ||
+|| # ----------------- VBULLETIN IS NOT FREE SOFTWARE ----------------- # ||
+|| # http://www.vbulletin.com | http://www.vbulletin.com/license.html   # ||
+|| ###################################################################### ||
+\*========================================================================*/
+
+/**
+ * @package vBApi
+ */
+class vB_Api_Styleschedule extends vB_Api
+{
+	/** @var vB_Library_Styleschedule */
+	private $library;
+
+	protected function __construct()
+	{
+		$this->library = vB_Library::instance('styleschedule');
+	}
+
+	public function getSchedule(int $scheduleid) : array
+	{
+		return [
+			'schedule' => $this->library->getStyleSchedule($scheduleid)
+		];
+	}
+
+	public function getAllSchedules() : array
+	{
+		return [
+			'schedules' => $this->library->getStyleSchedules(),
+		];
+	}
+
+	public function deleteSchedule(int $scheduleid) : array
+	{
+		$this->checkHasAdminPermission('canadminstyles');
+		$this->library->deleteSchedule($scheduleid);
+		return ['success' => true];
+	}
+
+	/**
+	 * Insert a new style schedule or update an existing one.
+	 *
+	 * @param mixed $data      Style schedule data. Can be either an array or
+	 *                         an vB_Entity_Styleschedule instance. If array, must have
+	 *                             'styleid' int
+	 *                             'enabled' bool
+	 *                             'startdate' int
+	 *                             'enddate' int
+	 *                             'useyear' bool
+	 *                             'timezoneoffset' string (e.g. 1, -8, 4.5)
+	 *                             'overridechannelcustom' bool
+	 *                             'overrideusercustom' bool
+	 *                             'title' string
+	 *                         and may have
+	 *                             'scheduleid' int
+	 *                         if updating an existing style schedule.
+	 *
+	 * @return array [
+	 *        'success' => bool,
+	 *        'scheduleid' => int|bool saved scheduleid OR false on databse errors
+	 * ]
+	 */
+	public function saveSchedule(mixed $data) : array
+	{
+		$return = $this->saveSchedulesBulk([$data]);
+		return [
+			'success' => $return['success'],
+			'scheduleid' => reset($return['scheduleids']),
+		];
+	}
+
+	/**
+	 * Insert a new style schedule or update an existing one.
+	 *
+	 * @param mixed $schedules Each element must be an array of schedule data or a vB_Entity_Styleschedule.
+	 *                         @see vB_Api_StyleSchedule::saveSchedule()
+	 *
+	 * @return array [
+	 *        'success' => bool true if all schedules were saved successfully
+	 *        'scheduleids' => array of int|bool saved scheduleid OR false on databse errors
+	 * ]
+	 */
+	public function saveSchedulesBulk(array $schedules) : array
+	{
+		$this->checkHasAdminPermission('canadminstyles');
+		$scheduleInstances = [];
+		foreach ($schedules AS $__key => $__data)
+		{
+			if (is_array($__data))
+			{
+				$this->validateSingleScheduleArrayData($__data);
+				//TODO: Hard-code the start time & end time to 00:00:00 & 23:59:59 in API? Or in admincp?
+				$scheduleInstances[$__key] = vB_Entity_Styleschedule::createFromArray($__data);
+			}
+			else if (is_a($__data, 'vB_Entity_Styleschedule'))
+			{
+				$scheduleInstances[$__key] = $__data;
+			}
+			else
+			{
+				throw new vB_Exception_Api('invalid_data');
+			}
+		}
+
+		$scheduleids = $this->library->saveStyleSchedulesBulk($scheduleInstances);
+		$notfalsecount = array_reduce($scheduleids, fn(mixed $carry, mixed $item) => $carry + ($item ? 1 : 0), 0);
+		$success = (count($schedules) == $notfalsecount);
+		return [
+			'success' => $success,
+			'scheduleids' => $scheduleids,
+		];
+
+	}
+
+	private function validateSingleScheduleArrayData($data)
+	{
+		// Some basic sanity checks. Note that the object creation may also throw exceptions,
+		// particularly if the startdate & enddate are not in a digestable format.
+		$required = [
+			'styleid',
+			'enabled',
+			'startdate',
+			'startdate_tzoffset',
+			'enddate',
+			'enddate_tzoffset',
+			'useyear',
+			'priority',
+			'overridechannelcustom',
+			'overrideusercustom',
+			'title',
+		];
+		foreach ($required AS $__key)
+		{
+			if (!isset($data[$__key]))
+			{
+				throw new vB_Exception_Api('required_field_x_missing_or_invalid', $__key);
+			}
+		}
+	}
+}
+
+/*=========================================================================*\
+|| #######################################################################
+|| # Downloaded: 12:50, Tue Dec 24th 2024
+|| # CVS: $RCSfile$ - $Revision: 102970 $
+|| #######################################################################
+\*=========================================================================*/

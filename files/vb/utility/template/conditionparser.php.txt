@@ -1,0 +1,536 @@
+<?php
+/*========================================================================*\
+|| ###################################################################### ||
+|| # vBulletin 6.1.0 Alpha 4 Week 2 - Licence Number VBCW2VFT7A
+|| # ------------------------------------------------------------------ # ||
+|| # Copyright 2000-2024 MH Sub I, LLC dba vBulletin. All Rights Reserved.  # ||
+|| # This file may not be redistributed in whole or significant part.   # ||
+|| # ----------------- VBULLETIN IS NOT FREE SOFTWARE ----------------- # ||
+|| # http://www.vbulletin.com | http://www.vbulletin.com/license.html   # ||
+|| ###################################################################### ||
+\*========================================================================*/
+
+/**
+ * @package vBUtility
+ */
+
+/**
+ * A helper parser for validating if conditionals this takes PHP code and verifies
+ * that it is a subset of PHP safe for use in templates.  The purpose of this is to ensure that
+ * there is no way to create aribraty PHP code exploits from user data when evaluating templates.
+ * To that end the following is absolutely prohibited.
+ * 1) Assignement to variables.  Other things that might change variables such as references.
+ * 2) Any variable variables or functions $$var or $var()
+ * 3) Any functions not on an explicit safe list
+ * 4) Any shell escape operators
+ *
+ * We are going to err on the side of not allowing anything that isn't obviously safe.
+ * The grammar the parser is based on (may not be up to date)
+ * 	C => M
+ * 	C => M OP M ...
+ * 	M => E
+ * 	M => E COP E
+ * 	E => POP E
+ * 	E => (C)
+ * 	E => F|V|L|A
+ * 	V => SV
+ * 	V => SV[C] ...
+ * 	A => array(PL)
+ * 	A => [PL]
+ * 	F => name(PL)
+ * 	PL => C
+ * 	PL => C, PL
+ *
+ * 	SV => Simple variable like $x
+ * 	L => literal value
+ * 	OP => AND, &&, OR, ||, +,-,/,*,%
+ * 	POP => !, +, -
+ */
+
+// This internal to the is seperated from the parsernode classes but is seperated out for
+// unit testing purposes.  It's unlikely to be reusable on it's own (but making it seperate
+// does make it easier to adapt later).
+class vB_Utility_Template_ConditionParser
+{
+	use vB_Utility_Trait_NoSerialize;
+
+	// group some tokens that are the same for validation purposes (we aren't building a
+	// parse tree for compile purposes so we don't actually care if, say, a comparison
+	// is less than or greater than).
+	// Single character operators tend to use character instead of a constant (the integer
+	// token id matches the ascii code of the character)
+
+	// allowed operator tokens.  These allow chaining, such as $x + $y + $z
+	// create a group because we'll general treat these as interchangable.
+	private static $operators = [
+		T_LOGICAL_AND,
+		T_LOGICAL_OR,
+		T_BOOLEAN_AND,
+		T_BOOLEAN_OR,
+		T_COALESCE,
+		'+',
+		'-',
+		'*',
+		'/',
+		'%',
+		'.',
+	];
+
+	// these are operators that can appear before a single variable/expression
+	// note that + and - are both infix
+	private static $prefixOperators = [
+		'+',
+		'-',
+		'!',
+	];
+
+	// comparison operators  These do not allow chaining $x < $y < $z is a syntax error
+	private static $compators = [
+		T_IS_EQUAL,
+		T_IS_IDENTICAL,
+		T_IS_NOT_EQUAL,
+		T_IS_NOT_IDENTICAL,
+		T_SPACESHIP,
+		T_IS_GREATER_OR_EQUAL,
+		'>',
+		T_IS_SMALLER_OR_EQUAL,
+		'<',
+	];
+
+	private static $constants = [
+		T_LNUMBER,
+		T_DNUMBER,
+		//interpolated strings are multiple tokens.  This covers strings constant strings
+		//regardless of what delimiter gets used.  We don't want to allow interpolated strings
+		T_CONSTANT_ENCAPSED_STRING,
+	];
+
+	//tokens that mark the start of a function.  Includes the generic keyword token as
+	//well as some language constructs that act as functions
+	private static $functiontypes = [
+		T_STRING,
+		T_ISSET,
+		T_EMPTY,
+	];
+
+	// We probably shouldn't allow access to global or superglobal variables in the templates in general
+	// but epecially in the conditionals.  This can currently be worked around by using "vb:set" to set the value
+	// to a local variable.  It's probably not the worst thing because it doesn't allow setting the value but
+	// there isn't a good reason to access data from PHP without going through the template system.
+	private static $invalidVars = [
+		'$GLOBALS',
+		'$_SERVER',
+		'$_GET',
+		'$_POST',
+		'$_FILES',
+		'$_COOKIE',
+		'$_SESSION',
+		'$_REQUEST',
+		'$_ENV',
+		'$this',
+	];
+
+	private array $additionalInvalidVars = [];
+	private string $condition;
+	private array $functions;
+	private array $tokens;
+
+	public function __construct(string $condition, array $functions, string $templatevar)
+	{
+		$this->condition = $condition;
+		$this->functions = $functions;
+		$this->additionalInvalidVars[] = $templatevar;
+	}
+
+	public function validate() : bool|array
+	{
+		try
+		{
+			// These are intended to be short snippets to go into if blocks (or ?: expressions
+			$maxlen = 1024;
+			if (strlen($this->condition) > $maxlen)
+			{
+				throw new vB_Utility_Template_Exception_ConditionParse(['parse_condition_too_long', $maxlen, $this->condition]);
+			}
+
+			$this->tokens = $this->getTokens();
+			$this->parse();
+
+			// Sanity check if the parse succeeds but the internal PHP parse fails, we still have a problem
+			// This really shouldn't happen.  Note that we need to put this into the context that we will be
+			// injecting it into the compiled template.  Otherwise we'll etiher get spurious errors (for instance
+			// the snippet not ending in a ;) or things that shouldn't pass will (like trying to embed another
+			// if statement in the condition block).
+			//
+			// Due this last so that we won't get too many PHP errors that we pass to the user the difference
+			// between those and the errors produced by the parser is a little jarring.
+			try
+			{
+				PhpToken::tokenize("<?php\n if(" . $this->condition . "){}", TOKEN_PARSE);
+			}
+			catch (ParseError $e)
+			{
+				throw new vB_Utility_Template_Exception_ConditionParse(['php_error_x', $e->getMessage()]);
+			}
+		}
+		catch (vB_Utility_Template_Exception_ConditionParse $e)
+		{
+			//$this->dumpTokens();
+			return $e->getErrors();
+		}
+		return true;
+	}
+
+	private function getTokens() : array
+	{
+		// Let's strip the ignorable whitespace tokens so we don't have to handle them in the parser
+		// The actual PHP parser will ignore them (definitionally) so they won't affect processing (even if we ultimately
+		// leave them in the value we push to the template)
+		//
+		// The PHP open tag is also ignorable but that seems strange so leave it in and verify that we have it.
+		$tokens = PhpToken::tokenize("<?php\n" . $this->condition);
+		$tokens = array_values(array_filter($tokens, function($t) {return !($t->isIgnorable() AND $t->is(T_WHITESPACE));}));
+		return $tokens;
+	}
+
+	private function parse() : void
+	{
+		// this should never fail so let's not worry too much about the error but check it to make sure
+		// nothing went off the rails.
+		if (!$this->tokens[0]->is(T_OPEN_TAG))
+		{
+			throw $this->unexpectedInput(0);
+		}
+
+		$offset = $this->parseCondition(1);
+
+		//we should be at exactly the last position in the token array
+		$lastoffset = count($this->tokens) - 1;
+		if ($offset < $lastoffset)
+		{
+			throw $this->unexpectedInput($offset);
+		}
+
+		//not sure if this can actually happen, check anyway.
+		if ($lastoffset > $lastoffset)
+		{
+			throw $this->unexpectedEnd();
+		}
+	}
+
+	private function parseCondition(int $offset) : int
+	{
+		$newoffset = $this->parseComparison($offset);
+		while (true)
+		{
+			if ($this->isToken($newoffset + 1, self::$operators))
+			{
+				$newoffset = $this->parseComparison($newoffset + 2);
+			}
+			else
+			{
+				return $newoffset;
+			}
+		}
+	}
+
+	private function parseComparison(int $offset) : int
+	{
+		//unlike the Condition above we only allow one of these
+		$newoffset = $this->parseExpression($offset);
+		if ($this->isToken($newoffset + 1, self::$compators))
+		{
+			$newoffset = $this->parseExpression($newoffset + 2);
+		}
+
+		return $newoffset;
+	}
+
+	private function parseExpression(int $offset) : int
+	{
+		if ($this->isToken($offset, '('))
+		{
+			$newoffset = $this->parseCondition($offset + 1);
+			$this->checkToken($newoffset + 1, ')');
+			$newoffset++;
+		}
+		else if ($this->isToken($offset, self::$prefixOperators))
+		{
+			$newoffset = $this->parseExpression($offset + 1);
+		}
+		else
+		{
+			if ($this->isToken($offset, T_VARIABLE))
+			{
+				$newoffset = $this->parseVariable($offset);
+			}
+			else if ($this->isTokenConstant($offset))
+			{
+				$newoffset = $this->parseConstant($offset);
+			}
+			else if ($this->isToken($offset, [T_ARRAY, '[']))
+			{
+				$newoffset = $this->parseArray($offset);
+			}
+			else
+			{
+				$newoffset = $this->parseFunction($offset);
+			}
+		}
+
+		return $newoffset;
+	}
+
+	// Handle both array forms here even though the array keyword acts like a function.
+	// Handling it as a function results in checking it against the function approved list and
+	// it's weird to always accept the [] syntax but only conditionally accept the array() syntax.
+	private function parseArray(int $offset) : int
+	{
+		$this->checkToken($offset, [T_ARRAY, '[']);
+
+		$newoffset = $offset;
+		$enddelimiter = ']';
+
+		if ($this->isToken($offset, T_ARRAY))
+		{
+			$newoffset++;
+			$this->checkToken($offset + 1, '(');
+			$enddelimiter = ')';
+		}
+
+		while (true)
+		{
+			// This handles the case where we don't have an element where we would normally expect one
+			// either because the array is empty [] or because there is a trailing comman [1,2,3,]
+			// Increment offset to the delimeter and complete the array.
+			if ($this->isToken($newoffset + 1, $enddelimiter))
+			{
+				$newoffset++;
+				break;
+			}
+
+			$newoffset = $this->parseCondition($newoffset + 1);
+			$newoffset++;
+
+			if ($this->isToken($newoffset, $enddelimiter))
+			{
+				break;
+			}
+
+			$this->checkToken($newoffset, ',');
+		}
+
+		return $newoffset;
+	}
+
+	//this case is going to get more complicated so as a seperate function.
+	private function parseVariable(int $offset) : int
+	{
+		$this->checkToken($offset, T_VARIABLE);
+
+		if ($this->tokenInArray($offset, self::$invalidVars) OR $this->tokenInArray($offset, $this->additionalInvalidVars))
+		{
+			throw new vB_Utility_Template_Exception_ConditionParse(['template_contains_invalid_vars', $this->tokens[$offset]->text, $this->condition]);
+		}
+
+		$newoffset = $offset;
+		while (true)
+		{
+			if ($this->isToken($newoffset + 1, '['))
+			{
+				// Originally I intended to restrict this to "simple" expressions -- variables or constants just to be ultra tight.
+				// however, on reflection, we need mathematical expressions ($x + 1), parenthesis grouping, and even some function calls
+				// (strtoupper($key) seems valid).  The full condition expression isn't necesarily needed because $A[$X AND $Y] makes no
+				// sense, but the full expression gets back to the condition element anyway and allowing $A[($X AND $Y)] but not $A[$X AND $Y]
+				// is just unnecesarily wierd.
+				$newoffset = $this->parseCondition($newoffset + 2);
+				$this->checkToken($newoffset + 1, ']');
+				$newoffset++;
+			}
+			else
+			{
+				return $newoffset;
+			}
+		}
+	}
+
+	private function isTokenConstant(int $offset) : bool
+	{
+		if ($this->doesTokenExist($offset))
+		{
+			if ($this->isTokenString($offset, ['true', 'false', 'null']))
+			{
+				return true;
+			}
+			else if ($this->isToken($offset, self::$constants))
+			{
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	private function parseConstant(int $offset) : int
+	{
+		$this->checkTokenExists($offset);
+		if ($this->isTokenConstant($offset))
+		{
+			return $offset;
+		}
+
+		throw $this->unexpectedInput($offset);
+	}
+
+	private function parseFunction(int $offset) : int
+	{
+		// Currently allows simple functions of the form name(x,y,z).  At some point we may want to allow static class methods such as
+		// vB_Object::somefunctionname() (appropriately on the the approved list of course).  I thought we allowed that but there isn't
+		// anything like that on the current approved list so skipping implementing that.
+		//
+		// We do not allow functions to be called from strings or arrays -- especially not from variables -- and we never want to.
+		//
+		// Treat some function like constructs as functions
+		$this->checkToken($offset, self::$functiontypes);
+
+		$this->checkToken($offset + 1, '(');
+
+		// This loop is complicated by the fact that we don't have to have a parameter, nor is a
+		// parameter always followed by a comma.  So we need to check for the close paren before
+		// entering the loop *and* after we fetch a parameter (and adjust the offset accordingly)
+		$newoffset = $offset + 1;
+		if ($this->isToken($newoffset + 1, ')'))
+		{
+			$newoffset++;
+		}
+		else
+		{
+			while (true)
+			{
+				$newoffset = $this->parseCondition($newoffset + 1);
+				$newoffset++;
+				if ($this->isToken($newoffset, ')'))
+				{
+					break;
+				}
+				$this->checkToken($newoffset, ',');
+			}
+		}
+
+		//check the function approved list after we ensure that the function parses correctly.
+		if (!$this->tokenInArray($offset, $this->functions))
+		{
+			throw new vB_Utility_Template_Exception_ConditionParse(['template_contains_unsafe_function', $this->tokens[$offset]->text, $this->condition]);
+		}
+
+		return $newoffset;
+	}
+
+	private function isToken(int $offset, int|string|array $is)
+	{
+		$token = $this->tokens[$offset] ?? null;
+		if (!$token)
+		{
+			return false;
+		}
+		return $token->is($is);
+	}
+
+	// the string token generically covers a bunch of PHP keywords, but we don't want to just accept any
+	// keywords so verify that it matches.  Use the same "any" approach that we do for the token.
+	private function isTokenString(int $offset, string|array $expected) : bool
+	{
+		if (!$this->isToken($offset, T_STRING))
+		{
+			return false;
+		}
+
+		if (!is_array($expected))
+		{
+			return (strcasecmp($this->tokens[$offset]->text, $expected) === 0);
+		}
+		else
+		{
+			return $this->tokenInArray($offset, $expected);
+		}
+	}
+
+	private function doesTokenExist(int $offset) : bool
+	{
+		return isset($this->tokens[$offset]);
+	}
+
+	private function checkToken(int $offset, int|string|array $is) : void
+	{
+		$token = $this->tokens[$offset] ?? null;
+		if (!$token)
+		{
+			throw $this->unexpectedEnd();
+		}
+
+		if (!$token->is($is))
+		{
+			throw $this->unexpectedInput($offset);
+		}
+	}
+
+	private function checkTokenExists(int $offset) : void
+	{
+		if (!isset($this->tokens[$offset]))
+		{
+			throw $this->unexpectedEnd();
+		}
+	}
+
+	//there isn't a library function to handle case insensitive in_array
+	//we may want a version that works against an arbitrary string but actually usage has
+	//always been token text so we'll simplify the caller's work.
+	private function tokenInArray(int $offset, array $haystack) : bool
+	{
+		$needle = $this->tokens[$offset]->text;
+		foreach ($haystack AS $test)
+		{
+			if (strcasecmp($needle, $test) === 0)
+			{
+				return true;
+			}
+		}
+		return false;
+	}
+
+	private function unexpectedEnd() : vB_Utility_Template_Exception_ConditionParse
+	{
+		return new vB_Utility_Template_Exception_ConditionParse(['parse_condition_unexpected_end', $this->condition]);
+	}
+
+	private function unexpectedInput(int $offset) : vB_Utility_Template_Exception_ConditionParse
+	{
+		return new vB_Utility_Template_Exception_ConditionParse(['parse_condition_unexpected_input', $this->tokens[$offset]->text, $this->condition]);
+	}
+
+	private function dumpTokens()
+	{
+		$dump = [];
+		foreach ($this->tokens AS $token)
+		{
+			$dump[] = $token->text . ' : ' . $token->getTokenName();
+		}
+		var_dump($dump);
+	}
+
+	private function dumpToken($offset)
+	{
+		$token = $this->tokens[$offset];
+		var_dump($token->text . ' : ' . $token->getTokenName());
+	}
+
+}
+
+// We might want to consider unifying with Parse exceptions in the parse class file, but for now this is strictly
+// private to this file/class and should remain so.  Not worth worrying too much about the details for a private exception.
+class vB_Utility_Template_Exception_ConditionParse extends vB_Utility_Exception_Phrase {}/*=========================================================================*\
+|| #######################################################################
+|| # Downloaded: 12:50, Tue Dec 24th 2024
+|| # CVS: $RCSfile$ - $Revision: 116005 $
+|| #######################################################################
+\*=========================================================================*/

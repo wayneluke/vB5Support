@@ -1,0 +1,49 @@
+<?php
+/*========================================================================*\
+|| ###################################################################### ||
+|| # vBulletin 6.1.0 Alpha 4 Week 2 - Licence Number VBCW2VFT7A
+|| # ------------------------------------------------------------------ # ||
+|| # Copyright 2000-2024 MH Sub I, LLC dba vBulletin. All Rights Reserved.  # ||
+|| # This file may not be redistributed in whole or significant part.   # ||
+|| # ----------------- VBULLETIN IS NOT FREE SOFTWARE ----------------- # ||
+|| # http://www.vbulletin.com | http://www.vbulletin.com/license.html   # ||
+|| ###################################################################### ||
+\*========================================================================*/
+
+/**
+ * @package vBUtility
+ */
+class vB_Utility_Template_ParserNode_Curly_Data extends vB_Utility_Template_ParserNode_Curly
+{
+	public function validate() : array
+	{
+		$errors = [];
+
+		$attributecount = sizeof($this->main_node->attributes);
+
+		if ($attributecount == 0)
+		{
+			$errors[] = 'no_variable_specified';
+		}
+		else if ($attributecount == 1 OR $attributecount == 2)
+		{
+			// TODO: Add an error phrase for no controller/action specified
+		}
+
+		return $errors;
+	}
+
+	public function compile() : string
+	{
+		$string = $this->compileVar($this->main_node->attributes[0]);
+		$arguments = $this->getArgumentsFromAttributes(1);
+
+		return '\'\'; ' . $string . ' = vB_Template_Runtime::parseData(' . $arguments . '); $final_rendered .= \'\'';
+	}
+}
+/*=========================================================================*\
+|| #######################################################################
+|| # Downloaded: 12:50, Tue Dec 24th 2024
+|| # CVS: $RCSfile$ - $Revision: 115380 $
+|| #######################################################################
+\*=========================================================================*/

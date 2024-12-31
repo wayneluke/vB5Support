@@ -1,0 +1,125 @@
+<?php
+/*========================================================================*\
+|| ###################################################################### ||
+|| # vBulletin 6.1.0 Alpha 4 Week 2 - Licence Number VBCW2VFT7A
+|| # ------------------------------------------------------------------ # ||
+|| # Copyright 2000-2024 MH Sub I, LLC dba vBulletin. All Rights Reserved.  # ||
+|| # This file may not be redistributed in whole or significant part.   # ||
+|| # ----------------- VBULLETIN IS NOT FREE SOFTWARE ----------------- # ||
+|| # http://www.vbulletin.com | http://www.vbulletin.com/license.html   # ||
+|| ###################################################################### ||
+\*========================================================================*/
+
+/**
+ * vB_Api_Unsubscribe
+ *
+ * @package vBApi
+ */
+class vB_Api_Unsubscribe extends vB_Api
+{
+	/**
+	 * Get current user's 'emailoption' & 'emailoptionupdated'.
+	 *
+	 * @throws vB_Exception_Api if current user is not logged in.
+	 */
+	// public function getCurrentUnsubscribedStatus() : array
+	// {
+	// 	$currentUserid = vB::getCurrentSession()->get('userid');
+	// 	if ($currentUserid > 0)
+	// 	{
+	// 		$assertor = vB::getDbAssertor();
+	// 		$check = $assertor->getRow('mailoption', ['userid' => $currentUserid]);
+	// 		if ($check)
+	// 		{
+	// 			return $check;
+	// 		}
+	// 		else
+	// 		{
+	// 			// Note -- Default does not mean subscribed or unsubscribed, but that user never opted in or opted out.
+	// 			return [
+	// 				'userid' => $currentUserid,
+	// 				'emailoptionupdated' => 0,
+	// 				'emailoption' => vB_Library_Unsubscribe::EMAILOPTION_DEFAULT,
+	// 			];
+	// 		}
+	// 	}
+	// 	else
+	// 	{
+	// 		throw new vB_Exception_Api('no_permission');
+	// 	}
+	// }
+
+	/**
+	 * Unsubscribe $userid from emails if $hash is valid.
+	 *
+	 * @param int    $userid
+	 * @param string $hash  Unsubscribe hash from email headers or email footer links
+	 *
+	 * @return void
+	 */
+	public function unsubscribeEmail(int $userid, string $hash) : void
+	{
+		// Note, this intentionally does NOT check current user. It's not meant to, and
+		// the hash verify is meant to be sufficient in order to allow for "one-click"
+		// unsubscriptions.
+		/** @var vB_Library_Unsubscribe */
+		$lib = vB_Library::instance('unsubscribe');
+		$valid = $lib->verifyHash($userid, $hash);
+		if ($valid)
+		{
+			$this->doUnsubscribeEmails($userid);
+			$lib->trackEmailOptInOut($userid, vB_Library_Unsubscribe::EMAILOPTION_UNSUBSCRIBED);
+			// todo: It would be really nice to delete mailqueue records for this user/email here but
+			// we don't have an index on the toemail (& no userid column) so going to defer it.
+		}
+	}
+
+	// may eventually move this to the library if this becomes a common operation.
+	private function doUnsubscribeEmails(int $userid) : void
+	{
+		// Update (disable) various email-related user options.
+
+		// TODO: create a separate user lib function for saving email options, user::save() is ridiculous.
+
+		/** @var vB_Library_User */
+		$userLib = vB_Library::instance('user');
+		$userInfo =  ['emailnotification' => 0];
+		$userOptions = [
+			'options' => [
+				'emailonpm' => 0,
+				'birthdayemail' => 0,
+				'adminemail' => 0,
+			],
+			//'adminoptions' => $adminoptions,
+			//'notificationOptions' => $notificationOptions,
+			//'moderatorNotificationOptions' => $moderatorNotificationOptions,
+			'moderatorEmailNotificationOptions' => [
+				'monitoredword' => 0,
+				'reportedpost' => 0,
+				'unapprovedpost' => 0,
+				'spampost' => 0,
+			],
+		];
+		$saveOptions = [
+			'userfieldskiprequired' => true,
+			'skippasswordhistory' => true,
+			'skipactivationemail' => true,
+			'skipcoppa' => true,
+			'skipusernamechecks' => [
+				'duplicate' => true,
+			],
+			// todo: a completely skip displaynames option?
+			'allowdisplayname' => true,
+		];
+
+		$userLib->save($userid, '', $userInfo, [], $userOptions, $saveOptions);
+	}
+
+}
+
+/*=========================================================================*\
+|| #######################################################################
+|| # Downloaded: 12:50, Tue Dec 24th 2024
+|| # CVS: $RCSfile$ - $Revision: 115295 $
+|| #######################################################################
+\*=========================================================================*/

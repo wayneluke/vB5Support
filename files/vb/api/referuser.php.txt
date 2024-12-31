@@ -1,0 +1,80 @@
+<?php if (!defined('VB_ENTRY')) die('Access denied.');
+/*========================================================================*\
+|| ###################################################################### ||
+|| # vBulletin 6.1.0 Alpha 4 Week 2 - Licence Number VBCW2VFT7A
+|| # ------------------------------------------------------------------ # ||
+|| # Copyright 2000-2024 MH Sub I, LLC dba vBulletin. All Rights Reserved.  # ||
+|| # This file may not be redistributed in whole or significant part.   # ||
+|| # ----------------- VBULLETIN IS NOT FREE SOFTWARE ----------------- # ||
+|| # http://www.vbulletin.com | http://www.vbulletin.com/license.html   # ||
+|| ###################################################################### ||
+\*========================================================================*/
+
+/**
+ * vB_Api_ReferUser
+ *
+ * @package vBApi
+ * @access public
+ */
+class vB_Api_ReferUser extends vB_Api
+{
+	/**
+	 * @var object Instance of the ReferUser library
+	 */
+	protected $library = null;
+
+	/**
+	 * Constructor
+	 */
+	protected function __construct()
+	{
+		parent::__construct();
+
+		$this->library = vB_Library::instance('referuser');
+	}
+
+	/**
+	 * Generates and returns a user referral code for the currently logged in user
+	 *
+	 * @return string The referral code
+	 */
+	public function getReferralCode()
+	{
+		$this->checkHasPermission('genericpermissions2', 'canreferusers');
+
+		return $this->library->getReferralCode();
+	}
+
+	/**
+	 * Validates a user referral code
+	 *
+	 * @param  string      $referralCode The referral code to validate
+	 *
+	 * @return bool|string Returns the cleaned referral code if it is valid and active, false otherwise
+	 */
+	public function validateReferralCode($referralCode)
+	{
+		return $this->library->validateReferralCode($referralCode);
+	}
+
+	/**
+	 * Return a report of referrers
+	 *
+	 * @param array $startdate Start Date of the report. an array of 'year', 'month', 'day', 'hour' and 'minute'
+	 * @param array $enddate End Date of the report. an array of 'year', 'month', 'day', 'hour' and 'minute'
+	 * @return array Referrers information
+	 */
+	public function fetchReferrers($startdate, $enddate)
+	{
+		$this->checkHasAdminPermission('canadminusers');
+
+		return $this->library->fetchReferrers($startdate, $enddate);
+	}
+}
+
+/*=========================================================================*\
+|| #######################################################################
+|| # Downloaded: 12:50, Tue Dec 24th 2024
+|| # CVS: $RCSfile$ - $Revision: 104510 $
+|| #######################################################################
+\*=========================================================================*/

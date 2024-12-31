@@ -1,0 +1,207 @@
+<?php
+/*========================================================================*\
+|| ###################################################################### ||
+|| # vBulletin 6.1.0 Alpha 4 Week 2 - Licence Number VBCW2VFT7A
+|| # ------------------------------------------------------------------ # ||
+|| # Copyright 2000-2024 MH Sub I, LLC dba vBulletin. All Rights Reserved.  # ||
+|| # This file may not be redistributed in whole or significant part.   # ||
+|| # ----------------- VBULLETIN IS NOT FREE SOFTWARE ----------------- # ||
+|| # http://www.vbulletin.com | http://www.vbulletin.com/license.html   # ||
+|| ###################################################################### ||
+\*========================================================================*/
+
+/**
+ * @package vBUtility
+ */
+class vB_Utility_WordList
+{
+	use vB_Utility_Trait_NoSerialize;
+
+	private vB_Utility_String $stringUtil;
+	private array $reList;
+
+	// ASCII character search 0-47, 58-64, 91-96, 123-127
+	// This RE snippet should be used to match a single "non word" char.  Intended to be used
+	// inside of hard braces [] but those are ommitted to allow negation
+	// Note that this particular selection has survided numerous refactors and is not extensively
+	// documented or supported by current best practices research.
+	private string $nonwordChar = '\x00-\x2f\x3a-\x40\x5b-\x60\x7b-\x7f';
+
+
+	// We may want to allow more than one storage/init type.  For instance and array of words, so use
+	// factory methods instead directly using the constructor.
+	public static function createFromText(vB_Utility_String $stringUtil, string $text) : self
+	{
+		$list = new self($stringUtil);
+		$list->reList = $list->getReList($list->getTermList($text));
+		return $list;
+	}
+
+	/**
+	 *	Constructor
+	 */
+	private function __construct(vB_Utility_String $stringUtil)
+	{
+		$this->stringUtil = $stringUtil;
+	}
+
+	private function getTermList(string $text) : array
+	{
+		$terms = [];
+		$words = preg_split('#[ \r\n\t]+#', $text, -1, PREG_SPLIT_NO_EMPTY);
+
+		$currentTerm = [];
+		foreach ($words AS $word)
+		{
+			if (count($currentTerm))
+			{
+				$last = $this->stringUtil->substr($word, -1, 1);
+				if ($last == '}')
+				{
+					$currentTerm[] = $this->stringUtil->substr($word, 0, -1);
+					//now that we know we have a completed phrase let's strip the opening
+					//brace from the first word in the term.
+					$currentTerm[0] = $this->stringUtil->substr($currentTerm[0], 1);
+					$terms[] = $currentTerm;
+					$currentTerm = [];
+				}
+				else
+				{
+					$currentTerm[] = $word;
+				}
+			}
+			else
+			{
+				$first = $this->stringUtil->substr($word, 0, 1);
+				if ($first == '{')
+				{
+					$last = $this->stringUtil->substr($word, -1, 1);
+					if ($last == '}')
+					{
+						$terms[] = [$this->stringUtil->substr($word, 1, -1)];
+					}
+					else
+					{
+						$currentTerm[] = $word;
+					}
+				}
+				else
+				{
+					$terms[] = $word;
+				}
+			}
+		}
+
+		//if we have an incomplete phrase then append them to the list as seperate
+		//words with any braces being treated as literals.
+		$terms = array_merge($terms, $currentTerm);
+		return $terms;
+	}
+
+	private function getReList(array $terms) : array
+	{
+		$nonwordChar = '[' . $this->nonwordChar . ']';
+
+		$reList = [];
+		foreach ($terms AS $term)
+		{
+			if (is_array($term))
+			{
+				$escapedwords = [];
+				foreach ($term AS $word)
+				{
+					$escapedwords[] = preg_quote($word, '#');
+				}
+
+				$escapedwords = implode('\\s*', $escapedwords);
+
+				// words are delimited by ASCII characters outside of A-Z, a-z and 0-9
+				$reList[] = '#(?<=' . $nonwordChar . '|^)' . $escapedwords . '(?=' . $nonwordChar . '|$)#si';
+			}
+			else
+			{
+				$escapedword = preg_quote($term, '#');
+				$reList[] = "#$escapedword#si";
+			}
+		}
+
+		return $reList;
+	}
+
+
+	/**
+	 * Replaces any instances of words censored in the text with replacechar
+	 *
+	 * @param	string $text
+	 * @param string $replacechar -- the string to replace each character of a censored word with
+	 * 	generally assumed to be a single character but there isn't any dependency on that (and
+	 * 	I don't think the option that we generally use explicitly requires a single character).  You
+	 * 	can pass an empty string to strip the censored word instead of replacing it.
+	 *
+	 * @return	string
+	 */
+	public function censor(string $text, string $replacechar) : string
+	{
+		if (!$text)
+		{
+			// return $text rather than nothing, since this could be '' or 0
+			return $text;
+		}
+
+		$censormatch = function($matches) use($replacechar)
+		{
+			//the u modifier does bad things when the charset isn't utf-8 but we need it
+			//to make the replacement character count correct.
+			$modifier = ($this->stringUtil->isDefaultCharset('utf-8') ? 'u' : '');
+			$value = preg_replace('#[^\\s]#' . $modifier, $replacechar, $matches[0]);
+			return $value;
+		};
+
+		$text = preg_replace_callback($this->reList, $censormatch, $text);
+
+		return $text;
+	}
+
+	public function getMatchedWords(string $text) : array
+	{
+		$whitespaceRE = '#\\s+#' . ($this->stringUtil->isDefaultCharset('utf-8') ? 'u' : '');
+
+		$foundwords = [];
+		foreach ($this->reList AS $re)
+		{
+			if (preg_match_all($re, $text, $matches))
+			{
+				foreach ($matches[0] AS $match)
+				{
+					//replace whitespace with a single space to normalize "phrase matches"
+					$match = preg_replace($whitespaceRE, ' ', $match);
+					$match = $this->stringUtil->strtolower($match);
+					$foundwords[$match] = true;
+				}
+			}
+		}
+
+		// return the found words
+		if (!empty($foundwords))
+		{
+			$foundwords = array_keys($foundwords);
+			sort($foundwords);
+		}
+
+		return $foundwords;
+	}
+
+	public function isMatch(string $text) : bool
+	{
+		$words = $this->getMatchedWords($text);
+		return (count($words) > 0);
+	}
+}
+
+
+/*=========================================================================*\
+|| #######################################################################
+|| # Downloaded: 12:50, Tue Dec 24th 2024
+|| # CVS: $RCSfile$ - $Revision: 103236 $
+|| #######################################################################
+\*=========================================================================*/

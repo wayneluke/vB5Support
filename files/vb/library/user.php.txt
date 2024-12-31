@@ -1,0 +1,5449 @@
+<?php
+/*========================================================================*\
+|| ###################################################################### ||
+|| # vBulletin 6.1.0 Alpha 4 Week 2 - Licence Number VBCW2VFT7A
+|| # ------------------------------------------------------------------ # ||
+|| # Copyright 2000-2024 MH Sub I, LLC dba vBulletin. All Rights Reserved.  # ||
+|| # This file may not be redistributed in whole or significant part.   # ||
+|| # ----------------- VBULLETIN IS NOT FREE SOFTWARE ----------------- # ||
+|| # http://www.vbulletin.com | http://www.vbulletin.com/license.html   # ||
+|| ###################################################################### ||
+\*========================================================================*/
+
+/**
+ * vB_Library_User
+ *
+ * @package vBLibrary
+ */
+class vB_Library_User extends vB_Library
+{
+	const PASSWORD_RESET_ATTEMPTS = 10;
+	const PASSWORD_RESET_LOCK_MINUTES = 10;
+
+	private $groupInTopic;
+
+	//some variables for avatar caching.
+	private $pendingAvatarUserids = [];
+	private $loadedAvatarUserids = [];
+	private $avatarsCache = [];
+	private $avatarUserCache = [];
+
+	// user privacy options
+	private $privacyOptions = [
+		'showContactInfo' => 'contact_info',
+		'showAvatar' => 'profile_picture',
+		'showActivities' => 'activities',
+		'showVM' => 'visitor_messages',
+		'showSubscriptions' => 'following',
+		'showSubscribers' => 'followers',
+		'showPhotos' => 'photos',
+		'showVideos' => 'videos',
+		'showGroups' => 'group_memberships',
+	];
+
+	/**
+	 * Check whether a user is banned.
+	 *
+	 * @param integer $userid User ID.
+	 * @return bool Whether the user is banned.
+	 */
+	public function isBanned($userid)
+	{
+		$usercontext = vB::getUserContext($userid);
+		return !$usercontext->hasPermission('genericoptions', 'isnotbannedgroup');
+	}
+
+	/**
+	 * Check whether a user is banned and returns info such as reason and liftdate if possible.
+	 *
+	 * @param	int	$userid
+	 *
+	 * @retun	array -- ban liftdate and reason or false is user is not banned.
+	 */
+	public function fetchBannedInfo($userid)
+	{
+		$userid = intval($userid);
+		if (!$userid)
+		{
+			$userid = vB::getCurrentSession()->get('userid');
+		}
+
+		$cache = vB_Cache::instance(vB_Cache::CACHE_FAST);
+		// looking up cache for the node
+		$hashKey = 'vbUserBanned_'. $userid;
+		$banned = $cache->read($hashKey);
+
+		if (!empty($banned))
+		{
+			return $banned;
+		}
+
+		if ($this->isBanned($userid))
+		{
+			$info = ['isbanned' => 1];
+			$banRecord = vB::getDbAssertor()->getRow('vBForum:userban', ['userid' => $userid]);
+
+			if ($banRecord AND empty($banRecord['errors']))
+			{
+				$info['liftdate'] = $banRecord['liftdate'];
+				$info['reason'] = $banRecord['reason'];
+				$info['admin'] = $this->fetchUserName($banRecord['adminid']);
+			}
+			else if (!vB::getUserContext()->hasPermission('genericoptions', 'isnotbannedgroup'))
+			{
+				$info['bannedGroup'] = true;
+				$info['admin'] = vB_Phrase::fetchSinglePhrase('administrator');
+			}
+		}
+		else
+		{
+			$info = ['isbanned' => 0];
+		}
+
+		$cache->write($hashKey, $info, 1440, 'userChg_' . $userid);
+		return $info;
+	}
+
+	/**
+	 * Fetches the username for a userid
+	 *
+	 * @param integer $ User ID
+	 * @return string
+	 */
+	public function fetchUserName($userid)
+	{
+		$userInfo = $this->fetchUserinfo($userid);
+
+		if (empty($userInfo) OR empty($userInfo['userid']))
+		{
+			return false;
+		}
+
+		return $userInfo['username'];
+	}
+
+	/**
+	 * Fetches the user names for the given user ids
+	 * @param array $userIds
+	 * @return array $usernames -- format [$userid => $username]
+	 */
+	public function fetchUserNames($userIds)
+	{
+		$cache = vB_Cache::instance(vB_Cache::CACHE_FAST);
+		$usernames = [];
+		$remainingIds = [];
+		foreach ($userIds as $userid)
+		{
+			$user = $cache->read('vbUserInfo_' . $userid);
+			if (!empty($user))
+			{
+				$usernames[$userid] = $user['username'];
+			}
+			else
+			{
+				$remainingIds[] = $userid;
+			}
+		}
+		if (!empty($remainingIds))
+		{
+			$usernames += vB::getDbAssertor()->getColumn('user', 'username', ['userid' => $remainingIds], false, 'userid');
+		}
+		return $usernames;
+	}
+
+	/**
+	 * Fetches an array containing info for the specified user, or false if user is not found
+	 * @param integer $userid
+	 * @param integer $languageid -- If set to 0, it will use user-set languageid (if exists) or default languageid.
+	 * @param boolean $nocache -- If true, the method won't use user cache but fetch information from DB.
+	 * @param	boolean $lastactivity -- unused
+	 * @return array The information for the requested user
+	 */
+	public function fetchUserWithPerms($userid, $languageid = 0, $nocache = false, $lastactivity = false)
+	{
+		//Try cached data.
+		$fastCache = vB_Cache::instance(vB_Cache::CACHE_FAST);
+
+		$userCacheKey = "vb_UserWPerms_$userid" . '_' . $languageid;
+		$cached = vB_Cache::instance(vB_Cache::CACHE_LARGE)->read($userCacheKey);
+
+		// This already uses FAST cache, do not encapsulate in LARGE
+		$userInfo = $this->fetchUserinfo($userid, [], $languageid);
+		if (!$userInfo)
+		{
+			return false;
+		}
+
+		//This includes usergroups, groupintopic, moderator, and basic userinformation. Each should be cached in fastcache.
+		if (($cached !== false) AND ($cached['groups'] !== false))
+		{
+			$usergroups = $cached['groups'];
+			$groupintopic = $cached['git'];
+			$moderators = $cached['moderators'];
+		}
+		else
+		{
+			// unsetting secondary groups depending on allowmembergroups UG option is done in
+			// vB_User::fetchUserinfo()
+
+			//Let's see if we have the raw data.
+			$groupintopic = $this->getGroupInTopic($userid);
+			$primary_group_id = $userInfo['usergroupid'];
+			$display_group_id = $userInfo['displaygroupid'];
+			$secondary_group_ids = (!empty($userInfo['membergroupids'])) ? explode(',', str_replace(' ', '', $userInfo['membergroupids'])) : [];
+			$infraction_group_ids = (!empty($userInfo['infractiongroupids'])) ? explode(',', str_replace(' ', '', $userInfo['infractiongroupids'])) : [];
+
+			$usergroups = [
+				'groupid' => $primary_group_id,
+				'displaygroupid' => $display_group_id,
+				'secondary' => $secondary_group_ids,
+				'infraction' => $infraction_group_ids
+			];
+
+			$moderators = $this->fetchModerator($userid);
+
+			vB_Cache::instance(vB_Cache::CACHE_LARGE)->write(
+				$userCacheKey,
+				[
+					'groups' => $usergroups,
+					'git' => $groupintopic,
+					'moderators' => $moderators
+				],
+				1440,
+				["userPerms_$userid", "userChg_$userid"]
+			);
+		}
+
+		//not sure why we write this because if we didn't get a cache hit on the fetchUserinfo call
+		//we wrote it then.  We have, for reasons that are not clear, a different cache lifetime here than
+		//the cache in fetchUserinfo (1440 aka 24 hours instead of 5 minutes but given the usual lifespan
+		//of the usual local memory fastcache both are basically infinity.)  Declining to muck with the
+		//behavior at the moment;
+		$infoKey = vB_User::getUserCacheKey($userid, [], $languageid);
+		$fastCache->write($infoKey, $userInfo, 5, "userChg_$userid");
+
+		$this->groupInTopic[$userid] = $groupintopic;
+		return $userInfo;
+	}
+
+	/**
+	 * Delete a user
+	 *
+	 * @param integer   $userid              The ID of user to be deleted
+	 * @param bool      $transfer_groups     Whether to transfer the Groups and Blogs owned by the user to $transferee
+	 * @param integer   $transferee          ID of user that will receive the groups & blogs owned by deleted user.
+	 */
+	public function delete($userid, $transfer_groups = true, $transferee = null)
+	{
+		require_once(DIR . '/includes/adminfunctions.php');
+
+		// check user is not set in the $undeletable users string
+		if (is_unalterable_user($userid))
+		{
+			throw new vB_Exception_Api('user_is_protected_from_alteration_by_undeletableusers_var');
+		}
+		else
+		{
+			$info = vB_User::fetchUserinfo($userid);
+			if (!$info)
+			{
+				throw new vB_Exception_Api('invalid_user_specified');
+			}
+
+ 			$events = [];
+			if ($transfer_groups AND $transferee)
+			{
+				// This is untested outside of admin calling the API::delete().
+				$this->transferOwnership($userid, $transferee);
+			}
+			else
+			{
+				// TODO: We need to skip perm checks for this so *all* user data gets caught in the net when
+				// the delete is triggered from a cron and doesn't run under an admin session.
+
+				// Replicate the check in the content_channel API, but don't throw an exception, just ignore it.
+				$guids = vB_Channel::getProtectedChannelGuids();
+				// checking keys is cheaper in a loop.
+				$guids = array_flip(array_values($guids));
+
+				// Grab all social groups (but not categories)
+				// TODO: figure out what should happen with categories
+				$channelContentType = vB_Types::instance()->getContentTypeId('vBForum_Channel');
+				$socialGroupChannel = vB_Library::instance('node')->getSGChannel();
+				$nodeidsforuser = [];
+				$assertor = vB::getDbAssertor();
+				$groups = $assertor->getRows('vBForum:getUserChannels', [
+					'userid' => $userid,
+					'channeltypeid' => $channelContentType,
+					'parentchannelid' => $socialGroupChannel,
+				]);
+				foreach ($groups AS $__row)
+				{
+					// This should never happen unless the main social group channel somehow became a non-category due to
+					// some bug AND somehow this user got ownership of the channel.
+					// But it's simple to check for so let's do it and terrible things will happen if we delete it so let's
+					// check.
+					if ($__row['nodeid'] != $socialGroupChannel AND !isset($guids[$__row['guid']]))
+					{
+						$nodeidsforuser[] = $__row['nodeid'];
+						$events[] = 'nodeChg_' . $__row['nodeid'];
+					}
+				}
+
+				$blogChannel = vB_Library::instance('blog')->getBlogChannel();
+				$blogs = $assertor->getRows('vBForum:getUserChannels', [
+					'userid' => $userid,
+					'channeltypeid' => $channelContentType,
+					'parentchannelid' => $blogChannel,
+				]);
+				foreach ($blogs AS $__row)
+				{
+					// Similar to the group channel check, see note above.
+					if ($__row['nodeid'] != $blogChannel AND !isset($guids[$__row['guid']]))
+					{
+						$nodeidsforuser[] = $__row['nodeid'];
+						$events[] = 'nodeChg_' . $__row['nodeid'];
+					}
+				}
+
+				// We need to skip permission checks when we're nuking the user from orbit.
+				// For one thing, this might be running on another user (or guest)'s session via
+				// privacy-consent remove user cron, for another thing, even if the user themselves
+				// aren't allowed channel permissions to remove these channels, we should remove them
+				// since we're getting rid of the user who owns the channels.
+				$channelLib = vB_Library::instance('content_channel');
+				foreach ($nodeidsforuser AS $nodeid)
+				{
+					$channelLib->delete($nodeid);
+				}
+			}
+
+			$userdm = new vB_DataManager_User(vB_DataManager_Constants::ERRTYPE_ARRAY_UNPROCESSED);
+			$userdm->set_existing($info);
+			$userdm->delete();
+
+			if ($userdm->has_errors(false))
+			{
+				throw $userdm->get_exception();
+			}
+
+			vB_User::clearUsersCache($userid);
+			$events[] = 'userChg_' . $userid;
+			vB_Cache::allCacheEvent($events);
+
+			return true;
+		}
+	}
+
+
+	/**
+	 *	Returns a report on "personal information" for a user
+	 *
+	 *	This is the personally identifiable information for
+	 *	privacy laws.  Currently this follows our best understanding
+	 *	of the EU law, but eventually this may end up being a superset
+	 *	of all simpilar laws.
+	 *
+	 *	@param $userid
+	 *	@return array
+	 *	--string username
+	 *	--string email
+	 *	--string usertitle
+	 *	--int lastvisit
+	 *	--int lastactivity
+	 *	--int lastpost
+	 *	--int posts
+	 *	--string reputation
+	 *	--string timezoneoffset
+	 *	--string ipaddress
+	 *	--int pmtotal
+	 *	--string fbuserid
+	 *	--int fbjoindate
+	 *	--string fbname
+	 *	--int infractions
+	 *	--int warnings
+	 *	--string startofweekphrase
+	 *	--string language
+	 *	--string birthday
+	 *	--array(string) devicetokens
+	 *	--array customFields
+	 *		--array {categoryname} -- multiple arrays of categoryname => field
+	 *			-- array {fieldphrase} -- mutple array of fieldphrase => field details
+	 *				--mixed val
+	 *				--int hidden
+	 */
+	public function getPersonalData($userid)
+	{
+		$data = vB_User::fetchUserinfo($userid);
+
+		if (!$data)
+		{
+			throw new vB_Exception_Api('invalid_user_specified');
+		}
+
+		$personalData = [];
+
+		$userfields = [
+			'username',
+			'displayname',
+			'email',
+			'usertitle',
+			'lastvisit',
+			'lastactivity',
+			'lastpost',
+			'posts',
+			'reputation',
+			'timezoneoffset',
+			'ipaddress',
+			'pmtotal',
+			'fbuserid',
+			'fbjoindate',
+			'fbname',
+			'infractions',
+			'warnings',
+		];
+
+		foreach ($userfields AS $field)
+		{
+			$personalData[$field] = $data[$field];
+		}
+
+		// Ensure startofweek is within the valid range, default to Sunday.
+		// In vB4, startofweek could be -1 which meant to use the startofweek value
+		// from the calendar they were viewing. In vB5 we don't have customizable
+		// calendars showing different holidays, instead we have one calendar showing
+		// events so that is no longer applicable at this time.
+		$startofweek = $data['startofweek'];
+		if ($startofweek < 1 OR $startofweek > 7)
+		{
+			$startofweek = 1;
+		}
+		$personalData['startofweekphrase'] = $this->getDayOfWeekPhrases()[$startofweek];
+
+		//if we don't have a matching language, leave blank.  This is the case when it's set to
+		//"use board default".
+		$personalData['language'] = '';
+		$languages = vB::getDatastore()->getValue('languagecache');
+		if (isset($languages[$data['languageid']]))
+		{
+			$personalData['language'] = $languages[$data['languageid']]['title'];
+		}
+
+		//use the search form because it's in YYYY-MM-DD format.  This is the closest thing we have to
+		//universally recognized format.  Only skip the '0000-00-00' we add when we don't have a value.
+		//if we need to format it according to user formats we'll need to figure out how we want to do that
+		$personalData['birthday'] = ($data['birthday'] ? $data['birthday_search'] : '');
+
+		$db = vB::getDbAssertor();
+		$personalData['devicetokens'] = $db->getColumn('vBForum:apiclient_devicetoken', 'devicetoken', ['userid' => $userid]);
+
+		// todo: external login ids
+		$personalData['externallogin'] = vB_Library::instance("externallogin")->getPersonalData($userid);
+
+		$personalData['customFields'] = $this->getAllCustomFields($userid, true);
+
+		return $personalData;
+	}
+
+	public function getDayOfWeekPhrases()
+	{
+		return [
+			1 => 'sunday',
+			2 => 'monday',
+			3 => 'tuesday',
+			4 => 'wednesday',
+			5 => 'thursday',
+			6 => 'friday',
+			7 => 'saturday'
+		];
+	}
+
+	public function getRawCustomFields($userid)
+	{
+		//see if we have a cached userfield
+		$fields = vB_Cache::instance(vB_Cache::CACHE_FAST)->read("userFields_$userid");
+
+		if ($fields == false)
+		{
+			$assertor = vB::getDbAssertor();
+			$fields = $assertor->getRow('vBForum:userfield', ['userid' => $userid]);
+			vB_Cache::instance(vB_Cache::CACHE_FAST)->write("userFields_$userid", $fields, 1440, "userData_$userid");
+		}
+
+		return $fields;
+	}
+
+	public function getCustomFields($userid, $showHidden)
+	{
+		$customFields = [];
+		$fields = $this->getRawCustomFields($userid);
+
+		if (!empty($fields))
+		{
+			$fieldsInfo = $this->getProfileFieldInfoFromDatastore();
+			$customFields = $this->getProfileFieldsInternal($fieldsInfo, $showHidden, $fields);
+		}
+
+		return $customFields;
+	}
+
+	//This is specifically for the profile export (for various privacy law issues)
+	//
+	//the public version uses the data store which excludes some older fields that
+	//were set for areas that existed in previous versions of vb.  This was
+	//removed from the system some time ago, but some of these fields may linger
+	//We really want to make sure that we don't have undisclosed user data
+	//hiding in dark corners.
+	//
+	//We really shouldn't use this function anywhere else.  Generally speaking if
+	//admins want these field to be used elsewhere they should update them and set
+	//the area to profile (which happens automatically). We should probably
+	//find a way to clean up this data in old sites.
+	private function getAllCustomFields($userid, $showHidden)
+	{
+		$customFields = [];
+		$fields = $this->getRawCustomFields($userid);
+
+		if (!empty($fields))
+		{
+			$fieldsInfo = $this->getProfileFieldInfo();
+			$customFields = $this->getProfileFieldsInternal($fieldsInfo, $showHidden, $fields);
+		}
+
+		return $customFields;
+	}
+
+	private function getProfileFieldInfoFromDatastore()
+	{
+		$datastore = vB::getDatastore();
+
+		//we should *really* clean up the datastore save to
+		//1) not store three arrays.
+		//2) unserialize the data values on save instead of on load
+		//But that's beyond the current time availability.
+		$fieldsInfo = $datastore->getValue('profilefield');
+		if (is_array($fieldsInfo) AND array_key_exists('all', $fieldsInfo))
+		{
+			$fieldsInfo = $fieldsInfo['all'];
+		}
+		else
+		{
+			$fieldsInfo = [];
+		}
+
+		foreach ($fieldsInfo AS $key => $field)
+		{
+			if ($field['data'])
+			{
+				$fieldsInfo[$key]['data'] = unserialize($field['data']);
+			}
+		}
+
+		return $fieldsInfo;
+	}
+
+	public function buildProfileFieldDatastore()
+	{
+		//for now push back to the legacy function which needs to be cleaned up and moved here.
+		require_once(DIR . '/includes/adminfunctions_profilefield.php');
+		build_profilefield_cache();
+	}
+
+	private function getProfileFieldInfo()
+	{
+		$assertor = vB::getDbAssertor();
+
+		// Get profile fields information
+		$cache = vB_Cache::instance(vB_Cache::CACHE_STD);
+		$fieldsInfo = $cache->read('vBProfileFields');
+		if (empty($fieldsInfo))
+		{
+			$fieldsInfo = $assertor->getRows('vBForum:profilefield', [
+				vB_dB_Query::COLUMNS_KEY => ['profilefieldid', 'hidden', 'data', 'profilefieldcategoryid', 'type', 'showonpost']
+			]);
+
+			foreach ($fieldsInfo AS $key => $field)
+			{
+				if ($field['data'])
+				{
+					$fieldsInfo[$key]['data'] = unserialize($field['data']);
+				}
+			}
+
+			$cache->write('vBProfileFields', $fieldsInfo, 1440, ['vBProfileFieldsChg']);
+		}
+
+
+		return $fieldsInfo;
+	}
+
+	public function getProfileFieldsFromUserInfoArray($userInfoArray, $showHidden)
+	{
+		$fieldsInfo = $this->getProfileFieldInfoFromDatastore();
+
+		$result = [];
+		foreach ($userInfoArray AS $userid => $userInfo)
+		{
+			$result[$userid] = $this->getProfileFieldsInternal($fieldsInfo, $showHidden, $userInfo);
+		}
+
+		return $result;
+	}
+
+	private function getProfileFieldsInternal($fieldsInfo, $showHidden, $fieldValues)
+	{
+		$customFields = [];
+
+		foreach ($fieldsInfo AS $customField)
+		{
+			if (($customField['hidden'] == 0) OR $showHidden)
+			{
+				if ($customField['profilefieldcategoryid'])
+				{
+					$catNameString = 'category' . $customField['profilefieldcategoryid'] . '_title';
+				}
+				else
+				{
+					$catNameString = 'default';
+				}
+
+				$fieldName = 'field' . $customField['profilefieldid'];
+				$fieldNameString =  $fieldName . '_title';
+
+				$customFields[$catNameString][$fieldNameString] = [
+					'val' => $this->getCustomFieldValue($customField, $fieldValues[$fieldName]),
+					'hidden' => $customField['hidden'],
+					'showonpost' => $customField['showonpost'],
+				];
+			}
+		}
+
+		return $customFields;
+	}
+
+	private function getCustomFieldValue($customField, $value)
+	{
+		$type = $customField['type'];
+		if ($type == 'select_multiple' OR $type == 'checkbox')
+		{
+			$selected = intval($value);
+
+			$value = [];
+			foreach ($customField['data'] AS $key => $val)
+			{
+				if ($selected & pow(2, $key))
+				{
+					$value[] = $val;
+				}
+			}
+			$value = implode(', ', $value);
+		}
+		return $value;
+	}
+
+	/**
+	 * This returns a user's additional permissions from the groupintopic table
+	 *
+	 *	@param	int $userid
+	 *	@param	int	$nodeid -- nodeid
+	 *
+	 *	@return	array -- Array of  ['nodeid' => nodeid, 'groupid' => groupid];
+	 */
+	public function getGroupInTopic($userid, $nodeid = false, $forceReload = false)
+	{
+		if (!isset($this->groupInTopic[$userid]) OR $forceReload)
+		{
+			// Only call getUserContext if we already have it, as we don't need all of the queries that it does
+			if (vB::isUserContextSet($userid) AND !$forceReload)
+			{
+				$groupInTopic = vB::getUserContext($userid)->fetchGroupInTopic();
+				$perms = [];
+				foreach ($groupInTopic AS $_nodeid => $groups)
+				{
+					foreach ($groups AS $group)
+					{
+						$perms[] = ['nodeid' => $_nodeid, 'groupid' => $group];
+					}
+				}
+			}
+			else
+			{
+				$permQry = vB::getDbAssertor()->assertQuery('vBForum:groupintopic', ['userid' => $userid]);
+				$perms = [];
+				foreach ($permQry AS $permission)
+				{
+					$perms[] = ['nodeid' => $permission['nodeid'], 'groupid' => $permission['groupid']];
+				}
+			}
+			$this->groupInTopic[$userid] = $perms;
+		}
+
+		if ($nodeid)
+		{
+			$results = [];
+			foreach ($this->groupInTopic[$userid] AS $perm)
+			{
+				if ($perm['nodeid'] == $nodeid)
+				{
+					$results[] = $perm;
+				}
+			}
+			return $results;
+		}
+
+		return $this->groupInTopic[$userid];
+	}
+
+
+	/**
+	 * Fetches an array containing all the moderator permission informationd
+	 *
+	 * @param integer $userid
+	 * @param array of $moderator records for user
+	 *
+	 * @return array	the permission array
+	 */
+	public function fetchModerator($userid, $moderators = false)
+	{
+		$parentnodeids = [];
+		$moderatorPerms = [];
+
+		if ($moderators === false)
+		{
+			$moderators = vB::getDbAssertor()->assertQuery('vBForum:moderator', ['userid' => $userid]);
+			if (!$moderators->valid())
+			{
+				return [];
+			}
+		}
+
+		if (empty($moderators))
+		{
+			return [];
+		}
+
+		foreach ($moderators AS $modPerm)
+		{
+			if (isset($modPerm['nodeid']))
+			{
+				if ($modPerm['nodeid'] >= 1)
+				{
+					$parentnodeids[] = $modPerm['nodeid'];
+				}
+
+				$moderatorPerms[$modPerm['nodeid']] = $modPerm;
+			}
+		}
+
+		if (!empty($parentnodeids))
+		{
+			foreach ($parentnodeids as $parentnodeid)
+			{
+				if ($parentnodeid < 1)
+				{
+					continue;
+				}
+
+				$closurerecords = vB::getDbAssertor()->assertQuery('vBForum:getDescendantChannelNodeIds', [
+					'parentnodeid' => $parentnodeid,
+					'channelType' => vB_Types::instance()->getContentTypeID('vBForum_Channel')
+				]);
+				foreach ($closurerecords as $closurerecord)
+				{
+					$childnodeid = $closurerecord['child'];
+					if (!isset($moderatorPerms[$childnodeid]) AND isset($moderatorPerms[$parentnodeid]))
+					{
+						// descendant channels inherit moderator permissions from parent channels
+						// so we copy the parent channel's permissions and change the nodeid in it
+						$moderatorPerms[$childnodeid] = $moderatorPerms[$parentnodeid];
+						$moderatorPerms[$childnodeid]['nodeid'] = $childnodeid;
+					}
+				}
+			}
+		}
+
+		return $moderatorPerms;
+	}
+
+	/**
+	 * Fetches an array containing info for the specified user, or false if user is not found
+	 *
+	 * Values for Option parameter:
+	 * avatar - Get avatar
+	 * location - Process user's online location
+	 * admin - Join the administrator table to get various admin options
+	 * signpic - Join the sigpic table to get the userid just to check if we have a picture
+	 * isfriend - Is the logged in User a friend of this person?
+	 * Therefore: ['avatar', 'location'] means 'Get avatar' and 'Process online location'
+	 *
+	 * @param integer $userid
+	 * @param array $option --(see description)
+	 * @param integer $languageid -- If set to 0, it will use user-set languageid (if exists) or default languageid
+	 * @param boolean $nocache -- If true, the method won't use user cache but fetch information from DB.
+	 *
+	 * @return array The information for the requested user
+	 */
+	public function fetchUserinfo($userid = false, $option = [], $languageid = false, $nocache = false)
+	{
+		if ($languageid === false)
+		{
+			$session = vB::getCurrentSession();
+			if ($session)
+			{
+				$languageid = vB::getCurrentSession()->get('languageid');
+			}
+		}
+
+		$result = vB_User::fetchUserinfo($userid, $option, $languageid, $nocache);
+
+		if (empty($result) OR !isset($result['userid']))
+		{
+			return false;
+		}
+
+		if (!empty($result['lang_options']) AND !is_array($result['lang_options']))
+		{
+			//convert bitfields to arrays for external clients.
+			$bitfields = vB::getDatastore()->getValue('bf_misc_languageoptions');
+			$lang_options = $result['lang_options'];
+			$result['lang_options'] = [];
+			foreach ($bitfields AS $key => $value)
+			{
+				$result['lang_options'][$key] = (bool) ($lang_options & $value);
+			}
+		}
+		$userContext = vB::getUserContext($userid);
+
+		//use the default style instead of the user style in some cases
+		//1) The user style isn't set (value 0)
+		//2) Style choosing isn't allowed and the user is not an admin
+		if ($session = vB::getCurrentSession())
+		{
+			$sessionstyleid = $session->get('styleid');
+			if ($sessionstyleid)
+			{
+				$result['styleid'] = $sessionstyleid;
+			}
+		}
+
+		// adding some extra info
+		if ($userid)
+		{
+			$result['is_admin'] = $userContext->isAdministrator();
+			$result['is_supermod'] = (vB_UserContext::USERLEVEL_SUPERMODERATOR == $userContext->getUserLevel() ? true : false);
+			$result['is_moderator'] = ($userContext->getUserLevel() >= vB_UserContext::USERLEVEL_MODERATOR);
+			$result['can_use_sitebuilder'] = $userContext->hasAdminPermission('canusesitebuilder');
+			$result['can_admin_ads'] = $userContext->hasAdminPermission('canadminads');
+			$result['is_globally_ignored'] = $userContext->isGloballyIgnored();
+		}
+
+		$vboptions = vB::getDatastore()->getValue('options');
+		$canChangeStyle =  ($vboptions['allowchangestyles'] == 1 OR $userContext->hasAdminPermission('cancontrolpanel'));
+
+		if ( ($result['styleid'] == 0) OR !$canChangeStyle)
+		{
+			$result['styleid'] = $vboptions['styleid'];
+		}
+
+		//get the online status
+		$this->fetchOnlineStatus($result);
+		return $result;
+	}
+
+	/**
+	 * Gets the usergroup information. Returns the secondary groups even if allowmembergroups usergroup option is set to No.
+	 *
+	 * @param	int		userid
+	 *
+	 * @return array with
+	 * 	* groupid integer primary group id
+	 * 	* displaygroupid integer display group id
+	 * 	* secondary array list of secondary user groups
+	 * 	* infraction array list of infraction groups.
+	 *
+	 * @throws vB_Exception_Api invalid_user_specified
+	 */
+	public function fetchUserGroups($userid)
+	{
+		/*
+		 * Anything that calls this should take care of discarding the secondary groups
+		 * based on the allowmembergroups option as appropriate. For example refer to
+		 * usercontext's reloadUserPerms().
+		 * Do not change this function to check for the option. AdminCP's user.php relies on this function
+		 * to get the secondary groups when vB_User::fetchUserinfo() doesn't return the membergroups
+		 * when the option is set to "No."
+		 */
+
+		$session = vB::getCurrentSession();
+		if ($session)
+		{
+			$languageid = $session->get('languageid');
+			$cached = vB_Cache::instance(vB_Cache::CACHE_LARGE)->read("vb_UserWPerms_$userid" . '_' . $languageid);
+
+			//This includes usergroups, groupintopic, moderator, and basic userinformation. Each should be cached in fastcache.
+			if (($cached !== false) AND ($cached['groups'] !== false))
+			{
+				return $cached['groups'];
+			}
+		}
+
+		//Now- we can't use fetchUserinfo here. It would put us in a loop.
+		$userInfo = vB::getDbAssertor()->getRow('user', [
+			vB_dB_Query::COLUMNS_KEY => ['usergroupid', 'displaygroupid', 'membergroupids', 'infractiongroupids'],
+			'userid' => $userid
+		]);
+
+		if (!$userInfo)
+		{
+			throw new vB_Exception_Api('invalid_user_specified');
+		}
+		$primary_group_id = $userInfo['usergroupid'];
+		$display_group_id = $userInfo['displaygroupid'];
+		$secondary_group_ids = (!empty($userInfo['membergroupids'])) ? explode(',', str_replace(' ', '', $userInfo['membergroupids'])) : [];
+		$infraction_group_ids = (!empty($userInfo['infractiongroupids'])) ? explode(',', str_replace(' ', '', $userInfo['infractiongroupids'])) : [];
+
+		return [
+			'groupid' => $primary_group_id,
+			'displaygroupid' => $display_group_id,
+			'secondary' => $secondary_group_ids,
+			'infraction' => $infraction_group_ids
+		];
+	}
+
+	/**
+	 *	Adds groups to a user
+	 *
+	 *	Will not add a group if it matches the user's primary group is set to that group
+	 *	Will add groups even if allowmembergroups is set to "no".  There will be cases where
+	 *	we want to track secondary group changes even if we aren't doing anything with them
+	 *
+	 *	Does not validate that the usergroupids are valid
+	 *
+	 *	@param integer $userid
+	 *	@param array $groups list of integer ids for usergroups to add
+	 *
+	 *	@return void
+	 */
+	public function addSecondaryUserGroups($userid, $groups)
+	{
+		$usergroups = $this->fetchUserGroups($userid);
+		$membergroups = $usergroups['secondary'];
+		$membergroupmap = array_combine($membergroups, $membergroups);
+
+		$change = false;
+		foreach ($groups AS $group)
+		{
+			if ($group != $usergroups['groupid'] AND !isset($membergroupmap[$group]))
+			{
+				$change = true;
+				$membergroups[] = $group;
+			}
+		}
+		sort($membergroups);
+		vB::getDbAssertor()->update('user', ['membergroupids' => implode(',', $membergroups)], ['userid' => $userid]);
+
+		if ($change)
+		{
+			$this->clearUserInfo([$userid]);
+		}
+	}
+
+	/**
+	 *	Remove groups from a user
+	 *
+	 *	Will not affect the user's primary group
+	 *	Will unset (set to 0) the display groupid if its being removed
+	 *	Will remove groups even if allowmembergroups is set to "no".  There will be cases where
+	 *	we want to track secondary group changes even if we aren't doing anything with them
+	 *
+	 *	@param integer $userid
+	 *	@param array $groups list of integer ids for usergroups to remove
+	 *
+	 *	@return void
+	 */
+	public function removeSecondaryUserGroups($userid, $groups)
+	{
+		$usergroups = $this->fetchUserGroups($userid);
+
+		//Now- we can't use fetchUserinfo here. It would put us in a loop.
+		$userInfo = vB::getDbAssertor()->getRow('user',	[
+			vB_dB_Query::COLUMNS_KEY => ['usergroupid', 'displaygroupid', 'membergroupids', 'infractiongroupids'],
+			'userid' => $userid
+		]);
+
+		//PHP 5.3 doesn't like combining empty arrays.
+		$membergroups = [];
+		if ($usergroups['secondary'])
+		{
+			$membergroups = array_combine($usergroups['secondary'], $usergroups['secondary']);
+		}
+
+		$change = false;
+		foreach ($groups AS $group)
+		{
+			if (isset($membergroups[$group]))
+			{
+				$change = true;
+				unset($membergroups[$group]);
+			}
+		}
+
+		sort($membergroups);
+		$updates['membergroupids'] = implode(',', $membergroups);
+
+		//if the display group is not one of the user's groups, set it to 0
+		$displaygroupid = $usergroups['displaygroupid'];
+		if ($displaygroupid AND ($usergroups['groupid'] != $displaygroupid) AND !in_array($displaygroupid, $membergroups))
+		{
+			$updates['displaygroupid'] = 0;
+		}
+
+		vB::getDbAssertor()->update('user', $updates, ['userid' => $userid]);
+
+		if ($change)
+		{
+			$this->clearUserInfo([$userid]);
+		}
+	}
+
+	/**
+	 * @param	array	$useractivation		Record to check. Must have 'reset_locked_since'
+	 */
+	public function checkPasswordResetLock($useractivation)
+	{
+		$attemptsLimit = self::PASSWORD_RESET_ATTEMPTS;
+		$lockDurationMinutes = self::PASSWORD_RESET_LOCK_MINUTES;
+		$lockDurationSeconds = $lockDurationMinutes * 60;
+
+		// data validation. Meant for devs/unit testing really, if these values aren't present than some code changed
+		// unintentionally.
+		if (!isset($useractivation['reset_locked_since']) OR !is_numeric($useractivation['reset_locked_since']))
+		{
+			throw new vB_Exception_Api('incorrect_data');
+		}
+
+		if (empty($attemptsLimit) OR empty($lockDurationSeconds))
+		{
+			throw new vB_Exception_Api('incorrect_data');
+		}
+
+		$timeNow = vB::getRequest()->getTimeNow();
+		$locked = ($timeNow <= ($useractivation['reset_locked_since'] + $lockDurationSeconds));
+		$lostPWLink = vB5_Route::buildUrl('lostpw|fullurl');
+		$exceptionArgs = [$lockDurationMinutes, $lostPWLink];
+		/*
+			If they try to reset their password or generate a new reset activationid before the end
+			of their timeout, throw an exception
+		 */
+		if ($locked)
+		{
+			throw new vB_Exception_Api('reset_password_lockout', $exceptionArgs);
+		}
+
+		// Caller must check if this activation record is invalid before using it.
+		// We don't do that here as this is used by both new activationid generation &
+		// password reset validation.
+	}
+
+
+	public function sendPasswordEmail($userid, $email)
+	{
+		if (!$email)
+		{
+			throw new vB_Exception_Api('invalidemail', [vB5_Route::buildUrl('contact-us|fullurl')]);
+		}
+
+		$vboptions = vB::getDatastore()->getValue('options');
+
+		$users = vB::getDbAssertor()->select('user', ['email' => $email], ['userid', 'username', 'displayname', 'email', 'languageid']);
+
+		$string = vB::getString();
+		$bbtitle_escaped = $string->htmlspecialchars($vboptions['bbtitle']);
+		$count = 0;
+		foreach ($users AS $user)
+		{
+			$count++;
+			if ($userid AND $userid != $user['userid'])
+			{
+				continue;
+			}
+
+			// buildUserActivationId() will throw an exception downstream if an existing activation record is locked.
+			$user['activationid'] = $this->buildUserActivationId($user['userid'], 2, 1, 0);
+
+			$maildata = vB_Api::instanceInternal('phrase')->fetchEmailPhrases(
+				'lostpw',
+				[
+					$user['username'],
+					$bbtitle_escaped,
+					$vboptions['frontendurl'],
+					vB5_Route::buildUrl('reset-password|fullurl', [], ['userid' => $user['userid'], 'activationid' => $user['activationid']]),
+					$string->htmlspecialchars($user['displayname']),
+				],
+				[$vboptions['bbtitle']],
+				$user['languageid']
+			);
+			// Account security email, skip vbmailWithUnsubscribe() & isUserOptedOutOfEmail()
+			vB_Mail::vbmail2($user['email'], $maildata['subject'], $maildata['message'], true);
+		}
+
+		if ($count)
+		{
+			return true;
+		}
+		else
+		{
+			throw new vB_Exception_Api('invalidemail', [vB5_Route::buildUrl('contact-us|fullurl')]);
+		}
+	}
+
+	/**
+	 *	Send the activation email to the user
+	 *
+	 *	@param int $userid
+	 *	@param bool $checkmoderation -- Depending on configuration options, once activated a
+	 *		user may be put in the awaiting moderation user group instead of the registered user's group.
+	 *		If this is false we'll always force a switch back to the registered user's group.
+	 *		This is primarily for admin actions where we still need to validate the email but by
+	 *		sending the activation we're implicitly moderating the account.
+	 */
+	public function sendActivateEmail($userid, $checkmoderation = true, $checkcoppa = true)
+	{
+		$userinfo = vB_User::fetchUserinfo($userid);
+
+		if (empty($userinfo))
+		{
+			throw new vB_Exception_Api('invaliduserid');
+		}
+
+		if ($userinfo['usergroupid'] != 3)
+		{
+			// Already activated
+			throw new vB_Exception_Api('activate_wrongusergroup');
+		}
+
+		$vboptions = vB::getDatastore()->getValue('options');
+		$coppauser = false;
+		if ($vboptions['usecoppa'] == 1 AND $checkcoppa)
+		{
+			if (!empty($userinfo['birthdaysearch']))
+			{
+				$birthday = $userinfo['birthdaysearch'];
+			}
+			else
+			{
+				//we want YYYY-MM-DD for the coppa check but normally we store MM-DD-YYYY
+				$birthday = $userinfo['birthday'];
+				if (strlen($birthday) >= 6 AND $birthday[2] == '-' AND $birthday[5] == '-')
+				{
+					$birthday = substr($birthday, 6) . '-' . substr($birthday, 0, 2) . '-' . substr($birthday, 3, 2);
+				}
+			}
+
+			if ($this->needsCoppa($birthday))
+			{
+				$coppauser = true;
+			}
+		}
+
+		$newgroup = 2;
+		if ($checkmoderation AND ($vboptions['moderatenewmembers'] OR $coppauser))
+		{
+			$newgroup = 4;
+		}
+
+		$info = $this->buildActivationInfo($userinfo['userid'], $newgroup);
+
+		$string = vB::getString();
+		$displayname_safe = $string->htmlspecialchars($userinfo['displayname']);
+		$bbtitle_escaped = $string->htmlspecialchars($vboptions['bbtitle']);
+		$webmasteremail_escaped = $string->htmlspecialchars($vboptions['webmasteremail']);
+
+		// keep params in sync with activate.php cron
+		$maildata = vB_Api::instanceInternal('phrase')->fetchEmailPhrases(
+			'activateaccount',
+			[
+				$displayname_safe,
+				$bbtitle_escaped,
+				$info['url'],
+				vB5_Route::buildUrl('activateuser|fullurl'),
+				$info['id'],
+				$webmasteremail_escaped,
+				$userinfo['username'],
+				$vboptions['frontendurl'] . '/registration/killActivation?u=' . $userid . '&i=' . $info['id'],
+			],
+			// subject must be unescaped as it won't be rendered as html.
+			[$userinfo['displayname']],
+			$userinfo['languageid']
+		);
+		// This is NOT using the unsubscribe email atm because we don't have an option associated
+		// with disabling receipt of activation emails. Instead, the "killActivation" link embedded
+		// in the mail phrase should be sufficient. We *could* check isUserOptedOutOfEmail() here,
+		// but kind of borderline given that this is an early post-registration email, and frequently
+		// sites require email confirmations, so skipping it for now
+		vB_Mail::vbmail2($userinfo['email'], $maildata['subject'], $maildata['message'], true);
+	}
+
+	/**
+	 *	Get the activation id and link to the activation page to active.
+	 *
+	 *	@param int $userid
+	 *	@param int $usergroupid -- the usergroup to return to if we create a new activation.
+	 *		if we reuse an existing one then this is not used.
+	 *	@return array ['id' => int, 'url' => string]
+	 */
+	//this is public because we allow these value to be inserted into arbitrary emails sent to the
+	//user and not just the standard one.
+	public function buildActivationInfo(int $userid, int $usergroupid) : array
+	{
+		$db = vB::getDbAssertor();
+
+		// Try to get existing activateid from useractivation table.  I'm not sure why we don't just
+		// create a new one but not going to change that now.
+		//
+		// Also not sure if we should be pushing this into buildUserActivationId, but that also serves
+		// the needs of the reset password so don't want to change that now.
+		$useractivation = $db->getRow('useractivation', [
+			'userid' => $userid,
+			'type' => 0,
+		]);
+
+		if ($useractivation)
+		{
+			// This preserves the usergroup, emailchange, and some toher columns.  Though I suspect most of them are
+			// not relevant to the remail activation link we are processsing here.
+			$activateid = (new vB_Utility_Random())->hex(40);
+			$db->update('useractivation',
+				[
+					'dateline' => vB::getRequest()->getTimeNow(),
+					'activationid' => $activateid,
+				],
+				[
+					'userid' => $userid,
+					'type' => 0,
+				]
+			);
+		}
+		else
+		{
+			$activateid = $this->buildUserActivationId($userid, $usergroupid, 0, 0);
+		}
+
+		//this isn't part of the routing system but we should isolate the link construction
+		//for it to avoid "link rot"
+		$frontend = vB::getDatastore()->getOption('frontendurl');
+		$url = $frontend . '/registration/activateUser?a=act&u=' . $userid . '&i=' . $activateid;
+
+		return [
+			'id' => $activateid,
+			'url' => $url,
+		];
+	}
+
+	/**
+	 * (Re)Generates an Activation ID for a user
+	 *
+	 * @param	integer	User's ID
+	 * @param	integer	The group to move the user to when they are activated
+	 * @param	integer	0 for Normal Activation, 1 for Forgotten Password
+	 * @param	boolean	Whether this is an email change or not
+	 *
+	 * @return	string	The Activation ID
+	 */
+	private function buildUserActivationId($userid, $usergroupid, $type, $emailchange)
+	{
+		$db = vB::getDbAssertor();
+
+		if ($usergroupid == 3 OR $usergroupid == 0)
+		{
+			// stop them getting stuck in email confirmation group forever :)
+			$usergroupid = 2;
+		}
+
+		/*
+			preserve lockout
+		 */
+		if ($type) // Forgotten password
+		{
+			$existing = $db->getRow('useractivation', [
+				'userid' => $userid,
+				'type' => $type,
+			]);
+
+			if (!empty($existing['reset_locked_since']))
+			{
+				// If we're currently locked, throw an exception and force agent to wait until lockout is over.
+				// Note that if the lockout is over, the 'user_replaceuseractivation' query will reset the lockout.
+				$this->checkPasswordResetLock($existing);
+			}
+		}
+
+		$db->assertQuery('useractivation', [
+			vB_dB_Query::TYPE_KEY => vB_dB_Query::QUERY_DELETE,
+			'userid' => $userid,
+			'type' => $type,
+		]);
+
+		$activateid = (new vB_Utility_Random())->hex(40);
+		$db->insert('useractivation', [
+			'userid' => $userid,
+			'dateline' => vB::getRequest()->getTimeNow(),
+			'activationid' => $activateid,
+			'type' => $type,
+			'usergroupid' => $usergroupid,
+			'emailchange' => intval($emailchange),
+		]);
+
+		if ($userinfo = vB_User::fetchUserinfo($userid))
+		{
+			$userdata = new vB_DataManager_User(vB_DataManager_Constants::ERRTYPE_SILENT);
+			$userdata->set_existing($userinfo);
+			$userdata->set_bitfield('options', 'noactivationmails', 0);
+			$userdata->save();
+		}
+
+		return $activateid;
+	}
+
+	/**
+	 * This checks whether a user needs COPPA approval based on birthdate. Responds to Ajax call
+	 *
+	 * @param array $dateInfo array of month/day/year.
+	 * @return int 0 - no COPPA needed, 1- Approve but require adult validation, 2- Deny
+	 */
+	public function needsCoppa($dateInfo)
+	{
+		$options = vB::getDatastore()->getValue('options');
+
+		if ((bool) $options['usecoppa'])
+		{
+			$birthdate = false;
+			// date can come as a unix timestamp, or an array, or 'YYYY-MM-DD', or 'MM-DD-YYYY' which is much more likely.
+			if (is_array($dateInfo))
+			{
+				$cleaner = vB::getCleaner();
+				$dateInfo = $cleaner->cleanArray($dateInfo, [
+					'day' => vB_Cleaner::TYPE_UINT,
+					'month' => vB_Cleaner::TYPE_UINT,
+					'year' => vB_Cleaner::TYPE_UINT,
+				]);
+				$birthdate = mktime(0, 0, 0, $dateInfo['month'], $dateInfo['day'], $dateInfo['year']);
+			}
+			//the string formats we are interesting are 10 characters long.  So are many unix timestamps.
+			//strtotime *will* happily take numeric results (specifically document is the YYYYMMDD which works
+			//fine) but will produce bizarre results -- 2004130 results in 05-09-2004 and there is no explanation
+			//as to why that happens.  The strings we expect to process should never pass is_numeric.
+			else if (strlen($dateInfo) == 10 AND !is_numeric($dateInfo))
+			{
+				//strtotime has weird ideas about the delimiter.  It assume that - has day first (Euro style) and
+				//that / has month first.  Unles its YYYY-MM-DD in which case it doesn't care which delimiter is
+				//used.  Our dates are most like in MM-DD-YYYY which will cause all kinds of problems if we don't
+				//fix the delimiter.
+				$dateInfo = str_replace('-', '/', $dateInfo);
+				$birthdate = strtotime($dateInfo);
+			}
+			else if (is_numeric($dateInfo))
+			{
+				//truncate the time when we get a time stamp.  Otherwise if
+				//somebody has an actually time we'll compare it against midnight
+				//below.  If somebody is just turning 13 today and their birthdate
+				//value contains it a time it will be automatically later than
+				//midnight on their birthday but as far as we (and the law) are
+				//concerned they are 13 as of midnight regardless of when they were
+				//born on that day or whatever other time value might have crept in.
+				$birthdate = strtotime(date("Y-m-d", intval($dateInfo)));
+			}
+
+			//if we can't get a valid birthdate, assume that we needCoppa
+			//note that and invalid date string will result is a false return from strtotime
+			if ($birthdate === false)
+			{
+				return $options['usecoppa'];
+			}
+
+			$request = vB::getRequest();
+
+			if (empty($request))
+			{
+				// mainly happens in test- should never happen in production.
+				$cutoff = strtotime(date("Y-m-d", time()) . '- 13 years');
+			}
+			else
+			{
+				$cutoff = strtotime(date("Y-m-d", $request->getTimeNow()) . '- 13 years');
+			}
+			if ($birthdate > $cutoff)
+			{
+				return $options['usecoppa'];
+			}
+		}
+
+		return 0;
+	}
+
+	/**
+	 * This preloads information for a list of userids, so it will be available for userContext and other data loading
+	 *
+	 * @param array $userids
+	 * @deprecated
+	 */
+	//this function should either be replaced with the getUserRecords function or, potentially, a bulk fetch of the
+	//full user records that has yet to be written.  This appears to be an attempt to ensure that the base user data
+	//is cached in a bulk way before we call the single user fetch function.  But that's the wrong way to do it.
+	public function preloadUserInfo($userids)
+	{
+		if (empty($userids) OR !is_array($userids))
+		{
+			//no harm here. Just nothing to do.
+			return;
+		}
+		$userids = array_unique($userids);
+
+		$db = vB::getDbAssertor();
+
+		//first we can remove anything that already has been loaded.
+		$fastCache = vB_Cache::instance(vB_Cache::CACHE_FAST);
+		$languageid = vB::getCurrentSession()->get('languageid');
+		$cacheKeys = [];
+		foreach ($userids AS $key => $userid)
+		{
+			//If we already have userinfo in cache we'll have the others
+			$infoKey = "vb_UserInfo_$userid" . '_' . $languageid;
+
+			if ($fastCache->read($infoKey))
+			{
+				unset($userids[$key]);
+				continue;
+			}
+			//See if we have a cached version we can use.
+			$cacheKeys[$userid] = "vb_UserWPerms_$userid" . '_' . $languageid;
+		}
+
+		//Now let's see what we can get from large cache
+		if (!empty($cacheKeys))
+		{
+			$cached = vB_Cache::instance(vB_Cache::CACHE_LARGE)->read($cacheKeys);
+			$needLast = [];
+			foreach ($cacheKeys AS $userid => $cacheKey)
+			{
+				if (!empty($cached[$cacheKey]))
+				{
+					$needLast[] = $userid;
+				}
+			}
+
+			if (!empty($needLast))
+			{
+				$lastData = [];
+				$lastActivityQuery = $db->select('user', ['userid' => $needLast], false, ['userid', 'lastactivity']);
+
+				foreach ($lastActivityQuery AS $lastRecord)
+				{
+					$lastData[$lastRecord['userid']] = $lastRecord['lastactivity'];
+				}
+
+				foreach ($cacheKeys AS $userid => $cacheKey)
+				{
+					if (!empty($cached[$cacheKey]))
+					{
+						/* VBV-10856: fetchUserWithPerms() expects true/false as its third parameter.
+						   $lastData[$userid] was being passed to it below, which triggered a PHP notice
+						   (Undefined offset) if it wasnt set. I have altered it to send true/false instead. */
+						$this->fetchUserWithPerms($userid, $languageid, isset($lastData[$userid]));
+						unset($cacheKeys[$userid]);
+					}
+				}
+			}
+
+		}
+
+		//Now let's see what's left
+		if (!empty($cacheKeys))
+		{
+			//First get userinfo. We cannot use a table query since we also need signature
+			$userQry = $db->assertQuery('fetchUserinfo', ['userid' => array_keys($cacheKeys)]);
+
+			if (!$userQry->valid())
+			{
+				return;
+			}
+
+			foreach ($userQry AS $userInfo)
+			{
+				$userid = $userInfo['userid'];
+				$this->fetchOnlineStatus($userInfo);
+
+				$primary_group_id = $userInfo['usergroupid'];
+				$secondary_group_ids = (!empty($userInfo['membergroupids'])) ? explode(',', str_replace(' ', '', $userInfo['membergroupids'])) : [];
+				$infraction_group_ids = (!empty($userInfo['infractiongroupids'])) ? explode(',', str_replace(' ', '', $userInfo['infractiongroupids'])) : [];
+				$usergroups = ['groupid' => $primary_group_id, 'secondary' => $secondary_group_ids, 'infraction' => $infraction_group_ids];
+
+				$fastCache->write("vb_UserInfo_$userid" . '_' . $languageid, $userInfo, 5, "userChg_$userid");
+			}
+		}
+	}
+
+	//This is based on some legacy code where we cached a bunch of user info and then
+	//assumed it existed in cache without a formal fetch function.  It probably doesn't
+	//match the standard user array in format, nor does the caching interact with that
+	//in any way.  Both of these probably need to be fixed.
+	public function getUserInfoRecords($userids)
+	{
+		if (!is_array($userids) OR !$userids)
+		{
+			//no harm here. Just nothing to do.
+			return [];
+		}
+
+		$userids = array_unique($userids);
+
+		$db = vB::getDbAssertor();
+		$fastCache = vB_Cache::instance(vB_Cache::CACHE_FAST);
+
+		//first we can remove anything that already has been loaded.
+		$languageid = vB::getCurrentSession()->get('languageid');
+
+		$records = [];
+		$cacheKeys = [];
+		foreach ($userids AS $key => $userid)
+		{
+			//we might want to batch this call.  Doesn't matter for the current fast cache implementation
+			//but might for memcache if we ever get that working.
+			$cachedRecord = $fastCache->read(vB_User::getUserCacheKey($userid, [], $languageid));
+			if ($cachedRecord)
+			{
+				$records[$userid] = $cachedRecord;
+				unset($userids[$key]);
+			}
+		}
+
+		//Now let's see what's left
+		if ($userids)
+		{
+			$users = vB_User::getBaseUsers($userids, []);
+			foreach ($users AS $userid => $userInfo)
+			{
+				$records[$userid] = $userInfo;
+
+				//This differs from the caching in vB_User::fetchUserInfo by having 5 minutes instead
+				//of 1440 (24 hours).  It probably doesn't make much pratical difference because the only
+				//fast cache that actually works goes away at the end of the script/pageload.
+				$fastCache->write(vB_User::getUserCacheKey($userid, [], $languageid), $userInfo, 5, "userChg_$userid");
+			}
+		}
+
+		//This information is *not* cached by all of the functions that write to vb_UserInfo_* cache entries.
+		//So we need to make sure we record update it on the fly.  It doesn't involve any DB requests or other
+		//really complicated logic so it's probably not worth the trouble of figuring out how to consistantly cache it.
+		foreach ($records AS &$userInfo)
+		{
+			$this->fetchOnlineStatus($userInfo);
+		}
+
+		return $records;
+	}
+
+	/**
+ 	 * Fetches the online states for the user, taking into account the browsing
+	 * user's viewing permissions. Also modifies the user to include [buddymark]
+	 * and [invisiblemark]
+	 *
+	 * @param	array	Array of userinfo to fetch online status for
+	 * @param	boolean	True if you want to set $user[onlinestatus] with template results
+	 *
+	 * @return	integer	0 = offline, 1 = online, 2 = online but invisible (if permissions allow)
+	 */
+	public function fetchOnlineStatus(&$user)
+	{
+		$currentUser = [];
+
+		$session = vB::getCurrentSession();
+		if (empty($session))
+		{
+			$currentUserId = 0;
+		}
+		else
+		{
+			$currentUserId = $session->get('userid');
+			//need to be very careful about calling fetch_userinfo here as there is
+			//a potential infinite loop.  We really need to improve how we generate
+			//the current user info because it has all kinds of circular dependancies.
+			if (!empty($currentUserId))
+			{
+				if ($currentUserId == $user['userid'])
+				{
+					$currentUser = $user;
+				}
+				else
+				{
+					$currentUser = $session->fetch_userinfo();
+				}
+			}
+		}
+
+		$buddylist = [];
+
+		// get variables used by this function
+		$list = trim($currentUser['buddylist'] ?? '');
+		if ($list)
+		{
+			$buddylist = preg_split('/\s+/', $list, -1, PREG_SPLIT_NO_EMPTY);
+		}
+
+		// is the user on bbuser's buddylist?
+		if (in_array($user['userid'], $buddylist))
+		{
+			$user['buddymark'] = '+';
+		}
+		else
+		{
+			$user['buddymark'] = '';
+		}
+
+		// set the invisible mark to nothing by default
+		$onlinestatus = 0;
+		$user['invisiblemark'] = '';
+		$user['online'] = 'offline';
+
+		// now decide if we can see the user or not
+		$datecut = vB::getRequest()->getTimeNow() - vB::getDatastore()->getOption('cookietimeout');
+		if ($user['lastactivity'] > $datecut AND $user['lastvisit'] != $user['lastactivity'])
+		{
+			$bf_misc_useroptions = vB::getDatastore()->getValue('bf_misc_useroptions');
+			if ($user['options'] & $bf_misc_useroptions['invisible'])
+			{
+				$userContext = vB::getUserContext();
+				if (
+					$currentUserId == $user['userid'] OR
+					($userContext AND $userContext->hasPermission('genericpermissions','canseehidden'))
+				)
+				{
+					// user is online and invisible BUT bbuser can see them
+					$user['invisiblemark'] = '*';
+					$user['online'] = 'invisible';
+					$onlinestatus = 2;
+				}
+			}
+			else
+			{
+				// user is online and visible
+				$onlinestatus = 1;
+				$user['online'] = 'online';
+			}
+		}
+
+		return $onlinestatus;
+	}
+
+
+	/**
+	 * This method clears remembered channel permission
+	 *
+	 * @param	int	$userid
+	 */
+	public function clearChannelPerms($userid)
+	{
+		unset($this->groupInTopic[$userid]);
+	}
+
+	public function updateEmailFloodTime()
+	{
+		$usercontext = vB::getCurrentSession()->fetch_userinfo();
+		if ($usercontext['userid'])
+		{
+			vB::getDbAssertor()->update('user', ["emailstamp" => vB::getRequest()->getTimeNow()], ["userid" => $usercontext['userid']]);
+			vB_Cache::instance(vB_Cache::CACHE_LARGE)->event(['userChg_' . $usercontext['userid']]);
+		}
+		else
+		{
+			// Guest. Update the field for its session
+			vB::getCurrentSession()->set('emailstamp', vB::getRequest()->getTimeNow());
+			vB::getCurrentSession()->save();
+		}
+	}
+
+	private function scanFile($filename)
+	{
+		$check = vB_Library::instance('filescan')->scanFile($filename);
+		if (empty($check))
+		{
+			if (is_uploaded_file($filename))
+			{
+				@unlink($filename);
+			}
+			// todo: the current phrase indicates that the file was deleted, but we will only delete the file
+			// iff the file was an uploaded file. Add a new phrase to separate the cases?
+			throw new vB_Exception_Api('filescan_fail_uploaded_file');
+		}
+	}
+
+	public function uploadAvatar($filename, $crop = [], $userid = false, $adminoverride = false)
+	{
+		$this->scanFile($filename);
+
+		$imageHandler = vB_Image::instance();
+
+		$attachLib = vB_Library::instance('content_attach');
+
+		$fileInfo = null;
+		$isImage = $imageHandler->fileLocationIsImage($filename);
+		if ($isImage)
+		{
+			$attachLib->checkConfigImageResizeLimitsForFile($filename);
+
+			$newImageData = $imageHandler->loadImage($filename);
+			// Once we hit above, we do not care about the old file regardless of if it's "safe" or "dangerous".
+			if (file_exists($filename))
+			{
+				// Remove old file. Image Handler intentionally DOES NOT write to the old file in case the caller
+				// needs to access it.
+				@unlink($filename);
+				unset($filename);
+			}
+			if (empty($newImageData))
+			{
+				// throw useful exception here.
+				throw new vB_Exception_Api('dangerous_image_rejected');
+			}
+
+			// use re-written image from this point on.
+			$filename = $newImageData['tmp_name'];
+			$fileInfo = $imageHandler->fetchImageInfo($filename);
+		}
+
+		if (!$fileInfo)
+		{
+			throw new vB_Exception_Api('upload_invalid_image');
+		}
+
+		if ($userid === false)
+		{
+			$userid = vB::getCurrentSession()->get('userid');
+		}
+
+		$usercontext = vB::getUserContext($userid);
+		$pathinfo = empty($crop['org_file_info']) ? pathinfo($filename) : $crop['org_file_info'];
+
+		$dimensions = [];
+
+		$dimensions['src_width'] = $fileInfo[0];
+		$dimensions['src_height'] = $fileInfo[1];
+
+		// set default crop size
+		if (empty($crop['width']) AND empty($crop['height']))
+		{
+			$crop['width'] = $dimensions['src_width'];
+			$crop['height'] = $dimensions['src_height'];
+		}
+
+		// cropped image can't be larger than the original image
+		$crop['width'] = min($crop['width'], $dimensions['src_width']);
+		$crop['height'] = min($crop['height'], $dimensions['src_height']);
+
+		// the crop area should be square
+		$crop['width'] = $crop['height'] = min($crop['width'], $crop['height']);
+
+		// get max dimensions
+		if (vB::getUserContext()->hasAdminPermission('canadminusers') AND $adminoverride)
+		{
+			$maxwidth = $dimensions['src_width'];
+			$maxheight = $dimensions['src_height'];
+		}
+		else
+		{
+			$maxwidth = $usercontext->getLimit('avatarmaxwidth');
+			$maxheight = $usercontext->getLimit('avatarmaxheight');
+		}
+
+		// if the crop happened on an image that was resized down in the browser due
+		// to small screen/viewport size, then we want to increase the selection
+		// coordinates to match the original image size so that the final avatar
+		// uses the original image resolution (up to what the max avatar size allows)
+		if (!empty($crop['resized_width']) AND $crop['resized_width'] < $dimensions['src_width'])
+		{
+			$resize_ratio = $dimensions['src_height'] / $crop['resized_height'];
+			$crop['resized_width'] = floor($crop['resized_width'] * $resize_ratio);
+			$crop['resized_height'] = floor($crop['resized_height'] * $resize_ratio);
+			$crop['x1'] = floor($crop['x1'] * $resize_ratio);
+			$crop['x2'] = floor($crop['x2'] * $resize_ratio);
+			$crop['y1'] = floor($crop['y1'] * $resize_ratio);
+			$crop['y2'] = floor($crop['y2'] * $resize_ratio);
+			$crop['width'] = floor($crop['width'] * $resize_ratio);
+			$crop['height'] = floor($crop['height'] * $resize_ratio);
+		}
+
+		$dimensions['x1'] = empty($crop['x1']) ? 0 : $crop['x1'];
+		$dimensions['y1'] = empty($crop['y1']) ? 0 : $crop['y1'];
+		$dimensions['width'] = empty($crop['width']) ? $maxwidth : $crop['width'];
+		$dimensions['height'] = empty($crop['height']) ? $maxheight : $crop['height'];
+
+		$isCropped = ($dimensions['src_width'] > $dimensions['width'] OR $dimensions['src_height'] > $dimensions['height']);
+
+		$ext = strtolower($fileInfo[2]);
+
+		$dimensions['extension'] = empty($ext) ? $pathinfo['extension'] : $ext;
+		$dimensions['filename'] = $filename;
+		$dimensions['filedata'] = file_get_contents($filename);
+
+		// Check max height and max weight from the usergroup's permissions
+		$needsResize = ($maxwidth < $fileInfo[0] OR $maxheight < $fileInfo[1]);
+		$forceResize = false;
+
+		// force a resize if the uploaded file has the right dimensions but the file size exceeds the limits
+		if (!$isCropped AND !$needsResize AND strlen($dimensions['filedata']) > $usercontext->getLimit('avatarmaxsize'))
+		{
+			$new_dimensions = $imageHandler->bestResize($dimensions['src_width'], $dimensions['src_height']);
+			$crop['width'] = $new_dimensions['width'];
+			$crop['height'] = $new_dimensions['height'];
+
+			$forceResize = true;
+		}
+
+		$extension_map = $imageHandler->getExtensionMap();
+
+		if ($forceResize OR $needsResize)
+		{
+			$fileArray_cropped = $imageHandler->cropImg(
+				$dimensions,
+				min(empty($crop['width']) ? $maxwidth : $crop['width'], $maxwidth),
+				min(empty($crop['height']) ? $maxheight : $crop['height'], $maxheight),
+				$forceResize
+			);
+
+			//want to get the thumbnail based on the cropped image
+			$fh = fopen($filename, 'w');
+			fwrite($fh, $fileArray_cropped['filedata']);
+			fclose($fh);
+
+			$fileArray_thumb = $imageHandler->fetchThumbnail($pathinfo['basename'], $filename);
+			$filearray = [
+				'size' => $fileArray_cropped['filesize'],
+				'filename' => $filename,
+				'name' => $pathinfo['filename'],
+				'location' => $pathinfo['dirname'],
+				'type' => 'image/' . $extension_map[strtolower($dimensions['extension'])],
+				'filesize' => $fileArray_cropped['filesize'],
+				'height' => $fileArray_cropped['height'],
+				'width' => $fileArray_cropped['width'],
+				'filedata_thumb' => $fileArray_thumb['filedata'],
+				'filesize_thumb' => $fileArray_thumb['filesize'],
+				'height_thumb' => $fileArray_thumb['height'],
+				'width_thumb' => $fileArray_thumb['width'],
+				'extension' => $imageHandler->getExtensionFromFileheaders($filename),
+				'filedata' => $fileArray_cropped['filedata']
+			];
+		}
+		else
+		{
+			$fileArray_thumb = $imageHandler->fetchThumbnail($pathinfo['basename'], $filename);
+			$filearray = [
+				'size' => strlen($dimensions['filedata']),
+				'filename' => $filename,
+				'name' => $pathinfo['filename'],
+				'location' => $pathinfo['dirname'],
+				'type' => 'image/' . $extension_map[strtolower($dimensions['extension'])],
+				'filesize' => strlen($dimensions['filedata']),
+				'height' => $fileInfo[1],
+				'width' => $fileInfo[0],
+				'filedata_thumb' => $fileArray_thumb['filedata'],
+				'filesize_thumb' => $fileArray_thumb['filesize'],
+				'height_thumb' => $fileArray_thumb['source_height'],
+				'width_thumb' => $fileArray_thumb['source_width'],
+				'extension' => $imageHandler->getExtensionFromFileheaders($filename),
+				'filedata' => $dimensions['filedata']
+			];
+		}
+
+		$api = vB_Api::instanceInternal('user');
+		$result = $this->updateAvatar($userid, false, $filearray, true);
+
+		if (empty($result['errors']))
+		{
+			if (vB::getUserContext()->hasAdminPermission('canadminusers') AND $adminoverride AND !$usercontext->hasPermission('genericpermissions', 'canuseavatar'))
+			{
+				$userinfo = fetch_userinfo($userid);
+				$userdata = new vB_DataManager_User(vB_DataManager_Constants::ERRTYPE_ARRAY_UNPROCESSED);
+				$userdata->set_existing($userinfo);
+				$userdata->set_bitfield('adminoptions', 'adminavatar', 1);
+				$userdata->save();
+			}
+
+			return $api->fetchAvatar($userid);
+		}
+		else
+		{
+			return $result;
+		}
+	}
+
+
+	/**
+	 * Registers userids that we will later be fetching avatars for. If we
+	 * register the userids here, they can be fetched in batches.
+	 *
+	 * @param array Array if integer user IDs for the users whose avatars we will be fetching later.
+	 */
+	public function registerNeedAvatarForUsers($userids)
+	{
+		foreach ($userids AS $userid)
+		{
+			if (empty($this->loadedAvatarUserids[$userid]))
+			{
+				$this->pendingAvatarUserids[$userid] = $userid;
+			}
+		}
+	}
+
+	/**
+	 * Fetch the Avatars for a userid array
+	 *
+	 * @param array $userids
+	 * @param string|bool $typekey [values of 'avatar', 'thumb', and 'profile'] for size.  For backwards compatibilty
+	 * 	other values will be treated as 'thumb' if true and 'avatar if not
+	 * @param array	$userinfo Array of userinfo, possibly already containing the avatar information.  If not provided will
+	 * 	be fetched.
+	 * @return array Information regarding the avatar
+	 */
+	public function fetchAvatars($userids = [], $typekey = 'avatar', $userinfo = [])
+	{
+		$requestedUserids = $userids;
+
+		// add userids that have been flagged as needing avatars via registerNeedAvatarForUsers()
+		foreach ($this->pendingAvatarUserids AS $userid)
+		{
+			$userids[] = $userid;
+			$this->loadedAvatarUserids[$userid] = $userid;
+		}
+		$this->pendingAvatarUserids = [];
+
+		// cache avatar information from the passed userinfo array
+		foreach ($userinfo AS $userid => $_userinfo)
+		{
+			if (!isset($this->avatarUserCache[$userid]) AND isset($_userinfo['hascustomavatar']))
+			{
+				//match the fields names from the fetchAvatarsForUsers query
+				$this->avatarUserCache[$userid] = [
+					'userid'         => $_userinfo['userid'],
+					'displayname'    => $_userinfo['displayname'],
+					'avatarid'       => $_userinfo['avatarid'],
+					'avatarpath'     => $_userinfo['avatarpath'],
+					'avatarrevision' => $_userinfo['avatarrevision'],
+					'dateline'       => $_userinfo['avatardateline'],
+					// This seems important but the logic that loads the above doesn't seem to include it.  I don't think
+					// the optional pass the user records feature of this function is actually used and I'm not sure it works.
+					// leaving as was for now.
+//					'filename'       => $_userinfo['avatarfilename'],
+				];
+			}
+		}
+
+		if (empty($userids))
+		{
+			return [];
+		}
+
+		//this param used to be a boolean $thumb to select between thumb and avatar but we need to
+		//allow profile to so move to string value directly but preserve backwards compatibility
+		if (!in_array($typekey, ['avatar', 'profile', 'thumb'], true))
+		{
+			$typekey = ($typekey ? 'thumb' : 'avatar');
+		}
+
+		$cachedKeys = array_keys($this->avatarsCache);
+		$notCachedAvatars = array_diff($userids, $cachedKeys);
+
+		//we'll strip this down based on the users we already have cached.
+		$notCachedUsers = array_combine($notCachedAvatars, $notCachedAvatars);
+
+		$options = vB::getDatastore()->getValue('options');
+		$avatarfilebase = $options['avatarpath'];
+		if (substr($options['avatarpath'], 0, 2) == './')
+		{
+			$avatarfilebase = substr($options['avatarpath'], 2);
+		}
+
+		// Is not clear in what situation, other than having a userInfo array where we would have something in avatarUserCache but not in
+		// avatarsCache.  This may be due to collapsing the typekey caches into one streamlined cache.
+		// load any non-cached avatars into $this->avatarsCache, either from $this->avatarUserCache or by querying the database
+		if (!empty($notCachedUsers))
+		{
+			foreach ($notCachedUsers AS $userid)
+			{
+				if (isset($this->avatarUserCache[$userid]))
+				{
+					unset($notCachedUsers[$userid]); // key and value of $notCached are both the userid
+				}
+			}
+
+			if (!empty($notCachedUsers))
+			{
+				$avatarsinfo = vB::getDbAssertor()->assertQuery('vbForum:fetchAvatarsForUsers', ['userid' => $notCachedUsers]);
+				foreach ($avatarsinfo AS $_userinfo)
+				{
+					$this->avatarUserCache[$_userinfo['userid']] = $_userinfo;
+				}
+			}
+
+			foreach ($notCachedAvatars AS $userid)
+			{
+				if (!isset($this->avatarUserCache[$userid]))
+				{
+					continue;
+				}
+
+				$user = $this->avatarUserCache[$userid];
+
+				// I think this is part of the no longer extant "standard" avatars code.  I'm not sure it actually works since we
+				// use the same value regardless of type.  (Updated to conform to the new cache format but not otherwise tested).
+				if (!empty($user['avatarid']))
+				{
+					$avatarpath = $user['avatarpath'];
+					//If this is an absolute path we must trim the DIR portion
+					if (substr($avatarpath, 0, strlen(DIR)) == DIR)
+					{
+						$avatarpath = substr($avatarpath, strlen(DIR) + 1);
+					}
+
+					$this->avatarsCache[$userid] = [
+						'hascustom' => 0,
+						'avatarpath' => $avatarpath,
+					];
+				}
+				else
+				{
+					//the user did not select any avatars
+					if ((!$user['avatarrevision'] AND !$user['dateline']) OR ($options['usefileavatar'] AND !$user['filename']))
+					{
+						$this->avatarsCache[$userid] = [
+							'isdefault' => true,
+							'username' => $user['displayname']
+						];
+					}
+					else
+					{
+						if ($options['usefileavatar'])
+						{
+							//We check for all saved versions of the file regardless of which we are looking for.
+							//Need to figure out what's going on for "profile" here, it seems dubious.
+							$filename = $user['filename'];
+							if (file_exists(DIR . '/' . $avatarfilebase . '/' . $filename) AND file_exists(DIR . '/' . $avatarfilebase . '/thumbs/' . $filename))
+							{
+								$this->avatarsCache[$userid] = [
+									'hascustom'    => 1,
+									'filename'     => $filename,
+									// Set for passing back dimensions for customavatar case in below loop.
+									'width_thumb'  => $user['customavatar_width_thumb']  ?? 0,
+									'height_thumb' => $user['customavatar_height_thumb'] ?? 0,
+									'width'        => $user['customavatar_width']        ?? 0,
+									'height'       => $user['customavatar_height']       ?? 0,
+								];
+							}
+							else
+							{
+								$this->avatarsCache[$userid] = [
+									'isdefault' => true,
+									'username' => $user['displayname']
+								];
+							}
+						}
+						else
+						{
+							$this->avatarsCache[$userid] = [
+								'hascustom'    => 1,
+								'dateline'     => $user['dateline'],
+								'width_thumb'  => $user['customavatar_width_thumb']  ?? 0,
+								'height_thumb' => $user['customavatar_height_thumb'] ?? 0,
+								'width'        => $user['customavatar_width']        ?? 0,
+								'height'       => $user['customavatar_height']       ?? 0,
+							];
+						}
+					}
+				}
+			}
+		}
+
+		// prepare return value
+		// This isn't the same as the userids check above because we might have had users from the prepared list.
+		// Though it's not clear is serves any purpose to load those if we don't have any requested users since
+		// we won't do anything with the data we cache and we can always do it next time.
+		if (empty($requestedUserids))
+		{
+			return [];
+		}
+
+		[
+			'paths' => $defaults,
+			'sizes' => $defaultSizes,
+		] = $this->getDefaultAvatarInfo();
+
+		$return = [];
+		foreach ($requestedUserids AS $requestedUserid)
+		{
+			$cache = $this->avatarsCache[$requestedUserid] ?? ['isdefault' => true, 'username' => ''];
+
+			//use the default avatar
+			if ($cache['isdefault'] ?? false)
+			{
+				// This can get hit in places in the upgrader before we've properly loaded the new options
+				// It's pretty much a don't care in the upgrader so just make sure we don't get a warning
+				// if the option doesn't exist.
+				if (!empty($options['usecustomdefaultavatar']) AND $cache['username'])
+				{
+					//this is the same for any size -- will rely on the markup to constrain the avatar.
+					$svg = $this->generateCustomDefaultAvatarSvg($cache['username'], 'bbbbbb', 0.7);
+					//$svg = $this->generateCustomDefaultAvatarSvg($cache['username'], '555555', 0.2);
+					$info = [
+						'hascustom' => 0,
+						'avatarpath' => "data:image/svg+xml;base64," . base64_encode($svg),
+						'isfullurl' => 1,
+						// The viewbox size is 50x50. However, we don't want to use that as the width/height here.
+						// SVGs seem to work slightly differently than other images when the width & height are not explicitly
+						// set. In chrome, it gets an intrinsic size of 150x150px but always scales up to fit available width (if
+						// allowed by css).
+						// A png in that same container, for example, stays at its intrinsic size without scaling up, unless
+						// forced to by a strict width or height css.
+						// As soon as we give SVG an explicit width and height, it loses that scaling-up behavior. In order to
+						// "preserve" that behavior, we need to set the width & height to be at least as large as the expected
+						// container size instead of matching the viewbox size.
+						// So we could go with something like 1000x1000, but for now let's just match the default static sizes.
+						'width' => $defaultSizes[$typekey][0],
+						'height' => $defaultSizes[$typekey][1],
+					];
+				}
+				else
+				{
+					$info = [
+						'hascustom' => 0,
+						'avatarpath' => $defaults[$typekey],
+						'isfullurl' => 0,
+						'width' => $defaultSizes[$typekey][0],
+						'height' => $defaultSizes[$typekey][1],
+					];
+				}
+			}
+			//use the user's custom avatar
+			else if ($cache['hascustom'])
+			{
+				if ($cache['filename'] ?? false)
+				{
+					// This should probably honor the avatarurl option but that doesn't seem to have been
+					// used for quite some time and will probably break some sites if we change it now.
+					// The current code only really works if the file is a directory off of core.
+
+					// we use the same image for profile and avatar when in the filesystem -- need to sort out why.
+					$info = [
+						'hascustom' => 1,
+						'avatarpath' =>  $avatarfilebase . '/' . ($typekey == 'thumb' ? 'thumbs/' : '') . $cache['filename'],
+					];
+				}
+				else
+				{
+					$args = [
+						'userid' => $requestedUserid,
+						$typekey => 1,
+					];
+
+					// For some reason we don't send a flag when $typekey is avatar (behavior copied from previous logic where this was less consolidated).
+					// Maybe we should for consistency even if it doesn't matter.
+					unset($args['avatar']);
+					if (!empty($cache['dateline']))
+					{
+						$args['dateline'] = $cache['dateline'];
+					}
+
+					$info = [
+						'hascustom' => 1,
+						'avatarpath' => 'image.php?' . http_build_query($args),
+					];
+				}
+
+				// set avatar sizes
+				if ($typekey == 'thumb')
+				{
+					$info['width'] = $cache['width_thumb'] ?? 0;
+					$info['height'] = $cache['height_thumb'] ?? 0;
+				}
+				// while the docblock claims $typekey may be profile|avatar|thumb (large|medium|small) in reality we currently
+				// do not seem to have the middle resize for custom avatars, and only have profile|thumb. See above where we
+				// conditionally switch thumbs/ for the disk version, and see core/image.php where we switch between filedata &
+				// filedata_thumb for the db version.
+				else
+				{
+					$info['width'] = $cache['width'] ?? 0;
+					$info['height'] = $cache['height'] ?? 0;
+				}
+			}
+			//use the "stock" avatar (doesn't actually work, see above)
+			else
+			{
+				//This should only contain "hascustom" and "avatarpath" since for the stored "default" avatar feature
+				//that's all we store in the cache and there is no need to calculate values here.  We don't want to
+				//return any extraneous values here.
+				$info = $cache;
+			}
+
+			$return[$requestedUserid] = $info;
+		}
+
+		return $return;
+	}
+
+	/**
+	 * @return array{
+	 *             paths:array{avatar:string, thumb:string, profile:string},
+	 *             sizes:array{avatar:int[], thumb:int[], profile:int[]}
+	 *         }
+	 */
+	private function getDefaultAvatarInfo() : array
+	{
+		// keep this synchronized with the 'avatar' template.
+
+		$defaultPaths = [
+			'avatar'      => 'images/default/default_avatar_medium.png',
+			'thumb'       => 'images/default/default_avatar_thumb.png',
+			'profile'     => 'images/default/default_avatar_large.png',
+		];
+
+		// For now, we'll assume that if they swap out the default avatars on disk with custom images, they'll replace them with
+		// images of the same dimensions. If this becomes a problem, we may want to switch to actually doing a getimagesize()
+		// and caching the results (so we're not just loading the files every page load) with some easy way to flush the cache
+		// if they do replace them.
+		$defaultSizes = [
+			// 'key'      =>    [width, height]
+			'avatar'      =>    [64,  64],
+			'thumb'       =>    [32,  32],
+			'profile'     =>    [200, 200],
+		];
+
+		return [
+			'paths' => $defaultPaths,
+			'sizes' => $defaultSizes,
+		];
+	}
+
+	/**
+	 *	Generates SVG text for a user based on the username.
+	 */
+	private function generateCustomDefaultAvatarSvg(string $username, string $colorMask, float $colorWeight) : string
+	{
+		$stringUtil = vB::getString();
+		$avatar_initial = $stringUtil->strtoupper($stringUtil->substr($username, 0, 1));
+		$avatar_initial = $stringUtil->htmlentities($avatar_initial, ENT_COMPAT | ENT_XML1);
+
+		//Generate a color by taking the crc hash (an integer) and taking the first three bytes (implicitly bigendian but dechex
+		//is consistent across platforms).  Convert to an array of integers for
+		$colorarray = $this->hexStringToColorArray(dechex(crc32($username)));
+		$maskarray = $this->hexStringToColorArray(ltrim($colorMask, '#'));
+
+		//take the weighted average of the mask and the generated color according to the configured weight
+		$newcolorarray = [];
+		for ($i = 0; $i < 3; $i++)
+		{
+			$newcolorarray[$i] = $colorarray[$i] * $colorWeight + $maskarray[$i] * (1 - $colorWeight);
+		}
+
+		//convert to an hex color code, implicitly truncating the color compenents to integers
+		$newcolor = vsprintf('#%02x%02x%02x', $newcolorarray);
+
+		//<text x='50%' y='50%' fill='white' text-anchor='middle' alignment-baseline='middle'>$avatar_circle_text</text>
+		return "
+			<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 50 50'>
+				<rect width='100%' height='100%' fill='$newcolor' />
+				<text x='50%' y='50%' fill='white' font-weight='bold' font-family='Arial' font-size='300%' dominant-baseline='central' text-anchor='middle'>$avatar_initial</text>
+			</svg>
+		";
+	}
+
+	//This is strictly a helper function.  We'll only return the first three values regardless of how many we have.
+	//Pack is a little faster for the crc translation (we don't need to translate to hex in that case) but not enough
+	//to be worth the obscurity (plus it doesn't work on the mask value.  Bit manipulation might be even faster but
+	//the byte order is machine dependant and we'd rather the color hashing not be.
+	private function hexStringToColorArray(string $hexstring) : array
+	{
+		//this depends on the hextring not being overly long for decent performance but that should
+		//always be on case (an int is 8 hex digits, and the color mask is 6)
+		$temp = str_split($hexstring, 2);
+		$vals = [];
+		$vals[] = hexdec($temp[0]);
+		$vals[] = hexdec($temp[1]);
+		$vals[] = hexdec($temp[2]);
+		return $vals;
+	}
+
+	/**
+	 * Update avatar
+	 *
+	 * @param integer $userid User ID whose avatar is going to be updated
+	 * @param integer $avatarid Predefined avatar ID. -1 means to remove avatar
+	 *				from the user. 0 means use custom avatar defined in $avatardata
+	 * @param array $data Avatar data. It should be an array contains
+	 *			  the following items: 'filename', 'width', 'height', 'filedata', 'location'
+	 */
+	private function updateAvatar($userid, $avatarid, $data = [], $cropped = false)
+	{
+		if (empty($data['extension']))
+		{
+			throw new vB_Exception_Api('upload_invalid_image');
+		}
+
+		$userContext = vB::getUserContext();
+		$currentUserId = $userContext->fetchUserId();
+		$userid = intval($userid);
+
+		if ($userid <= 0 AND $currentUserId)
+		{
+			$userid = $currentUserId;
+		}
+
+		$useavatar = (($avatarid == -1) ? 0 : 1);
+		$bf_ugp_genericpermissions = vB::getDatastore()->getValue('bf_ugp_genericpermissions');
+
+		$userinfo = vB_User::fetchUserinfo(intval($userid));
+		if (!$userinfo)
+		{
+			throw new vB_Exception_Api('invalid_user_specified');
+		}
+		// init user datamanager
+		$userdata = new vB_DataManager_User(vB_DataManager_Constants::ERRTYPE_ARRAY_UNPROCESSED);
+		$userdata->set_existing($userinfo);
+
+		if ($useavatar)
+		{
+			if (!$avatarid)
+			{
+				$userpic = new vB_DataManager_Userpic(vB_DataManager_Constants::ERRTYPE_ARRAY_UNPROCESSED);
+				// user's group doesn't have permission to use custom avatars so set override
+
+				if (!$userContext->hasPermission('genericpermissions', 'canuseavatar'))
+				{
+					// init user datamanager
+					$userdata->set_bitfield('adminoptions', 'adminavatar', 1);
+				}
+				$userpic->set('userid', $userinfo['userid']);
+				$userpic->set('dateline', vB::getRequest()->getTimeNow());
+				$userpic->set('width', $data['width']);
+				$userpic->set('height', $data['height']);
+				$userpic->set('extension', $data['extension']);
+
+				if (vB::getDatastore()->getOption('usefileavatar'))
+				{
+					$avatarpath = vB::getDatastore()->getOption('avatarpath');
+					$prev_dir = getcwd();
+					chdir(DIR);
+
+					$oldavatarfilename = "avatar{$userid}_{$userinfo['avatarrevision']}.{$data['extension']}";
+					$avatarrevision = $userinfo['avatarrevision'] + 1;
+					$avatarfilename = "avatar{$userid}_{$avatarrevision}.{$data['extension']}";
+					@unlink($avatarpath . '/' . $oldavatarfilename);
+					@unlink($avatarpath . '/thumbs/' . $oldavatarfilename);
+
+					$avatarres = @fopen("$avatarpath/$avatarfilename", 'wb');
+					$userpic->set('filename', $avatarfilename);
+					fwrite($avatarres, $data['filedata']);
+					@fclose($avatarres);
+					if (!empty($data['filedata_thumb']))
+					{
+						$thumbres = @fopen("$avatarpath/thumbs/$avatarfilename", 'wb');
+						fwrite($thumbres, $data['filedata_thumb']);
+						@fclose($thumbres);
+						$userpic->set('width_thumb', $data['width_thumb']);
+						$userpic->set('height_thumb', $data['height_thumb']);
+					}
+					chdir($prev_dir);
+					$userpic->set('filesize', $data['filesize']);
+					$userdata->set('avatarrevision', $userinfo['avatarrevision'] + 1);
+				}
+				else
+				{
+					$avatarfilename = "avatar{$userid}_{$userinfo['avatarrevision']}.{$data['extension']}";
+					$userpic->setr('filedata', $data['filedata']);
+					$userpic->set('filename', $avatarfilename);
+
+					$imageHandler = vB_Image::instance();
+					if (!$cropped)
+					{
+						$thumb = $imageHandler->fetchThumbNail($data['name'], $data['location']);
+					}
+
+					if (!$cropped)
+					{
+						$userpic->set('filedata_thumb', $thumb['filedata']);
+						$userpic->set('width_thumb', $thumb['width']);
+						$userpic->set('height_thumb', $thumb['height']);
+					}
+
+					else
+					{
+						$userpic->set('filedata_thumb', $data['filedata_thumb']);
+						$userpic->set('width_thumb', $data['width_thumb']);
+						$userpic->set('height_thumb', $data['height_thumb']);
+					}
+				}
+
+				$userpic->save();
+			}
+			else
+			{
+				// predefined avatar
+				$userpic = new vB_DataManager_Userpic_Avatar(vB_DataManager_Constants::ERRTYPE_ARRAY_UNPROCESSED);
+				$userpic->condition = ['userid'  => $userinfo['userid']];
+				$userpic->delete();
+
+				if ($userpic->has_errors(false))
+				{
+					throw $userpic->get_exception();
+				}
+			}
+		}
+		else
+		{
+			// not using an avatar
+			$avatarid = 0;
+			$userpic = new vB_DataManager_Userpic_Avatar(vB_DataManager_Constants::ERRTYPE_ARRAY_UNPROCESSED);
+			$userpic->condition = ['userid'  => $userinfo['userid']];
+			$userpic->delete();
+
+			if ($userpic->has_errors(false))
+			{
+				throw $userpic->get_exception();
+			}
+		}
+
+		$userdata->set('avatarid', $avatarid);
+		if (!$userdata->save())
+		{
+			throw $userpic->get_exception();
+		}
+
+		unset($this->avatarsCache[$userid]);
+		return true;
+	}
+
+
+	/**
+	 * Transfers all ownerships (blogs and groups) from given user to another one.
+	 *
+	 * 	@param 		int 	Userid to transfer ownerships from.
+	 * 	@param 		int 	Userid to transfer ownerships to.
+	 *
+	 * 	@return 	bool 	Indicates if transfer where properly done, throws exception if needed.
+	 */
+	public function transferOwnership($fromuser, $touser)
+	{
+		$fromuser = intval($fromuser);
+		$touser = intval($touser);
+		if (!$touser OR !$fromuser)
+		{
+			throw new vB_Exception_Api('invalid_data');
+		}
+
+		$usergroupInfo = vB_Api::instanceInternal('usergroup')->fetchUsergroupBySystemID(vB_Api_UserGroup::CHANNEL_OWNER_SYSGROUPID);
+		$update = vB::getDbAssertor()->update('vBForum:groupintopic', ['userid' => $touser], ['userid' => $fromuser, 'groupid' => $usergroupInfo['usergroupid']]);
+
+		// update cache if needed
+		if (is_numeric($update) AND ($update > 0))
+		{
+			$events = [];
+			foreach ([$fromuser, $touser] AS $uid)
+			{
+				vB::getUserContext($uid)->clearChannelPermissions();
+				$events[] = 'userPerms_' . $uid;
+			}
+
+			vB_Cache::allCacheEvent($events);
+		}
+
+		return true;
+	}
+
+	/**
+	 * Generates a totally random string
+	 *
+	 * Intended to populate the user secret field.  Exposed as a function
+	 * because the installer doesn't use the normal user save code and will
+	 * need access.
+	 *
+	 * @return	string	Generated String
+	 */
+	public function generateUserSecret()
+	{
+		$random = new vB_Utility_Random();
+		return $random->alphanumeric(35);
+	}
+
+	/**
+	 *	Update the post count for a list of users.
+	 *
+	 *	The simple case is one user and one post, but if we
+	 *	do a large operation -- for example undeleting a topic -- we can cause a number of posts to be
+	 *	"counted" for a number of users (and have more than one "new" post per user).  We batch
+	 *	the call for all affected users because it allows us to avoid
+	 *
+	 *	We also update the lastpost information for the user (conditionally).  These are linked
+	 *	primary to save queries to the database because they tend to change together rather
+	 *	than because the are conceptually the same thing.
+	 *
+	 *	@param array of $userid => $info array with the following fields
+	 *	* posts -- the number of new posts for the user
+	 *	* lastposttime -- the publish time of the most recent "activated" post.  This will
+	 *		become the user's last post IF it's more recent than the one we have on record
+	 *	* lastpostid -- the id of the last post
+	 *
+	 *	@return void
+	 */
+	public function incrementPostCountForUsers($userInfo)
+	{
+		$assertor = vB::getDbAssertor();
+		$events = [];
+		foreach ($userInfo AS $userid => $info)
+		{
+			$assertor->assertQuery('vBForum:incrementUserPostCount', [
+				'userid'       => $userid,
+				'lastposttime' => $info['lastposttime'],
+				'lastnodeid'   => $info['lastpostid'],
+				'count'        => $info['posts'],
+				'starters'     => $info['starters'],
+			]);
+
+			$events[] = 'usrChg_' . $userid;
+		}
+
+		//efficiency hack.  If we have only one user and its the current user we
+		//can skip loading the user's information because we should already (more
+		//or less) have it.
+		//This probably the most common case we will encounter.
+		if (count($userInfo) == 1)
+		{
+			// Note, there's potential problem here -- the userinfo is cached, so if e.g. two posts
+			// get added during a single pageload / php session, we'll still have the old post info
+			// for the second increment call. CLI callers beware. This problem also makes these
+			// functions a bit difficult to test (in the tests, we call session::clearUserInfo()
+			// generously)
+			$currentuser = vB::getCurrentSession()->fetch_userinfo();
+			$user = reset($userInfo);
+			$userid = key($userInfo);
+
+			if ($userid == $currentuser['userid'])
+			{
+				//the post count won't reflect the changes in this function but our calculations
+				//based on post count should.  Fix the user array.
+				$currentuser['posts'] += $user['posts'];
+				$currentuser['startedtopics'] += $user['starters'];
+				$this->updatePostCountInfoCurrentUser($currentuser);
+			}
+			else
+			{
+				$this->updatePostCountInfo(array_keys($userInfo));
+			}
+		}
+		else
+		{
+				$this->updatePostCountInfo(array_keys($userInfo));
+		}
+
+		vB_Cache::allCacheEvent($events);
+	}
+
+	/**
+	 *	Update the post count for a list of users.
+	 *
+	 *	The simple case is one user and one post, but if we
+	 *	do a large operation -- for example deleting a topic -- we can cause a number of posts to be
+	 *	"uncounted" for a number of users (and have more than one "new" post per user).  We batch
+	 *	the call for all affected users because it allows us to avoid
+	 *
+	 *	@param array of $userid => $info array with the following fields.  This is structured this
+	 *		way to be consistant with the data for incrementPostCountForUsers
+	 *	* posts -- the number of removed posts for the user
+	 *
+	 *	@return void
+	 */
+	public function decrementPostCountForUsers($userInfo)
+	{
+		$assertor = vB::getDbAssertor();
+		$events = [];
+		foreach ($userInfo AS $userid => $info)
+		{
+			$assertor->assertQuery('vBForum:decrementUserPostCount', [
+				'userid'   => $userid,
+				'count'    => $info['posts'],
+				'starters' => $info['starters'],
+			]);
+
+			$events[] = 'usrChg_' . $userid;
+		}
+
+		//efficiency hack.  If we have only one user and its the current user we
+		//can skip loading the user's information because we should already (more
+		//or less) have it.
+		//This probably the most common case we will encounter.
+		//This is almost but not quite identical to the increment code (mind the change in sign)
+		//But trying to isolate it to its own function is more trouble than its worth
+		if (count($userInfo) == 1)
+		{
+			$currentuser = vB::getCurrentSession()->fetch_userinfo();
+			$user = reset($userInfo);
+			$userid = key($userInfo);
+
+			if ($userid == $currentuser['userid'])
+			{
+				//the post count won't reflect the changes in this function but our calculations
+				//based on post count should.  Fix the user array.
+				$currentuser['posts'] -= $user['posts'];
+				$currentuser['startedtopics'] -= $user['starters'];
+				$this->updatePostCountInfoCurrentUser($currentuser);
+			}
+			else
+			{
+				$this->updatePostCountInfo(array_keys($userInfo));
+			}
+		}
+		else
+		{
+				$this->updatePostCountInfo(array_keys($userInfo));
+		}
+
+		vB_Cache::allCacheEvent($events);
+	}
+
+	/**
+	 *	Update the user post count dependant info for the users identified.
+	 *
+	 * 	Note that the user cache should be cleared after calling this function
+	 * 	but it does not do so (to avoid clearing the cache repeatedly).  If
+	 * 	this is needed to be made public a new public version should be created
+	 * 	that calls this function and then clears the cash
+	 *
+	 *	Note also that this function will only update the ranks if there are ranks
+	 *	defined.  This is intended to avoid querying user data that we don't need
+	 *	if we can't match any ranks -- not everybody uses this feature.  However it
+	 *	also means that if we create ranks and delete them all then then this
+	 *	function will not clear the rank data.  There is a maintanince tool to
+	 *	update this data that should be run whenever the rank structure is changed
+	 *	that will fix this problem.
+	 *
+	 * 	@param $users an array of user ids
+	 * 	@return void
+	 */
+	private function updatePostCountInfo($users)
+	{
+		//if this is empty, we'll likely get an DB error.  Shouldn't happen but its good to check.
+		if (empty($users))
+		{
+			return;
+		}
+
+		$ranklib = vB_Library::instance('userrank');
+		$haveRanks = $ranklib->haveRanks();
+
+		$db = vB::getDbAssertor();
+		$userinfo = $db->select(
+			'user',
+			['userid' => $users],
+			false,
+			[
+				'customtitle',
+				'usertitle',
+				'userid',
+				'posts',
+				'usergroupid',
+				'displaygroupid',
+				'membergroupids',
+				'joindate',
+				'startedtopics',
+				'reputation',
+				'totallikes',
+			]
+		);
+
+		foreach ($userinfo AS $info)
+		{
+			if ($haveRanks)
+			{
+				$rankHtml = $ranklib->getRankHtml($info);
+				$db->update('vBForum:usertextfield', ['rank' => $rankHtml], ['userid' => $info['userid']]);
+			}
+
+			$this->updateLadderUserTitle($info);
+		}
+	}
+
+	/**
+	 *	Updates the post count dependant info for the current user.
+	 *
+	 *	This is going to be the common case.  We could use updatePostCountInfo for this, but we
+	 *	already have all of the information we need for the user here so we can save
+	 *	a query.
+	 *
+	 *	@param $currentUser The current user array.  We have to pass this in because the cached
+	 *		value is likely to be outdated when get here and the caller may need to alter it before
+	 *		we use it.  This prevents an unnecesary cache clear/reload.
+	 */
+	private function updatePostCountInfoCurrentUser($currentUser)
+	{
+		$ranklib = vB_Library::instance('userrank');
+		if ($ranklib->haveRanks())
+		{
+			$db = vB::getDbAssertor();
+			$rankHtml = $ranklib->getRankHtml($currentUser);
+			$db->update('vBForum:usertextfield', ['rank' => $rankHtml], ['userid' => $currentUser['userid']]);
+		}
+		$this->updateLadderUserTitle($currentUser);
+	}
+
+	private function updateLadderUserTitle($userInfo)
+	{
+		//if the user has a custom title, then continue to use that
+		if ($userInfo['customtitle'])
+		{
+			return;
+		}
+
+		$usergroups = vB::getDatastore()->getValue('usergroupcache');
+
+		$usergroupid = ($userInfo['displaygroupid'] ? $userInfo['displaygroupid'] : $userInfo['usergroupid']);
+		$usergroup = $usergroups[$usergroupid];
+
+		//if the title is set via usergroup, continue to use that
+		if ($usergroup['usertitle'])
+		{
+			return;
+		}
+
+		//otherwise let's get the ladder title
+		$db = vB::getDbAssertor();
+
+		$gettitle = $this->getUsertitleFromPosts(intval($userInfo['posts']));
+		if ($gettitle != $userInfo['usertitle'])
+		{
+			$db->update('user', ['usertitle' => $gettitle], ['userid' => $userInfo['userid']]);
+		}
+	}
+
+	public function getUsertitleFromPosts($posts)
+	{
+		//(these are probably candidate for a datastore entry)
+		$title = vB::getDbAssertor()->getRow('usertitle',
+			[
+				vB_dB_Query::CONDITIONS_KEY => [['field' => 'minposts', 'value' => $posts, 'operator' => 'LTE']],
+				vB_dB_Query::COLUMNS_KEY => ['title'],
+			],
+		 	['field' => ['minposts'], 'direction' => [vB_dB_Query::SORT_DESC]]
+		);
+		return $title['title'] ?? '';
+	}
+
+
+	/**
+	 * Clear user cached info for given userids.
+	 * There's currently cached info in several places  (vB_Session, vB_User and vB_Cache implementations)
+	 * this makes sure they all properly cleared.
+	 *
+	 *	@param 	array 	List of users to clear cache.
+	 *
+	 *	@param 	bool 	Cache was cleared or not.
+	 */
+	public function clearUserInfo($userids)
+	{
+		if (empty($userids) OR !is_array($userids))
+		{
+			return false;
+		}
+
+		$events = [];
+		$userids = array_unique($userids);
+
+		$session = vB::getCurrentSession();
+		$currentuser = $session->get('userid');
+		$updatecurrent = false;
+		foreach ($userids AS $userid)
+		{
+			// update current user?
+			if ($currentuser == $userid)
+			{
+				$updatecurrent = true;
+			}
+
+			vB_User::clearUsersCache($userid);
+			$events[] = 'userChg_' . $userid;
+		}
+
+		vB_Cache::allCacheEvent($events);
+
+		if ($updatecurrent)
+		{
+			$session->clearUserInfo();
+		}
+
+		return true;
+	}
+
+	public function checkPrivacyOption($option, $userLocationCode)
+	{
+		//do not allow "UNKNOWN" to affect the block option.  This is an exception ot the
+		//general privacy option handling.  This is due to the high probability of a
+		//misconfigured (or unconfigured) geoip blocking everyone from the site
+		if ($option == 'block_eu_visitors' AND $userLocationCode == 'UNKNOWN')
+		{
+			return false;
+		}
+
+		$optionLib = vB_Library::instance('options');
+
+		$locations = $optionLib->getLocationOption($option);
+		$cache = $optionLib->getLocationCache();
+
+		foreach ($locations AS $locationid)
+		{
+			if ($this->isLocationInList($userLocationCode, $cache[$locationid]))
+			{
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	/**
+	 *	Return if the given location is in the given list.
+	 *
+	 * 	A location that is simply a country code will only match the country code.  If there is country code and region
+	 * 	code in the match list, then that will not be considered a match.  However a country code/region code combo
+	 * 	in $location will match a bare country code in $list.  If $location matches any entries in $list then we
+	 * 	have a match.
+	 *
+	 * 	So:
+	 * 	US matches US
+	 * 	US does not match US:CA
+	 * 	US:CA matches US
+	 * 	US:CA matches US:CA
+	 *
+	 * 	Note that a list of the form ['US', 'US:CA', 'US:TX'] is valid, but the latter two entries are really
+	 * 	reduntant with the first one.
+	 *
+	 *  @param string $location -- the location in the form of XX or XX:YY where XX is the country code
+	 *  	and YY is the region code.
+	 *
+	 *  @param array $list -- a list of locations in the form of XX or XX:YY where XX is the country code
+	 *  	and YY is the region code.
+	 */
+	private function isLocationInList($location, $list)
+	{
+		//do this before we validate the user's location.  If we have the magic "all users"
+		//variable then we should match even an invalid location.
+		foreach ($list AS $match)
+		{
+			//this is a magic value that allows a location to match all of the available users
+			if ($match == 'ALLUSERS')
+			{
+				return true;
+			}
+		}
+
+		$location = trim($location);
+		$codes = explode(':', $location);
+		if (count($codes) < 1 || count($codes) > 2)
+		{
+			return false;
+		}
+		$country = $codes[0];
+
+		foreach ($list AS $match)
+		{
+			$match = trim($match);
+			if ($country == $match OR $location == $match)
+			{
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	/**
+	 * Return the location for an IP address
+	 *
+	 * @param string $ipaddress
+	 *
+	 * @return string.  The location string. Typically CountryCode:RegionCode.
+	 * 	In some cases it may be just the CountryCode, the special value EU (for legacy EU users and in some cases
+	 * 	where the geoip provider can't track it) and the special value "UNKNOWN".
+	 */
+	public function getIpLocation($ipaddress)
+	{
+		$db = vB::getDbAssertor();
+		$row = $db->getRow('ipaddressinfo', ['ipaddress' => $ipaddress]);
+
+		if ($row)
+		{
+			return $row['location'];
+		}
+
+		//the geoip service is slow enough that we have a potential race condition in many cases.
+		//which causes an insert after the call to fail. This means that in this case the calls that would
+		//formerly fail will get an 'unknown' status.  But the alternative is to hammer the geoip service
+		//and it's unlikely that in the known cases the result is likely to be important.
+		//
+		try
+		{
+			$time = vB::getRequest()->getTimeNow();
+			$db->insertIgnore('ipaddressinfo', ['ipaddress' => $ipaddress, 'location' => 'UNKNOWN', 'created' => $time]);
+			$geoip = $this->getGeoipProvider();
+			$location = $geoip->getLocation($ipaddress);
+		}
+		catch(Throwable $e)
+		{
+			$location = 'UNKNOWN';
+		}
+
+		$db->update('ipaddressinfo', ['location' => $location, 'created' => $time], ['ipaddress' => $ipaddress]);
+		return $location;
+	}
+
+	//we might need to move this to the vB class if we keep expanding the scope of use
+	//but better to keep it hidden until we need to make it more public.
+	private function getGeoipProvider()
+	{
+		$options = vB::getDatastore()->getValue('options');
+
+		//if we don't have an IP provider, then treat as unknown.
+		if ($options['geoip_provider'] AND $options['geoip_provider'] != 'none')
+		{
+			try
+			{
+				$data = [];
+				$data['urlLoader'] = vB::getUrlLoader(true);
+				$data['key'] = $options['geoip_service_key'];
+
+				$class = vB::getVbClassNameFromTag($options['geoip_provider'], 'Utility_Geoip', 'vB_Utility_Geoip');
+				$geoip = new $class($data);
+				return $geoip;
+			}
+			catch(Throwable $e)
+			{
+				//deliberate fall through
+			}
+		}
+
+		//we don't have a geoip provider or we fail to load the configured value then fallback on the
+		//"none" implemenation.  This will alway return "UNKNOWN" as the location.
+		//Having a stub class allows us to us any helper functions we build into the GeoIp class
+		//and better centralizes the handling for "none" case.
+		//Deliberately take advantage of the fact that the "none" subclass doesn't use data to
+		//avoid creating the url loader if we aren't going to use it.
+
+		//This shouldn't cause an exception and if it does there isn't a clear case to recover
+		//so allow that to filter up instead of trying to pass an error value that the caller is
+		//just going to ignore.
+		$class = vB::getVbClassNameFromTag('none', 'Utility_Geoip', 'vB_Utility_Geoip');
+		$geoip = new $class([]);
+		return $geoip;
+	}
+
+	/**
+	 *	Delete the old IP cache data
+	 */
+	public function cleanIpInfo()
+	{
+		$db = vB::getDbAssertor();
+		$time = vB::getRequest()->getTimeNow();
+
+		$cutoff = $time - (45 * 24 * 60 * 60);
+		$db->delete('ipaddressinfo', [['field' => 'created', 'value' => $cutoff, 'operator' =>  vB_dB_Query::OPERATOR_LT]]);
+	}
+
+	/**
+	 * Updates guest privacy consent
+	 *
+	 * This saves a new record for each consent "event", even if the IP address is the
+	 * same, because we have no way of knowing if it's the same person or not. If a
+	 * saved consent "event" for a given time and IP address needs to be retrieved,
+	 * this will give us the greatest likelihood of finding it.
+	 *
+	 * @param bool True if consenting, false otherwise
+	 */
+	public function updateGuestPrivacyConsent($consent)
+	{
+		$userid = vB::getCurrentSession()->get('userid');
+
+		if ($userid > 0)
+		{
+			throw new vB_Exception_Api('invalid_request');
+		}
+
+		$request = vB::getRequest();
+
+		$ipaddress = $request->getIpAddress();
+		$created = $request->getTimeNow();
+		$consent = (int) ((bool)$consent);
+
+		return vB::getDbAssertor()->insert('privacyconsent', [
+			'ipaddress' => $ipaddress,
+			'created' => $created,
+			'consent' => $consent,
+		]);
+	}
+
+	/**
+	 * Returns the values for the user-related phrase shortcodes, for use in emails.
+	 * These correspond to the recipient user.
+	 *
+	 * @param string Recipient's email address
+	 * @param int Recipient's User ID (if email address is empty, it can use user id instead)
+	 * @return array Array of replacement values
+	 */
+	public function getEmailReplacementValues($email, $userid = 0)
+	{
+		$email = (string) $email;
+
+		$return = [
+			'{musername}' => '[username]',
+			'{username}' => '[username]',
+			'{userid}' => '[userid]',
+		];
+
+		$condition = [];
+
+		if (!empty($email))
+		{
+			$condition['email'] = $email;
+		}
+		else if (!empty($userid))
+		{
+			$condition['userid'] = $userid;
+		}
+
+		if (!empty($condition))
+		{
+			$row = vB::getDbAssertor()->getRow('user', $condition);
+			if ($row)
+			{
+				$return['{musername}'] = vB_User::fetchMusername($row);
+				$return['{username}'] = $row['username'];
+				$return['{userid}'] = $row['userid'];
+			}
+		}
+
+		return $return;
+	}
+
+	public function buildStatistics()
+	{
+		$db = vB::getDbAssertor();
+		$datastore = vB::getDatastore();
+
+		$groupsNeedingConfirmation = $this->groupsExcludedFromLatest();
+		$values = $this->getBaseUserStats($db, $groupsNeedingConfirmation);
+
+		$activememberdays = $datastore->getOption('activememberdays');
+
+		$activemembers = 0;
+		if ($activememberdays > 0)
+		{
+			$timecut = vB::getRequest()->getTimeNow() - ($activememberdays * 86400);
+			$activemembers = $db->getField('user', [
+				vB_dB_Query::TYPE_KEY => vB_dB_Query::QUERY_COUNT,
+				vB_dB_Query::CONDITIONS_KEY => [
+					['field' => 'lastvisit', 'value' => $timecut, 'operator' => vB_dB_Query::OPERATOR_GTE],
+					['field' => 'usergroupid', 'value' => $groupsNeedingConfirmation, 'operator' => vB_dB_Query::OPERATOR_NE],
+				],
+			]);
+		}
+
+		$values['activemembers'] = $activemembers;
+
+		$datastore->buildSerialized('userstats', $values);
+		return $values;
+	}
+
+	public function buildBirthdays()
+	{
+		$db = vB::getDbAssertor();
+		$datastore = vB::getDatastore();
+
+		// The unixtimestamp creates a time in UTC automatically (and regardlesss of what TZ you tell it).
+		$date = new DateTimeImmutable('@' . vB::getRequest()->getTimeNow());
+
+		// This is intended to cover a 24 hour period around UTC so we can discover if the "current"
+		// days are yesterday and today or today and tomorrow from the UTC perspective.
+		// Why is this 11 and 13?  Not clear.  The original was +/- 12 which makes more sense but was adjusted
+		// at one point with a vague comment about New Zealand.  I don't think the ticket that is referenced
+		// still exists (it was several bug trackers ago).  Not altering the behavior for this issue.
+		$start = $date->sub(DateInterval::createFromDateString('11 hours'));
+		$end = $date->add(DateInterval::createFromDateString('13 hours'));
+
+		$todayneggmt = $start->format('m-d');
+		$todayposgmt = $end->format('m-d');
+
+		$usergroupcache = $datastore->getValue('usergroupcache');
+		$bf_ugp_genericoptions = $datastore->getValue('bf_ugp_genericoptions');
+
+		// Seems quicker to grab the ids rather than doing a JOIN
+		$usergroupids = [];
+		foreach($usergroupcache AS $usergroupid => $usergroup)
+		{
+			if ($usergroup['genericoptions'] & $bf_ugp_genericoptions['showbirthday'])
+			{
+				$usergroupids[] = $usergroupid;
+			}
+		}
+
+		// I don't think this is quite right.  If we generate 12/31/xxxx and 1/1/xxxx+1 on 12/31
+		// then we'll use xxxx as the current year for everybody for the age calulations.  Which means
+		// that the people born 12/31 will show as a year older than the people born on 1/1.  But
+		// the logic is that we are displaying the 1/1 birthdays to people for whom it *is* 1/1 so
+		// the age calculations should probably reflect that extra day (and thus year) of age.
+		//
+		// But not changing longstanding behavior at this point.
+		$year = date('Y');
+
+		//we could do this as a single UNION query but it's not clear it's worth the extra effort.
+		$bdayusers = [];
+		foreach ([$start, $end] AS $key => $checkdate)
+		{
+			// showbirthday is
+			// 0 -- hide
+			// 1 -- show age
+			// 2 -- show birthday/year/age
+			// 3 -- show birthday without year or age
+			//
+			// For our purposes we want 2 and 3 for the birthday display list.
+			// calendar_show_birthday is a virtual column that is 1 for showbirthday 2/3 and 0 otherwise
+			// which allows effective indexing this sort of query
+			$filter = [
+				'calendar_show_birthday' => 1,
+				'birthday_month' => $checkdate->format('m'),
+				'birthday_day' => $checkdate->format('d'),
+				'usergroupid' => $usergroupids,
+			];
+
+			if ($datastore->getOption('birthdays_activemember'))
+			{
+				$activememberdays = $datastore->getOption('activememberdays');
+				$timecut = vB::getRequest()->getTimeNow() - ($activememberdays * 86400);
+				$filter[] = ['field' => 'lastvisit', 'value' => $timecut, 'operator' => vB_dB_Query::OPERATOR_GTE];
+			}
+
+			$columns = [
+				'username',
+				'displayname',
+				'userid',
+				'birthday',
+				'showbirthday',
+			];
+
+			$bdays = $db->select('user', $filter, false, $columns);
+			foreach ($bdays AS $birthday)
+			{
+				$bdayusers[$key][] = $this->getBirthdatyInfo($birthday, $year);
+			}
+		}
+
+		$storebirthdays = [
+			'day1' => $start->format('Y-m-d'),
+			'day2' => $end->format('Y-m-d'),
+			'users1' => $bdayusers[0] ?? [],
+			'users2' => $bdayusers[1] ?? [],
+		];
+
+		$datastore->buildSerialized('birthdaycache', $storebirthdays);
+		return $storebirthdays;
+	}
+
+	private function getBirthdatyInfo($birthday, $currentYear)
+	{
+		$birthdayinfo = [
+			'userid'      => $birthday['userid'],
+			'username'    => $birthday['username'],
+			'displayname' => $birthday['displayname'],
+			'age'         => null,
+		];
+
+		$day = explode('-', $birthday['birthday']);
+		if ($birthday['showbirthday'] == 2 AND ($currentYear > $day[2] AND $day[2] != '0000'))
+		{
+			$birthdayinfo['age'] = $currentYear - $day[2];
+		}
+
+		return $birthdayinfo;
+	}
+
+	/**
+	 * Insert or Update an user
+	 *
+	 * @param integer $userid Userid to be updated. Set to 0 if you want to insert a new user.
+	 * @param string $password New password for the user. Empty means no change.
+	 * @param array $user Basic user information such as email or home page
+	 * 	* username
+	 * 	* email
+	 * 	* usertitle
+	 * 	* birthday
+	 * 	* usergroupid (will get no_permissions exception without administrate user permissions)
+	 * 	* membergroupids (will get no_permissions exception without administrate user permissions)
+	 *  * privacyconsent   int  -1|0|1 meaning Privacy-Consent Withdrawn|Unknown|Given respectively.
+	 *	* list not complete
+	 * @param array $userfield User's User Profile Field data
+	 * @param array $userOptions  Option overrides & notification options for user. Following keys:
+	 *  * options                 -- vB options for the user
+	 *  * adminoptions            -- Admin Override Options for the user
+	 *  * notificationOptions
+	 *  Following are only used if user is a moderator:
+	 *  * moderatorNotificationOptions
+	 *  * moderatorEmailNotificationOptions
+	 * @param array $saveOptions  Command options to bypass certain processes or fine tuning certain user fields.
+	 *                            Following keys:
+	 *  * userfieldscope          -- String admin|normal|register for admin override, user edit, user creation
+	 *                               respectively. Default 'normal'.
+	 *  * userfieldskiprequired   -- Bool True to allow skipping setting required profilefields
+	 *  * userfieldskiperrors     -- Bool True to skip setting profilefields that fail validation instead of
+	 *                               throwing an error.
+	 *  * userfieldallowemptyrequired   -- Bool True to allow blanking out required profilefields.
+	 *  * skippasswordhistory     -- Bool True to skip checking password history when changing password.
+	 *                               Default True.
+	 *  * skipactivationemail     -- Bool true to skip sending out activation email for new user.
+	 *                               Default True.
+	 *  * skipcoppa               -- Bool true to skip COPPA checks & COPPA emails, use carefully!
+	 *                               Default False.
+	 *  * skipusernamechecks      -- Bool[] Allows for the following username check bypasses:
+	 *  *  * duplicate               - Bool true to skip duplicate username checks. Default False.
+	 *
+	 * @return integer New or updated userid.
+	 */
+	public function save(
+		$userid,
+		$password,
+		$user,
+		$userfield = [],
+		$userOptions = [],
+		$saveOptions = []
+	)
+	{
+		$db = vB::getDbAssertor();
+		$datastore = vB::getDatastore();
+		$userContext = vB::getUserContext();
+		$request = vB::getRequest();
+		// We need to hit up some API functions in a few cases.
+		$userApi = vB_Api::instanceInternal('user');
+
+		$vboptions = $datastore->getValue('options');
+		$currentUserId = $userContext->fetchUserId();
+		$userid = intval($userid);
+		$coppauser = false;
+		//set up some booleans to control behavior.  This is done to simply/document the later code
+		$newuser = (!$userid);
+		$changingCurrentUser = ($userid == $currentUserId);
+
+		// expand options into separate vars.
+		$adminoptions                      = $userOptions['adminoptions'] ?? [];
+		$notificationOptions               = $userOptions['notificationOptions'] ?? [];
+		$moderatorNotificationOptions      = $userOptions['moderatorNotificationOptions'] ?? [];
+		$moderatorEmailNotificationOptions = $userOptions['moderatorEmailNotificationOptions'] ?? [];
+		$options                           = $userOptions['options'] ?? [];
+
+		// Expand bypasses into separate vars.
+		// todo: userfieldscope is kind of problematic, it's an admin check by another label.
+		// need to figure out how to deal with it.
+		$userfieldscope = $saveOptions['userfieldscope'] ?? 'normal';
+		$userfieldBypasses = [
+			'skip_unset_required_fields'  => $saveOptions['userfieldskiprequired'] ?? false,
+			'ignore_validation_errors'    => $saveOptions['userfieldskiperrors'] ?? false,
+			'allow_empty_required_fields' => $saveOptions['userfieldallowemptyrequired'] ?? false,
+		];
+		// Splitting up the various checks into own vars to allow fine tuning later.
+		$skippasswordhistory = $saveOptions['skippasswordhistory'] ?? true;
+		$skipactivationemail = $saveOptions['skipactivationemail'] ?? true;
+		$skipcoppa           = $saveOptions['skipcoppa'] ?? false;
+		// ATM we only have one check that's skippable, but we may move other checks from the
+		// api or dm into the library and allow different levels of skippability. This might
+		// be overengineering or future proofing, we'll see.
+		$skipUsernameChecks = [
+			'duplicate' => $saveOptions['skipusernamechecks']['duplicate'] ?? false,
+		];
+		$skipDisplaynameChecks = [
+			'allowdisplayname' => $saveOptions['allowdisplayname'] ?? false,
+		];
+
+
+		if (!$newuser)
+		{
+			// todo: not sure if this should remain in the library or not...
+			$targetUserContext = vB::getUserContext($userid);
+			$targetUserIsAdmin = $targetUserContext->isAdministrator();
+			if (isset($user['privacyconsent']) AND $user['privacyconsent'] == -1 AND $targetUserIsAdmin)
+			{
+				throw new vB_Exception_Api('privacyconsent_admincannotwithdraw');
+			}
+		}
+		else
+		{
+			// check referral code; add referrerid, which is what the datamanager understands
+			if (!empty($user['referralcode']))
+			{
+				$referUserLibrary = vB_Library::instance('referuser');
+				$referrerid = $referUserLibrary->getUseridFromReferralCode($user['referralcode']);
+				if ($referrerid)
+				{
+					$user['referrerid'] = $referrerid;
+				}
+				unset($user['referralcode'], $referrerid);
+			}
+		}
+
+		//we'll need this all over the place if this isn't a new user.
+		// Also passed into checkEmail() (though not used) for new user, so we need to set it.
+		$userinfo = [];
+		if (!$newuser)
+		{
+			$userinfo = vB_User::fetchUserinfo($userid);
+		}
+
+		$olduser = [];
+		if (!$newuser)
+		{
+			// Get old user information
+			$olduser = $db->getRow('user_fetchforupdating', ['userid' => $userid]);
+			if (!$olduser)
+			{
+				throw new vB_Exception_Api('invalid_user_specified');
+			}
+		}
+
+
+		//don't allow changes to an unalterable user unless the user themselves requests it.  We might want to lock down what the
+		//user can edit in this case.
+		require_once(DIR . '/includes/adminfunctions.php');
+		if (!$changingCurrentUser AND is_unalterable_user($userid))
+		{
+			throw new vB_Exception_Api('user_is_protected_from_alteration_by_undeletableusers_var');
+		}
+
+		// API also checks banned emails, see checkEmail()
+		if ($newuser)
+		{
+			// Require email for new users, even if we're saving via library.
+			if (empty($user['email']))
+			{
+				throw new vB_Exception_Api('fieldmissing_email');
+			}
+		}
+
+		if (isset($user['email']))
+		{
+			$emaillimit = 100;
+			if (vB::getString()->strlen($user['email']) > $emaillimit)
+			{
+				throw new vB_Exception_Api('email_too_long_x', [$emaillimit]);
+			}
+		}
+
+		//we never want to save a blank email.  If the email isn't set and it
+		//passed the check function its because we don't want to change the
+		//existing email.
+		if (empty($user['email']))
+		{
+			unset($user['email']);
+		}
+
+		/*
+			In the API, the "change password OR email" is behind a current
+			password check (since changing either effectively grants you
+			access to the user account).
+			We need to let the library method update emails without having
+			access to the current password so that products can do things
+			like automatically update user info from a SSO cookie, and
+			other complete password-less sign-in features.
+			That said, I don't know if there's ever a case where we want
+			to update the user's password via the API without admin check.
+			For now, this library method is not going to block a password
+			change request, as there should be no way to call the library
+			function from the frontend without going through the API checks
+			so if a password change request comes in, we're assuming the
+			caller knows what they're doing.
+		 */
+		//this is the user's existing password which should've been unset at the API after
+		//it verified it for a password/email change request.
+		//Having this set is going to do weird things with the datamanager, so unset it.
+		//Any password change requests should come in through the $password parameter.
+		unset($user['password']);
+
+		// API will throw an error, but I think the library should support effectively
+		// password-less user creation (e.g. passwordless user validation, SSO cookie...)
+		if ($newuser AND empty($password))
+		{
+			$random = new vB_Utility_Random();
+			$password = $random->alphanumeric(32);
+			// If we have passwordless accounts later, we need to sync that with some rememberme changes:
+			// * Call vB_Library_Login::resetRemembermeSecret() for this new user.
+			// * Ensure that vB_Library_Login::verifyRememberMeFromInfo() can differentiate between password-invalidated
+			// cases & passwordless cases (rememberme should work for the latter).
+		}
+
+		/*
+			The API will set this to request->getIpAddress() if it's not an admin override,
+			and set it to 0 for a new user or existing IP address for an existing user for
+			admin override.
+			If we're going through the library, we should treat it like an admin override
+			in most contexts, and there's a possibility that the current request is NOT the
+			same as the target user, even though current use cases the current request is
+			the same as the target user.
+			For now, if this came through the API the API will set it first with the old
+			logic. If the lib is called directly and the caller did not set it, let's
+			go with the assumption that it's currently unknown, and rely on the caller to
+			set this.
+		 */
+		if (!isset($user['ipaddress']))
+		{
+			if ($newuser)
+			{
+				$user['ipaddress'] = "0.0.0.0";
+			}
+			else
+			{
+				$user['ipaddress'] = $userinfo['ipaddress'];
+			}
+		}
+
+		/*
+		 *	If we got this far, we basically have permission to update the user in the way we requested.
+		 */
+		$bf_misc_useroptions = $datastore->getValue('bf_misc_useroptions');
+		$bf_misc_adminoptions = $datastore->getValue('bf_misc_adminoptions');
+		$bf_misc_notificationoptions = $datastore->getValue('bf_misc_usernotificationoptions');
+		$bf_misc_moderatornotificationoptions = $datastore->getValue('bf_misc_moderatornotificationoptions');
+		$bf_misc_moderatoremailnotificationoptions = $datastore->getValue('bf_misc_moderatoremailnotificationoptions');
+		$usergroupcache = $datastore->getValue('usergroupcache');
+
+		$olduserBitfields = [];
+		if (!$newuser)
+		{
+			// Only run this for existing users. We don't want to run this for new
+			// users since it will set all the bits to 0, and since they're now set,
+			// set_registration_defaults() in the user datamanager won't overwrite
+			// them with the defaults.
+			$olduser = array_merge($olduser, convert_bits_to_array($olduser['options'], $bf_misc_useroptions));
+			$olduser = array_merge($olduser, convert_bits_to_array($olduser['adminoptions'], $bf_misc_adminoptions));
+			$olduser = array_merge($olduser, convert_bits_to_array($olduser['notification_options'], $bf_misc_notificationoptions));
+
+			if ($this->userIsModerator($userid))
+			{
+				// These bitfields share the bit names, so this just overwrites each other, which is bad. Put each into its own array to avoid this.
+				// We should probably do the same for the other fields above, but seems like the other fields do not share names and want to minimize
+				// changes (regression risk) for now. However I did NOT check if any bitfield names conflict with TABLE column names (another reason to
+				// move them into the separate array).
+
+				// $olduser = array_merge($olduser, convert_bits_to_array($olduser['moderatornotificationoptions'], $bf_misc_moderatornotificationoptions));
+				// $olduser = array_merge($olduser, convert_bits_to_array($olduser['moderatoremailnotificationoptions'], $bf_misc_moderatoremailnotificationoptions));
+				$olduserBitfields['moderatornotificationoptions'] = convert_bits_to_array($olduser['moderatornotificationoptions'], $bf_misc_moderatornotificationoptions);
+				$olduserBitfields['moderatoremailnotificationoptions'] = convert_bits_to_array($olduser['moderatoremailnotificationoptions'], $bf_misc_moderatornotificationoptions);
+			}
+		}
+
+		// get threaded mode options
+		if (isset($olduser['threadedmode']) AND ($olduser['threadedmode'] == 1 OR $olduser['threadedmode'] == 2))
+		{
+			$threaddisplaymode = $olduser['threadedmode'];
+		}
+		else
+		{
+			if (isset($olduser['postorder']) AND $olduser['postorder'] == 0)
+			{
+				$threaddisplaymode = 0;
+			}
+			else
+			{
+				$threaddisplaymode = 3;
+			}
+		}
+		//we set this even if we don't have an "olduser" array.  I'm not sure if we want to
+		$olduser['threadedmode'] = $threaddisplaymode;
+
+		// init data manager
+		$userdata = new vB_DataManager_User(vB_DataManager_Constants::ERRTYPE_ARRAY_UNPROCESSED);
+
+		// Let's handle this at API level, ignore list is causing problems in the data manager
+		//handle ignorelist
+		if (isset($user['ignorelist']))
+		{
+			//this will not work for new users.  (Never has correctly).  To fix we'll need to
+			//call it *after* the user is saved and give it the proper userid.  Given what a mess
+			//the function currently is and how nasty it's going to be to unwind (and the fact that
+			//we currently have nothing that attempts to create a new user with a preformed ignore list)
+			//we're going to punt
+			$user['ignorelist'] = $this->updateIgnorelist($userid, explode(',', $user['ignorelist']));
+			$userdata->set('ignorelist', $user['ignorelist']);
+		}
+
+		// update buddy list. Not sure what this is supposed to do, but the
+		// code was preserved from user API pre-refactor.
+		$this->updateBuddylist($userdata, $user, $userinfo);
+
+		//this will cause problems with the olduser check in the standard loop.
+		//get rid of it, we're done processing it.
+		unset($user['ignorelist']);
+
+		if (isset($user['birthday']))
+		{
+			$check = $this->formatAndValidateBirthday($user['birthday']);
+			if (!$check)
+			{
+				// unlike the API we'll just ignore birthday errors.
+				unset($user['birthday']);
+			}
+		}
+		// Unlike the API we'll skip a bunch of birthday & username checks & bypasses in the library.
+		// Basically, if something calls the library directly we assume they want the changes forced
+		// as if an admin is doing it, without necessitating an admin session creation.
+		// Note that some "vital" checks still remain in the user datamanager, as to prevent
+		// total forum breakdown.
+		//$this->checkBirthday($newuser, $user, $olduser, $adminoverride, $vboptions);
+		//$this->checkUsernameInternal($newuser, $user, $olduser, $adminoverride, $vboptions);
+		// We want to enforce the duplicate username denial on a deeper level than the API, but
+		// still allow for explicit bypasses for 3rd party products.
+		$this->checkUsernameLibraryInternal($newuser, $user, $olduser, $skipUsernameChecks);
+		// We may eventually want to allow admin overrides for displayname enabled here.
+		// validateAndGetDisplayname() may return non-string to indicate that we should not
+		// set or overwrite the specified or pre-existing displayname.
+		$check = $this->validateAndGetDisplayname($newuser, $user, $olduser, $skipDisplaynameChecks);
+		if (is_string($check) AND !empty($check))
+		{
+			$user['displayname'] = $check;
+		}
+
+		$updateUGPCache = false;
+		// set existing info if this is an update
+		if (!$newuser)
+		{
+			// update usergroups cache if needed...
+			$uInfoMUgpIds = explode(',', trim($userinfo['membergroupids']));
+			$uInfoUgpId = trim($userinfo['usergroupid']);
+			$uIGpIds =  explode(',', trim($userinfo['infractiongroupids']));
+
+			$mUgpIds = $user['membergroupids'] ?? false;
+			$ugpId = isset($user['usergroupid']) ? trim($user['usergroupid']) : false;
+			$iGpIds = isset($user['infractiongroupids']) ? explode(',', trim($user['infractiongroupids'])) : false;
+
+			if (($ugpId AND ($uInfoUgpId != $ugpId)) OR ($mUgpIds AND array_diff($uInfoMUgpIds, $mUgpIds)) OR ($iGpIds AND array_diff($iGpIds, $uIGpIds)))
+			{
+				$updateUGPCache = true;
+			}
+
+			$userdata->set_existing($userinfo);
+		}
+
+		/*
+			Should coppa checks be skipped for general user LIB saves?
+			These checks are left here instead of the API because ATM
+			we're not sure what to do about COPPA for direct library
+			saves. For now we'll allow force skipping but keep the
+			check here.
+		 */
+		$coppauser = false;
+		if (!$skipcoppa AND $newuser AND $userApi->useCoppa())
+		{
+			$coppauser = $this->checkCoppa($user);
+			if ($coppauser)
+			{
+				$this->setCoppa($userdata, $password);
+				// Note that the API will automatically set the usergroup to
+				// 3 or 4 (see setUsergroup()) depending on
+				// verifyemail / moderatenewmembers / coppa user.
+				// For the library calls, we're leaving it to the user to
+				// change the usergroup iff necessary.
+			}
+		}
+
+		// user options
+		foreach ($bf_misc_useroptions AS $key => $val)
+		{
+			if (isset($options["$key"]))
+			{
+				$userdata->set_bitfield('options', $key, $options["$key"]);
+			}
+			else if (isset($olduser["$key"]))
+			{
+				$userdata->set_bitfield('options', $key, $olduser["$key"]);
+			}
+		}
+
+		foreach ($adminoptions AS $key => $val)
+		{
+			$userdata->set_bitfield('adminoptions', $key, $val);
+		}
+
+		// notification options
+		foreach ($notificationOptions AS $key => $val)
+		{
+			// @TODO related to VBV-92
+			if ($olduser[$key] != $val)
+			{
+				$userdata->set_bitfield('notification_options', $key, $val);
+			}
+			else if ($olduser[$key] == $val)
+			{
+				$userdata->set_bitfield('notification_options', $key, $olduser[$key]);
+			}
+		}
+
+
+		if ($this->userIsModerator($userid))
+		{
+			// moderator notification options
+			// Previously, it scrolled through $notificationOptions, but going through the bitfields instead so that
+			// we allow for differential saving rather than having to specify the full list every time. If a bit is
+			// skipped it's assumed to be "keep old value". According to VBV-92 that's mentioned in the old comment above,
+			// there seems to be problems with the user datamanager where unspecified bits are cleared erroneously, so
+			// we're setting every single bit here.
+			// The ?? here are meant to help with cases where we're not specifying every single mod option and want
+			// to maintain the old values for the unspecified ones, and cases where we may want to save a NEW user
+			// with some of these options, where olduser would not exist (in that case fallback to db column default).
+			$savedModNotifyOptions = [];
+			foreach ($bf_misc_moderatornotificationoptions AS $__key => $__unusedbit)
+			{
+				// Currently, `user`.`moderatornotificationoptions` default is 15 (0b1111), so fallback to true
+				$__val = $moderatorNotificationOptions[$__key] ?? $olduserBitfields['moderatornotificationoptions'][$__key] ?? true;
+				$userdata->set_bitfield('moderatornotificationoptions', $__key, $__val);
+				// Used below for email options
+				$savedModNotifyOptions[$__key] = $__val;
+			}
+
+			// moderator email notification options
+			foreach ($bf_misc_moderatoremailnotificationoptions AS $__key => $__unusedbit)
+			{
+				// Currently, `user`.`moderatoremailnotificationoptions` default is 0 (0b0000), so fallback to false
+				$__val = $moderatorEmailNotificationOptions[$__key] ?? $olduserBitfields['moderatoremailnotificationoptions'][$__key] ?? false;
+				// send email can only be on if the notification itself is on.
+				if (!$savedModNotifyOptions[$__key])
+				{
+					$__val = false;
+				}
+
+				$userdata->set_bitfield('moderatoremailnotificationoptions', $__key, $__val);
+			}
+		}
+
+		//this should already be set.  Make sure before we reference the usergroupid.
+		$this->setUsergroup($user, $newuser, $vboptions, $vboptions['verifyemail'], $coppauser);
+
+		$displaygroupid = (array_key_exists('displaygroupid', $user) AND intval($user['displaygroupid'])) ? $user['displaygroupid'] : '';
+		if (isset($user['usergroupid']) AND $user['usergroupid'])
+		{
+			$displaygroupid = $user['usergroupid'];
+		}
+		elseif (isset($olduser['usergroupid']) AND $olduser['usergroupid'])
+		{
+			$displaygroupid = $olduser['usergroupid'];
+		}
+
+		$this->setUsertitle($userdata, $user, $usergroupcache[$displaygroupid]);
+
+		//After we handled usertitle, don't attempt to change any of the values as
+		//part of the default field setting
+		$usertitle = $user['usertitle'] ?? '';
+		unset($user['usertitle'], $user['customtitle']);
+
+		// privacy_options
+		$privacyChanged = false;
+		if (!empty($user['privacy_options']))
+		{
+			foreach ($user['privacy_options'] AS $opt => $val)
+			{
+				if (!in_array($opt, $this->privacyOptions))
+				{
+					unset($user['privacy_options'][$opt]);
+				}
+			}
+
+			// check if we need to update cached values...
+			if (!$newuser AND $olduser['privacy_options'])
+			{
+				$check = unserialize($olduser['privacy_options']);
+				$diff = array_diff_assoc($user['privacy_options'], $check);
+				if (!empty($diff))
+				{
+					$privacyChanged = true;
+				}
+			}
+
+			$user['privacy_options'] = serialize($user['privacy_options']);
+		}
+
+		// Privacy Consent. Only update updated time if the value changed. This is to prevent issues
+		// in the future where if the user withdrew consent, then updates something in their
+		// user settings without re-consenting, it doesn't keep "refreshing" the cooldown period.
+		unset($user['privacyconsentupdated']);
+		// Using array_key_exists instead of isset() to disallow null from bypassing below checks and sneaking
+		// in as 0 (consent unknown) into user datamanager
+		if (is_array($user) AND array_key_exists('privacyconsent', $user))
+		{
+			$user['privacyconsent'] = intval($user['privacyconsent']);
+			$existingConsent = $olduser['privacyconsent'] ?? null;
+			//we really should have a location or an old location defined but it's not guarenteed.
+			$existingLocation = $user['location'] ?? $olduser['location'] ?? 'UNKNOWN';
+
+			// Don't allow setting the privacy consent back to unknown, unless the user is flagged for deletion (we want to always
+			// allow clearing that status).
+			// Don't allow setting the privacy consent to flagged for deletion unless the user is in the deleted locations,
+			// or we have an option enabled that uses does it's own location verification that we don't have access to.
+			if (
+				($user['privacyconsent'] == 0 AND $existingConsent != -1) OR
+				($user['privacyconsent'] == -1 AND !($vboptions['block_google_consent_gdpr'] OR $this->checkPrivacyOption('enable_account_removal', $existingLocation)))
+			)
+			{
+				unset($user['privacyconsent']);
+			}
+			// only update the time if the option actually changed.
+			else if ($existingConsent != $user['privacyconsent'])
+			{
+				$user['privacyconsentupdated'] = $request->getTimeNow();
+			}
+		}
+
+		// Update from user fields
+		foreach ($user AS $key => $val)
+		{
+			if ($newuser OR $olduser[$key] != $val)
+			{
+				$userdata->set($key, $val);
+			}
+		}
+
+		if ($newuser)
+		{
+			// timezone
+			if (empty($user['timezoneoffset']))
+			{
+				$userdata->set('timezoneoffset', $vboptions['timeoffset']);
+			}
+		}
+
+		// custom profile fields
+		if (!empty($userfield) AND is_array($userfield))
+		{
+			// TODO: userfield scope for userlib saves???
+			$userdata->set_userfields($userfield, true, $userfieldscope, $userfieldBypasses);
+		}
+
+		//the secret really isn't related to the password, but we want to change it
+		//periodically and for now "every time the user changes their password"
+		//works (we previously used the password salt so that's when it got changed
+		//prior to the refactor).
+		if (!empty($password))
+		{
+			/** @var vB_Library_User */
+			$userLib = vB_Library::instance('user');
+			$secret = $userLib->generateUserSecret();
+			$userdata->set('secret', $secret);
+		}
+
+		// save data
+		$newuserid = $userdata->save();
+		if ($userdata->has_errors(false))
+		{
+			throw $userdata->get_exception();
+		}
+
+		//a bit of a hack.  If the DM save function runs an update of an existing user then
+		//it returns true rather than the userid (despite what the comments say). However its
+		//not clear how to handle that in the DM (which looks like it could be use to alter
+		//multiple users wholesale, in which case we really don't have an ID.  Better to catch it here.
+		if ($newuserid === true)
+		{
+			$newuserid = $userid;
+		}
+
+		//if we have a new password, then let's set it.
+		$this->setPassword(
+			$newuser,
+			$newuserid,
+			$skippasswordhistory,
+			$password
+		);
+
+		if ($updateUGPCache)
+		{
+			vB_Cache::instance(vB_Cache::CACHE_FAST)->event('perms_changed');
+		}
+
+		if ($privacyChanged)
+		{
+			vB_Cache::instance()->event('userPrivacyChg_' . $newuserid);
+		}
+
+		// clear user info cached
+		$this->clearUserInfo([$newuserid]);
+
+		// If edited user is the current user, update session's languageid, VBV-11318
+		if (isset($user['languageid']) AND $newuserid === $currentUserId)
+		{
+			vB::getCurrentSession()->set('languageid', $user['languageid']);
+		}
+
+		if ($newuser)
+		{
+			$this->sendNewUserEmails(
+				$newuserid,
+				$userfield,
+				$userdata,
+				$skipactivationemail,
+				$skipcoppa
+			);
+		}
+
+		$this->checkMonitoredWords(
+			$newuser,
+			$newuserid,
+			$olduser,
+			$userfield,
+			$usertitle
+		);
+
+		/*
+		vB::getHooks()->invoke('hookUserAfterSave', [
+			'adminoverride' => $adminoverride,
+			'userid' => $newuserid,
+			'newuser' => $newuser,
+			'emailVerificationRequired' => $verifyEmail,
+			'userIsModerated' => (!$adminoverride AND $newuser AND $vboptions['moderatenewmembers'])
+		]);
+		*/
+
+		return $newuserid;
+	}
+
+	public function invalidateOldPasswords(int $lookback, ?int $limit = null) : void
+	{
+		//This is not an efficient query.  We'll always touch the rows we've already updated unless the user
+		//comes back and is active (presumably after resetting their password).  For a database with a large
+		//number of users (where this really matters) we'll expect a significant fraction to be inactive, which
+		//is the only efficient filter on the query.  Just running the query where all of the affected users
+		//don't need updating can take a couple seconds.
+		//
+		//However, improving the query to exclude users we've already processed isn't trivial.  Approaches.
+		//1. Add an index for (scheme, lastactivity) and use an IN query to select all schemes aside from invalid.
+		//	This means figuring out that list (keeping in mind that we might have old schemes not in the current list which
+		//	could fall through the cracks or the overhead of a select distinct to figure out what's there).  That still isn't
+		//	the most efficient query but it's probably an improvement.
+		//2. Add a minimum date for instance  only process last activity between 1 and 2 years.  Processed daily that should
+		//	be okay if we do a "first run" to get everything.  However we need to do that whenever the option is enabled or and
+		//	may have odd interactions with a configurable lookback.  If a user falls through the cracks they'll never get caught.
+		//3. Add a virtual column of "schemevalid AS ((scheme <> 'invalid')) and index (schemevalid, lastactivity) and change the
+		//	query to reference the virual column (schemevalid = 1).  This is the best answer but means keeping an index that
+		//	has very little general use.  We'll also need to make sure that column doesn't get passed out of the API.
+		//
+		//For now as a query we're going to running one per day, it's not clear that a few seconds to run on large DBs
+		//is that much impact.  The feature can be disabled if it's a problem.
+		$timenow = vB::getRequest()->getTimenow();
+		$params = [
+			vB_dB_Query::TYPE_KEY => vB_dB_Query::QUERY_UPDATE,
+			'scheme' => 'invalid',
+			'token' => '',
+			'rememberme_secret' => 'invalid',
+			vB_dB_Query::CONDITIONS_KEY => [
+				['field' => 'lastactivity', 'value' => $timenow - $lookback, vB_dB_Query::OPERATOR_KEY => vB_dB_Query::OPERATOR_LT],
+				['field' => 'scheme', 'value' => 'invalid', vB_dB_Query::OPERATOR_KEY => vB_dB_Query::OPERATOR_NE],
+			],
+		];
+
+		if (isset($limit))
+		{
+			$params[vB_dB_Query::PARAM_LIMIT] = $limit;
+		}
+
+		vB::getDbAssertor()->assertQuery('user', $params);
+	}
+
+
+	private function validateAndGetDisplayname($newuser, $user, $olduser, $skipChecks = [])
+	{
+		// Note, this mainly handles enabledisplayname OFF logic, or missing displaynames.
+		// See vB_Api_User::checkDisplaynameInternal() for more advanced, admin-overridable checks,
+		// like banned words ETC.
+
+		// Non-string returns will be treated as "don't touch $user.displayname (whether set or not)"
+
+		// allowdisplayname is set in the user api save iff this is an admin override. This is to allow for the "auto"
+		// save errors to be manually fixed via adminCP.
+		$enabled = vB::getDatastore()->getOption('enabledisplayname');
+		if (!$enabled AND empty($skipChecks['allowdisplayname']))
+		{
+			// If displaynames are disabled, just copy the username every time. A lot of our logic relies on the displayname
+			// always being unescaped username when the option is off, rather than switching using displayname vs username
+			// depending on the option.
+
+			// We don't bother checking for userNameChanged because the most expensive queries (node.authorname updates for e.g.)
+			// already have checks to only run if the displayname value changed (see vB_DataManager_User::update_username()),
+			// and avoiding updating the user.displayname column IMO is not worth adding code complexity to bother checking.
+
+			// The ?? check is to handle an existing user saving without changing the username. One or the other must exist.
+			return $user['username'] ?? unhtmlspecialchars($olduser['username']);
+		}
+		else
+		{
+			// If displaynames are enabled, old users can skip changing their displayname. If this is a new user and they did not
+			// provide an explicit displayname, just default to the username.
+			if (!isset($user['displayname']))
+			{
+				if (!$newuser)
+				{
+					return false;
+				}
+				else
+				{
+					return $user['username'];
+				}
+			}
+			else
+			{
+				// In the future, if we have any divergence between username restrictions & displayname restrictions,
+				// we'd have to have more rules here.
+				return false;
+			}
+		}
+	}
+
+
+	/**
+	 * This function is NOT meant for general consumption. For general use, please
+	 * @see vB_Api_User::checkUsername() .
+	 * This function is public to allow API access due to duplicated checks required as
+	 * part of vB_Api_User::checkUsername() .
+	 * Additional "data integrity" checks. Checks that are placed here instead of the user
+	 * datamanager is intended to allow for bypassing a subset of these checks when calling
+	 * library save directly. "Library" suffix to distinguish it from the API's
+	 * checkUsernameInternal().
+	 *
+	 * @param bool    $newuser     True if this is called during registration
+	 * @param array   $user        Array of incoming user changes
+	 * @param array   $olduser     Existing user data. Empty if $newuser.
+	 * @param bool[]  $skipChecks  Optional. Following bypasses are available:
+	 *                             * duplicate -- skip duplicate username check
+	 *
+	 * @throws vB_Exception_Api with the following possible errors
+	 *		* unexpected_error  if username is missing when required
+	 *		* usernametaken  if a different user with specified username already exists
+	 */
+	public function checkUsernameLibraryInternal($newuser, $user, $olduser, $skipChecks = [])
+	{
+		if (!isset($user['username']))
+		{
+			// Existing users can skip changing their username.
+			if (!$newuser)
+			{
+				return;
+			}
+
+			throw new vB_Exception_Api('unexpected_error');
+		}
+
+		// See vB_Api_User::checkUsernameInternal() for notes on these username formats.
+		// olduser's username has gone through the user datamanager. To compare against
+		// the user-provided username properly, we must apply some transformations to
+		// get it to the same context/format.
+		$username_raw = $this->precleanUsernameRaw($user['username']);
+		$username = $this->precleanUsername($username_raw);
+		$htmlUsername = vB_String::htmlSpecialCharsUni($username);
+		$htmlUsernameRaw = vB_String::htmlSpecialCharsUni($username_raw);
+		$oldUsername = $olduser['username'] ?? false;
+		$usernameChanged = ($newuser OR $oldUsername !== $htmlUsername);
+
+		// Skip check if their username hasn't changed.
+		if ($usernameChanged)
+		{
+			if (empty($skipChecks['duplicate']))
+			{
+				$assertor = vB::getDbAssertor();
+				$user = $assertor->getRow('getUsernameAndId', [
+					'userid'       => $olduser['userid'] ?? 0,
+					'username'     => $htmlUsername,
+					'username_raw' => $htmlUsernameRaw,
+				]);
+				if (!empty($user))
+				{
+					// name is already in use
+					throw new vB_Exception_Api('usernametaken', [$htmlUsername,	vB5_Route::buildUrl('lostpw|fullurl')]);
+				}
+			}
+		}
+	}
+
+	private function userIsModerator($userid)
+	{
+		return vB::getUserContext($userid)->getUserLevel() >= vB_UserContext::USERLEVEL_MODERATOR;
+	}
+
+	/**
+	 * Updates the user ignore list
+	 *
+	 * @param int		$userid		Update ignorelist for this user.
+	 * @param String[]	$userList	Usernames of ignored users.
+	 */
+	private function updateIgnorelist($userid, $userList)
+	{
+		//we need a user record.  If we don't have one just... sulk away.
+		//we should probably throw an error, but we really need to make sure
+		//we won't call it this way first.
+		if ($userid <= 0)
+		{
+			return [];
+		}
+
+		$userContext = vB::getUserContext();
+		$currentUserId = $userContext->fetchUserId();
+		$userid = intval($userid);
+		$vboptions = vB::getDatastore()->getValue('options');
+
+		if ($userid <= 0 AND $currentUserId)
+		{
+			$userid = $currentUserId;
+		}
+
+		//if it's not the current user, we need to be an admin
+		if ($currentUserId != $userid)
+		{
+			$this->checkHasAdminPermission('canadminusers');
+		}
+
+		$assertor = vB::getDbAssertor();
+
+		// Get the list of previously ignored users
+		$ignoredRes = $assertor->assertQuery('userlist', [
+			'userid' => $userid,
+			'type' => 'ignore',
+			'friend' => 'denied',
+		]);
+
+		$ignoredDiff = [];
+		foreach ($ignoredRes as $ignoredUser)
+		{
+			$ignoredDiff[$ignoredUser['relationid']] = $ignoredUser['relationid'];
+		}
+
+		//delete the existing ignored users
+		$assertor->assertQuery('userlist', [
+			vB_dB_Query::TYPE_KEY => vB_dB_Query::QUERY_DELETE,
+			'userid' => $userid,
+			'type' => 'ignore',
+			'friend' => 'denied',
+		]);
+
+		$ignored = [];
+		if (!empty($userList))
+		{
+			$currentUserLvl = $userContext->getUserLevel();
+			//get the ids from the userlist
+			$users = $assertor->getRows('user', ['username' => $userList]);
+
+			// Update user list record
+			foreach ($users as $user)
+			{
+				//ignore user itself
+				if ($user['userid'] != $userid)
+				{
+					if (isset($ignoredDiff[$user['userid']]))
+					{
+						unset($ignoredDiff[$user['userid']]);
+					}
+
+					if (!$vboptions['ignoremods'] AND $currentUserLvl < vB::getUserContext($user['userid'])->getUserLevel())
+					{
+						throw new vB_Exception_Api('listignoreuser', [$user['username']]);
+					}
+
+					$existing = $assertor->getRow('userlist', [
+						'userid' => $userid,
+						'relationid' => $user['userid']
+					]);
+
+					// update the record
+					if ($existing AND !empty($existing) AND empty($existing['errors']))
+					{
+						$queryData = [
+							vB_dB_Query::TYPE_KEY => vB_dB_Query::QUERY_UPDATE,
+							vB_dB_Query::CONDITIONS_KEY => [
+								'userid' => $userid,
+								'relationid' => $user['userid'],
+							],
+							'type' => 'ignore',
+							'friend' => 'denied',
+						];
+					}
+					else
+					{
+						$queryData = [
+							vB_dB_Query::TYPE_KEY => vB_dB_Query::QUERY_INSERT,
+							'userid' => $userid,
+							'relationid' => $user['userid'],
+							'type' => 'ignore',
+							'friend' => 'denied'
+						];
+					}
+					$response = $assertor->assertQuery('userlist', $queryData);
+					$ignored[] = $user['userid'];
+				}
+			}
+
+			$assertor->assertQuery('userlist', [
+				vB_dB_Query::TYPE_KEY => vB_dB_Query::QUERY_DELETE,
+				'userid' => $ignoredDiff,
+				'relationid' => $userid,
+				'type' => 'follow',
+				'friend' => 'pending'
+			]);
+		}
+
+		// return the ids ignored
+		return $ignored;
+	}
+
+	private function setUsertitle(&$userdata, $user, $displaygroup)
+	{
+		if (!isset($user['usertitle']))
+		{
+			return;
+		}
+
+		//if not given assume "user set" as the custom title
+		$customtitle = $user['customtitle'] ?? 2;
+		$usertitle = ($user['usertitle'] ? $user['usertitle'] : '');
+
+		if ($customtitle == 0)
+		{
+			// Reset Title
+			// The user DM seems to only check $reset iff $canusecustomtitle = true,
+			// which is weird. But without $canusecustomtitle, it *seems* like it will
+			// most likely reset the user title anyways. There's some weird logic around
+			// iff something else set customtitle to 1 in the past, it'll stay that way,
+			// which I think is meant for "do not allow user to revert an admin-set user
+			// title". With validateUserTitle(), if user does not have canusecustomtitle,
+			// they'll never hit this function.
+			$reset = true;
+			$canusecustomtitle = true;
+			$isadmin = false;
+		}
+		else
+		{
+			// "Skip if title unchanged" logic is handled in validateUserTitle()
+			$reset = false;
+			// If we got here, assuming the caller first passed $user through
+			// validateUserTitle(), the user either had canusecustomtitle, or
+			// adminperm, or we want to skip all that check and always allow
+			// user title changes (e.g. coming through user LIB save directly)
+			$canusecustomtitle = true;
+			// If we're here, validateUserTitle() should've handled setting
+			// customtitle to 2 if the adminpermission was missing, as to
+			// not allow HTML escaping. We won't do any of the complex checks
+			// here and just pass in the (customtitle == 1) value for the $isadmin
+			// param, which is only used for fetchWordWrappedString() (which presumably
+			// handles the htlmspecialchars too).
+			// Note, I think we should use === here, but there are some tests that expected
+			// customtitle = true to be interpretted as = 1, so keeping it loose for now.
+			$isadmin = ($customtitle == 1);
+		}
+
+		$userdata->set_usertitle(
+			$usertitle,
+			$reset,
+			$displaygroup,
+			$canusecustomtitle,
+			$isadmin
+		);
+	}
+
+	// public because the API & the library saves both need it currently. Would be good to
+	// figure out how to skip setting in the API.  But we have cases there were we skip
+	// the email verification process because we've decided we can (primarily via
+	public function setUsergroup(&$user, $newuser, $vboptions, $verifyemail, $coppauser)
+	{
+		if ($newuser)
+		{
+			//only set the usergroupid if we don't already have one -- if we do for a new user then
+			//this is an admin creating a user and we should do what they say we should.
+			if (!isset($user['usergroupid']))
+			{
+				//this preempts the logic in the datamanager that does roughly the same thing.  The purpose is to allow us to tweak the
+				//logic to potentially to skip certain validation steps without having to pass a bunch of information in to datamanager
+				//for its magic function to trigger.  We also in some cases need the usergroup *before* we call the datamanager for
+				//other checks.
+				//
+				//We should probably remove this the logic from the DM at this point to avoid duplication but there may still be
+				//paths to it that don't go through here so it's too risky without some research.
+				if ($verifyemail)
+				{
+					$usergroupid = 3;
+				}
+				else if ($vboptions['moderatenewmembers'] OR $coppauser)
+				{
+					$usergroupid = 4;
+				}
+				else
+				{
+					$usergroupid = 2;
+				}
+				$user['usergroupid'] = $usergroupid;
+			}
+		}
+	}
+
+	// public because the API & the library saves both need it currently. Hopefully we
+	// will reduce that down to just checking in the library once some dependencies in
+	// the API is removed.
+	// No docblock as I do not condone general usage ATM.
+	public function checkCoppa($user)
+	{
+		$options = vB::getDatastore()->getValue('options');
+		/*
+		 *   0 - no COPPA needed,
+		 *   1 - Approve but require adult validation,
+		 *   2 - Deny
+		 */
+		if ($options['usecoppa'] > 0 AND empty($user['birthday']))
+		{
+			throw new vB_Exception_Api('under_thirteen_registration_denied');
+		}
+		$needsCoppa = $this->needsCoppa($user['birthday']);
+		switch ($needsCoppa)
+		{
+			case 0:
+				return false;
+				break;
+			case 1:
+				// approve, need parental validation.
+				if (empty($user['parentemail']))
+				{
+					$vboptions = vB::getDatastore()->getValue('options');
+					throw new vB_Exception_Api('coppa_rules_description', [
+						$vboptions['bbtitle'],
+						// Leaving this alone instead of switching to buildHomeUrl()
+						// phrasing refers to "return to the forums index", and while this might be pedantic
+						// the forum default page seems to match better than a potentially custom home page.
+						vB5_Route::buildUrl('home|fullurl'),
+						vB5_Route::buildUrl('coppa-form|fullurl'),
+						$vboptions['webmasteremail']
+					]);
+				}
+
+				return true;
+				break;
+			case 2:
+			default:
+				throw new vB_Exception_Api('under_thirteen_registration_denied');
+				break;
+		}
+	}
+
+	private function setCoppa(&$userdata, $password)
+	{
+		$userdata->set_info('coppauser', true);
+		$userdata->set_info('coppapassword', $password);
+		$userdata->set_bitfield('options', 'coppauser', 1);
+	}
+
+	// todo: either remove or fix this.
+	private function updateBuddylist(&$userdata, $user, $userinfo)
+	{
+		/*
+		This code was preserved from the user API, but I don't think it works.
+		A few problems: expects an array input but stored as space-delimited?
+		- usernames can have spaces, so space delimiting wouldn't work
+		- user DM does not seem to convert the array back to string? At least,
+		  trying to test with that assumption failed.
+		- I don't think we have any UI to set this up properly. At best this
+		  code breaks vb4-imported buddylists...
+		Left alone without added tests just for the sake of "maintaining old
+		behavior" but it's not clear what the old behavior is.
+		 */
+		$user['buddylist'] = [];
+		if (!empty($userinfo['buddylist']))
+		{
+			foreach (explode(' ', $userinfo['buddylist']) AS $buddy)
+			{
+				//I'm not sure if this is right -- we may not be saving the ignore list
+				//and we aren't checking agaist the existing ignorelist if we aren't.
+				//but it preserves prior behavior when the ignore list isn't set.
+				if (empty($user['ignorelist']) OR in_array($buddy, $user['ignorelist']) === false)
+				{
+					$user['buddylist'][] = $buddy;
+				}
+			}
+		}
+		$userdata->set('buddylist', $user['buddylist']);
+	}
+
+	private function setPassword(
+		$newuser,
+		$newuserid,
+		$skippasswordhistory,
+		$password
+	)
+	{
+		//if we have a new password, then let's set it.
+		if (!empty($password))
+		{
+			try
+			{
+				// If this is an admin saving another user, skip the password history check.
+				if ($skippasswordhistory)
+				{
+					$history = 0;
+				}
+				else
+				{
+					$history = vB::getUserContext($newuserid)->getUsergroupLimit('passwordhistory');
+				}
+				/** @var vB_Library_Login */
+				$loginlib = vB_Library::instance('login');
+				$loginlib->setPassword($newuserid, $password,
+					['passwordhistorylength' => $history],
+					['passwordhistory' => $skippasswordhistory]
+				);
+			}
+			catch(Exception $e)
+			{
+				//if this is a new user, deleted it if we fail to set the intial password.
+				if ($newuser)
+				{
+					vB::getDbAssertor()->delete('user', ['userid' => $newuserid]);
+				}
+				throw $e;
+			}
+		}
+	}
+
+	private function sendNewUserEmails(
+		$newuserid,
+		$userfield,
+		$userdata,
+		$skipactivationemail,
+		$skipcoppa
+	)
+	{
+		$verifyEmail = false;
+		$vboptions = vB::getDatastore()->getValue('options');
+		//the $user array doesn't have the latest information since we saved the user
+		//so let's load it here so we can send it to the email
+		$newUserInfo = vB_User::fetchUserinfo($newuserid);
+
+		if ($vboptions['newuseremail'] != '')
+		{
+			// Prepare email data
+			$customfields = '';
+			if (!empty($userfield) AND is_array($userfield))
+			{
+				$customfields = $userdata->set_userfields($userfield, true, 'register');
+			}
+
+			// Currently, registration page does not provide a displayname field. This might change in the future,
+			// but until then chances are their username & displayname will be the same. Let's do another check
+			// to see if we need to send both first. This can be removed in the future iff we change
+			// vB_User::doShowDisplaynameAndUsername() to also skip username while displayname is enabled but the
+			// names are equivalent.
+			if (vB_String::htmlSpecialCharsUni($newUserInfo['displayname']) !== $newUserInfo['username'])
+			{
+				$newUserLabel = vB_User::getEmailUserLabel($newUserInfo);
+			}
+			else
+			{
+				$newUserLabel = $newUserInfo['displayname'];
+			}
+
+			$string = vB::getString();
+			$bbtitle_escaped = $string->htmlspecialchars($vboptions['bbtitle']);
+			$email_escaped = $string->htmlspecialchars($newUserInfo['email']);
+
+			$profileUrl = vB5_Route::buildUrl('profile|fullurl', $newUserInfo);
+			$maildata = vB_Api::instanceInternal('phrase')->fetchEmailPhrases(
+				'newuser',
+				[
+					$newUserLabel,
+					$bbtitle_escaped,
+					$profileUrl,
+					$email_escaped,
+					$newUserInfo['birthday'],
+					$newUserInfo['ipaddress'],
+					// From what I can tell, this is usually stored in DB escaped, but the returned
+					// fields string from set_userfields() is UN-escaped.
+					nl2br($string->htmlspecialchars($customfields)),
+				],
+				[$vboptions['bbtitle']]
+			);
+
+			// Send out the emails
+			$newemails = explode(' ', $vboptions['newuseremail']);
+			foreach ($newemails AS $toemail)
+			{
+				if (trim($toemail))
+				{
+					// Moderator email, skipping vbmailWithUnsubscribe() & isUserOptedOutOfEmail()
+					vB_Mail::vbmail2($toemail, $maildata['subject'], $maildata['message'], false);
+				}
+			}
+		}
+
+		$usergroupid = $userdata->fetch_field('usergroupid');
+
+		// Check if we need to send out activate email -- make sure to check the actual
+		// usergroups for which emails to send since we may not do exactly what the
+		// global configurations suggest due to special cases and we don't want to
+		// keep replicating that logic.  If we wind up in the verification group we
+		// send the email, otherwise we don't
+		$verifyEmail = (!$skipactivationemail AND $usergroupid == 3);
+		if ($verifyEmail)
+		{
+			$this->sendActivateEmail($newuserid, true, !$skipcoppa);
+		}
+
+		// Check if we need to send out welcome email
+		if ($usergroupid == 2 AND $vboptions['welcomemail'])
+		{
+			// Send welcome mail
+			$string = vB::getString();
+			$bbtitle_escaped = $string->htmlspecialchars($vboptions['bbtitle']);
+			$username = trim($newUserInfo['username']);
+			$maildata = vB_Api::instanceInternal('phrase')->fetchEmailPhrases(
+				'welcomemail',
+				[
+					$username,
+					$bbtitle_escaped,
+				],
+				[$vboptions['bbtitle']],
+				$newUserInfo['languageid'] ?? $vboptions['languageid']
+			);
+			// skipping vbmailWithUnsubscribe() & isUserOptedOutOfEmail():
+			// This is literally the first signup welcome email, so it's unlikely they opted out
+			// already, and it is a once-off "informational" email so borderline in any case.
+			vB_Mail::vbmail2($newUserInfo['email'], $maildata['subject'], $maildata['message'], true);
+		}
+	}
+
+	private function checkMonitoredWords(
+		$newuser,
+		$newuserid,
+		$olduser,
+		$userfield,
+		$usertitle
+	)
+	{
+		// Check for monitored words in various pieces of user information and send notifications
+		$currentuserid = vB::getCurrentSession()->get('userid');
+		if (!$currentuserid)
+		{
+			$currentuserid = $newuserid;
+		}
+
+		// Check for monitored words in username
+		$newUserInfo = vB_User::fetchUserinfo($newuserid);
+		if ($newuser OR $olduser['username'] != $newUserInfo['username'])
+		{
+			$newusername = unhtmlspecialchars($newUserInfo['username']);
+			$this->monitorWords($newusername, 'user-name', null, $newuserid, true, $currentuserid);
+		}
+
+		// Check for monitored words in displayname
+		$newUserInfo = vB_User::fetchUserinfo($newuserid);
+		if ($newuser OR $olduser['displayname'] != $newUserInfo['displayname'])
+		{
+			// todo: user-displayname ?
+			// displaynames are not saved html-escaped
+			$newdisplayname = $newUserInfo['displayname'];
+			$this->monitorWords($newdisplayname, 'user-name', null, $newuserid, true, $currentuserid);
+		}
+
+
+		// Check for monitored words in user fields
+		if (!empty($userfield) AND is_array($userfield))
+		{
+			$this->monitorWords($userfield, 'user-fields', null, $newuserid, true, $currentuserid);
+		}
+
+		// Check for monitored words in user title
+		if (!empty($usertitle))
+		{
+			$this->monitorWords($usertitle, 'user-title', null, $newuserid, true, $currentuserid);
+		}
+	}
+
+	public function precleanDisplayname($displayname)
+	{
+		// This just calls the two clean functions below that was originally always applied
+		// to usernames in the user datamanager.
+		// If we want to add different restrictions to the username than display name later,
+		// we'll need to duplicate the code rather than just callin gthem here.
+
+		// Note that display names are stored unescaped. The escaping of usernames happens
+		// in the user datamanager level (see verify_username())
+
+		$displayname = $this->precleanUsernameRaw($displayname);
+		$displayname = $this->precleanUsername($displayname);
+		return $displayname;
+	}
+
+	// code copied near verbatim from vB_DataManager_User::verify_username()
+	// public because the API & user datamanager also need access
+	// No docblock ATM because I do NOT condone general usage
+	public function precleanUsernameRaw($username)
+	{
+		if (!is_string($username))
+		{
+			$username = '';
+		}
+		// I have NO idea why we run the check against the
+		// "raw" (pre cleanUserName()) username, but only
+		// save the post cleanUserName() username at the end.
+		// However not going to refactor the "logic" at this time.
+
+		// fix extra whitespace and invisible ascii stuff
+		$username_raw = trim(preg_replace('#[ \r\n\t]+#si', ' ', vB_String::stripBlankAscii($username, ' ')));
+
+		return $username_raw;
+	}
+
+	// code copied near verbatim from vB_DataManager_User::verify_username()
+	// public because the API & user datamanager also need access
+	// No docblock ATM because I do NOT condone general usage
+	public function precleanUsername($username)
+	{
+		if (strtolower(vB_String::getCharset()) !== 'utf-8')
+		{
+			// Following lines don't work for UTF-8. See VBV-3225.
+			$username = vB_String::cleanUserName($username);
+		}
+
+		$username = str_replace(chr(0), '', $username);
+		$username = trim($username);
+
+		return $username;
+	}
+
+	/**
+	 *	This updates the latest user in the statistics so that it stays current.
+	 *	This is primarily so that
+	 *	a) New users show up immediately as the latest user
+	 *	b) We don't show a deleted user as the latest user
+	 *	c) Changing the latest user's name or group might affect the latest user.
+	 *
+	 *	We don't just rebuild the stats because that can be slowish with large
+	 *	numbers of users and we don't necesarily want to do it.  This more or
+	 *	less assumes that the user identified is the only thing that may have
+	 *	changed.
+	 *
+	 *	@param int $userid
+	 *	@param string $action -- one of "add", "update", "delete".  This determine how
+	 *		we approach things (if we are deleting a user then we don't need to worry
+	 *		that that user might be the latest.
+	 */
+	public function updateLatestUser($userid, $action)
+	{
+		$db = vB::getDbAssertor();
+		$datastore = vB::getDatastore();
+
+		$userstats = $datastore->getValue('userstats');
+
+		if ($action == 'add')
+		{
+			//if we added a user, it should be the latest unless it's in an excluded group
+			$this->updateIfNotExcluded($datastore, $userid, $userstats, false);
+		}
+		else if ($action == 'update')
+		{
+			if ($userid == $userstats['newuserid'])
+			{
+				//we might have updated the username so if the updated user is
+				//the current user then update it.
+				if (!$this->updateIfNotExcluded($datastore, $userid, $userstats, true))
+				{
+					//if we failed to update then the update made it so this shouldn't be
+					//the current user.  Let's look up the current user the hard way.
+					$this->updateLastestUserInternal($db, $datastore, $userstats);
+				}
+			}
+			else if ($userid > $userstats['newuserid'])
+			{
+				//if this user is "more recent" AKA has a higher userid then they should be
+				//the current user if they are not excluded (the assumption is that they were
+				//just updated from excluded to not excluded or they *should already be* the
+				//current user.
+				$this->updateIfNotExcluded($datastore, $userid, $userstats, true);
+			}
+		}
+		else if ($action == 'delete')
+		{
+			//if the user we are deleting *isn't* the current user, there really isn't anything we need to do.
+			if ($userid == $userstats['newuserid'])
+			{
+				$this->updateLastestUserInternal($db, $datastore, $userstats);
+			}
+		}
+		else
+		{
+			//this shouldn't happen because the caller should always provide a valid action.
+			throw new vB_Exception_Api('invalid_data_w_x_y_z', [$action, '$action', __CLASS__, __FUNCTION__]);
+		}
+	}
+
+	/**
+	 * 	@param object $datastore
+	 *	@param int $userid
+	 *	@param array $userstats
+	 *	@param bool $nocache -- if we are updating the user then the cached value might not be accurate.
+	 */
+	private function updateIfNotExcluded($datastore, $userid, $userstats, $nocache)
+	{
+		$groupsNeedingConfirmation = $this->groupsExcludedFromLatest();
+		$userinfo = $this->fetchUserinfo($userid, [], false, $nocache);
+
+		$update = !in_array($userinfo['usergroupid'], $groupsNeedingConfirmation);
+		if ($update)
+		{
+			//we might have updated the username
+			$userstats['newusername'] = $userinfo['username'];
+			$userstats['newuserid'] = $userinfo['userid'];
+			$datastore->buildSerialized('userstats', $userstats);
+		}
+
+		return $update;
+	}
+
+	private function groupsExcludedFromLatest()
+	{
+		return vB_Library::instance('usergroup')->getMultipleGroupIds([
+			vB_Api_UserGroup::AWAITINGEMAIL_SYSGROUPID,
+			vB_Api_UserGroup::AWAITINGMODERATION_SYSGROUPID,
+		]);
+	}
+
+	private function updateLastestUserInternal($db, $datastore, $userstats)
+	{
+		$groupsNeedingConfirmation = $this->groupsExcludedFromLatest();
+
+		//we look up the member count because that's part of the query that finds
+		//the max user id.  Just looking up the max userid isn't any faster because
+		//of the need to exclude usergroups (if we *just* look up the maxid for
+		//all users it's much, much faster).
+		$values = $this->getBaseUserStats($db, $groupsNeedingConfirmation);
+
+		//we could go ahead and update the member count here since we looked it up but
+		//for consistency we won't since it's going to be inconsistent when we do that..
+		$userstats['newusername'] = $values['newusername'];
+		$userstats['newuserid'] = $values['newuserid'];
+		$datastore->buildSerialized('userstats', $userstats);
+	}
+
+	private function getBaseUserStats($db, $groupsNeedingConfirmation)
+	{
+		$members = $db->getRow('getUserStats',	['excludedgroups' => $groupsNeedingConfirmation]);
+
+		// get newest member
+		$newuser = $db->getRow('user', [
+			vB_dB_Query::CONDITIONS_KEY => [
+				'userid' => $members['maxid'],
+				//we shouldn't really need this because the query that fetches the maxid excludes them.  But it doesn't hurt.
+				['field' => 'usergroupid', 'value' => $groupsNeedingConfirmation, 'operator' => vB_dB_Query::OPERATOR_NE],
+			],
+			vB_dB_Query::COLUMNS_KEY => ['userid', 'username'],
+		]);
+
+		$values = [
+			'numbermembers' => $members['users'],
+			'newusername'   => $newuser['username'],
+			'newuserid'     => $newuser['userid'],
+		];
+
+		return $values;
+	}
+
+	/**
+	 * Formats the provided birthday into an array for user API, Library & datamanager
+	 * consumption and runs sanity checks on the day/month/year values.
+	 *
+	 * @param  String|Array  Birthday string in yyyy-mm-dd or mm-dd-yyyy format, or an
+	 *                       array with keys "day", "month" & "year".
+	 *
+	 * @return Bool true if provided birthday was consumable & passed range sanity checks
+	 *              false if birthday was provided in an incompatible format
+	 */
+	public function formatAndValidateBirthday(&$birthday)
+	{
+		if (!is_array($birthday))
+		{
+			// check for yyyy-mm-dd string
+			if (preg_match('#^(\d{4})-(\d{1,2})-(\d{1,2})$#', $birthday, $match))
+			{
+				$birthday = ['day' => $match[3], 'month' => $match[2], 'year' => $match[1]];
+			}
+			// check for mm-dd-yyyy string
+			else if (preg_match('#^(\d{1,2})-(\d{1,2})-(\d{4})$#', $birthday, $match))
+			{
+				$birthday = ['day' => $match[2], 'month' => $match[1], 'year' => $match[3]];
+			}
+		}
+
+		// check that all neccessary array keys are set
+		if (
+			!is_array($birthday) OR
+			!isset($birthday['day']) OR
+			!isset($birthday['month']) OR
+			!isset($birthday['year'])
+		)
+		{
+			return false;
+		}
+
+		// force all array values to integer
+		$birthday = vB::getCleaner()->cleanArray($birthday, [
+			'day'   => vB_Cleaner::TYPE_INT,
+			'month' => vB_Cleaner::TYPE_INT,
+			'year'	=> vB_Cleaner::TYPE_INT
+		]);
+
+		// If day AND month are negative, that's code for "unset my birthday", but
+		// if only one is negative that's an error.
+		if (
+			($birthday['day'] <= 0 AND $birthday['month'] > 0) OR
+			($birthday['day'] > 0 AND $birthday['month'] <= 0)
+			// This check, which disallows unsetting the birthday without admin override, was
+			// moved to the API.
+			/*
+			OR
+			(!$this->adminoverride AND $this->options['reqbirthday'] AND ($birthday['day'] <= 0 OR $birthday['month'] <= 0 OR $birthday['year'] <= 0))
+			*/
+		)
+		{
+			return false;
+		}
+
+		if ($birthday['day'] <= 0 AND $birthday['month'] <= 0)
+		{
+			// user DM will consume this & set birthday to empty.
+			//$birthday = '';
+
+			return true;
+		}
+		else if (
+			($birthday['year'] <= 0 OR (
+				$birthday['year'] > 1901 AND $birthday['year'] <= date('Y')
+			)) AND
+			checkdate($birthday['month'], $birthday['day'], ($birthday['year'] == 0 ? 1996 : $birthday['year']))
+		)
+		{
+			$birthday['day']   = str_pad($birthday['day'],   2, '0', STR_PAD_LEFT);
+			$birthday['month'] = str_pad($birthday['month'], 2, '0', STR_PAD_LEFT);
+			$birthday['year']  = str_pad($birthday['year'],  4, '0', STR_PAD_LEFT);
+
+			// birthday will stay in array form until the user datamanager.
+			//$birthday = "$birthday[month]-$birthday[day]-$birthday[year]";
+
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
+
+	//
+	// Custom User Profile Field Functions
+	//
+
+	public function saveProfileFieldDefinition($profilefield)
+	{
+		$this->validateProfileFieldData($profilefield);
+
+		$type = $profilefield['type'];
+
+		if (in_array($type, ['select', 'radio']) OR (in_array($type, ['checkbox', 'select_multiple']) AND empty($profilefield['profilefieldid'])))
+		{
+			$profilefield['data'] = serialize($profilefield['data']);
+		}
+
+		//this seems *weird*.  We just did a bunch of validation based on the type and now we're changing it.
+		//it looks like the type change is constrained in the UI to be within a "grouping"
+		//IE from single line text to multi-line text in a way that prevents the type change from
+		//invalidating the validation.  But that's not really enforced here and probably shouldn't be.
+		if (!empty($profilefield['newtype']) AND $profilefield['newtype'] != $type)
+		{
+			$profilefield['type'] = $profilefield['newtype'];
+			unset($profilefield['newtype']);
+
+			if ($profilefield['newtype'] == 'textarea')
+			{
+				$profilefield['height'] = 4;
+				$profilefield['memberlist'] = 0;
+			}
+			else if ($profilefield['newtype'] == 'select_multiple')
+			{
+				$profilefield['height'] = $profilefield['perline'];
+			}
+		}
+
+		$db = vB::getDbAssertor();
+
+		$profilefield['profilefieldcategoryid'] = intval(	$profilefield['profilefieldcategoryid']);
+		$exists = $db->getRow('vBForum:profilefieldcategory', [
+			vB_dB_Query::COLUMNS_KEY => ['profilefieldcategoryid'],
+			'profilefieldcategoryid' => $profilefield['profilefieldcategoryid'],
+		]);
+
+		if (!$exists)
+		{
+			$profilefield['profilefieldcategoryid'] = 0;
+		}
+
+		$profilefield['form'] = 0;
+
+		//not all of the fields in the array belong to the table.
+		$data = $profilefield;
+		unset($data['title']);
+		unset($data['newtype']);
+		unset($data['description']);
+
+		if (empty($profilefield['profilefieldid']))
+		{
+			$profilefield['profilefieldid'] = $db->insert('vBForum:profilefield', $data);
+			$db->assertQuery('addUserField', ['profilefieldid' => $profilefield['profilefieldid']]);
+			$db->assertQuery('optimizeUserField');
+		}
+		else
+		{
+			$db->update('vBForum:profilefield', $data, ['profilefieldid' => $profilefield['profilefieldid']]);
+		}
+
+		vB_Cache::allCacheEvent('vBProfileFieldsChg');
+
+		//skip rebuild on the first call.  No need to rebuild twice.
+		$phraseLib = vB_Library::instance('phrase');
+		$varname = 'field' . $profilefield['profilefieldid'] . '_title';
+		$phraseData = [
+			'oldfieldname' => 'cprofilefield',
+			'oldvarname' => $varname,
+			'text' => [0 => $profilefield['title']],
+			'product' => 'vbulletin',
+		];
+		$phraseLib->save('cprofilefield', $varname, $phraseData, true);
+
+		$varname = 'field' . $profilefield['profilefieldid'] . '_desc';
+		$phraseData = [
+			'oldfieldname' => 'cprofilefield',
+			'oldvarname' => $varname,
+			'text' => [0 => $profilefield['description']],
+			'product' => 'vbulletin',
+		];
+		$phraseLib->save('cprofilefield', $varname, $phraseData);
+
+		$this->buildProfileFieldDatastore();
+
+		return $profilefield['profilefieldid'];
+	}
+
+	private function validateProfileFieldData($profilefield)
+	{
+		$type = $profilefield['type'];
+
+		if (empty($profilefield['title']))
+		{
+			throw new vB_Exception_Api('please_complete_required_fields');
+		}
+
+		if (in_array($type, ['select', 'radio']))
+		{
+			if (empty($profilefield['data']))
+			{
+				throw new vB_Exception_Api('please_complete_required_fields');
+			}
+
+			//maxlength required for optional inputs
+			if ($profilefield['maxlength'] < 1 AND $profilefield['optional'])
+			{
+				throw new vB_Exception_Api('must_have_positive_maxlength');
+			}
+		}
+
+		//not sure why we always require data for select/radio but only on new fields here.
+		//it was like that in the previous code.  Not changing it now.
+		if (in_array($type, ['checkbox', 'select_multiple']))
+		{
+			if (empty($profilefield['profilefieldid']))
+			{
+				if (empty($profilefield['data']))
+				{
+					throw new vB_Exception_Api('please_complete_required_fields');
+				}
+
+				$data = $profilefield['data'];
+
+				$testdata = array_unique(array_map('strtolower', $data));
+				if (count($testdata) != count($data))
+				{
+					throw new vB_Exception_Api('can_not_duplicate_options');
+				}
+
+				if (sizeof($data) > 31)
+				{
+					throw new vB_Exception_Api('too_many_profile_field_options', [sizeof($data)]);
+				}
+			}
+		}
+
+		if (in_array($type, ['textarea', 'input']))
+		{
+			//maxlength required for text boxes
+			if ($profilefield['maxlength'] < 1)
+			{
+				throw new vB_Exception_Api('must_have_positive_maxlength');
+			}
+		}
+
+
+		if (!empty($profilefield['regex']))
+		{
+			//not entirely sure what this is about.
+			if (preg_match('#' . str_replace('#', '\#', $profilefield['regex']) . '#siU', '') === false)
+			{
+				throw new vB_Exception_Api('regular_expression_is_invalid');
+			}
+		}
+	}
+
+	/**
+	* Works out if a user is a member of the specified usergroup(s)
+	*
+	* This function can be overloaded to test multiple usergroups: is_member_of($user, [1, 3, 4, 6...])
+	*
+	* @param array $userinfo - must contain usergroupid and membergroupids fields
+	* @paraminteger	Usergroup ID to test
+	*
+	* @return	boolean -- true if the user is a member of *any* given group
+	*/
+	//we should *really* build a proper user object so we can better figure out state from there
+	public function isMemberOf($userinfo, $usergroupids)
+	{
+		if (!is_array($usergroupids))
+		{
+			$usergroupids = [$usergroupids];
+		}
+
+		$user_memberships = fetch_membergroupids_array($userinfo, true);
+		foreach ($usergroupids AS $usergroupid)
+		{
+			// is current group user's primary usergroup, or one of their membergroups?
+			// primary is included in fetch_membergroupids_array above
+			if (in_array($usergroupid, $user_memberships))
+			{
+				// yes - return true
+				return true;
+			}
+		}
+
+		// if we get here then the user doesn't belong to any of the groups.
+		return false;
+	}
+
+
+	/**
+	 * Merge two users
+	 *
+	 * @param integer $sourceuserid
+	 * @param integer $destuserid
+	 */
+	public function merge($sourceuserid, $destuserid)
+	{
+		// This was moved wholesale from the user API to user LIB so we can have internal processes
+		// merge users without needing to switch to an admin user.
+
+		$assertor = vB::getDbAssertor();
+
+		$sourceinfo = $assertor->getRow('user_fetchwithtextfield', ['userid' => $sourceuserid]);
+		if (!$sourceinfo)
+		{
+			throw new vB_Exception_Api('invalid_source_username_specified');
+		}
+
+		$destinfo = $assertor->getRow('user_fetchwithtextfield', ['userid' => $destuserid]);
+		if (!$destinfo)
+		{
+			throw new vB_Exception_Api('invalid_destination_username_specified');
+		}
+
+		// Grab old user's nodes before we start changing ownerships. These are used at the end for cache clears.
+		['events' => $nodeEvents, 'starters' => $starters] = $this->fetchNodeCacheEventsForUser($sourceuserid);
+
+		// Update Subscribed Events
+		$assertor->assertQuery('userInsertSubscribeevent', [
+			'sourceuserid' => $sourceinfo['userid'],
+			'destuserid' => $destinfo['userid'],
+		]);
+
+		/*
+		REPLACE INTO
+		*/
+		// Merge relevant data in the user table
+		// It is ok to have duplicate ids in the buddy/ignore lists
+		$userdm = new vB_DataManager_User(vB_DataManager_Constants::ERRTYPE_SILENT);
+		$userdm->set_existing($destinfo);
+
+		$options = vB::getDatastore()->getValue('options');
+		$userdm->set('posts', $destinfo['posts'] + $sourceinfo['posts']);
+		$userdm->set_ladder_usertitle_relative($sourceinfo['posts']);
+
+		$userdm->set('lastvisit', max($sourceinfo['lastvisit'], $destinfo['lastvisit']));
+		$userdm->set('lastactivity', max($sourceinfo['lastactivity'], $destinfo['lastactivity']));
+		$userdm->set('lastpost', max($sourceinfo['lastpost'], $destinfo['lastpost']));
+		$userdm->set('reputation', $destinfo['reputation'] + $sourceinfo['reputation'] - $options['reputationdefault']);
+
+		//this is wrong, but it's not clear what the correct answer is at present due to VBV-14596 so let's skip
+		//updating them for now.
+//		$userdm->set('pmtotal', "pmtotal + $sourceinfo[pmtotal]", false);
+//		$userdm->set('pmunread', "pmunread + $sourceinfo[pmunread]", false);
+
+		if ($sourceinfo['joindate'] > 0)
+		{
+			// get the older join date, but only if we actually have a date
+			$userdm->set('joindate', min($sourceinfo['joindate'], $destinfo['joindate']));
+		}
+
+		$userdm->set('ipoints', intval($destinfo['ipoints']) + intval($sourceinfo['ipoints']));
+		$userdm->set('warnings', intval($destinfo['warnings']) + intval($sourceinfo['warnings']));
+		$userdm->set('infractions', intval($destinfo['infractions']) + intval($sourceinfo['infractions']));
+
+		$assertor->assertQuery('user_insertuserlist', [
+			'sourceuserid' => $sourceinfo['userid'],
+			'destuserid' => $destinfo['userid'],
+		]);
+
+		$assertor->assertQuery('user_updateuserlist', [
+			'sourceuserid' => $sourceinfo['userid'],
+			'destuserid' => $destinfo['userid'],
+		]);
+
+		$myfriendcount = $assertor->getField('user_fetchuserlistcount', [
+			'userid' => $destinfo['userid'],
+		]);
+
+		$userdm->set('friendcount', $myfriendcount);
+
+		$userdm->save();
+		unset($userdm);
+
+		require_once(DIR . '/includes/functions_databuild.php');
+		build_userlist($destinfo['userid']);
+
+		// if the source user has infractions, then we need to update the infraction groups on the dest
+		// easier to do it this way to make sure we get fresh info about the destination user
+		if ($sourceinfo['ipoints'])
+		{
+			$new_user = vB_User::fetchUserinfo($destinfo['userid']);
+
+			$userdm = new vB_DataManager_User(vB_DataManager_Constants::ERRTYPE_SILENT);
+			$userdm->set_existing($new_user);
+
+			$infractioninfo = vB_Library::instance('Content_Infraction')->fetchInfractionGroups(
+				$new_user['ipoints'],
+				$new_user['usergroupid']
+			);
+			$userdm->set('infractiongroupids', $infractioninfo['infractiongroupids']);
+			$userdm->set('infractiongroupid', $infractioninfo['infractiongroupid']);
+			$userdm->save();
+			unset($userdm);
+		}
+
+		// Update Deletion Log
+		$assertor->assertQuery('user_updatedeletionlog', [
+			'sourceuserid' => $sourceinfo['userid'],
+			'destuserid' => $destinfo['userid'],
+			'destusername' => $destinfo['username'],
+		]);
+
+		// Update Edit Log
+		$assertor->assertQuery('user_updateeditlog', [
+			'sourceuserid' => $sourceinfo['userid'],
+			'destuserid' => $destinfo['userid'],
+			'destusername' => $destinfo['username'],
+		]);
+
+		// Update Edit Log
+		$assertor->assertQuery('user_updatepostedithistory', [
+			'sourceuserid' => $sourceinfo['userid'],
+			'destuserid' => $destinfo['userid'],
+			'destusername' => $destinfo['username'],
+		]);
+
+		// Update Poll Votes - find any poll where we both voted
+		// we need to remove the source user's vote
+		$polls = $assertor->assertQuery('usermerge_conflictedpolls', [
+			'sourceuserid' => $sourceinfo['userid'],
+			'destuserid' => $destinfo['userid'],
+		]);
+
+		$pollconflicts = [];
+		foreach ($polls as $poll)
+		{
+			$pollconflicts[] = $poll['nodeid'];
+		}
+
+		if (!empty($pollconflicts))
+		{
+			//if both users have voted on the poll, delete the votes for the source user on that poll.
+			//For single select polls we can't have both (and worse the DB will *allow* us to have both
+			//if we aren't careful) and we prefer the destination user.
+			//For multi select polls we could, in theory, merge the votes.  But each vote (with muliple options) is
+			//presented as an atomic option (you can't, for example, vote for A and later vote for B) so it's a
+			//bit weird to merge two sets of options like that.
+			$assertor->delete('vBForum:pollvote', ['nodeid' => $pollconflicts, 'userid' => $sourceinfo['userid']]);
+		}
+
+		$assertor->update('vBForum:pollvote', ['userid' => $destinfo['userid']],  ['userid' => $sourceinfo['userid']]);
+
+		// Polls that need to be rebuilt now
+		foreach ($pollconflicts AS $nodeid)
+		{
+			vB_Library::instance('content_poll')->updatePollCache($nodeid);
+		}
+
+		if (!empty($pollconflicts))
+		{
+			//it feels like this should be part of updatePollCache above, but setting the last vote
+			//sets it to now, which isn't the right answer.  Trying to improve updatePollCache is
+			//beyond the scope of the current effort so we'll continue to do this by hand.  However
+			//instead of pulling down a lot of data and doing individual queries we'll make it a single
+			//query (though a complicated one with correlated subqueries).
+			$assertor->assertQuery('usermerge_updatelastpollvote', ['nodeid' => $pollconflicts]);
+		}
+
+
+		// Update User Notes
+		$assertor->assertQuery('user_updateusernote', [
+			'sourceuserid' => $sourceinfo['userid'],
+			'destuserid' => $destinfo['userid'],
+		]);
+
+		$assertor->assertQuery('user_updateusernote2', [
+			'sourceuserid' => $sourceinfo['userid'],
+			'destuserid' => $destinfo['userid'],
+		]);
+
+		// There's no unique index on `userid` (recipient) and `nodeid`, because it should be impossible for two different users
+		// to have a reputation record on the same node, since a single node is owned by a single user. So deduping *received*
+		// reputation is not necessary.
+		// Deduping *given* reputation is necessary, as if the two users voted on the same nodeid, the (`whoadded`, `nodeid`)
+		// index would cause a conflict in the update query. As such, let's detect this case, and remove the conflicting ones from
+		// the $sourceinfo user before it's a problem. (updatereputation2 is the received records update)
+		$assertor->assertQuery('user_updatereputation', [
+			'sourceuserid' => $sourceinfo['userid'],
+			'destuserid' => $destinfo['userid'],
+		]);
+
+		$assertor->assertQuery('user_updatereputation2', [
+			'sourceuserid' => $sourceinfo['userid'],
+			'destuserid' => $destinfo['userid'],
+		]);
+		// Delete any remaining records from source user, these are ones that would've conflicted during the update.
+		$assertor->delete('vBForum:reputation', ['whoadded' => $sourceinfo['userid']]);
+
+		// Update infractions
+		$assertor->assertQuery('user_updateinfraction', [
+			'sourceuserid' => $sourceinfo['userid'],
+			'destuserid' => $destinfo['userid'],
+		]);
+
+		$assertor->assertQuery('user_updateinfraction2', [
+			'sourceuserid' => $sourceinfo['userid'],
+			'destuserid' => $destinfo['userid'],
+		]);
+
+		// Update tags
+		$assertor->update('vBForum:tagnode', ['userid' => $destinfo['userid']], ['userid' => $sourceinfo['userid']]);
+
+		// Clear Group Transfers
+//		$assertor->assertQuery('user_updatesocialgroup', [
+//			'userid' => $sourceinfo['userid'],
+//		]);
+
+		// Paid Subscriptions
+		$assertor->assertQuery('user_updatepaymentinfo', [
+			'sourceuserid' => $sourceinfo['userid'],
+			'destuserid' => $destinfo['userid'],
+		]);
+		// Move subscriptions over
+		$assertor->assertQuery('user_updatesubscriptionlog', [
+			'sourceuserid' => $sourceinfo['userid'],
+			'destuserid' => $destinfo['userid'],
+		]);
+
+		$list = $remove = $update = [];
+		// Combine active subscriptions
+		$subs = $assertor->assertQuery('user_fetchsubscriptionlog', [
+			'userid' => $destinfo['userid'],
+		]);
+
+		foreach ($subs as $sub)
+		{
+			$subscriptionid = $sub['subscriptionid'];
+			$existing = $list[$subscriptionid];
+
+			if ($existing)
+			{
+				if ($sub['expirydate'] > $existing['expirydate'])
+				{
+					$remove[] = $existing['subscriptionlogid'];
+					unset($update[$existing['subscriptionlogid']]);
+					$list[$subscriptionid] = $sub;
+					$update[$sub['subscriptionlogid']] = $sub['expirydate'];
+				}
+				else
+				{
+					$remove[] = $sub['subscriptionlogid'];
+				}
+			}
+			else
+			{
+				$list[$subscriptionid] = $sub;
+			}
+		}
+
+
+		if (!empty($remove))
+		{
+			$assertor->assertQuery('user_deletesubscriptionlog', [
+				'ids' => $remove,
+			]);
+		}
+
+		foreach ($update AS $subscriptionlogid => $expirydate)
+		{
+			$assertor->assertQuery('user_updatesubscriptionlog2', [
+				'expirydate' => $expirydate,
+				'subscriptionlogid' => $subscriptionlogid,
+			]);
+		}
+
+		//fix the names on any nodes that the user may be attached to.
+		$destDisplaynameSafe = vB_String::htmlSpecialCharsUni($destinfo['displayname']);
+		$assertor->assertQuery('vBForum:node', [
+			vB_dB_Query::TYPE_KEY => vB_dB_Query::QUERY_UPDATE,
+			vB_dB_Query::CONDITIONS_KEY => ['userid' => $sourceinfo['userid']],
+			'authorname' => $destDisplaynameSafe,
+			'userid'     => $destinfo['userid'],
+		]);
+
+		$assertor->assertQuery('vBForum:node', [
+			vB_dB_Query::TYPE_KEY => vB_dB_Query::QUERY_UPDATE,
+			vB_dB_Query::CONDITIONS_KEY => ['lastauthorid' => $sourceinfo['userid']],
+			'lastcontentauthor' => $destDisplaynameSafe,
+			'lastauthorid'     => $destinfo['userid'],
+		]);
+
+		// update node votes
+		vB_Library::instance('nodevote')->afterUserMerge($sourceuserid, $destuserid);
+
+		// Update answer picked by..
+		$assertor->update('vBForum:node', ['answer_set_by_user' => $destuserid],  ['answer_set_by_user' => $sourceuserid]);
+
+		// Remove remnants of source user
+		$userdm = new vB_DataManager_User(vB_DataManager_Constants::ERRTYPE_SILENT);
+		$userdm->set_existing($sourceinfo);
+		$userdm->delete();
+		unset($userdm);
+
+		vB_User::clearUsersCache($sourceinfo['userid']);
+		vB_User::clearUsersCache($destinfo['userid']);
+		$events[] = 'userChg_' . $sourceinfo['userid'];
+		$events[] = 'userChg_' . $destinfo['userid'];
+		vB_Cache::allCacheEvent($events);
+
+		// Node cache events
+		if (!empty($nodeEvents))
+		{
+			vB_Cache::allCacheEvent($nodeEvents);
+		}
+
+		// update any affected search indices (atm, sphinxsearch)
+		if (!empty($starters))
+		{
+			$searchLIB = vB_Library::instance('search');
+			foreach ($starters AS $__nodeid)
+			{
+				$searchLIB->attributeChanged($__nodeid);
+			}
+		}
+
+		return true;
+	}
+
+	/**
+	 * Moved from vB_Datamanager_User::updateDeletedUserData(). Fetch nodeChg_ events and list of starters owned by
+	 * $userid. Call this to get the nodes to be cache-busted BEFORE running node updates for user deletes or user merges.
+	 *
+	 * @param integer $userid
+	 *
+	 * @return array  [
+	 *         'events'   => string[] list of nodeChg_{nodeid} events to be called
+	 *         'starters' => int[] list of topics owned by $userid
+	 * ]
+	 *
+	 */
+	public function fetchNodeCacheEventsForUser($userid)
+	{
+		// TODO: All of these selects are candidates for UNBUFFERED selects, when we implement it.
+
+		// node data update
+		$events = [];
+		$starters = [];
+		$assertor = vB::getDbAssertor();
+
+		$nodes = $assertor->select('vBForum:node', ['userid' => $userid,], false, ['nodeid', 'starter']);
+		foreach ($nodes AS $node)
+		{
+			$events[$node['nodeid']] = 'nodeChg_' . $node['nodeid'];
+			if ($node['starter'] == $node['nodeid'])
+			{
+				$starters[] = $node['nodeid'];
+			}
+		}
+
+		// node last data update
+		$nodes = $assertor->select('vBForum:node', ['lastauthorid' => $userid,], false, ['nodeid']);
+		foreach ($nodes AS $node)
+		{
+			$events[$node['nodeid']] = 'nodeChg_' . $node['nodeid'];
+		}
+
+		// vms
+		$nodes = $assertor->select('vBForum:node', ['setfor' => $userid,], false, ['nodeid']);
+		foreach ($nodes AS $node)
+		{
+			$events[$node['nodeid']] = 'nodeChg_' . $node['nodeid'];
+		}
+
+		// answer picked by user
+		$nodes = $assertor->select('vBForum:node', ['answer_set_by_user' => $userid,], false, ['nodeid']);
+		foreach ($nodes AS $node)
+		{
+			$events[$node['nodeid']] = 'nodeChg_' . $node['nodeid'];
+		}
+
+		return ['events' => $events, 'starters' => $starters] ;
+	}
+
+	/**
+	 * Getter for user privacy options.
+	 *
+	 * @return	array	Existing user privacy options.
+	 */
+	//currently only used by tests, we should perhaps figure an alternative and remove
+	public function getPrivacyOptions()
+	{
+		return $this->privacyOptions;
+	}
+
+	/**
+	 * Get the flags for privacy options based on the user's privacy setting and the current user's permissions.
+	 */
+	public function getCurrentUserPrivacyFlags($userInfo)
+	{
+		$profileUserContext = vB::getUserContext($userInfo['userid']);
+
+		$currentUserId = vB::getCurrentSession()->get('userid');
+		$isModerator = vB::getUserContext()->isModerator();
+
+		//this probably throws an error for guests, so don't do that.
+		$isFollowing = false;
+		if ($currentUserId)
+		{
+			$followLib = vB_Library::instance('follow');
+			$isFollowing = ($followLib->isFollowingUser($userInfo['userid']) == vB_Api_Follow::FOLLOWING_YES);
+		}
+
+		//we're special in some way and skip the normal processing.  Either it's us or a moderator
+		//or we can't edit privacy settings (so we default to "everybody" for everything -- not sure why)
+		$canViewAll = (
+			($currentUserId AND $userInfo['userid'] == $currentUserId) OR
+			$isModerator OR
+			!$profileUserContext->hasPermission('usercsspermissions', 'caneditprivacy')
+		);
+
+		$flags = [];
+		foreach ($this->privacyOptions AS $key => $opt)
+		{
+			//0/1/2 for everyone/subscribers/members
+			//not sure when this wouldn't be set or why it defaults to everyone but that's
+			//(implicitly) how the old logic rolled and I'm not changing it.
+			$optvalue = $userInfo['privacy_options'][$opt] ?? 0;
+
+			//default to show.
+			$flags[$key] = 1;
+
+			if (!$canViewAll)
+			{
+				//don't show to guests unless we're set to everybody
+				if ($optvalue != 0 AND $currentUserId == 0)
+				{
+					$flags[$key] = 0;
+				}
+				//or to people who aren't following us if set ot subscribers.
+				else if ($optvalue == 1 AND !$isFollowing)
+				{
+					$flags[$key] = 0;
+				}
+			}
+		}
+		return $flags;
+	}
+
+	// This is here because it was originally copy pasted from some user API code,
+	// before being moved to vB_Entity_Datetime class
+	public function fetchTimezonesArray() : array
+	{
+		return vB_Entity_Datetime::TIMEZONES;
+	}
+
+	/**
+	 * Logout user from all devices.
+	 *
+	 * @param int $userid
+	 *
+	 * @return array{success:bool, sessionhash:string, apiaccesstoken:string}
+	 *	sessionhash -- hash identifying the new session, if logging out the current user.
+	 *	apiaccesstoken -- the current api access token, if logging out the current user and this is a request through MAPI
+	 */
+	public function logoutAllDevices(int $userid) : array
+	{
+		if (!$userid)
+		{
+			throw new vB_Exception_Api('invalid_user_specified');
+		}
+
+
+		$session = vB::getCurrentSession();
+		$currentUserid = $session->get('userid');
+
+		// Currently, the facebook session code is strongly tied to the current PHP session, which means we can't process this for
+		// *another* user or session for a generic "log out a specific user" action.. regardless we don't want to clear the
+		// facebook token for the current user if we're logging someone ELSE out.
+		if ($currentUserid == $userid)
+		{
+			// process facebook logout first if applicable
+			vB_Library::instance('facebook')->clearSession();
+		}
+
+
+		$alsoLogOutApiClients = true;
+		$logoutResult = vB_User::processLogout($userid, $alsoLogOutApiClients);
+
+		// Also, invalidate existing rememberme's (which allows above-killed sessions to just log back in) via reset.
+		/** @var vB_Library_Login */
+		$loginLib = vB_Library::instance('login');
+		$loginLib->resetRemembermeSecret($userid);
+
+		// Note that currently, this is called by ajax, and we can't remove the old `{prefix}password` cookie. The old value won't
+		// work anymore (which is the whole point of this) so it doesn't really matter, but it might be tacky and possibly
+		// confusing.
+
+		return $logoutResult;
+	}
+}
+
+/*=========================================================================*\
+|| #######################################################################
+|| # Downloaded: 12:50, Tue Dec 24th 2024
+|| # CVS: $RCSfile$ - $Revision: 117908 $
+|| #######################################################################
+\*=========================================================================*/

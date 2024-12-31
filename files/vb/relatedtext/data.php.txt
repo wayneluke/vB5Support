@@ -1,0 +1,496 @@
+<?php
+/*========================================================================*\
+|| ###################################################################### ||
+|| # vBulletin 6.1.0 Alpha 4 Week 2 - Licence Number VBCW2VFT7A
+|| # ------------------------------------------------------------------ # ||
+|| # Copyright 2000-2024 MH Sub I, LLC dba vBulletin. All Rights Reserved.  # ||
+|| # This file may not be redistributed in whole or significant part.   # ||
+|| # ----------------- VBULLETIN IS NOT FREE SOFTWARE ----------------- # ||
+|| # http://www.vbulletin.com | http://www.vbulletin.com/license.html   # ||
+|| ###################################################################### ||
+\*========================================================================*/
+
+
+/**
+* @package	vBulletin
+*/
+class vB_RelatedText_Data
+{
+	use vB_Trait_NoSerialize;
+
+	private bool $debug = false;
+
+	private vB_BbCodeHelper $bbcode;
+
+	// config options.
+	private string $workingDirectory;
+	private int $batchsize;
+	private int $numberOfTerms;
+	private int $mintokenlen;
+	private int $maxtokenlen;
+	private int $minDocCount;
+	private float $maxDocRatio;
+
+	// There doesn't seem to be as much of a reason to want to expose this as an option.
+	// The current value seems adequate for just about everybody.  But keeping it seperate in case.
+	private int $updatebatchsize = 1000;
+
+	public static function createDefault()
+	{
+		$options = vB::getDatastore()->getValue('options');
+
+		$workingDirectory = $options['relatedtopics_workingdir'];
+		if (!vB_Utility_Functions::isAbsolutePath($workingDirectory))
+		{
+			$workingDirectory = DIR . '/' . $workingDirectory;
+		}
+
+		return new self (
+			$workingDirectory,
+			$options['relatedtopics_batchsize'],
+			$options['relatedtopics_termcount'],
+			$options['relatedtopics_wordmin'],
+			$options['relatedtopics_wordmax'],
+			$options['relatedtopics_mindoccount'],
+			$options['relatedtopics_maxdocratio'],
+			$options['relatedtopics_postcount'],
+			$options['relatedtopics_titleweight'],
+			$options['relatedtopics_topicweight'],
+		);
+	}
+
+	public function __construct(
+		string $workingDirectory,
+		int $batchsize,
+		int $numberOfTerms,
+		int $mintokenlen,
+		int $maxtokenlen,
+		int $minDocCount,
+		float $maxDocRatio,
+		int $numberofposts,
+		int $weightTitleText,
+		int $weightTopicText,
+	)
+	{
+		vB_Utilities::extendMemoryLimitBytes(vB_Utilities::ini_size_to_bytes('1G'));
+
+		vB::includeLibraryFile('vendor/autoload.php');
+		$this->bbcode = vB_BbCodeHelper::instance(true, true);
+
+		if (!is_dir($workingDirectory))
+		{
+			if (!file_exists($workingDirectory))
+			{
+				mkdir($workingDirectory, 0777, true);
+			}
+
+			if (!is_dir($workingDirectory))
+			{
+				throw new Exception('Directory ' . $workingDirectory . ' does not exist and cannot be created');
+			}
+		}
+
+		$this->workingDirectory = $workingDirectory;
+		$this->batchsize = $batchsize;
+		$this->numberOfTerms = $numberOfTerms;
+		$this->mintokenlen = $mintokenlen;
+		$this->maxtokenlen = $maxtokenlen;
+		$this->minDocCount = $minDocCount;
+		$this->maxDocRatio = $maxDocRatio;
+		$this->numberofposts = $numberofposts;
+		$this->weightTitleText = $weightTitleText;
+		$this->weightTopicText = $weightTopicText;
+	}
+
+	public function processAll() : void
+	{
+		$vocabulary = new vB_RelatedText_Vocabulary(vB::getString(), $this->mintokenlen, $this->maxtokenlen);
+		$datafiles = $this->loadData(
+			$this->batchsize,
+			$this->numberofposts,
+			$this->weightTitleText,
+			$this->weightTopicText,
+			$vocabulary
+		);
+
+		if (count($datafiles) == 0)
+		{
+			return;
+		}
+
+		$this->outputMemoryUse(__LINE__);
+
+		// save the vocabulary before the frequnency filter because we'll use it for "daily" updates and changes from
+		// addition posts will change the frequency analysis in ways that we can't handle if we don't have all of the
+		// terms from the corpus.
+		$vocabulary->writeVocabulary($this->workingDirectory . '/vocabularly.data');
+		$vocabulary->filterTermsByFrequency($this->minDocCount, $this->maxDocRatio);
+
+		$this->processData($this->updatebatchsize, $this->numberOfTerms, $vocabulary, $datafiles);
+
+		// once we're done with the files we can remove them to save space.
+		foreach ($datafiles AS $filename)
+		{
+			$this->deleteData($filename);
+		}
+
+		$this->outputMemoryUse(__LINE__);
+	}
+
+	public function processTemp() : void
+	{
+		$db = vB::getDbAssertor();
+
+
+		$vocabulary = vB_RelatedText_Vocabulary::createFromFile($this->workingDirectory . '/vocabularly.data', vB::getString());
+		$vocabulary->filterTermsByFrequency($this->minDocCount, $this->maxDocRatio);
+
+		$datafiles = glob($this->workingDirectory . '/data*.data');
+		$datafiles = array_map(basename(...), $datafiles);
+
+		uasort($datafiles, function($a, $b)
+		{
+			$re = '#data-(\\d+).data#';
+			preg_match($re, $a, $ma);
+			preg_match($re, $b, $mb);
+			return $ma[1] <=> $mb[1];
+		});
+
+		$this->processData($this->updatebatchsize, $this->numberOfTerms, $vocabulary, $datafiles);
+	}
+
+	private function loadData(int $batchsize, int $numberofposts, int $weightTitleText, int $weightTopicText, vB_RelatedText_Vocabulary $vocabulary) : array
+	{
+		$db = vB::getDbAssertor();
+
+		$types = vB_Types::instance();
+		$excludedtypes = [
+			$types->getContentTypeID('vBForum_Redirect'),
+			$types->getContentTypeID('vBForum_PrivateMessage'),
+		];
+
+		$row = $db->getRow('vBRelatedText:getTopicMaxId', ['excludedtypes' => $excludedtypes]);
+		$maxid = $row['max'] ?? 0;
+
+		// nothing to do
+		if ($maxid == 0)
+		{
+			return [];
+		}
+
+		$data = [];
+		$startat = 0;
+		//batch this to keep down memory usage.
+		while (true)
+		{
+			$this->outputMemoryUse(__LINE__);
+
+			$row = $db->getRow('vBRelatedText:getTopicNextId', [
+				'startat' => $startat,
+				'batchsize' => $batchsize,
+				'excludedtypes' => $excludedtypes,
+			]);
+
+			// $nextid is never included in the batch so we need to go one beyond maxid to get everything.
+			$nextid = $row['nodeid'] ?? ($maxid + 1);
+
+			$batchdata = $this->getTopicData($db, $numberofposts, $startat, $nextid, $excludedtypes);
+			foreach ($batchdata AS $nodeid => $info)
+			{
+				$text = $this->getTopicText($info, $weightTitleText, $weightTopicText);
+				$batchdata[$nodeid] = $vocabulary->processText($text);
+			}
+
+			$filename = 'data-' . $startat . '.data';
+			$filenames[] = $filename;
+
+			$this->writeData($filename, $batchdata);
+
+			if ($nextid > $maxid)
+			{
+				break;
+			}
+
+			$startat = $nextid;
+		}
+
+		$this->outputMemoryUse(__LINE__);
+		return $filenames;
+	}
+
+	private function processData(int $updatebatchsize, int $numberOfTerms, vB_RelatedText_Vocabulary $vocabulary, array $datafiles) : void
+	{
+		$db = vB::getDbAssertor();
+
+		$tfidf = new vB_RelatedText_Tfidf($vocabulary);
+		$data = [];
+		foreach ($datafiles AS $filename)
+		{
+			$batchdata = $this->readData($filename);
+			$vocabulary->filterRemovedTerms($batchdata);
+			$tfidf->transform($batchdata);
+
+			foreach ($batchdata AS $id => $record)
+			{
+				$highest = new vB_RelatedText_NHighest($numberOfTerms);
+				foreach ($record AS $ordinal => $score)
+				{
+					$highest->add($score, $ordinal);
+				}
+				unset($batchdata[$id]);
+
+				$keywords = [];
+				foreach($highest->highest() AS $ordinal)
+				{
+					$keywords[] = $vocabulary->ordinalToWord($ordinal);
+				}
+
+				$data[$id] = implode(',', $keywords);
+
+				if (count($data) == $updatebatchsize)
+				{
+					$db->assertQuery('vBRelatedText:updateKeywords', ['keywords' => $data]);
+					$data = [];
+				}
+			}
+		}
+
+		if (count($data))
+		{
+			$db->assertQuery('vBRelatedText:updateKeywords', ['keywords' => $data]);
+			$data = [];
+		}
+	}
+
+	private function getTopicText(array $info, int $weightTitleText, int $weightTopicText) : string
+	{
+		$text = '';
+
+		// repeat the title to increase the weight based on the parameter.
+		$title = $info[0];
+		$title .= ' ';
+		$text .= str_repeat($title, $weightTitleText);
+		unset ($title);
+
+		if (count($info[1]) > 0)
+		{
+			// repeat the first post (the topic post) to increase the weight based on the parameter.
+			$first = $info[1][0];
+
+			$first .= ' ';
+			$text .= str_repeat($first, $weightTopicText);
+			unset($first, $info[1][0]);
+
+			// now append the remaining posts
+			$text .= implode(' ', $info[1]);
+		}
+		return $text;
+	}
+
+	private function getTopicData(vB_dB_Assertor $db, int $numberofposts, int $startat, int $nextid, array $excludedtypes) : array
+	{
+		// not sure it makes sense to have this be two queries.
+		$topics = $db->assertQuery('vBRelatedText:getTopicBatch', [
+			'startat' => $startat,
+			'nextid' => $nextid,
+			'excludedtypes' => $excludedtypes,
+		]);
+
+		// we'll use numeric indexed arrays here to avoid overhead for string keys
+		// in array or array structures.
+		$data = [];
+		foreach ($topics AS $topic)
+		{
+			// data is title, list of posts.
+			$data[$topic['nodeid']] = [$this->preprocess($topic['title']), []];
+		}
+		$topics->free();
+
+		// Do this this as individual queries rather than fetch all of the text for the batch.
+		//
+		// What we want is the first n text items for each topic but there isn't a great way to do that.
+		//
+		// 1) There isn't a good way to put a limit on a joined table in a "grouped" fashion.  We could use group_concat but
+		// 	has some total size limits for the field that mean it can get mystically truncated under the best of times and
+		// 	we potentially have a lot of text.
+		// 2) There doesn't appear to be a way to merge result sets in a stored procedure into a single resultset
+		// 3) We aren't set up to handle queries with multiple result sets and it's not clear that
+		// 	returning thousands of result sets from a stored procedure is going to work out.
+		// 4) Copying the starterid/postid results to a temp table in a stored procedure and using that to generate
+		// 	a resultset might work but it's still the same number of queries (without the overhead of passing them
+		// 	from client to server -- it's the same query thousands of times) and we need to figure out any issues
+		// 	with SPs.
+		//
+		// For now just doing a query per topic and living with the overhead.  It might be a bit more efficient to
+		// combine batches of these queries as UNION queries but that's not really reducing the number/total size of
+		// queries, just the number of round trips.
+		foreach ($data AS $starter => &$item)
+		{
+			$text = $db->assertQuery('vBRelatedText:getTextForTopic', [
+				'nodeid' => $starter,
+				'textcount' => $numberofposts,
+			]);
+
+			foreach ($text AS $row)
+			{
+				$item[1][] = $this->preprocess($this->stripBbCode($row['rawtext']));
+			}
+
+			$text->free();
+		}
+
+		return $data;
+	}
+
+	private function preprocess($text) : string
+	{
+		// python code had step to remove "extended ascii code" by iterating over the characters and excluding anything with
+		// ord(c) < 128.  This has several problems
+		// 1) Iterating over characters is difficult and slow via the iconv/mbstring libraries.  And doing byte wise
+		// 	iteration is going to garble strings
+		// 2) Moreover, this is a very WIN1252 solution.  A lot of valid UTF8 characters are going to be outside of that range.
+		// 	Skipping for now, hopefully that doesn't break things.
+
+		// this was previous done as one step that used the python split function to chunk up by words and then did the
+		// find replace by word while joing the words back together seperated by spaces.  It's not clear why other than
+		// it's possibly faster or less memory consuming than a stardard find but that's probably python specific.
+		// (We could, potentially, combine the calls into one preg_replace call but I think internally that's effectively
+		// two preg_replace calls and str_replace is faster).
+		$text = str_replace('/', ' ', $text);
+		$text = preg_replace('#\\s+#', ' ', $text);
+		$text = $this->stripSpecialChars($text);
+		$text = vB::getString()->strtolower($text);
+		return $text;
+	}
+
+	// cover function for the bbcode helper function simplified options
+	private function stripBbCode($text) : string
+	{
+		// Most tags we want preserve the content of, some tags we want to remove
+		$tags = [
+			// this isn't going to useful text.
+			'img' => vB_BbCodeHelper::STRIP_TAG_REMOVE,
+			'img=' => vB_BbCodeHelper::STRIP_TAG_REMOVE,
+			'img2=' => vB_BbCodeHelper::STRIP_TAG_REMOVE,
+			'video' => vB_BbCodeHelper::STRIP_TAG_REMOVE,
+			'video=' => vB_BbCodeHelper::STRIP_TAG_REMOVE,
+			'attach' => vB_BbCodeHelper::STRIP_TAG_REMOVE,
+			'attach=' => vB_BbCodeHelper::STRIP_TAG_REMOVE,
+			'user' => vB_BbCodeHelper::STRIP_TAG_REMOVE,
+			'user=' => vB_BbCodeHelper::STRIP_TAG_REMOVE,
+			'email' => vB_BbCodeHelper::STRIP_TAG_REMOVE,
+			// this might contain valid text but it's probably not that important (or common).
+			'email=' => vB_BbCodeHelper::STRIP_TAG_REMOVE,
+			'url' => vB_BbCodeHelper::STRIP_TAG_REMOVE,
+			// This is a change from the Python library but the url tag with option likely contains
+			// valid text since the url is in the option.
+			'url=' => vB_BbCodeHelper::STRIP_TAG_CONTENT,
+
+			// this is really content belonging to a different topic (not always since any
+			// text can be quoted but we'll play the odds).
+			'quote' => vB_BbCodeHelper::STRIP_TAG_REMOVE,
+			'quote=' => vB_BbCodeHelper::STRIP_TAG_REMOVE,
+		];
+
+		return $this->bbcode->stripTags($text, vB_BbCodeHelper::STRIP_TAG_CONTENT, $tags);
+	}
+
+	private function stripSpecialChars($text) : string
+	{
+		$specialChars = ['.',',','=','-','_','?','!',';',':',"'",'"','(',')','*','&','^','%','$','#','@','~','`','+','/','\\'];
+		return str_replace($specialChars, '', $text);
+	}
+
+	private function outputMemoryUse(int $line) : void
+	{
+		if ($this->debug)
+		{
+			echo $line . ': ' . round(memory_get_peak_usage() / (1024 * 1024), 2) . "\n";
+		}
+	}
+
+	private function writeData(string $file, array $data)
+	{
+		$persist = new vB_RelatedText_Persist($this->workingDirectory . '/' . $file, false);
+		$persist->writeInt(count($data));
+
+		foreach ($data AS $id => $record)
+		{
+			$persist->writeInt($id);
+			$persist->writeIntArray($record);
+		}
+	}
+
+	private function readData(string $file) : array
+	{
+		$persist = new vB_RelatedText_Persist($this->workingDirectory . '/' . $file, true);
+		$count = $persist->readInt();
+
+		$data = [];
+		for ($i = 0; $i < $count; $i++)
+		{
+			$id = $persist->readInt();
+			$data[$id] = $persist->readIntArray();
+		}
+
+		return $data;
+	}
+
+	private function deleteData(string $file) : void
+	{
+		unlink($this->workingDirectory . '/' . $file);
+	}
+}
+
+
+
+// Internal classes.
+class vB_RelatedText_NHighest
+{
+	use vB_Trait_NoSerialize;
+
+	private int $max;
+	private SplHeap $heap;
+
+	public function __construct(int $max)
+	{
+		$this->max = $max;
+		$this->heap = new vB_RelatedText_NHighest_Heap();
+	}
+
+	public function add($score, $value)
+	{
+		$this->heap->insert([$score, $value]);
+		if ($this->heap->count() > $this->max)
+		{
+			$this->heap->extract();
+		}
+	}
+
+	public function highest()
+	{
+		$results = [];
+		foreach ($this->heap AS $values)
+		{
+			$results[] = $values[1];
+		}
+		return array_reverse($results);
+	}
+}
+
+class vB_RelatedText_NHighest_Heap extends SplHeap
+{
+	use vB_Trait_NoSerialize;
+
+	// we actually want to sort the *lowest* to the top so we can extract them when we're full.
+	protected function compare(mixed $value1, mixed $value2): int
+	{
+		return $value2[0] <=> $value1[0];
+	}
+}
+/*=========================================================================*\
+|| #######################################################################
+|| # Downloaded: 12:50, Tue Dec 24th 2024
+|| # CVS: $RCSfile$ - $Revision: 108523 $
+|| #######################################################################
+\*=========================================================================*/

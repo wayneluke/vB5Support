@@ -1,0 +1,1147 @@
+<?php
+/*========================================================================*\
+|| ###################################################################### ||
+|| # vBulletin 6.1.0 Alpha 4 Week 2 - Licence Number VBCW2VFT7A
+|| # ------------------------------------------------------------------ # ||
+|| # Copyright 2000-2024 MH Sub I, LLC dba vBulletin. All Rights Reserved.  # ||
+|| # This file may not be redistributed in whole or significant part.   # ||
+|| # ----------------- VBULLETIN IS NOT FREE SOFTWARE ----------------- # ||
+|| # http://www.vbulletin.com | http://www.vbulletin.com/license.html   # ||
+|| ###################################################################### ||
+\*========================================================================*/
+
+/**
+ * vB_Library_Phrase
+ *
+ * @package vBLibrary
+ * @access public
+ */
+
+class vB_Library_Phrase extends vB_Library
+{
+	private $phrasecache = [];
+	private $shortcode_replace_map = [];
+
+	/**
+	 * Characters that are valid for use in a phrase varname. Alphanumeric and underscore (_) are
+	 * commonly used everywhere. CKEditor phrase varnames use periods (.), and help phrase
+	 * varnames use square brackets ([]).
+	 *
+	 * @var string
+	 */
+	const VALID_CLASS = 'A-Za-z0-9_\.\[\]';
+
+	/**
+	 * Add a new phrase or update an existing phrase
+	 * @param string $fieldname New Phrase Type for adding, old Phrase Type for editing
+	 * @param string $varname New Varname for adding, old Varname for editing
+	 * @param array $data Phrase data to be added or updated
+	 *              'text' => Phrase text array.
+	 *              'oldvarname' => Old varname for editing only
+	 *              'oldfieldname' => Old fieldname for editing only
+	 *              't' =>
+	 *              'ismaster' =>
+	 *              'product' => Product ID of the phrase
+	 * @param bool   $skipBuildLanguage  (Optional) Set to true to skip build_language() call.
+	 *                                   Used by the page importer to delay build_language until
+	 *                                   the old page title & desc restore queries are finished.
+	 * @return void
+	 */
+	public function save($fieldname, $varname, $data, $skipBuildLanguage = false)
+	{
+		$fieldname = trim($fieldname);
+		$varname = trim($varname);
+
+		$vb5_config =& vB::getConfig();
+		$timenow = vB::getRequest()->getTimeNow();
+		$install = (defined('VBINSTALL') AND VBINSTALL);
+
+		$session = vB::getCurrentSession();
+		if (!empty($session))
+		{
+			$userinfo = $session->fetch_userinfo();
+			$username = $userinfo['username'];
+		}
+		else
+		{
+			$username = 'System';
+		}
+
+		$full_product_info = vB_Library::instance('product')->getFullProducts();
+
+		if (empty($varname))
+		{
+			throw new vB_Exception_Api('please_complete_required_fields');
+		}
+
+		if (!preg_match('#^[' . self::VALID_CLASS . ']+$#', $varname)) // match a-z, A-Z, 0-9, '.', ',', _ only .. allow [] for help items
+		{
+			throw new vB_Exception_Api('invalid_phrase_varname');
+		}
+
+		foreach ($data['text'] AS $text)
+		{
+			if (!validate_string_for_interpolation($text))
+			{
+				throw new vB_Exception_Api('phrase_text_not_safe', [$varname]);
+			}
+		}
+
+		$db = vB::getDbAssertor();
+
+		$phraseCount = $db->getRow('phrase', [
+			vB_dB_Query::TYPE_KEY => vB_dB_Query::QUERY_COUNT,
+			'varname' => $varname,
+			'languageid' => [0,-1],
+		]);
+
+		// it's an update
+		if (!empty($data['oldvarname']) AND !empty($data['oldfieldname']))
+		{
+			if ($phraseCount['count'])
+			{
+				// Don't check if we are moving a phrase to another group but keeping the same name. See VBV-4192.
+				if ($varname != $data['oldvarname'] AND $fieldname != $data['oldfieldname'])
+				{
+					throw new vB_Exception_Api('there_is_already_phrase_named_x', [$varname]);
+				}
+
+				if ($varname != $data['oldvarname'])
+				{
+					throw new vB_Exception_Api('variable_name_exists', [$data['oldvarname'], $varname]);
+				}
+			}
+
+			if (!is_array($data['oldfieldname']))
+			{
+				$data['oldfieldname'] = [$data['oldfieldname']];
+			}
+
+			if (!in_array($fieldname, $data['oldfieldname']))
+			{
+				$data['oldfieldname'][] = $fieldname;
+			}
+
+			// delete old phrases
+			$db->assertQuery('deleteOldPhrases', [
+				'varname' => $data['oldvarname'],
+				'fieldname' => $data['oldfieldname'],
+				't' => $data['t'] ?? null,
+				'debug' => (empty($data['skipdebug']) && ($vb5_config['Misc']['debug'] OR $install)),
+			]);
+
+			$this->setPhraseDate();
+		}
+		else
+		{
+			if ((empty($data['text'][0]) AND $data['text'][0] != '0' AND empty($data['t'])) OR empty($varname))
+			{
+				throw new vB_Exception_Api('please_complete_required_fields');
+			}
+
+			if ($phraseCount['count'])
+			{
+				throw new vB_Exception_Api('there_is_already_phrase_named_x', [$varname]);
+			}
+		}
+
+		$product = $data['product'] ?? 'vbulletin';
+		$version = $full_product_info[$product]['version'];
+		if (!empty($data['ismaster']))
+		{
+			if (($vb5_config['Misc']['debug'] OR $install) AND empty($data['t']))
+			{
+				$db->assertQuery('phrase', [
+					vB_dB_Query::TYPE_KEY => vB_dB_Query::QUERY_REPLACE,
+					'languageid' => -1,
+					'varname' => $varname,
+					'text' => $data['text'][0],
+					'fieldname' => $fieldname,
+					'product' => $product,
+					'username' => $username,
+					'dateline' => $timenow,
+					'version' => $version
+				]);
+			}
+
+			unset($data['text'][0]);
+		}
+
+		foreach ($data['text'] AS $_languageid => $txt)
+		{
+			$_languageid = intval($_languageid);
+
+			if (!empty($txt) OR $txt == '0')
+			{
+				$db->assertQuery('phrase', [
+					vB_dB_Query::TYPE_KEY => vB_dB_Query::QUERY_REPLACE,
+					'languageid' => $_languageid,
+					'varname' => $varname,
+					'text' => $txt,
+					'fieldname' => $fieldname,
+					'product' => $product,
+					'username' => $username,
+					'dateline' => $timenow,
+					'version' => $version
+				]);
+			}
+		}
+
+		if (!$skipBuildLanguage)
+		{
+			vB_Library::instance('language')->rebuildAllLanguages();
+		}
+	}
+
+	//The save phrase is *very* closely tied to some old UI and is extremely perplexing in terms of
+	//how it operates.  And has the unfortunately side effect of deleting all of the translations
+	//if you aren't very careful about how you call it.  It's really not suitable for use cases
+	//other than the one it was ported from.  Let's build out some more robust solutions.
+	public function saveMaster($product, $fieldname, $phrasename, $value, $skipBuildLanguage = false)
+	{
+		$phraseids = $this->getExistingRootPhrase($phrasename, false);
+		if ($phraseids AND !isset($phraseids[-1]))
+		{
+			throw new vB_Exception_Api('there_is_already_phrase_named_x', [$phrasename]);
+		}
+
+		$meta = $this->getPhraseMeta($product);
+		$this->savePhraseInternal(reset($phraseids), $meta, -1, $fieldname, $phrasename, $value);
+
+		$this->clearPhraseCache($phrasename);
+		if (!$skipBuildLanguage)
+		{
+			vB_Library::instance('language')->rebuildAllLanguages();
+		}
+	}
+
+	public function saveCustom($product, $fieldname, $phrasename, $value, $skipBuildLanguage = false)
+	{
+		$phraseids = $this->getExistingRootPhrase($phrasename, true);
+		if ($phraseids AND !isset($phraseids[0]))
+		{
+			throw new vB_Exception_Api('there_is_already_phrase_named_x', [$phrasename]);
+		}
+
+		$meta = $this->getPhraseMeta($product);
+		$this->savePhraseInternal(reset($phraseids), $meta, 0, $fieldname, $phrasename, $value);
+
+		$this->clearPhraseCache($phrasename);
+
+		if (!$skipBuildLanguage)
+		{
+			vB_Library::instance('language')->rebuildAllLanguages();
+		}
+	}
+
+	/**
+	 *	Save phrase as either a master or a custom phrase
+	 *
+	 *	Unlike saveMaster or saveCustom if the phrase already exits it's state will be changed
+	 *	to match the requested state.
+	 */
+	public function saveRoot(string $product, string $fieldname, string $phrasename, string $value, bool $isCustom, bool $skipBuildLanguage = false) : void
+	{
+		$languageid = ($isCustom ? 0 : -1);
+		$phraseids = $this->getExistingRootPhrase($phrasename, $isCustom);
+
+		$meta = $this->getPhraseMeta($product);
+		$this->savePhraseInternal(reset($phraseids), $meta, $languageid, $fieldname, $phrasename, $value);
+
+		$this->clearPhraseCache($phrasename);
+
+		if (!$skipBuildLanguage)
+		{
+			vB_Library::instance('language')->rebuildAllLanguages();
+		}
+	}
+
+	private function getExistingRootPhrase(string $phrasename, bool $isCustom) : array
+	{
+		$db = vB::getDbAssertor();
+
+		//there should only ever be one of these set.
+		$phraseids = $db->getColumn('phrase', 'phraseid', ['varname' => $phrasename, 'languageid' => [0, -1]], false, 'languageid');
+
+		//but let's make sure
+		if (count($phraseids) == 2)
+		{
+			// This is backwards because we want to delete the one we *aren't* saving as.
+			$deletelanguageid = ($isCustom ? -1 : 0);
+			$db->delete('phrase', ['varname' => $phrasename, 'languageid' => $deletelanguageid]);
+			unset($phraseids[$deletelanguageid]);
+		}
+
+		// will only return one phrase at most but need to preserve which language it is.
+		return $phraseids;
+	}
+
+	//meta is intended to come from getPhraseMeta and not user data.  The fields should not conflict
+	//with any data being set here.  We don't call it internally here to avoid fetching it multiple
+	//times when savePhraseInternal is called in a loop (for translations for instance).
+	private function savePhraseInternal($phraseid, $meta, $languageid, $fieldname, $phrasename, $value)
+	{
+		$db = vB::getDbAssertor();
+
+		$data = [
+			vB_dB_Query::TYPE_KEY => vB_dB_Query::QUERY_INSERT,
+			'languageid' => $languageid,
+			'fieldname' => $fieldname,
+			'varname' => $phrasename,
+			'text' => $value,
+		];
+
+		if ($phraseid)
+		{
+			$data[vB_dB_Query::TYPE_KEY] = vB_dB_Query::QUERY_UPDATE;
+			$data['phraseid'] = $phraseid;
+		}
+
+		$db->assertQuery('phrase', array_merge($meta, $data));
+	}
+
+	// This updates the meta info for a group of phrases if we save a related entity -- such as a setting group.
+	// In particular if the entity has an product associated with it and the product is changed in the admincp
+	// this will make sure that the phrase stay synced.
+	public function updatePhraseMeta($product, $phrasenames)
+	{
+		$db = vB::getDbAssertor();
+		$data = $this->getPhraseMeta($product);
+		$data[vB_dB_Query::TYPE_KEY] = vB_dB_Query::QUERY_UPDATE;
+		$data[vB_dB_Query::CONDITIONS_KEY] = ['varname' => $phrasenames];
+		$db->assertQuery('phrase', $data);
+		//we aren't changing the phrase text so no reason to rebuild the languages
+	}
+
+	//this allows renaming a phrase across all translations
+	public function renamePhrase($oldname, $newname, $skipBuildLanguage = false)
+	{
+		$db = vB::getDbAssertor();
+
+		$existing = $db->getRow('phrase', [
+			vB_dB_Query::COLUMNS_KEY => ['product'],
+			'varname' => $oldname
+		]);
+
+		if (!$existing)
+		{
+			throw new vB_Exception_Api('invalid_data_w_x_y_z', [$oldname, 'oldname', __CLASS__, __FUNCTION__]);
+		}
+
+		$meta = $this->getPhraseMeta($existing['product']);
+
+		//name is now unique across phrase groups so we don't need to worry about that.
+		$db->update('phrase',	array_merge($meta, ['varname' => $newname]), ['varname' => $oldname]);
+
+		//The new name exists shouldn't exist in the cache
+		$this->clearPhraseCache($oldname);
+
+		if (!$skipBuildLanguage)
+		{
+			vB_Library::instance('language')->rebuildAllLanguages();
+		}
+	}
+
+	private function getPhraseMeta($product)
+	{
+		$timenow = vB::getRequest()->getTimeNow();
+
+		$session = vB::getCurrentSession();
+		if (!empty($session))
+		{
+			$userinfo = $session->fetch_userinfo();
+			$username = $userinfo['username'];
+		}
+		else
+		{
+			$username = 'System';
+		}
+
+		if (!$product)
+		{
+			$product = 'vbulletin';
+		}
+
+		$full_product_info = vB_Library::instance('product')->getFullProducts();
+		$version = $full_product_info[$product]['version'];
+
+		return [
+			'product' => $product,
+			'username' => $username,
+			'dateline' => $timenow,
+			'version' => $version,
+		];
+	}
+
+	/**
+	 * Resets the phrase cachebuster date.
+	 */
+	public function setPhraseDate()
+	{
+		vB_Cache::instance()->event("vB_Language_languageCache");
+		$options = vB::getDatastore()->getValue('miscoptions');
+		$options['phrasedate'] = vB::getRequest()->getTimeNow();
+		vB::getDatastore()->build('miscoptions', serialize($options), 1);
+	}
+
+	/**
+	 * Cleans a guid to match phrase valid class (self::VALID_CLASS).
+	 * This is used to build phrases for import items.
+	 * Example: title and description for pages
+	 *				- 'page_' . $guidforphrase . '_title'
+	 *				- 'page_' . $guidforphrase . '_description'
+	 *
+	 * @param 	string $guid GUID string.
+	 *
+	 * @return 	string 	GUID for phrase.
+	 **/
+	public function cleanGuidForPhrase($guid)
+	{
+		$guidforphrase = str_replace(['.', 'vbulletin-'], [''], $guid);
+		$guidforphrase = str_replace(['-'], ['_'], $guidforphrase);
+
+		return $guidforphrase;
+	}
+
+	/**
+	 *	Checks that a string is a valid snippet for building custom phrase names
+	 * 	@param string $string
+	 *
+	 */
+	public function isValidPhraseSnippet(string $snippet) : bool
+	{
+		//Not entirely sure why we don't allow string of '0' (but do allow leading zeros)
+		//Copied from the prefix datamanager code.
+		if (!$snippet === '' OR $snippet === '0')
+		{
+			return false;
+		}
+
+		if (!preg_match('#^[a-z0-9_]+$#i', $snippet))
+		{
+			return false;
+		}
+
+		return true;
+	}
+
+	/**
+	 * Replaces instances of vBulletin options and config variables in a phrase with
+	 * the value held in the variable.
+	 *
+	 * This function currently supports variables such as $vbulletin->config[xxx][yyy]
+	 * and $vbulletin->options[xxx], and is intended to be used in Admin CP phrases,
+	 * primarily help phrases.
+	 *
+	 * This function is placed here in the spirit of DRY, since
+	 * it's needed in various places, and for namespacing. It's not
+	 * dependent on anything else in the phrase library.
+	 *
+	 * @param string $text The phrase text
+	 *
+	 * @return string The phrase text after replacements are done.
+	 */
+	public function replaceOptionsAndConfigValuesInPhrase($text)
+	{
+		// Orig preg_replace in admincp/search.php:
+		// $title_map["$phrase[varname]"]  = preg_replace('#\{\$([a-z0-9_>-]+([a-z0-9_]+(\[[a-z0-9_]+\])*))\}#ie', '(isset($\\1) AND !is_array($\\1)) ? $\\1 : \'$\\1\'', $phrase['text']);
+
+		// Orig preg_replace in admincp/help.php:
+		// $helpphrase["$phrase[varname]"] = preg_replace('#\{\$([a-z0-9_>-]+([a-z0-9_]+(\[[a-z0-9_]+\])*))\}#ie', '(isset($\\1) AND !is_array($\\1)) ? $\\1 : \'$\\1\'', $phrase['text']);
+
+		// Orig preg_replace in modcp/help.php:
+		// $helpphrase["$phrase[varname]"] = preg_replace('#\{\$([a-z0-9_>-]+(\[[a-z0-9_]+\])*)\}#ie', '(isset($\\1) AND !is_array($\\1)) ? $\\1 : \'$\\1\'', $phrase['text']);
+
+		return preg_replace_callback(
+			'#\{\$([a-z0-9_>-]+([a-z0-9_]+(\[[a-z0-9_]+\])*))\}#i',
+			function($matches)
+			{
+				// match is, e.g., vbulletin->config[xxx][yyy]
+				$match = $matches[1];
+
+				// this was previously using preg_match with the /e modifier
+				// to eval() the replacement. This makes it easy to eval
+				// the match as-is, without knowing what is in it, and get the
+				// contents of the variable. Since we can't eval here, we need
+				// to "parse" the string and "dereference" the object properties
+				// and/or the array elements to drill down to the base value
+				// that is to be inserted into the phrase.
+
+				// break the match into tokens, where the tokens are
+				// identifier names OR an operation, which is either an object
+				// property dereference (->) or and array element dereference ([]).
+				// for example, vbulletin->config[xxx][yyy] is tokenized as:
+				// vbulletin, object_property, config, array_element, xxx, array_element, yyy
+				$tokens = [];
+				$parts = explode('->', $match);
+				foreach ($parts AS $part)
+				{
+					// extract any additional operations from 'part'
+					$subparts = explode('[', $part);
+					foreach ($subparts AS $subpart)
+					{
+						// the preceeding var name (for parts or subparts)
+						$tokens[] = rtrim($subpart, ']');
+
+						// the operation ([])
+						$tokens[] = 'array_element';
+					}
+					// remove trailing operation, since there are no more 'subparts'
+					array_pop($tokens);
+
+					// the operation (->)
+					$tokens[] = 'object_property';
+				}
+				// remove trailing operation, since there are no more 'parts'
+				array_pop($tokens);
+
+				// The replacements being made are for instances
+				// of $vbulletin->options[xxx], and $vbulletin->config[xxx][yyy]
+				// etc., in the admin cp help phrases. If we need to
+				// support anything other than $vbulletin->something, we
+				// could look for $finalVar (below) in the global scope instead.
+				// however, allowing arbitrary replacements could be riskier
+				// as well.
+				// Create a local "$vbulletin" variable to match the variables
+				// that are being requested in the phrase. This whitelists
+				// two config values, and allows all "public" options.
+
+				$vbulletin = new stdClass();
+
+				$vbconfig = vB::getConfig();
+				$vbulletin->config = [
+					'Misc' => [
+						'admincpdir' => 'admincp',
+						'modcpdir' => $vbconfig['Misc']['modcpdir'],
+					],
+				];
+
+				$vbulletin->options = vB::getDatastore()->getValue('publicoptions');
+
+
+				// the first token is the starting variable
+				$var = array_shift($tokens);
+				if ($var !== 'vbulletin')
+				{
+					// return the original text if they try to access any other var
+					return '$' . $match;
+				}
+				$varFinal = $$var;
+
+				// remaining tokens are pairs: variable and operation
+				// loop and point varFinal to the target value
+				$sets = array_chunk($tokens, 2);
+				foreach ($sets AS $item)
+				{
+					$op = $item[0];
+					$subvar = $item[1];
+
+					if ($op == 'object_property')
+					{
+						if (property_exists($varFinal, $subvar))
+						{
+							$varTemp = $varFinal->$subvar;
+						}
+						else
+						{
+							// return the original text if they try to access a non-existent property
+							return '$' . $match;
+						}
+					}
+					else if ($op == 'array_element')
+					{
+						if (isset($varFinal[$subvar]))
+						{
+							$varTemp = $varFinal[$subvar];
+						}
+						else
+						{
+							// return the original text if they try to access a non-existent element
+							return '$' . $match;
+						}
+					}
+
+					unset($varFinal);
+					$varFinal = $varTemp;
+					unset($varTemp);
+				}
+
+				// varFinal is now pointing to the requested value
+				// if it exists and isn't an array, return the value, if not,
+				// return the original string
+				return (isset($varFinal) AND !is_array($varFinal)) ? $varFinal : '$' . $match;
+
+			},
+			$text
+		);
+	}
+
+	/**
+	 * Fetch raw phrases
+	 *
+	 * Note that these are *not* suitable for display to the user as is
+	 * since many phrases have placeholders and this will not substitute them.
+	 * It is available in situations where the client expects to render the
+	 * phrases itself (particularly in situations where the phrase can be
+	 * cached and reused client side).
+	 *
+	 * @param array|string $phrases An array of phraseids to be fetched, a string will be treatd as
+	 * 	an array of one phraseid
+	 * @param int $languageid Language ID. If passed a 0, use the current user/forum default language.
+	 *
+	 * @return array --
+	 * 	'phrases' -- [phraseid => phrase value]
+	 */
+	public function getPhrases($phrases, $languageid)
+	{
+		if (empty($phrases))
+		{
+			return ['phrases' => []];
+		}
+
+		//0 means use the default
+		if ($languageid == 0)
+		{
+			$languageid = vB::getDatastore()->getOption('languageid');
+		}
+
+		return $this->getPhrasesInternal($phrases, $languageid);
+	}
+
+	/**
+	 * Fetch raw phrases from the master language
+	 *
+	 * This will pull the phrases from the either the custom phrases or master language
+	 * even if a translation is available in the user's language.  It is mostly intended
+	 * for fetching phrase values for editing purposes.
+	 *
+	 * Note that these are *not* suitable for display to the user as is
+	 * since many phrases have placeholders and this will not substitute them.
+	 * It is available in situations where the client expects to render the
+	 * phrases itself (particularly in situations where the phrase can be
+	 * cached and reused client side).
+	 *
+	 * @param array|string $phrases An array of phraseids to be fetched, a string will be treatd as
+	 * 	an array of one phraseid
+	 * @param int $languageid Language ID. If passed a 0, use the current user/forum default language.
+	 *
+	 * @return array --
+	 * 	'phrases' -- [phraseid => phrase value]
+	 */
+	public function getBasePhrases($phrases)
+	{
+		if (empty($phrases))
+		{
+			return ['phrases' => []];
+		}
+
+		return $this->getPhrasesInternal($phrases, 0);
+	}
+
+
+	/**
+	 *	Deletes a phrase from all languages
+	 *
+	 *	@param string|array $varname -- name of the string.  If an array of strings then all phrases will be deleted.
+	 *	@param bool $skipBuildLanguage -- if true skip rebuilding the language
+	 *	@return void
+	 */
+	public function deleteByVarname(string|array $varname, bool $skipBuildLanguage = false) : void
+	{
+		vB::getDbAssertor()->delete('phrase', ['varname' => $varname]);
+
+		if (is_array($varname))
+		{
+			foreach ($varname AS $item)
+			{
+				$this->clearPhraseCache($item);
+			}
+		}
+		else
+		{
+			$this->clearPhraseCache($varname);
+		}
+
+		if (!$skipBuildLanguage)
+		{
+			vB_Library::instance('language')->rebuildAllLanguages();
+		}
+	}
+
+	/**
+	 *	Returns rendered phrases from phrase strings and/or data
+	 *
+	 *	@param array $phrases.  Array of phrases to rendered.  Each item is either a phrase_string or an array of
+	 *		form (phrase_string, param1, param2, ...) (standard phrase format).  The keys of this array will be
+	 *		preserved and used to index the corresponding rendered phrase on return.
+	 *
+	 *	@param int $languageid. The languageid to use to render the phrases.  The default (null) means use the
+	 *		value for the current session/user.  The value of 0 means use the site default -- this should generally
+	 *		not be passed as a hardcoded value but is useful because that is a value the user can set as their
+	 *		languge.
+	 *
+	 *	@return array
+	 *		'phrases' => ['key' => rendered phrase]
+	 */
+	public function renderPhrases($phrases, $languageid = null)
+	{
+		if ($languageid === null)
+		{
+			$languageid = $this->getLanguageid()["languageid"];
+		}
+
+		return $this->renderPhrasesInternal($phrases, $languageid, true);
+	}
+
+	/**
+	 *	Returns rendered phrases from phrase strings and/or data
+	 *
+	 *	In some circumstances, primarily email, we need to defer shortcode replacement
+	 *	because we need to handle things for a user other than the current logged in
+	 *	user (many of the shortcodes are user specific).  This allows us to do that.
+	 *
+	 *	@param array $phrases.  Array of phrases to rendered.  Each item is either a phrase_string or an array of
+	 *		form (phrase_string, param1, param2, ...) (standard phrase format).  The keys of this array will be
+	 *		preserved and used to index the corresponding rendered phrase on return.
+	 *
+	 *	@param int $languageid. The languageid to use to render the phrases.  The default (null) means use the
+	 *		value for the current session/user.  The value of 0 means use the site default -- this should generally
+	 *		not be passed as a hardcoded value but is useful because that is a value the user can set as their
+	 *		languge.
+	 *
+	 *	@return array
+	 *		'phrases' => ['key' => rendered phrase]
+	 */
+	public function renderPhrasesNoShortcode($phrases, $languageid = null)
+	{
+		if ($languageid === null)
+		{
+			$languageid = $this->getLanguageid()["languageid"];
+		}
+
+		return $this->renderPhrasesInternal($phrases, $languageid, false);
+	}
+
+	//leaving this grouped with the public cover functions instead of with the other private functions
+	private function renderPhrasesInternal($phrases, $languageid, $doShortcodes)
+	{
+		$phrasemap = [];
+		$args = [];
+
+		foreach ($phrases AS $key => $phrase)
+		{
+			if (is_array($phrase))
+			{
+				$phrasemap[$key] = array_shift($phrase);
+				$args[$key] = $phrase;
+			}
+			else
+			{
+				$phrasemap[$key] = $phrase;
+				$args[$key] = [];
+			}
+		}
+
+		$vbphrases = $this->getPhrases(array_unique($phrasemap), $languageid);
+		$vbphrases = $vbphrases['phrases'];
+
+		if ($doShortcodes)
+		{
+			$vbphrases = $this->doShortcodeReplacements($vbphrases);
+		}
+
+		$return = [];
+		foreach ($phrasemap AS $key => $phrase)
+		{
+			if (isset($vbphrases[$phrase]))
+			{
+				$return[$key] = $this->renderPhrase($vbphrases[$phrase], $args[$key]);
+			}
+			else
+			{
+				$return[$key] = htmlspecialchars(strval($phrase));
+			}
+		}
+
+		return $return;
+	}
+
+	/**
+	 * Fetch the "best" languageid in the order of current session's languageid,
+	 * the default languageid from datastore,  or the master languageid (-1).
+	 * This is the languageid that's used by fetch().
+	 *
+	 * @param bool	$getCharset		(Optional) true to also return charset of current
+	 *								languageid. Default false.
+	 *
+	 * @return array 'languageid' => languageid used for current session's phrases
+	 *
+	 */
+	public function getLanguageid($getCharset = false)
+	{
+		$languageid = null;
+		$currentsession = vB::getCurrentSession();
+		if ($currentsession)
+		{
+			$languageid = $currentsession->get('languageid');
+			if (!$languageid)
+			{
+				$userinfo = vB::getCurrentSession()->fetch_userinfo();
+				$languageid = $userinfo['languageid'];
+			}
+		}
+
+		// Still no languageid, try to get current default languageid
+		if (!$languageid)
+		{
+			$languageid = vB::getDatastore()->getOption('languageid');
+		}
+
+		// Still don't have a language, fall back to master language
+		if (!$languageid)
+		{
+			$languageid = -1;
+		}
+
+		$returnArray = ['languageid' => $languageid];
+
+		if ($getCharset)
+		{
+			$charset = vB::getDbAssertor()->getColumn('language', 'charset', ['languageid' => $languageid]);
+			if ($charset)
+			{
+				$charset = reset($charset);
+			}
+			else
+			{
+				//this is probably wrong, but at this point we really haven't the faintest idea and this is
+				//the closest match for the historical behavior (which would return NULL based on some
+				//a missing array key).  Since the only reported problem is the notice for the missing key
+				//we'll stick with that behavior.
+				$charset = '';
+			}
+
+			$returnArray['charset'] = $charset;
+		}
+
+		return $returnArray;
+	}
+
+	//
+	// Transition functions
+	// These are public so that the phrase API can call them, they aren't really intended to be a
+	// proper part of the interface and should be made private once we've properly moved the
+	// core logic to the library.
+
+	/**
+	 * Renders the tokens in a string with the given values.
+	 *
+	 * @param string $phrasestring - The phrase string to render.  This isn't the phrase ID but rather
+	 * 	the loaded phrase transformed into the sprintf format.
+	 * @param array $args	- The values to parse into the phrase
+	 * @return string	- The resulting string
+	 */
+	//In addition to the phrase API this is called from the admincp cronlog page.  It's not clear why.
+ 	public function renderPhrase($phrasestring, array $args)
+	{
+		//nothing to replace, just return the string
+		if (!count($args))
+		{
+			return $phrasestring;
+		}
+
+		$phrase = $this->phraseSprintf($phrasestring, $args);
+		if ($phrase !== false)
+		{
+			return $phrase;
+		}
+		else
+		{
+			//something went wrong -- let's put in some dummy args to ty to get
+			//something vaguely valid.
+			for ($i = count($args); $i < 10; $i++)
+			{
+				$args[$i] = '[ARG:' . ($i + 1) . ' UNDEFINED]';
+			}
+
+			$phrase = $this->phraseSprintf($phrasestring, $args);
+			if ($phrase !== false)
+			{
+				return $phrase;
+			}
+			// if it still doesn't work, just return the un-parsed text
+			else
+			{
+				return $phrasestring;
+			}
+		}
+	}
+
+
+
+	/**
+	 * Handled output from query from fetch() and fetchByGroup()
+	 *
+	 * @param	array	Phrases from db
+	 * @param	array	Phrases sent into to get from the db
+	 *
+	 * @return array	Phrases phrases
+	 */
+	public function parsePhrases($phrasesdata, $phrases = [], $languageid = -1)
+	{
+		$realphrases = [];
+		foreach ($phrasesdata AS $phrase)
+		{
+			// User-selected language (>=1) overwrites custom phrase (0), which overwrites master language phrase (-1)
+			if (empty($realphrases[$phrase['varname']]) OR $realphrases[$phrase['varname']]['languageid'] < $phrase['languageid'] )
+			{
+				$realphrases[$phrase['varname']] = $phrase;
+			}
+		}
+
+		if (!isset($this->phrasecache[$languageid]))
+		{
+			$this->phrasecache[$languageid] = [];
+		}
+
+		$this->phrasecache[$languageid] = array_merge($this->phrasecache[$languageid], $realphrases);
+
+		foreach ($phrases AS $phrasevar)
+		{
+			if (empty($realphrases[$phrasevar]) AND !empty($this->phrasecache[$languageid][$phrasevar]))
+			{
+				$realphrases[$phrasevar] = $this->phrasecache[$languageid][$phrasevar];
+			}
+		}
+
+		$return = [];
+		foreach ($realphrases AS $phrase)
+		{
+			// TODO: store this somewhere? -- might as well store phrases converted now to
+			// stop all this real time conversion
+			$return[$phrase['varname']] = $this->convertPhraseText($phrase['text']);
+		}
+
+		return $return;
+	}
+
+	public function doShortcodeReplacements($phrases, $userid = null)
+	{
+		$options = vB::getDatastore()->getValue('options');
+
+		// Phrase {shortcode} replacements
+		// This replacement happens in several places. Please keep them synchronized.
+		// You can search for {shortcode} in php and js files.
+		if (empty($this->shortcode_replace_map))
+		{
+			$this->shortcode_replace_map = array (
+				'{sitename}'        => $options['bbtitle'],
+				'{musername}'       => '{musername}',
+				'{username}'        => '{username}',
+				'{userid}'          => '{userid}',
+				'{registerurl}'     => vB5_Route::buildUrl('register|fullurl'),
+				'{activationurl}'   => vB5_Route::buildUrl('activateuser|fullurl'),
+				'{helpurl}'         => vB5_Route::buildUrl('help|fullurl'),
+				'{contacturl}'      => vB5_Route::buildUrl('contact-us|fullurl'),
+				//in some of the early upgrader steps we might hit this before we've properly updated
+				//the datastore to include it.  We should probably untangle that but for now avoid
+				//key warnings.  In particular the page import process we do hits this.
+				'{homeurl}'         => $options['frontendurl'] ?? '',
+				// Note, '{date}' is handled separately below.
+				'{webmasteremail}'  => $options['webmasteremail'] ?? '',
+				// ** leave deprecated codes in to avoid breaking existing data **
+				// deprecated - the previous *_page codes have been replaced with the *url codes
+				'{register_page}'   => vB5_Route::buildUrl('register|fullurl'),
+				'{activation_page}' => vB5_Route::buildUrl('activateuser|fullurl'),
+				'{help_page}'       => vB5_Route::buildUrl('help|fullurl'),
+				// deprecated - session url codes are no longer needed
+				'{sessionurl}'      => '',
+				'{sessionurl_q}'    => '',
+			);
+		}
+
+		// update user-specific information for each recipient
+		if ($userid)
+		{
+			$user_replacements = vB_Library::instance('user')->getEmailReplacementValues('', $userid);
+			$this->shortcode_replace_map['{musername}'] = $user_replacements['{musername}'];
+			$this->shortcode_replace_map['{username}'] = $user_replacements['{username}'];
+			$this->shortcode_replace_map['{userid}'] = $user_replacements['{userid}'];
+
+			//this isn't quite right, since vbdate has dependencies on the current user session and
+			//we should be using the info for the user selected.  Not fixing it now.
+			$this->shortcode_replace_map['{date}'] = vbdate($options['dateformat']);
+		}
+		else
+		{
+			//usually we should have a session, but in some cases -- such as installs -- we won't.
+			//since most phrases don't have shortcodes, chances are we don't care.  So let's just
+			//skip the replacments with user dependencies.
+			$session = vB::getCurrentSession();
+			if ($session)
+			{
+				$userInfo = $session->fetch_userinfo();
+				$this->shortcode_replace_map['{musername}'] = $userInfo['musername'];
+				$this->shortcode_replace_map['{username}'] = $userInfo['username'];
+				$this->shortcode_replace_map['{userid}'] = $userInfo['userid'];
+				$this->shortcode_replace_map['{date}'] = vbdate($options['dateformat']);
+			}
+		}
+
+		// do the replacement
+		$shortcode_find = array_keys($this->shortcode_replace_map);
+		foreach ($phrases AS $k => $v)
+		{
+			$phrases[$k] = str_replace($shortcode_find, $this->shortcode_replace_map, $phrases[$k]);
+		}
+
+		return $phrases;
+	}
+
+
+	// End Transition functions
+
+	private function getPhrasesInternal($phrases, $languageid)
+	{
+		if (!is_array($phrases))
+		{
+			$phrases = [$phrases];
+		}
+
+		// Unset phrases which have already been fetched
+		$phrasestofetch = [];
+		$fromcache = [];
+
+		foreach ($phrases AS $phrasevar)
+		{
+			if (!isset($this->phrasecache[$languageid][$phrasevar]))
+			{
+				$phrasestofetch[] = $phrasevar;
+			}
+			else
+			{
+				$fromcache[] = $phrasevar;
+			}
+		}
+
+		$return = [];
+		if (!empty($phrasestofetch))
+		{
+			//First try from fastds
+			$fastDS =  vB_FastDS::instance();
+			if ($languageid AND $fastDS)
+			{
+				$cached = $fastDS->getPhrases($phrasestofetch, $languageid);
+			}
+
+			$phrasesNotFound = [];
+			if (!empty($cached))
+			{
+				foreach ($phrasestofetch as $index => $phraseKey)
+				{
+					if (!empty($cached[$phraseKey]))
+					{
+						$return[$phraseKey] = $cached[$phraseKey];
+					}
+					else
+					{
+						$phrasesNotFound[$index] = $phrasestofetch[$index];
+					}
+				}
+			}
+			else
+			{
+				$phrasesNotFound = $phrasestofetch;
+			}
+
+			if (!empty($phrasesNotFound))
+			{
+				$phrasesdata = vB::getDbAssertor()->getRows('phrase', [
+					'varname' => $phrasesNotFound,
+					'languageid' => array_unique([$languageid, 0, -1]),
+					vB_dB_Query::COLUMNS_KEY => ['varname', 'languageid', 'text']
+				]);
+				$parsed = $this->parsePhrases($phrasesdata, $phrases, $languageid);
+				$return = array_merge($return, $parsed);
+			}
+		}
+
+		if (!empty($fromcache))
+		{
+			foreach ($fromcache AS $phraseid)
+			{
+				$phrasesdata[$phraseid] = $this->phrasecache[$languageid][$phraseid];
+			}
+
+			$parsed = $this->parsePhrases($phrasesdata, $phrases, $languageid);
+			$return = array_merge($return, $parsed);
+		}
+
+		return ['phrases' => $return];
+	}
+
+	private function phraseSprintf($phrasestring, array $args)
+	{
+		//The behavior changed between PHP7 and PHP8 for what happens when sprintf doesn't
+		//get enough params.  In 7 we get a false return and random output (which is why we supress
+		//the errors).  In 8 it's catchable fatal error.
+		try
+		{
+			return vsprintf($phrasestring, $args);
+		}
+		catch(Error $e)
+		{
+			return false;
+		}
+	}
+
+	/**
+	 * Convert phrase text to sprintf format
+	 *
+	 * @param string $text
+	 * @return string
+	 */
+	private function convertPhraseText($text)
+	{
+		if (preg_match('/\{([0-9]+)\}/', $text))
+		{
+			$search = [
+				'/%/s',
+				'/\{([0-9]+)\}/siU',
+			];
+
+			$replace = [
+				'%%',
+				'%\\1$s',
+			];
+
+			$returnText = preg_replace($search, $replace, $text);
+		}
+		else
+		{
+			$returnText = $text;
+		}
+
+		return $returnText;
+	}
+
+	//We may not know which languages we have a phrasecache.  If we change a master phrase or a root custom phrase
+	//we need to remove *all* of the instances of the phrase to avoid the case where we've fetched from language
+	//0 but cached as language 1 because language one doesn't have an explicit translation.  We could potentially
+	//try to figure out if the change is a translation but in practice it's not going to matter enough to be worth
+	//the trouble.
+	private function clearPhraseCache(string $phrasename) : void
+	{
+		foreach (array_keys($this->phrasecache) AS $languageid)
+		{
+			unset($this->phrasecache[$languageid][$phrasename]);
+		}
+	}
+}
+
+/*=========================================================================*\
+|| #######################################################################
+|| # Downloaded: 12:50, Tue Dec 24th 2024
+|| # CVS: $RCSfile$ - $Revision: 116554 $
+|| #######################################################################
+\*=========================================================================*/

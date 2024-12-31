@@ -1,0 +1,2789 @@
+<?php
+/*========================================================================*\
+|| ###################################################################### ||
+|| # vBulletin 6.1.0 Alpha 4 Week 2 - Licence Number VBCW2VFT7A
+|| # ------------------------------------------------------------------ # ||
+|| # Copyright 2000-2024 MH Sub I, LLC dba vBulletin. All Rights Reserved.  # ||
+|| # This file may not be redistributed in whole or significant part.   # ||
+|| # ----------------- VBULLETIN IS NOT FREE SOFTWARE ----------------- # ||
+|| # http://www.vbulletin.com | http://www.vbulletin.com/license.html   # ||
+|| ###################################################################### ||
+\*========================================================================*/
+
+class vB_DataManager_User extends vB_DataManager
+{
+	/**
+	* Array of recognised and required fields for users, and their types
+	*
+	* @var	array
+	*/
+	protected $validfields = [
+		'userid'             => [vB_Cleaner::TYPE_UINT,       vB_DataManager_Constants::REQ_INCR, vB_DataManager_Constants::VF_METHOD, 'verify_nonzero',],
+		'username'           => [vB_Cleaner::TYPE_STR,        vB_DataManager_Constants::REQ_YES,  vB_DataManager_Constants::VF_METHOD,],
+		'displayname'        => [vB_Cleaner::TYPE_STR,        vB_DataManager_Constants::REQ_NO,   vB_DataManager_Constants::VF_METHOD, 'verify_displayname'],
+
+		'email'              => [vB_Cleaner::TYPE_STR,        vB_DataManager_Constants::REQ_YES,  vB_DataManager_Constants::VF_METHOD, 'verify_useremail',],
+		'parentemail'        => [vB_Cleaner::TYPE_STR,        vB_DataManager_Constants::REQ_NO,   vB_DataManager_Constants::VF_METHOD,],
+		'emailstamp'         => [vB_Cleaner::TYPE_UNIXTIME,   vB_DataManager_Constants::REQ_NO,],
+
+		'secret'             => [vB_Cleaner::TYPE_STR,        vB_DataManager_Constants::REQ_NO,],
+		'passworddate'       => [vB_Cleaner::TYPE_STR,        vB_DataManager_Constants::REQ_NO,],
+
+		'usergroupid'        => [vB_Cleaner::TYPE_UINT,       vB_DataManager_Constants::REQ_YES,  vB_DataManager_Constants::VF_METHOD,],
+		'membergroupids'     => [vB_Cleaner::TYPE_NOCLEAN,    vB_DataManager_Constants::REQ_NO,   vB_DataManager_Constants::VF_METHOD, 'verify_commalist',],
+		'infractiongroupids' => [vB_Cleaner::TYPE_NOCLEAN,    vB_DataManager_Constants::REQ_NO,   vB_DataManager_Constants::VF_METHOD, 'verify_commalist',],
+		'infractiongroupid'  => [vB_Cleaner::TYPE_UINT,       vB_DataManager_Constants::REQ_NO,],
+		'displaygroupid'     => [vB_Cleaner::TYPE_UINT,       vB_DataManager_Constants::REQ_NO,   vB_DataManager_Constants::VF_METHOD,],
+
+		'styleid'            => [vB_Cleaner::TYPE_UINT,       vB_DataManager_Constants::REQ_NO,],
+		'languageid'         => [vB_Cleaner::TYPE_UINT,       vB_DataManager_Constants::REQ_NO,],
+
+		'options'            => [vB_Cleaner::TYPE_UINT,       vB_DataManager_Constants::REQ_YES,],
+		'privacy_options'    => [vB_Cleaner::TYPE_STR,		     vB_DataManager_Constants::REQ_NO, vB_DataManager_Constants::VF_METHOD,],
+		'notification_options' => [vB_Cleaner::TYPE_UINT,     vB_DataManager_Constants::REQ_NO,],
+		'adminoptions'       => [vB_Cleaner::TYPE_UINT,       vB_DataManager_Constants::REQ_NO,],
+		'showvbcode'         => [vB_Cleaner::TYPE_INT,        vB_DataManager_Constants::REQ_NO, vB_DataManager_Constants::VF_METHOD,],
+		'showbirthday'       => [vB_Cleaner::TYPE_INT,        vB_DataManager_Constants::REQ_NO, vB_DataManager_Constants::VF_METHOD,],
+		'threadedmode'       => [vB_Cleaner::TYPE_INT,        vB_DataManager_Constants::REQ_NO, vB_DataManager_Constants::VF_METHOD,],
+		'maxposts'           => [vB_Cleaner::TYPE_INT,        vB_DataManager_Constants::REQ_NO, vB_DataManager_Constants::VF_METHOD,],
+		'ipaddress'          => [vB_Cleaner::TYPE_STR,        vB_DataManager_Constants::REQ_NO, vB_DataManager_Constants::VF_METHOD,],
+		'referrerid'         => [vB_Cleaner::TYPE_NOHTMLCOND, vB_DataManager_Constants::REQ_NO, vB_DataManager_Constants::VF_METHOD,],
+		'posts'              => [vB_Cleaner::TYPE_UINT,       vB_DataManager_Constants::REQ_NO,],
+		'startedtopics'      => [vB_Cleaner::TYPE_UINT,       vB_DataManager_Constants::REQ_NO,],
+		'totallikes'         => [vB_Cleaner::TYPE_UINT,       vB_DataManager_Constants::REQ_NO,],
+		'daysprune'          => [vB_Cleaner::TYPE_INT,        vB_DataManager_Constants::REQ_NO,],
+		'startofweek'        => [vB_Cleaner::TYPE_INT,        vB_DataManager_Constants::REQ_NO,],
+		'timezoneoffset'     => [vB_Cleaner::TYPE_STR,        vB_DataManager_Constants::REQ_NO,],
+		'autosubscribe'      => [vB_Cleaner::TYPE_INT,        vB_DataManager_Constants::REQ_NO, vB_DataManager_Constants::VF_METHOD,],
+		'emailnotification'  => [vB_Cleaner::TYPE_INT,        vB_DataManager_Constants::REQ_NO, vB_DataManager_Constants::VF_METHOD,],
+
+		'moderatornotificationoptions'      => [vB_Cleaner::TYPE_UINT,     vB_DataManager_Constants::REQ_NO,],
+		'moderatoremailnotificationoptions' => [vB_Cleaner::TYPE_UINT,     vB_DataManager_Constants::REQ_NO,],
+
+		'homepage'           => [vB_Cleaner::TYPE_NOHTML,     vB_DataManager_Constants::REQ_NO,   vB_DataManager_Constants::VF_METHOD,],
+
+		'usertitle'          => [vB_Cleaner::TYPE_STR,        vB_DataManager_Constants::REQ_NO,],
+		'customtitle'        => [vB_Cleaner::TYPE_UINT,       vB_DataManager_Constants::REQ_NO, vB_DataManager_Constants::VF_METHOD,],
+
+		'ipoints'            => [vB_Cleaner::TYPE_UINT,       vB_DataManager_Constants::REQ_NO,],
+		'infractions'        => [vB_Cleaner::TYPE_UINT,       vB_DataManager_Constants::REQ_NO,],
+		'warnings'           => [vB_Cleaner::TYPE_UINT,       vB_DataManager_Constants::REQ_NO,],
+
+		'joindate'           => [vB_Cleaner::TYPE_UNIXTIME,   vB_DataManager_Constants::REQ_AUTO,],
+		'lastvisit'          => [vB_Cleaner::TYPE_UNIXTIME,   vB_DataManager_Constants::REQ_NO,],
+		'lastactivity'       => [vB_Cleaner::TYPE_UNIXTIME,   vB_DataManager_Constants::REQ_NO,],
+		'lastpost'           => [vB_Cleaner::TYPE_UNIXTIME,   vB_DataManager_Constants::REQ_NO,],
+		'lastpostid'         => [vB_Cleaner::TYPE_UINT,       vB_DataManager_Constants::REQ_NO,],
+
+		'birthday'           => [vB_Cleaner::TYPE_NOCLEAN,    vB_DataManager_Constants::REQ_NO,   vB_DataManager_Constants::VF_METHOD,],
+		'birthday_search'    => [vB_Cleaner::TYPE_STR,        vB_DataManager_Constants::REQ_AUTO,],
+
+		'reputation'         => [vB_Cleaner::TYPE_NOHTML,     vB_DataManager_Constants::REQ_NO,   vB_DataManager_Constants::VF_METHOD,],
+
+		'avatarid'           => [vB_Cleaner::TYPE_UINT,       vB_DataManager_Constants::REQ_NO,],
+		'avatarrevision'     => [vB_Cleaner::TYPE_UINT,       vB_DataManager_Constants::REQ_NO,],
+		'sigpicrevision'     => [vB_Cleaner::TYPE_UINT,       vB_DataManager_Constants::REQ_NO,],
+
+		'pmtotal'            => [vB_Cleaner::TYPE_UINT,       vB_DataManager_Constants::REQ_NO,],
+		'pmunread'           => [vB_Cleaner::TYPE_UINT,       vB_DataManager_Constants::REQ_NO,],
+
+		// socnet counter fields
+		'profilevisits'      => [vB_Cleaner::TYPE_UINT,       vB_DataManager_Constants::REQ_NO,],
+		'friendcount'        => [vB_Cleaner::TYPE_UINT,       vB_DataManager_Constants::REQ_NO,],
+		'friendreqcount'     => [vB_Cleaner::TYPE_UINT,       vB_DataManager_Constants::REQ_NO,],
+		'vmunreadcount'      => [vB_Cleaner::TYPE_UINT,       vB_DataManager_Constants::REQ_NO,],
+		'vmmoderatedcount'   => [vB_Cleaner::TYPE_UINT,       vB_DataManager_Constants::REQ_NO,],
+
+		// usertextfield fields
+		'subfolders'         => [vB_Cleaner::TYPE_NOCLEAN,    vB_DataManager_Constants::REQ_NO,   vB_DataManager_Constants::VF_METHOD, 'verify_serialized',],
+		'pmfolders'          => [vB_Cleaner::TYPE_NOCLEAN,    vB_DataManager_Constants::REQ_NO,   vB_DataManager_Constants::VF_METHOD, 'verify_serialized',],
+		'buddylist'          => [vB_Cleaner::TYPE_NOCLEAN,    vB_DataManager_Constants::REQ_NO,   vB_DataManager_Constants::VF_METHOD, 'verify_spacelist',],
+		'ignorelist'         => [vB_Cleaner::TYPE_NOCLEAN,    vB_DataManager_Constants::REQ_NO,   vB_DataManager_Constants::VF_METHOD, 'verify_spacelist',],
+		'signature'          => [vB_Cleaner::TYPE_STR,        vB_DataManager_Constants::REQ_NO,],
+		'rank'               => [vB_Cleaner::TYPE_STR,        vB_DataManager_Constants::REQ_NO,],
+		'status'             => [vB_Cleaner::TYPE_STR,        vB_DataManager_Constants::REQ_NO,],
+
+		// facebook fields
+		'fbuserid'           => [vB_Cleaner::TYPE_STR,        vB_DataManager_Constants::REQ_NO,],
+		'fbname'             => [vB_Cleaner::TYPE_STR,        vB_DataManager_Constants::REQ_NO,],
+		'fbjoindate'         => [vB_Cleaner::TYPE_UINT,       vB_DataManager_Constants::REQ_NO,],
+
+		// Privacy Consent fields
+		'privacyconsent'         => [vB_Cleaner::TYPE_INT,       vB_DataManager_Constants::REQ_NO,],
+		'privacyconsentupdated'  => [vB_Cleaner::TYPE_UINT,      vB_DataManager_Constants::REQ_NO,],
+		'location'               => [vB_Cleaner::TYPE_STR,       vB_DataManager_Constants::REQ_NO,],
+	];
+
+	/**
+	* Array of field names that are bitfields, together with the name of the variable in the registry with the definitions.
+	*
+	* @var	array
+	*/
+	protected $bitfields = [
+		'options'                           => 'bf_misc_useroptions',
+		'adminoptions'                      => 'bf_misc_adminoptions',
+		'notification_options'              => 'bf_misc_usernotificationoptions',
+		'moderatornotificationoptions'      => 'bf_misc_moderatornotificationoptions',
+		'moderatoremailnotificationoptions' => 'bf_misc_moderatoremailnotificationoptions',
+	];
+
+	/**
+	* The main table this class deals with
+	*
+	* @var	string
+	*/
+	var $table = 'user';
+
+	/**#@+
+	* Arrays to store stuff to save to user-related tables
+	*
+	* @var	array
+	*/
+	var $user = [];
+	var $userfield = [];
+	var $usertextfield = [];
+	/**#@-*/
+
+
+	//Primary Key
+	protected $keyField = 'userid';
+
+	/**
+	* Whether or not we have inserted an administrator record
+	*
+	* @var	boolean
+	*/
+	var $insertedadmin = false;
+
+	/**
+	* Types of lists stored in usertextfield, named <X>list.
+	*
+	* @var	array
+	*/
+	var $list_types = ['buddy', 'ignore'];
+
+	/**
+	* Arrays to store stuff to save to userchangelog table
+	*
+	* @var	array
+	*/
+	private $userchangelog = [];
+
+	/**
+	* We want to log or not the user changes
+	*
+	* @var	boolean
+	*/
+	private $user_changelog_state = true;
+
+	/**
+	* Which fieldchanges will be logged
+	*
+	* @var	array
+	*/
+	private $user_changelog_fields = ['username', 'usergroupid', 'membergroupids', 'email', 'displayname',];
+
+	protected $needRegistry = false;
+
+	// #############################################################################
+	// data verification functions
+
+	/**
+	* Verifies that the user's homepage is valid
+	*
+	* @param	string	URL
+	*
+	* @return	boolean
+	*/
+	function verify_homepage(&$homepage)
+	{
+		return (empty($homepage)) ? true : $this->verify_link($homepage, true);
+	}
+
+	/**
+	* Verifies that $threadedmode is a valid value, and sets the appropriate options to support it.
+	*
+	* @param	integer	Threaded mode: 0 = linear, oldest first; 1 = threaded; 2 = hybrid; 3 = linear, newest first
+	*
+	* @return	boolean
+	*/
+	function verify_threadedmode(&$threadedmode)
+	{
+		// ensure that provided value is valid
+		if (!in_array($threadedmode, [0, 1, 2, 3]))
+		{
+			$threadedmode = 0;
+		}
+
+		// fix linear, newest first
+		if ($threadedmode == 3)
+		{
+			$this->set_bitfield('options', 'postorder', 1);
+			$threadedmode = 0;
+		}
+		// fix linear, oldest first
+		else if ($threadedmode == 0)
+		{
+			$this->set_bitfield('options', 'postorder', 0);
+		}
+
+		return true;
+	}
+
+	/**
+	* Verifies that an email notification choice is valid and workable
+	*
+	* @param	integer	Emailnotification choice: (0: no email; 1: instant email; 2: daily email; 3: weekly email;)
+	*
+	* @return	boolean
+	*/
+	function verify_emailnotification(&$emailnotification)
+	{
+		// check that the subscription choice is valid
+		switch ($emailnotification)
+		{
+			// the choice is good
+			case 0:
+			case 1:
+			case 2:
+			case 3:
+				break;
+
+			// all other options
+			default:
+				$emailnotification = 0;
+				break;
+		}
+
+		return true;
+	}
+
+	/**
+	* Verifies the value of user.maxposts, setting the forum default number if the value is invalid
+	*
+	* @param	integer	Maximum posts per page
+	*
+	* @return	boolean
+	*/
+	function verify_maxposts(&$maxposts)
+	{
+		if (!in_array($maxposts, explode(',', $this->options['usermaxposts'])))
+		{
+			$maxposts = -1;
+		}
+
+		return true;
+	}
+
+	/**
+	* Verifies a valid reputation value, and sets the appropriate reputation level
+	*
+	* @param	integer	Reputation value
+	*
+	* @return	boolean
+	*/
+	function verify_reputation(&$reputation)
+	{
+		if ($reputation > 2147483647)
+		{
+			$reputation = 2147483647;
+		}
+		else if ($reputation < -2147483647)
+		{
+			$reputation = -2147483647;
+		}
+		else
+		{
+			$reputation = intval($reputation);
+		}
+
+		return true;
+	}
+
+	/**
+	* Verifies that the provided username is valid, and attempts to correct it if it is not valid
+	*
+	* @param	string	Username
+	*
+	* @return	boolean	Returns true if the username is valid, or has been corrected to be valid
+	*/
+	function verify_username(&$username)
+	{
+		$userLib = vB_Library::instance('user');
+		$username_raw = $userLib->precleanUsernameRaw($username);
+		$username = $userLib->precleanUsername($username_raw);
+
+		if (empty($this->existing['userid']))
+		{
+			$this->existing['userid'] = false;
+		}
+
+		if (empty($this->existing['username']))
+		{
+			if ($this->existing['userid'])
+			{
+				$userInfo = $this->assertor->getRow('user', ['userid' => $this->existing['userid']]);
+				$this->existing['username'] = $userInfo['username'];
+			}
+			else
+			{
+				$this->existing['username'] = false;
+			}
+		}
+
+		// Note, a significant number of checks that used to be in the user DM has been moved to
+		// vB_Api_User::checkUsernameInternal()
+
+		if ($this->existing['username'] === false OR  $username !== $this->existing['username'])
+		{
+			// We shouldn't use vB_String::vbStrlen() as it will count &xxx; as one character.
+			$length = iconv_strlen($username, vB_String::getCharset());
+			if ($length == 0)
+			{
+				// check for empty string
+				throw new vB_Exception_Api('fieldmissing_username');
+			}
+			else if (preg_match('/(?<!&#[0-9]{3}|&#[0-9]{4}|&#[0-9]{5});/', $username))
+			{
+				// name contains semicolons
+				throw new vB_Exception_Api('username_contains_semi_colons');
+			}
+			// Note, everything bypassible via adminoverride has been moved into the user API.
+
+		}
+
+		$unregisteredphrases = $this->assertor->getRows('phrase', [
+			'varname' => 'unregistered',
+			'fieldname' => 'global'
+		]);
+
+		foreach ($unregisteredphrases as $unregisteredphrase)
+		{
+			if (strtolower($unregisteredphrase['text']) == strtolower($username) OR strtolower($unregisteredphrase['text']) == strtolower($username_raw))
+			{
+				$this->error('usernametaken', vB_String::htmlSpecialCharsUni($username), vB5_Route::buildUrl('lostpw|fullurl'));
+				return false;
+			}
+		}
+
+		// Note, duplicate username check is currently in the user library, as to allow bypassing
+		// that check for direct library calls.
+
+		// if we got here, everything is okay
+		$username = vB_String::htmlSpecialCharsUni($username);
+
+		// remove any trailing HTML entities that will be cut off when we stick them in the DB.
+		// if we don't do this, the affected person won't be able to login, be banned, etc...
+		$column_info = $this->assertor->getRow('getColumnUsername', ['field' => 'username']);
+		if (preg_match('#char\((\d+)\)#i', $column_info['Type'], $match) AND $match[1] > 0)
+		{
+			$username = preg_replace('/&([a-z0-9#]*)$/i', '', substr($username, 0, $match[1]));
+		}
+
+		$username = trim($username);
+
+		return true;
+	}
+
+	function verify_displayname(&$displayname)
+	{
+		$userLib = vB_Library::instance('user');
+		$displayname = $userLib->precleanDisplayname($displayname);
+
+		if (empty($this->existing['userid']))
+		{
+			$this->existing['userid'] = false;
+		}
+
+		if (empty($this->existing['displayname']))
+		{
+			if ($this->existing['userid'])
+			{
+				// todo: centralize the user record pull and cache this (e.g. between verify_username & verify_displayname)
+				$userInfo = $this->assertor->getRow('user', ['userid' => $this->existing['userid']]);
+				$this->existing['displayname'] = $userInfo['displayname'];
+			}
+			else
+			{
+				$this->existing['displayname'] = false;
+			}
+		}
+
+		if ($this->existing['displayname'] === false OR  $displayname !== $this->existing['displayname'])
+		{
+			// We shouldn't use vB_String::vbStrlen() as it will count &xxx; as one character.
+			$length = iconv_strlen($displayname, vB_String::getCharset());
+			if ($length == 0)
+			{
+				// check for empty string
+				throw new vB_Exception_Api('fieldmissing_displayname');
+			}
+			// We escape displaynames on render not save, but we may still have html entities that are allowed by
+			// vB_String::htmlSpecialCharsUniCallback(), for example the greek theta &#920;	.
+			else if (preg_match('/(?<!&#[0-9]{3}|&#[0-9]{4}|&#[0-9]{5});/', $displayname))
+			{
+				// name contains semicolons
+				throw new vB_Exception_Api('displayname_contains_semi_colons');
+			}
+		}
+
+		// Note that we escape displaynames on RENDER, not SAVE, so unlike usernames we do not call vB_String::htmlSpecialChars()
+		// here.
+
+
+		return true;
+
+	}
+
+	/**
+	* Verifies that the provided birthday is valid
+	*
+	* @param	mixed	Birthday - can be yyyy-mm-dd, mm-dd-yyyy or an array containing day/month/year and converts it into a valid yyyy-mm-dd
+	*
+	* @return	boolean
+	*/
+	function verify_birthday(&$birthday)
+	{
+		/*
+		The old code prevented changing birthdays for existing users if birthdays are required,
+		except as an admin. It would just quietly re-use the existing birthday for non-admins
+		in such a case.
+		We're trying to get rid of the admin check from the user DM class. It seems like the only
+		place where we're accessing the user DM directly and setting the birthday is in the
+		user API save, and that method already has its own checks for changing birthdays
+		while reqbirthday is on, so I'm just removing that code entirely.
+		If anything else was accessing the user DM directly and setting birthdays without proper
+		perm checks, those areas should be updated to do the check & skip setting the birthdays
+		instead.
+		*/
+
+
+		// validation & formatting code has been moved into the user library.
+		// formatAndValidateBirthday() will convert birthday into an array,
+		// and throw an exception if it failed to properly convert.
+		$userlib = vB_Library::instance('user');
+		$check = $userlib->formatAndValidateBirthday($birthday);
+
+		if (!$check)
+		{
+			$this->error('birthdayfield');
+			return false;
+		}
+		else
+		{
+			// If the format was OK & the day/month/year ranges all checked out,
+			// stringify the birthday & also set birthday_search.
+			// Special, negative day + month == unset birthday.
+			if ($birthday['day'] <= 0 AND $birthday['month'] <= 0)
+			{
+				$birthday_search = '';
+				$birthday = '';
+			}
+			else
+			{
+				// Birthday search is in the yyyy-mm-dd format, while birthday is apparently
+				// in the mm-dd-yyyy format, for some reason.
+				$birthday_search = "$birthday[year]-$birthday[month]-$birthday[day]";
+				$birthday = "$birthday[month]-$birthday[day]-$birthday[year]";
+			}
+
+			$this->set('birthday_search', $birthday_search);
+			return true;
+		}
+	}
+
+	/**
+	* Verifies that everything is hunky dory with the user's email field
+	*
+	* @param	string	Email address
+	*
+	* @return	boolean
+	*/
+	function verify_useremail(&$email)
+	{
+		$email_changed = (!isset($this->existing['email']) OR $email != $this->existing['email']);
+		// check for empty string
+		if ($email == '')
+		{
+			// Note, the user DM used to allow admins to blank out emails, but the API did not.
+			// Going with the more restrictive flow while removing admincheck out of the user DM.
+
+			$this->error('fieldmissing_email');
+			return false;
+		}
+
+		// check valid email address
+		if (!$this->verify_email($email))
+		{
+			$this->error('bademail');
+			return false;
+		}
+
+		// banned email address check is now done in user API due to it requiring admin check.
+
+		// check unique address
+		if ($this->options['requireuniqueemail'] AND $email_changed)
+		{
+			$params = ['email' => $email];
+			if ($this->condition !== null)
+			{
+				$params[] = ['field' => 'userid', 'value' => intval($this->existing['userid']), 'operator' => 'NE'];
+			}
+			$user = $this->assertor->getRow('user', [vB_dB_Query::CONDITIONS_KEY => $params]);
+
+			if ($user)
+			{
+				//I'm not sure if this first case can happen.  Email changes in the AdminCP
+				//go through the user API now which does not set the CP errtype.
+				if ($this->error_handler == vB_DataManager_Constants::ERRTYPE_CP)
+				{
+					require_once(DIR . '/includes/adminfunctions.php');
+					$url = get_redirect_url('admincp/user.php', [
+						'do' => 'find',
+						'user[email]' => $email,
+					]);
+
+					$this->error('emailtaken_search_here', $url);
+				}
+				else
+				{
+					$this->error('emailtaken', vB5_Route::buildUrl('lostpw|fullurl'));
+				}
+				return false;
+			}
+		}
+
+		return true;
+	}
+
+	/**
+	* Verifies that the provided parent email address is valid
+	*
+	* @param	string	Email address
+	*
+	* @return	boolean
+	*/
+	function verify_parentemail(&$parentemail)
+	{
+		if (!empty($this->info['coppauser']) AND !$this->verify_email($parentemail))
+		{
+			$this->error('fieldmissing_parentemail');
+			return false;
+		}
+		else
+		{
+			return true;
+		}
+	}
+
+	/**
+	* Verifies that the usergroup provided is valid
+	*
+	* @param	integer	Usergroup ID
+	*
+	* @return	boolean
+	*/
+	function verify_usergroupid(&$usergroupid)
+	{
+		// if usergroupids is set because of email validation, don't allow it to be re-written
+		if (isset($this->info['override_usergroupid']) AND $usergroupid != $this->user['usergroupid'])
+		{
+			$this->error("::Usergroup ID is already set to {$this->user[usergroupid]} and can not be changed due to email validation regulations::");
+			return false;
+		}
+
+		if ($usergroupid < 1)
+		{
+			$usergroupid = 2;
+		}
+
+		return true;
+	}
+
+	/**
+	* Verifies that the provided displaygroup ID is valid
+	*
+	* @param	integer	Display group ID
+	*
+	* @return	boolean
+	*/
+	function verify_displaygroupid(&$displaygroupid)
+	{
+		if (
+			$displaygroupid == $this->fetch_field('usergroupid') OR
+			in_array($displaygroupid, explode(',',  $this->fetch_field('membergroupids') ?? ''))
+		)
+		{
+			return true;
+		}
+		else
+		{
+			$displaygroupid = 0;
+			return true;
+		}
+	}
+
+	/**
+	* Verifies a specified referrer
+	*
+	* @param	mixed	Referrer - either a user ID or a user name
+	*
+	* @return	boolean
+	*/
+	function verify_referrerid(&$referrerid)
+	{
+		if ($referrerid == '')
+		{
+			$referrerid = 0;
+			return true;
+		}
+		else if ($user = $this->assertor->getRow('user', ['username' => $referrerid]))
+		{
+			$referrerid = $user['userid'];
+		}
+		else if (is_numeric($referrerid) AND $user = $this->assertor->getRow('user', ['userid' => intval($referrerid)]))
+		{
+			$referrerid = $user['userid'];
+		}
+		else
+		{
+			$this->error('invalid_referrer_specified');
+			return false;
+		}
+
+		if ($referrerid > 0 AND $referrerid == $this->existing['userid'])
+		{
+			$this->error('invalid_referrer_specified');
+			return false;
+		}
+		else
+		{
+			return true;
+		}
+	}
+
+	protected function verify_customtitle(&$data)
+	{
+		return $this->forceItemInSet($data, [0, 1, 2], 0);
+	}
+
+	/**
+	 * Verifies that privacy options are valid
+	 */
+	protected function verify_privacy_options($pOptions)
+	{
+		// not empty
+		if (!empty($pOptions))
+		{
+			$pOptions = unserialize($pOptions);
+			if (is_array($pOptions))
+			{
+				return true;
+			}
+			else
+			{
+				$this->error('badprivacyoptions');
+				return false;
+			}
+		}
+
+		return true;
+	}
+
+	protected function verify_showvbcode(&$data)
+	{
+		return $this->forceItemInSet($data, [0, 1, 2], 1);
+	}
+
+	protected function verify_showbirthday(&$data)
+	{
+		return $this->forceItemInSet($data, [0, 1, 2, 3], 2);
+	}
+
+	protected function verify_autosubscribe(&$data)
+	{
+		return $this->forceItemInSet($data, [0, 1], 0);
+	}
+
+	/**
+	* Checks to see if a password is in the user's password history
+	*
+	* @param	integer	User ID
+	* @param	integer	History time ($permissions['passwordhistory'])
+	*
+	* @return	boolean	Returns true if password is in the history
+	*/
+	function check_password_history($password, $historylength)
+	{
+		// delete old password history
+		$this->assertor->delete('delPasswordHistory', [
+			'userid' => $this->existing['userid'],
+			'passworddate' => (vB::getRequest()->getTimeNow() - $historylength * 86400)
+		]);
+
+		// check to see if the password is invalid due to previous use
+		if ($historylength AND $this->assertor->getRow('getHistoryCheck', [
+			'userid' => $this->existing['userid'],
+			'password' => $password
+		]))
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
+
+	// #############################################################################
+	// user title
+
+	/**
+	* Sets the values for user[usertitle] and user[customtitle]
+	*
+	* @param	string	Custom user title text
+	* @param	boolean	Whether or not to reset a custom title to the default user title
+	* @param	array	Array containing all information for the user's primary usergroup
+	* @param	boolean	Whether or not a user can use custom user titles
+	* @param	boolean	Whether or not the user is an administrator
+	*/
+	public function set_usertitle($customtext, $reset, $usergroup, $canusecustomtitle, $isadmin)
+	{
+		$customtitle = $this->existing['customtitle'] ?? 0;
+		$usertitle = $this->existing['usertitle'] ?? '';
+
+		if ($customtitle == 2 AND isset($this->existing['musername']))
+		{
+			// fetch_musername has changed this value -- need to undo it
+			$usertitle = unhtmlspecialchars($usertitle);
+		}
+
+		if ($canusecustomtitle)
+		{
+			// user is allowed to set a custom title
+			if ($reset OR ($customtitle == 0 AND $customtext === ''))
+			{
+				// reset custom title or we don't have one but are allowed to
+				if (empty($usergroup['usertitle']))
+				{
+					$usertitle = $this->getUsertitleFromPosts(intval($this->existing['posts'] ?? 0));
+				}
+				else
+				{
+					$usertitle = $usergroup['usertitle'];
+				}
+				$customtitle = 0;
+			}
+			else if ($customtext)
+			{
+				// set custom text
+				$usertitle = vB_String::fetchCensoredText($customtext);
+				$canModerate = false;
+				if ($this->options['ctCensorMod'])
+				{
+					$canModerate = vB::getUserContext()->isForumModerator();
+				}
+
+				if (!$canModerate OR !$this->options['ctCensorMod'])
+				{
+					//it's probably not worth caching the censor object here.
+					$censor = vB::getWordList('ctCensorWords');
+					$usertitle = $censor->censor($usertitle, $this->options['censorchar']);
+				}
+
+				$customtitle = $isadmin ?
+					1: // administrator - don't run htmlspecialchars
+					2; // regular user - run htmlspecialchars
+				if ($customtitle == 2)
+				{
+					$usertitle = vB_String::fetchWordWrappedString($usertitle, 25);
+				}
+			}
+		}
+		else if ($customtitle != 1)
+		{
+			if (empty($usergroup['usertitle']))
+			{
+				$usertitle = $this->getUsertitleFromPosts(intval($this->existing['posts'] ?? 0));
+			}
+			else
+			{
+				$usertitle = $usergroup['usertitle'];
+			}
+			$customtitle = 0;
+		}
+
+		$this->set('usertitle', $usertitle);
+		$this->set('customtitle', $customtitle);
+	}
+
+	private function getUsertitleFromPosts($posts)
+	{
+		return vB_Library::instance('user')->getUsertitleFromPosts($posts);
+	}
+
+	/**
+	* Sets the ladder-based or group based user title for a particular amount of posts.
+	*
+	* @param	integer			Number of posts to consider this user as having
+	*
+	* @return	false|string	False if they use a custom title or can't process, the new title otherwise
+	*/
+	public function set_ladder_usertitle($posts)
+	{
+		if ($this->fetch_field('userid')
+			AND (!isset($this->user['customtitle']) OR !isset($this->existing['customtitle']))
+		)
+		{
+			// we don't have enough information, try to fetch it
+			$user = vB_Api::instanceInternal('user')->fetchUserinfo($this->fetch_field('userid'));
+			if ($user)
+			{
+				$this->set_existing($user);
+			}
+			else
+			{
+				return false;
+			}
+		}
+
+		if ($this->fetch_field('customtitle'))
+		{
+			return false;
+		}
+
+		$getusergroupid = $this->fetch_field('displaygroupid');
+	 	if (!$getusergroupid)
+		{
+			// This seems unfinished.. was this supposed to override getusergroupid for below logic?
+			$this->fetch_field('usergroupid');
+		}
+
+		$usergroup = vB::getDatastore()->getValue('usergroupcache')[$getusergroupid];
+		if (!$usergroup['usertitle'])
+		{
+			$usertitle = $this->getUsertitleFromPosts(intval($posts));
+		}
+		else
+		{
+			$usertitle = $usergroup['usertitle'];
+		}
+
+		$this->set('usertitle', $usertitle);
+
+		return $usertitle;
+	}
+
+	/**
+	* Sets the ladder usertitle relative to the current number of posts.
+	*
+	* @param	integer			Offset to current number of posts
+	*
+	* @return	false|string	Same return values as set_ladder_usertitle
+	*/
+	public function set_ladder_usertitle_relative($relative_post_offset)
+	{
+		if ($this->fetch_field('userid') AND !isset($this->existing['posts']))
+		{
+			// we don't have enough information, try to fetch it
+			if (isset($GLOBALS['usercache'][$this->fetch_field('userid')]))
+			{
+				unset($GLOBALS['usercache'][$this->fetch_field('userid')]);
+			}
+
+			$user = $this->assertor->getRow('user', ['userid' => $this->fetch_field('userid')]);
+			if ($user)
+			{
+				$this->set_existing($user);
+			}
+			else
+			{
+				return false;
+			}
+		}
+
+		return $this->set_ladder_usertitle($this->existing['posts'] + $relative_post_offset);
+	}
+
+	// #############################################################################
+	// user profile fields
+
+	/**
+	* Validates and sets custom user profile fields
+	*
+	* @param	array	Array of values for profile fields. Example: ['field1' => 'One', 'field2' => [0 => 'a', 1 => 'b'], 'field2_opt' => 'c']
+	* @param	bool	Whether or not to verify the data actually matches any specified regexes or required fields
+	* @param	string	What type of editable value to apply (admin, register, normal)
+	* @param	array	'skip_unset_required_fields'  => bool - If true, skip verification of required fields that are not present, used for linking
+	*                                                           facebook accounts
+	*                   'ignore_validation_errors'    => bool - If true, any field that fails validation will be skipped as if it were not set.
+	*                   'userfieldallowemptyrequired' => bool - If true, required fields are allowed to be set to empty instead of just skipping it.
+	* @param	bool	Whether or not to skip validation of fields that are present but invalid. By default any fields with errors will be treated as if
+	*                   they were not set.
+	*
+	* @return	string	Textual description of set profile fields (for email phrase)
+	*/
+	public function set_userfields(&$values, $verify = true, $all_fields = 'normal', $bypasses = [])
+	{
+		global $vbphrase;
+
+		if (!is_array($values))
+		{
+			$this->error('::$values for profile fields is not an array::');
+			return false;
+		}
+
+		$skip_unset_required_fields = $bypasses['skip_unset_required_fields'] ?? false;
+		$ignore_validation_errors = $bypasses['ignore_validation_errors'] ?? false;
+		$allow_empty_required_fields = $bypasses['allow_empty_required_fields'] ?? false;
+
+		$customfields = '';
+
+		$field_ids = [];
+		foreach (array_keys($values) AS $key)
+		{
+			if (preg_match('#^field(\d+)\w*$#', $key, $match))
+			{
+				$field_ids["$match[1]"] = $match[1];
+			}
+		}
+		if (empty($field_ids) AND $all_fields != 'register')
+		{
+			return false;
+		}
+
+		switch($all_fields)
+		{
+			case 'admin':
+				$all_fields_sql = ['profilefieldid' => $field_ids];
+				break;
+
+			case 'register':
+				// must read all fields in order to set defaults for fields that don't display
+				//$all_fields_sql = "WHERE editable IN (1,2)";
+				$all_fields_sql = [];
+
+				// we need to ensure that each field the user could edit is sent through and processed,
+				// so ensure that we process everyone one of these fields
+				$profilefields = $this->assertor->select('vBForum:profilefield', [
+					['field' => 'editable', 'value' => 0, 'operator' => 'GT'],
+					['field' => 'required', 'value' => 0, 'operator' => 'NE']
+				]);
+				foreach ($profilefields as $profilefield)
+				{
+					$field_ids["$profilefield[profilefieldid]"] = $profilefield['profilefieldid'];
+				}
+				break;
+
+			case 'normal':
+			default:
+				//we need both one and two because in some cases you can edit "only at registration"
+				//fields in the profile (basically if the field wasn't set at registration, perhaps
+				//because it was created after the user registered we still allow you to go back and
+				//enter it).
+				$all_fields_sql = ['profilefieldid' => $field_ids, 'editable' => [1,2]];
+				break;
+		}
+
+		// check extra profile fields
+		$profilefields = $this->assertor->select('vBForum:profilefield', $all_fields_sql, 'displayorder');
+
+		foreach ($profilefields AS $profilefield)
+		{
+			$varname = 'field' . $profilefield['profilefieldid'];
+			$value =& $values["$varname"];
+			$regex_check = false;
+			// We use value === false for error checks, but at the same time we use it to represent various possible
+			// default "empty" values (e.g. empty string, or a "none of these options" for checkboxes). I don't want to
+			// change the "default" false due to regression risk, so I'll use this bool to keep track of when a value
+			// is false because of an explicit error vs. false because the user wants to blank out a field.
+			// Kicking the can down the time road? Maybe.
+			$isError = false;
+
+			//if we only allow editing at registration, and this has been set, then skip.
+			//this permits users to set values that should be set at registration if for some reason
+			//they weren't able to initially.  This can be done only once.
+			// TODO: we may want to allow bypasses for these types too for third party data providers. For now
+			// we'll leave this as it is because this does not *BLOCK* a user create/save unlike required fields.
+			if ($all_fields == 'normal' AND $profilefield['editable'] == 2 AND !empty($this->existing["$varname"]))
+			{
+				continue;
+			}
+
+			$title = vB_Api::instanceInternal('phrase')->fetch($varname . '_title');
+			$profilefield['title'] = (!empty($title) ? $title[$varname . '_title'] : $varname);
+			unset($title);
+
+			$optionalvar = 'field' . $profilefield['profilefieldid'] . '_opt';
+			$value_opt =& $values["$optionalvar"];
+
+			// text box / text area
+			if ($profilefield['type'] == 'input' OR $profilefield['type'] == 'textarea')
+			{
+				if (in_array($profilefield['profilefieldid'], $field_ids) AND ($all_fields != 'register' OR $profilefield['editable']))
+				{
+					$value = trim(substr(fetch_censored_text($value ?? ''), 0, $profilefield['maxlength']));
+					$value = (empty($value) AND $value != '0') ? false : $value;
+				}
+				else if ($all_fields == 'register' AND $profilefield['data'] !== '')
+				{
+					$value = unhtmlspecialchars($profilefield['data']);
+				}
+				else
+				{
+					continue;
+				}
+				$customfields .= "$profilefield[title] : $value\n";
+				$regex_check = true;
+			}
+			// radio / select
+			else if ($profilefield['type'] == 'radio' OR $profilefield['type'] == 'select')
+			{
+				if ($profilefield['optional'] AND $value_opt != '')
+				{
+					$value = trim(substr(fetch_censored_text($value_opt), 0, $profilefield['maxlength']));
+					$value = (empty($value) AND $value != '0') ? false : $value;
+					$regex_check = true;
+				}
+				else
+				{
+					$data = unserialize($profilefield['data']);
+					$value = intval($value);
+					$value -= 1;
+					if (in_array($profilefield['profilefieldid'], $field_ids) AND ($all_fields != 'register' OR $profilefield['editable']))
+					{
+						if (isset($data["$value"]))
+						{
+							$value = unhtmlspecialchars(trim($data["$value"]));
+						}
+						else
+						{
+							$value = false;
+						}
+					}
+					else if ($all_fields == 'register' AND $profilefield['def'])
+					{
+						$value = unhtmlspecialchars($data[0]);
+					}
+					else
+					{
+						continue;
+					}
+				}
+				$customfields .= "$profilefield[title] : $value\n";
+			}
+			// checkboxes or select multiple
+			else if (($profilefield['type'] == 'checkbox' OR $profilefield['type'] == 'select_multiple') AND in_array($profilefield['profilefieldid'], $field_ids))
+			{
+				if (is_array($value))
+				{
+					if (($profilefield['size'] == 0) OR (sizeof($value) <= $profilefield['size']))
+					{
+						$data = unserialize($profilefield['data']);
+
+						$bitfield = 0;
+						$cfield = '';
+						foreach ($value AS $key => $val)
+						{
+							$val--;
+							$bitfield += pow(2, $val);
+							$cfield .= (!empty($cfield) ? ', ' : '') . $data["$val"];
+						}
+						$value = $bitfield;
+					}
+					else
+					{
+						if ($ignore_validation_errors)
+						{
+							continue;
+						}
+						else
+						{
+							$this->error('checkboxsize', $profilefield['size'], $profilefield['title']);
+							$value = false;
+							$isError = true;
+						}
+					}
+					$customfields .= "$profilefield[title] : $cfield\n";
+				}
+				else
+				{
+					$value = false;
+				}
+			}
+			else
+			{
+				continue;
+			}
+
+			// check for regex compliance
+			if ($verify AND $profilefield['regex'] AND $regex_check)
+			{
+				if (!preg_match('#' . str_replace('#', '\#', $profilefield['regex']) . '#siU', $value))
+				{
+					if ($ignore_validation_errors)
+					{
+						continue;
+					}
+					else
+					{
+						$this->error('regexincorrect', $profilefield['title']);
+						$value = false;
+						$isError = true;
+					}
+				}
+			}
+
+			// check for empty required fields
+			if (($profilefield['required'] == 1 OR $profilefield['required'] == 3) AND $value === false AND $verify)
+			{
+				if ($skip_unset_required_fields AND !isset($values["$varname"]))
+				{
+					continue;
+				}
+
+				// if we got here, it might be either because value was explicitly set to something false-y (e.g. "")
+				// OR because we actually had a value that failed a validation check.
+				// Currently, if we had a validation error AND we had $ignore_validation_errors, we already continued
+				// above, so we can't ever hit this. But this is here as a reminder that we might have to explicitly
+				// handle this case again if we change how we handle required fields.
+				/*
+				if ($isError AND $ignore_validation_errors)
+				{
+					continue;
+				}
+				*/
+				// If it was NOT an error, and we were explicitly passed in an empty value for a required field,
+				// AND we're explicitly allowed to blank out a pre-existing required field, do so.
+				// The check is the bubble-pushed version of the IMO more readable:
+				// ! (!$isError AND $allow_empty_required_fields)
+				// Note that most commonly, $allow_empty_required_fields & $ignored_validation_errors are set together,
+				// so we'd actually never hit this section with $isError = true.
+				if ($isError OR !$allow_empty_required_fields)
+				{
+					$this->error('required_field_x_missing_or_invalid', $profilefield['title']);
+				}
+			}
+
+			$this->setfields["$varname"] = true;
+			$this->userfield["$varname"] = vB_String::htmlSpecialCharsUni($value);
+		}
+
+		return $customfields;
+	}
+
+	// #############################################################################
+	// daylight savings
+
+	/**
+	* Sets DST options
+	*
+	* @param	integer	DST choice: (2: automatic; 1: auto-off, dst on; 0: auto-off, dst off)
+	*/
+	function set_dst(&$dst)
+	{
+		switch ($dst)
+		{
+			case 2:
+				$dstauto = 1;
+				$dstonoff = $this->existing['dstonoff'];
+				break;
+			case 1:
+				$dstauto = 0;
+				$dstonoff = 1;
+				break;
+			default:
+				$dstauto = 0;
+				$dstonoff = 0;
+				break;
+		}
+
+		$this->set_bitfield('options', 'dstauto', $dstauto);
+		$this->set_bitfield('options', 'dstonoff', $dstonoff);
+	}
+
+	// #############################################################################
+	// fill in missing fields from registration default options
+
+	/**
+	* Sets registration defaults
+	*/
+	private function set_registration_defaults()
+	{
+		$bf_misc_regoptions = $this->datastore->getValue('bf_misc_regoptions');
+
+		// on/off fields
+		foreach ([
+			'invisible'         => 'invisiblemode',
+			'receivepm'         => 'enablepm',
+			'emailonpm'         => 'emailonpm',
+			'showsignatures'    => 'signature',
+			'showavatars'       => 'avatar',
+			'showimages'        => 'image',
+			'vm_enable'         => 'vm_enable',
+			'vm_contactonly'    => 'vm_contactonly',
+			'pmdefaultsavecopy' => 'pmdefaultsavecopy',
+			'moderatefollowers' => 'moderatefollowers',
+			'adminemail'        => 'adminemail',
+			'birthdayemail'     => 'birthdayemail',
+		] AS $optionname => $bitfield)
+		{
+			if (!$this->is_bitfield_set('options', $optionname))
+			{
+				$this->set_bitfield('options', $optionname,
+					($bf_misc_regoptions["$bitfield"] &
+						$this->options['defaultregoptions'] ? 1 : 0));
+			}
+		}
+
+		// time fields
+		foreach (['joindate', 'lastvisit', 'lastactivity'] AS $datefield)
+		{
+			if (!$this->is_field_set($datefield))
+			{
+				$this->set($datefield, vB::getRequest()->getTimeNow());
+			}
+		}
+
+		// autosubscribe
+		if (!$this->is_field_set('autosubscribe'))
+		{
+			if ($bf_misc_regoptions['autosubscribe'] & $this->options['defaultregoptions'])
+			{
+				$autosubscribe = 1;
+			}
+			else
+			{
+				$autosubscribe = 0;
+			}
+			$this->set('autosubscribe', $autosubscribe);
+		}
+
+		// email notification
+		if (!$this->is_field_set('emailnotification'))
+		{
+			if ($bf_misc_regoptions['emailnotification_none'] & $this->options['defaultregoptions'])
+			{
+				$emailnotification = 0;
+			}
+			else if ($bf_misc_regoptions['emailnotification_on'] & $this->options['defaultregoptions'])
+			{
+				$emailnotification = 1;
+			}
+			else if ($bf_misc_regoptions['emailnotification_daily'] & $this->options['defaultregoptions'])
+			{
+				$emailnotification = 2;
+			}
+			else // weekly
+			{
+				$emailnotification = 3;
+			}
+			$this->set('emailnotification', $emailnotification);
+		}
+
+		// show vbcode
+		if (!$this->is_field_set('showvbcode'))
+		{
+			if ($bf_misc_regoptions['vbcode_none'] & $this->options['defaultregoptions'])
+			{
+				$showvbcode = 0;
+			}
+			else if ($bf_misc_regoptions['vbcode_standard'] & $this->options['defaultregoptions'])
+			{
+				$showvbcode = 1;
+			}
+			else
+			{
+				$showvbcode = 2;
+			}
+			$this->set('showvbcode', $showvbcode);
+		}
+
+		// post order / thread display mode
+		if (!$this->is_field_set('threadedmode'))
+		{
+			if ($bf_misc_regoptions['thread_linear_oldest'] & $this->options['defaultregoptions'])
+			{
+				$threadedmode = 0;
+			}
+			else if ($bf_misc_regoptions['thread_linear_newest'] & $this->options['defaultregoptions'])
+			{
+				$threadedmode = 3;
+			}
+			else if ($bf_misc_regoptions['thread_threaded'] & $this->options['defaultregoptions'])
+			{
+				$threadedmode = 1;
+			}
+			else if ($bf_misc_regoptions['thread_hybrid'] & $this->options['defaultregoptions'])
+			{
+				$threadedmode = 2;
+			}
+			else
+			{
+				$threadedmode = 0;
+			}
+			$this->set('threadedmode', $threadedmode);
+		}
+
+		// usergroupid
+		if (!$this->is_field_set('usergroupid'))
+		{
+			if ($this->options['verifyemail'])
+			{
+				$usergroupid = 3;
+			}
+			else if ($this->options['moderatenewmembers'] OR !empty($this->info['coppauser']))
+			{
+				$usergroupid = 4;
+			}
+			else
+			{
+				$usergroupid = 2;
+			}
+			$this->set('usergroupid', $usergroupid);
+		}
+
+		// reputation
+		if (!$this->is_field_set('reputation'))
+		{
+			$this->set('reputation', $this->options['reputationdefault']);
+		}
+
+		// max posts per page
+		if (!$this->is_field_set('maxposts'))
+		{
+			$this->set('maxposts', 1);
+		}
+
+		// days prune
+		if (!$this->is_field_set('daysprune'))
+		{
+			$this->set('daysprune', 0);
+		}
+
+		// start of week
+		if (!$this->is_field_set('startofweek'))
+		{
+			// In vB4, this defaulted to -1 meaning to use the startofweek
+			// that was set for the calendar they were viewing. That concept
+			// doesn't translate to vB5, so we'll default to Sunday.
+			$this->set('startofweek', 1);
+		}
+
+		// show user css
+		if (!$this->is_bitfield_set('options', 'showusercss'))
+		{
+			$this->set_bitfield('options', 'showusercss', 1);
+		}
+
+		// receive friend request pm
+		if (!$this->is_bitfield_set('options', 'receivefriendemailrequest'))
+		{
+			$this->set_bitfield('options', 'receivefriendemailrequest', 1);
+		}
+
+		// enable vb messenger
+		if (!$this->is_bitfield_set('options', 'enable_pmchat'))
+		{
+			$this->set_bitfield('options', 'enable_pmchat', 1);
+		}
+
+		// set usertitle
+		if (!$this->is_field_set('usertitle'))
+		{
+			$usertitle = $this->getUsertitleFromPosts(0);
+			$this->set('usertitle', $usertitle);
+			$this->set('customtitle', 0);
+		}
+	}
+
+	// #############################################################################
+	// data saving
+
+	/**
+	* Takes valid data and sets it as part of the data to be saved
+	*
+	* @param	string	The name of the field to which the supplied data should be applied
+	* @param	mixed	The data itself
+	*/
+	function do_set($fieldname, &$value, $table = null)
+	{
+		$this->setfields["$fieldname"] = true;
+
+		$tables = [];
+
+		switch ($fieldname)
+		{
+			case 'userid':
+			{
+				$tables = ['user', 'userfield', 'usertextfield'];
+			}
+			break;
+
+			case 'subfolders':
+			case 'pmfolders':
+			case 'buddylist':
+			case 'ignorelist':
+			case 'signature':
+			case 'rank':
+			case 'status':
+			{
+				$tables = ['usertextfield'];
+			}
+			break;
+
+			default:
+			{
+				$tables = ['user'];
+			}
+		}
+
+		// Legacy Hook 'userdata_doset' Removed //
+
+		foreach ($tables AS $table)
+		{
+			$this->{$table}["$fieldname"] =& $value;
+		}
+	}
+
+	/**
+	* Saves the data from the object into the specified database tables
+	*
+	* @param	boolean	Do the query?
+	* @param	mixed	Whether to run the query now; see db_update() for more info
+	*
+	* @return	integer	Returns the user id of the affected data
+	*/
+	function save($doquery = true, $delayed = false, $affected_rows = false, $replace = false)
+	{
+		if ($this->has_errors(false))
+		{
+			return false;
+		}
+
+		if (!$this->pre_save($doquery))
+		{
+			return 0;
+		}
+		// UPDATE EXISTING USER
+		if ($this->condition)
+		{
+			// update query
+			$return = $this->db_update(TABLE_PREFIX, 'user', $this->condition, $doquery);
+			if ($return)
+			{
+				$this->db_update(TABLE_PREFIX, 'vBForum:userfield',     $this->condition, $doquery);
+				$this->db_update(TABLE_PREFIX, 'vBForum:usertextfield', $this->condition, $doquery);
+
+				// check if we want userchange log and we have the all requirements
+				if (
+					$this->user_changelog_state AND
+					is_array($this->user_changelog_fields) AND sizeof($this->user_changelog_fields) AND
+					is_array($this->existing) AND sizeof($this->existing) AND
+					is_array($this->user) AND sizeof($this->user)
+				)
+				{
+					$uniqueid = md5(vB::getRequest()->getTimeNow() . $this->existing['userid'] . $this->userinfo['userid']. rand(1111,9999));
+
+					// fill the storage array
+					foreach ($this->user_changelog_fields AS $fieldname)
+					{
+						// if no old and new value, or no change: we dont log this field
+						if (
+							!isset($this->user["$fieldname"])
+							OR
+							(!$this->existing["$fieldname"] AND !$this->user["$fieldname"])
+							OR
+							$this->existing["$fieldname"] == $this->user["$fieldname"]
+						)
+						{
+							continue;
+						}
+
+						$request = vB::getRequest();
+
+						// init storage array
+						$this->userchangelog = [
+							'userid'      => $this->existing['userid'],
+							'adminid'     => $this->userinfo['userid'],
+							'fieldname'   => $fieldname,
+							'oldvalue'    => $this->existing[$fieldname],
+							'newvalue'    => $this->user[$fieldname],
+							'change_time' => $request->getTimeNow(),
+							'change_uniq' => $uniqueid,
+							'ipaddress'   => $request->getIpAddress(),
+						];
+
+						// do the query ?
+						if ($doquery)
+						{
+							$this->assertor->insert('userchangelog', $this->userchangelog);
+						}
+					}
+				}
+			}
+
+			$userid = $this->fetch_field('userid');
+			$events = ['userPerms_' . $userid, 'userChg_' . $userid];
+			vB_Cache::instance(vB_Cache::CACHE_FAST)->event($events);
+			vB_Cache::instance(vB_Cache::CACHE_LARGE)->event($events);
+			// Not sure if this can happen in the wild, but in unit tests the memory-cached
+			// userdata in vB_User can give us stale data.
+			vB_User::clearUsersCache($userid);
+		}
+		// INSERT NEW USER
+		else
+		{
+			// fill in any registration defaults
+			$this->set_registration_defaults();
+
+			// insert query
+			if ($return = $this->db_insert(TABLE_PREFIX, 'user', $doquery))
+			{
+				$this->set('userid', $return);
+				// need to send tablename with package
+				$this->db_insert(TABLE_PREFIX, 'vBForum:userfield', $doquery, true);
+				$this->db_insert(TABLE_PREFIX, 'vBForum:usertextfield', $doquery);
+
+				// Send welcome PM
+				if ($this->fetch_field('usergroupid') == 2)
+				{
+					$this->send_welcomepm(null, $return);
+				}
+			}
+		}
+
+		if ($return)
+		{
+			$this->post_save_each($doquery);
+			$this->post_save_once($doquery);
+		}
+
+		return $return;
+	}
+
+	/**
+	* Any checks to run immediately before saving. If returning false, the save will not take place.
+	*
+	* @param	boolean	Do the query?
+	*
+	* @return	boolean	True on success; false if an error occurred
+	*/
+	function pre_save($doquery = true)
+	{
+		if ($this->presave_called !== null)
+		{
+			return $this->presave_called;
+		}
+
+		// USERGROUP CHECKS
+		$usergroups_changed = $this->usergroups_changed();
+
+		if ($usergroups_changed)
+		{
+			// VALIDATE USERGROUPID / MEMBERGROUPIDS
+			$usergroupid = $this->fetch_field('usergroupid');
+			$membergroupids = $this->fetch_field('membergroupids');
+
+			//validation of the usergroupid can fix it if its wrong.  This is done during save
+			//however that's too late to perform this particular check.  Therefore we validate
+			//(and set the value to ensure that the possibly new value is saved) to so make sure
+			//that the check loos for the right thing.  It means we do validation twice on the
+			//usergroupid field, but that's not a serious problem.
+			$this->verify_usergroupid($usergroupid);
+			$this->do_set('usergroupid', $usergroupid);
+
+			if (strpos(",$membergroupids,", ",$usergroupid,") !== false)
+			{
+				// usergroupid/membergroups conflict
+				$this->error('usergroup_equals_secondary');
+				return false;
+			}
+
+			// Some notes on displaygroupid: currently the way displaygroupid is
+			// set is inconsistent when it is not explicitly changed. By default
+			// a user starts off with displaygroupid = 0. However, if you change
+			// the usergroupid or membergroupid(s) for a user (in admincp for
+			// example), it will likely get set to the primary usergroupid. This
+			// is because in the user::save(), we call set_existing() to the
+			// results of the vB_User::fetchUserinfo(), which fetches the
+			// displaygroupid via following:
+			//   IF(displaygroupid=0, user.usergroupid, displaygroupid) AS displaygroupid
+			// Setting the displaygroupid explicitly to "Default" (-1) in
+			// admincp user manager will bounce off the verify_displaygroupid()
+			// below and be converted back "0". Then doing further group changes
+			// will re-trigger above and displaygroupid will get set to the
+			// primary usergroupid again.
+
+
+			// if changing usergroups, validate the displaygroup
+			$displaygroupid = $this->fetch_field('displaygroupid');
+			// verify_displaygroupid() will edit $displaygroupid if necessary
+			$this->verify_displaygroupid($displaygroupid);
+			$this->do_set('displaygroupid', $displaygroupid);
+		}
+
+		if ($this->condition)
+		{
+			$existingUsergroupid = $this->existing['usergroupid'] ?? null;
+			$existingMembergroupids = $this->existing['membergroupids'] ?? null;
+			$existingIpoints = $this->existing['ipoints'] ?? null;
+
+			$wasadmin = $this->is_admin($existingUsergroupid, $existingMembergroupids);
+			$isadmin = $this->is_admin($this->fetch_field('usergroupid'), $this->fetch_field('membergroupids'));
+
+			// if usergroups changed, check we are not de-admining the last admin
+			if (
+				$usergroups_changed AND
+				$wasadmin AND
+				!$isadmin AND
+				!$this->any_other_admin_exists($this->existing['userid'])
+			)
+			{
+				$this->error('cant_de_admin_last_admin');
+				return false;
+			}
+
+			$updateinfractions = false;
+			// primary usergroup change, update infractions
+			if (isset($this->user['usergroupid']) AND (($usergroupid = $this->user['usergroupid']) != $existingUsergroupid) AND $existingIpoints > 0)
+			{
+				$ipoints = $existingIpoints;
+				$updateinfractions = true;
+			}
+			else if (isset($this->user['ipoints']) AND is_int($this->user['ipoints']) AND $this->user['ipoints'] != $existingIpoints)
+			{
+				$updateinfractions = true;
+				$ipoints = $this->user['ipoints'];
+			}
+
+			if ($updateinfractions)
+			{
+ 				// If user groups aren't changed, then $usergroupid is not set....
+ 				if (empty($usergroupid))
+ 				{
+ 					$usergroupid = $this->fetch_field('usergroupid');
+ 				}
+
+				$infractiongroups = [];
+				$infractiongroupid = 0;
+				$groups = $this->assertor->getRows('getInfractiongroups',
+					[
+						'usergroupid' => $usergroupid,
+						'pointlevel' => $ipoints
+					],
+					'pointlevel'
+				);
+				foreach ($groups AS $group)
+				{
+					if ($group['override'])
+					{
+						$infractiongroupid = $group['orusergroupid'];
+					}
+					$infractiongroups["$group[orusergroupid]"] = true;
+				}
+
+				$this->set('infractiongroupids', !empty($infractiongroups) ? implode(',', array_keys($infractiongroups)) : '');
+				$this->set('infractiongroupid', $infractiongroupid);
+			}
+		}
+
+		// Attempt to detect if we need a new rank or usertitle
+		if (isset($this->rawfields['posts']) AND $this->rawfields['posts'])
+		{	// posts = posts + 1 / posts - 1 was specified so we need existing posts to determine how many posts we will have
+			if ($this->existing['posts'] != null)
+			{
+				$posts = $this->existing['posts'] + preg_replace('#^.*posts\s*([+-])\s*(\d+?).*$#sU', '\1\2', $this->fetch_field('posts'));
+			}
+		}
+		else if ($this->fetch_field('posts') !== null)
+		{
+			$posts = $this->fetch_field('posts');
+		}
+
+		if (
+				(
+					(isset($this->setfields['membergroupids']) AND $this->setfields['membergroupids']) OR
+					(isset($this->setfields['usergroupid']) AND $this->setfields['usergroupid']) OR
+					(isset($this->setfields['displaygroupid']) AND $this->setfields['displaygroupid']) OR
+					// If we changed any of these counters (they may decrement to 0, which is valid, and should update/
+					// downgrade the rank), we should also update the rank, unless we're overwriting rank directly.
+					isset($this->setfields['posts'])  OR
+					isset($this->setfields['startedtopics']) OR
+					isset($this->setfields['reputation']) OR
+					isset($this->setfields['totallikes']) OR
+					isset($this->setfields['joindate'])
+				) AND empty($this->setfields['rank']) AND isset($posts) AND $userid = $this->fetch_field('userid'))
+		{
+			// item affecting user's rank is changing and a new rank hasn't been given to us
+			$userinfo = [
+				// we need an userid for is_member_of's cache routine
+				'userid'        => $userid,
+				// these fields go into the rank calculation
+				'posts'         => $posts,
+				'joindate'      => $this->fetch_field('joindate'),
+				'startedtopics' => $this->fetch_field('startedtopics'),
+				'reputation'    => $this->fetch_field('reputation'),
+				'totallikes'    => $this->fetch_field('totallikes'),
+			];
+			if (($userinfo['usergroupid'] =& $this->fetch_field('usergroupid')) !== null AND
+				($userinfo['displaygroupid'] =& $this->fetch_field('displaygroupid')) !== null AND
+				($userinfo['membergroupids'] =& $this->fetch_field('membergroupids')) !== null
+			)
+			{
+				$userrank = vB_Library::instance('userrank')->getRankHtml($userinfo);
+
+				//if the rank isn't set or is null just update it.
+				if (!isset($this->existing['rank']) OR $userrank != $this->existing['rank'])
+				{
+					$this->setr('rank', $userrank);
+				}
+			}
+		}
+
+		$return_value = true;
+		// Legacy Hook 'userdata_presave' Removed //
+
+		$this->presave_called = $return_value;
+
+		return $return_value;
+	}
+
+	/**
+	* Additional data to update after a save call (such as denormalized values in other tables).
+	*
+	* @param	boolean	Do the query?
+	*/
+	function post_save_each($doquery = true)
+	{
+		$userid = $this->fetch_field('userid');
+
+		if (!$userid OR !$doquery)
+		{
+			return;
+		}
+
+		$usergroups_changed = $this->usergroups_changed();
+
+		if (!empty($this->existing['usergroupid']))
+		{
+		$wasadmin = $this->is_admin($this->existing['usergroupid'], $this->existing['membergroupids']);
+		}
+		else
+		{
+			$wasadmin = false;
+		}
+		$isadmin = $this->is_admin($this->fetch_field('usergroupid'), $this->fetch_field('membergroupids'));
+
+
+		if (!empty($this->existing['usergroupid']))
+		{
+			$wassupermod = $this->is_supermod($this->existing['usergroupid'], $this->existing['membergroupids']);
+		}
+		else
+		{
+			$wassupermod = false;
+		}
+		$issupermod = $this->is_supermod($this->fetch_field('usergroupid'), $this->fetch_field('membergroupids'));
+
+		if (!$this->condition)
+		{
+			vB_Library::instance('user')->updateLatestUser($userid, 'add');
+		}
+		else
+		{
+			// update denormalized username field in various tables
+			$this->update_username($userid);
+
+			// Rebuild newest user information
+			vB_Library::instance('user')->updateLatestUser($userid, 'update');
+
+			// if usergroup membership has changed...
+			if ($usergroups_changed)
+			{
+				// update subscriptions
+				$this->update_subscriptions($userid, $doquery);
+
+				// update ban status
+				$this->update_ban_status($userid, $doquery);
+
+				// recache permissions if the userid is the current browsing user
+				if ($userid == $this->userinfo['userid'])
+				{
+					$this->userinfo['usergroupid'] = $this->fetch_field('usergroupid');
+					$this->userinfo['membergroupids'] = $this->fetch_field('membergroupids');
+					cache_permissions($this->userinfo);
+				}
+			}
+
+			// if the primary user group has been changed, we need to update any user activation records
+			if (!empty($this->user['usergroupid']) AND $this->user['usergroupid'] != $this->existing['usergroupid'])
+			{
+				$this->assertor->update('useractivation', ['usergroupid' => $this->user['usergroupid']], ['userid' => $userid, 'type' => 0]);
+			}
+		}
+
+		// admin stuff
+		$this->set_admin($userid, $usergroups_changed, $isadmin, $wasadmin);
+
+		// super moderator stuff
+		$this->set_supermod($userid, $usergroups_changed, $issupermod, $wassupermod);
+
+		// Usergroup based channel subscriptions
+		if ($usergroups_changed)
+		{
+			$this->update_usergroup_channel_subscriptions($userid);
+		}
+
+		// update birthday datastore
+		$this->update_birthday_datastore($userid);
+
+		// reset style cookie
+		$this->update_style_cookie($userid);
+
+		// reset threadedmode cookie
+		$this->update_threadedmode_cookie($userid);
+
+		// reset languageid cookie
+		$this->update_language_cookie($userid);
+
+		// This used to only check $this->info['coppauser'] which is only set iff something
+		// explicitly called userDM::set('coppauser'). That is only done in registration, not
+		// existing user saves, so the old logic was skipping the profile edit emails.
+		$vboptions = vB::getDatastore()->getValue('options');
+		$isCoppaUser = ($this->info['coppauser'] ?? ($this->existing['coppauser'] ?? false));
+
+		$this->updateEmailOptIn($userid);
+
+		// Send parent email
+		if ($vboptions['usecoppa'] > 0 AND
+			$isCoppaUser AND
+			$parentemail = $this->fetch_field('parentemail')
+		)
+		{
+			$string = vB::getString();
+			$bbtitle_escaped = $string->htmlspecialchars($vboptions['bbtitle']);
+
+			$displayname = $this->fetch_field('displayname');
+			$username = $this->fetch_field('username');
+			$userLabel = vB_User::getEmailUserLabel(['username' => $username, 'displayname' => $displayname]);
+
+			$memberlink = vB5_Route::buildUrl('profile|fullurl', ['userid' => $userid, 'username' => $username]);
+			$forumhomelink = vB5_Route::buildHomeUrl('fullurl');
+			$password = $this->info['coppapassword'] ?? '';
+			if ($password)
+			{
+				$password_safe = $string->htmlspecialchars($password);
+
+				$maildata = vB_Api::instanceInternal('phrase')->fetchEmailPhrases(
+					'parentcoppa_register',
+					[
+						$username,
+						$bbtitle_escaped,
+						$forumhomelink,
+						vB5_Route::buildUrl('coppa-form|fullurl'),
+						$vboptions['privacyurl'],
+						$password_safe,
+						$userLabel,
+					],
+					[
+						$userLabel,
+						$vboptions['bbtitle'],
+					]
+				);
+			}
+			else
+			{
+				$maildata = vB_Api::instanceInternal('phrase')->fetchEmailPhrases(
+					'parentcoppa_profile',
+					[
+						$userLabel,
+						$bbtitle_escaped,
+						$forumhomelink,
+						$vboptions['privacyurl'],
+						$memberlink,
+					],
+					[
+						$userLabel,
+						$vboptions['bbtitle'],
+					]
+				);
+			}
+
+			// Coppa related, should not be blocked by mailoption opt-outs. Skipping the vbmailWithUnsubscribe()
+			// as "unsubscribing" here won't really do anything for them. We don't really want to be navigating
+			// through a coppa vs opt-out battle and it's unclear exactly what the ideal, compliant behavior is
+			// here in edge cases.
+
+			//$subject and $message are magic variables created by the code returned from fetch_email_phrase
+			//when it gets returned.
+			vB_Mail::vbmail2($parentemail, $maildata['subject'], $maildata['message'], true);
+		}
+		vB_Cache::instance(vB_Cache::CACHE_FAST)->event("userData_$userid");
+
+		// Legacy Hook 'userdata_postsave' Removed //
+	}
+
+	private function wasUserBitChanged($fieldname, $bitname) : bool
+	{
+		$bitMask = $this->bitfields[$fieldname][$bitname] ?? null;
+		if (is_null($bitMask))
+		{
+			return false;
+		}
+
+		// bitfields shouldn't be set to null, so using isset instead of double array_has_key() check for inner & outer keys
+		if (!isset($this->user[$fieldname][$bitMask]))
+		{
+			// if the save doesn't have this key, it was unchanged.
+			return false;
+		}
+
+		// above can probably be collapsed to $newValue = $this->getChangedUserbit($fieldname, $bitname) & isset($newValue),
+		// but the intent is more clear, leaving the redundancy in.
+
+		$newValue = boolval($this->user[$fieldname][$bitMask]);
+		$oldValue = boolval(($this->existing[$fieldname] ?? 0) & $bitMask);
+
+		return ($newValue != $oldValue);
+	}
+
+	private function getChangedUserbit($fieldname, $bitname) : mixed
+	{
+		$bitIndex = $this->bitfields[$fieldname][$bitname] ?? null;
+		return $this->user[$fieldname][$bitIndex] ?? null;
+	}
+
+	private function wasUserBitEnabled($fieldname, $bitname) : bool
+	{
+		return ($this->wasUserBitChanged($fieldname, $bitname) AND $this->getChangedUserbit($fieldname, $bitname));
+	}
+
+	private function updateEmailOptIn(int $userid)
+	{
+		// This function is to handle cases where a user opted out of emails via one-click or manual unsubscribe link, then
+		// they change their user settings to receive emails again.
+
+		$notificationEmailEnabled = (
+			// emailnotification option changed, and ...
+			isset($this->user['emailnotification']) AND
+			$this->user['emailnotification'] != ($this->existing['emailnotification'] ?? null) AND
+			// ... they opted into emails. emailnotification may be 0: Off, message center only, 1: On, 2: On, Daily, 3: On, weekly
+			$this->user['emailnotification'] > 0
+		);
+		$adminemailEnabled = $this->wasUserBitEnabled('options', 'adminemail');
+		$birthdayemailEnabled = $this->wasUserBitEnabled('options', 'birthdayemail');
+		$pmemailEnabled = $this->wasUserBitEnabled('options', 'emailonpm');
+		// maintaining this might be nasty...
+		$modEmailEnabled = (
+			$this->wasUserBitEnabled('moderatoremailnotificationoptions', 'monitoredword') OR
+			$this->wasUserBitEnabled('moderatoremailnotificationoptions', 'reportedpost') OR
+			$this->wasUserBitEnabled('moderatoremailnotificationoptions', 'unapprovedpost') OR
+			$this->wasUserBitEnabled('moderatoremailnotificationoptions', 'spampost')
+		);
+		if (
+			$notificationEmailEnabled OR
+			$adminemailEnabled OR
+			$birthdayemailEnabled OR
+			$pmemailEnabled OR
+			$modEmailEnabled
+		)
+		{
+			/** @var vB_Library_Unsubscribe */
+			$lib = vB_Library::instance('unsubscribe');
+			$lib->trackEmailOptInOut($userid, vB_Library_Unsubscribe::EMAILOPTION_OPTED_IN);
+		}
+	}
+
+	/**
+	* Deletes a user
+	*
+	* @return	mixed	The number of affected rows
+	*/
+	public function delete($doquery = true)
+	{
+		if (empty($this->existing['usergroupid']) OR empty($this->existing['membergroupids']))
+		{
+			if (empty($this->existing['userid']))
+			{
+				throw new Exception('invalid_user_specified');
+			}
+			$userInfo = $this->assertor->getRow('user', ['userid' => $this->existing['userid']]);
+
+			if (empty($userInfo) OR !empty($userInfo['error']))
+			{
+				throw new Exception('invalid_user_specified');
+			}
+
+			$this->existing = $userInfo;
+		}
+		// make sure we are not going to delete the last admin o.O
+		if (
+			$this->is_admin($this->existing['usergroupid'], $this->existing['membergroupids']) AND
+			!$this->any_other_admin_exists($this->existing['userid'])
+		)
+		{
+			$this->error('cant_delete_last_admin');
+			return false;
+		}
+
+		if (!$this->pre_delete($doquery))
+		{
+			return false;
+		}
+
+		$this->condition = [['field' => 'userid', 'value' => $this->existing['userid'],	'operator' => vB_dB_Query::OPERATOR_EQ]];
+
+		$return = $this->db_delete(TABLE_PREFIX,  'user');
+		if ($return)
+		{
+			$this->db_delete(TABLE_PREFIX, 'vBForum:userfield');
+			$this->db_delete(TABLE_PREFIX, 'vBForum:usertextfield');
+
+			$this->post_delete($doquery);
+		}
+
+
+		return $return;
+	}
+
+	/**
+	* Any code to run after deleting
+	*
+	* @param	Boolean Do the query?
+	*/
+	function post_delete($doquery = true)
+	{
+		$this->assertor->delete('usernote', ['userid' => $this->existing['userid']]);
+		$this->assertor->delete('customavatar', ['userid' => $this->existing['userid']]);
+		$this->deleteFile($this->options['avatarpath'] . '/avatar' . $this->existing['userid'] . '_' . $this->existing['avatarrevision'] . '.gif');
+		$this->assertor->delete('vBForum:moderator', ['userid' => $this->existing['userid']]);
+		$this->assertor->delete('vBForum:reputation', ['userid' => $this->existing['userid']]);
+		$this->assertor->delete('subscribeevent', ['userid' => $this->existing['userid']]);
+		$this->assertor->delete('vBForum:subscriptionlog', ['userid' => $this->existing['userid']]);
+		$this->assertor->delete('session', ['userid' => $this->existing['userid']]);
+		$this->assertor->delete('userban', ['userid' => $this->existing['userid']]);
+		$this->assertor->assertQuery('vBForum:deleteUserInfractions', ['userid' => $this->existing['userid']]);
+		$this->assertor->delete('userstylevar', ['userid' => $this->existing['userid']]);
+		$this->assertor->delete('vBForum:sentto', ['userid' => $this->existing['userid']]);
+		$this->assertor->delete('vBForum:messagefolder', ['userid' => $this->existing['userid']]);
+		$this->assertor->delete('vBForum:subscribediscussion', ['userid' => $this->existing['userid']]);
+		$this->assertor->delete('vBForum:userreferral', ['userid' => $this->existing['userid']]);
+		$this->assertor->update('user', ['referrerid' => 0], ['referrerid' => $this->existing['userid']]);
+
+		vB_Library::instance('content_attach')->removeSignaturePicture($this->existing['userid']);
+
+		$pendingfriends = [];
+		$currentfriends = [];
+
+		$friendlist = $this->assertor->getRows('userlist', [
+			vB_dB_Query::CONDITIONS_KEY => [
+				['field' => 'userid', 'value' => $this->existing['userid'], 'operator' => vB_dB_Query::OPERATOR_EQ],
+				['field' => 'type', 'value' => 'buddy', 'operator' => vB_dB_Query::OPERATOR_EQ],
+				['field' => 'friend', 'value' => ['pending', 'yes'], 'operator' => vB_dB_Query::OPERATOR_EQ]
+			]
+		]);
+
+		foreach ($friendlist AS $friend)
+		{
+			if ($friend['friend'] == 'yes')
+			{
+				$currentfriends[] = $friend['relationid'];
+			}
+			else
+			{
+				$pendingfriends[] = $friend['relationid'];
+			}
+		}
+
+		if (!empty($pendingfriends))
+		{
+			$this->assertor->update('updFriendReqCount', [], ['userid' => $pendingfriends]);
+		}
+
+		if (!empty($currentfriends))
+		{
+			$this->assertor->update('updFriendCount', [], ['userid' => $currentfriends]);
+		}
+
+		$this->assertor->assertQuery('delUserList', [vB_dB_Query::TYPE_KEY => vB_dB_Query::QUERY_STORED, 'userid' => $this->existing['userid'], 'relationid' => $this->existing['userid']]);
+
+		$admindm = new vB_Datamanager_Admin(vB_DataManager_Constants::ERRTYPE_SILENT);
+		$admindm->set_existing($this->existing);
+		$admindm->delete();
+		unset($admindm);
+
+		$types = vB_Types::instance();
+
+		$this->updateDeletedUserData();
+
+		// GIT records
+		$this->assertor->delete('vBForum:groupintopic', ['userid' => $this->existing['userid']]);
+
+		$userlib = vB_Library::instance('user');
+		$userlib->updateLatestUser($this->existing['userid'], 'delete');
+		$userlib->buildBirthdays();
+
+		// notification cleanup
+		$eventData = ['userid' => $this->existing['userid']];
+		vB_Library::instance('notification')->triggerNotificationEvent('deleted_user', $eventData);
+
+		// FCM token cleanup
+		$this->assertor->delete('vBForum:apiclient_devicetoken', ['userid' => $this->existing['userid']]);
+
+		// external login cleanup
+		vB_Library::instance('externallogin')->postUserDelete($this->existing['userid']);
+
+		// Node votes cleanup
+		vB_Library::instance('nodevote')->afterUserDelete($this->existing['userid']);
+
+		// Mailoptions cleanup
+		vB_Library::instance('unsubscribe')->afterUserDelete($this->existing['userid']);
+
+		// todo: we should generate an event($this->existing['userid']) that any external
+		// can subscribe to, instead of editing core code direclty here...
+	}
+
+	/**
+	 * Updates data after user being deleted.
+	 */
+	protected function updateDeletedUserData()
+	{
+		// Use forum default language instead of current session's, because
+		// we don't know which user's session this is riding off of.
+		// Get forum's default language, fallback to master language.
+		$languageid = vB::getDatastore()->getOption('languageid');
+		if (!$languageid)
+		{
+			$languageid = -1;
+		}
+		$phrase = vB_Api::instanceInternal('phrase')->fetch('guest', $languageid);
+		$guestPhrase = $phrase['guest'];
+		unset($phrase);
+
+		// node data update
+		['events' => $events, 'starters' => $starters] = vB_Library::instance('user')->fetchNodeCacheEventsForUser($this->existing['userid']);
+
+		// Node author
+		$this->assertor->update('vBForum:node', ['userid' => 0, 'authorname' => $guestPhrase], ['userid' => $this->existing['userid']]);
+
+		// node last data update
+		$this->assertor->update('vBForum:node', ['lastauthorid' => 0, 'lastcontentauthor' => $guestPhrase], ['lastauthorid' => $this->existing['userid']]);
+
+		// vms
+		$this->assertor->update('vBForum:node', ['setfor' => 0], ['setfor' => $this->existing['userid']]);
+
+		// Update answer picked by..
+		$this->assertor->update('vBForum:node', ['answer_set_by_user' => 0],  ['answer_set_by_user' => $this->existing['userid']]);
+
+		if (!empty($events))
+		{
+			vB_Cache::allCacheEvent($events);
+		}
+
+		// update any affected search indices (atm, sphinxsearch)
+		if (!empty($starters))
+		{
+			$searchLIB = vB_Library::instance('search');
+			foreach ($starters AS $__nodeid)
+			{
+				$searchLIB->attributeChanged($__nodeid);
+			}
+		}
+	}
+
+	// #############################################################################
+	// functions that are executed as part of the user save routine
+
+	/**
+	* Updates all denormalized tables that contain a 'username' or 'displayname' field (or field that
+	* holds a username or displayname)
+	*
+	* @param	integer	User ID
+	* @param	string	The user name. Helpful if you want to call this function from outside the DM.
+	*/
+	function update_username($userid, $username = null, $displayname = null)
+	{
+		if ($username != null AND $username != '')
+		{
+			$doupdate = true;
+		}
+		else if (isset($this->user['username']) AND $this->user['username'] != $this->existing['username'])
+		{
+			$doupdate = true;
+			$username = $this->user['username'];
+		}
+		else
+		{
+			$doupdate = false;
+		}
+
+		if ($displayname != null AND $displayname != '')
+		{
+			$doUpdateDisplayName = true;
+		}
+		else if (isset($this->user['displayname']) AND $this->user['displayname'] != $this->existing['displayname'])
+		{
+			$doUpdateDisplayName = true;
+			$displayname = $this->user['displayname'];
+		}
+		else
+		{
+			$doUpdateDisplayName = false;
+		}
+
+		if ($doupdate)
+		{
+			// usernote 'username'
+			$this->assertor->update('usernote', ['username' => $username],  ['posterid' => $userid]);
+
+			// deletionlog 'username'
+			$this->assertor->update('deletionlog', ['username' => $username],  ['userid' => $userid]);
+
+			// editlog 'username'
+			$this->assertor->update('editlog', ['username' => $username],  ['userid' => $userid]);
+
+			// postedithistory 'username'
+			$this->assertor->update('vbForum:postedithistory', ['username' => $username],  ['userid' => $userid]);
+
+			//it's not clear if we should only do this when we update the username -- other updates such as the
+			//user group can affect this.  Because of this we seem to manually do this a lot of places where
+			//we save the user (similarly to the user stats update that used to be here).
+			vB_Library::instance('user')->buildBirthdays();
+		}
+
+		if ($doUpdateDisplayName)
+		{
+			$displayname_safe = vB_String::htmlSpecialCharsUni($displayname);
+			$this->assertor->update('vbForum:node', ['authorname' => $displayname_safe],  ['userid' => $userid]);
+			$this->assertor->update('vbForum:node', ['lastcontentauthor' => $displayname_safe],  ['lastauthorid' => $userid]);
+		}
+	}
+
+	/**
+	* Updates user subscribed threads/forums to reflect new permissions
+	*
+	* @param	integer	User ID
+	*/
+	private function update_subscriptions($userid)
+	{
+		$bf_ugp_forumpermissions = $this->datastore->get_value('bf_ugp_forumpermissions');
+		unset($this->existing['forumpermissions']);
+		$this->existing['permissions'] = cache_permissions($this->existing);
+
+		$old_canview = [];
+		$old_canviewthreads = [];
+		foreach ($this->existing['channelpermissions'] AS $nodeid => $perms)
+		{
+			if ($perms & $bf_ugp_forumpermissions['canview'])
+			{
+				$old_canview[] = $nodeid;
+			}
+			if ($perms & $bf_ugp_forumpermissions['canviewthreads'])
+			{
+				$old_canviewthreads[] = $nodeid;
+			}
+		}
+
+		$user_perms = [
+			'userid'         => $this->fetch_field('userid'),
+			'usergroupid'    => $this->fetch_field('usergroupid'),
+			'membergroupids' => $this->fetch_field('membergroupids')
+		];
+
+		cache_permissions($user_perms);
+		$remove_subs = [];
+		$remove_forums = [];
+
+		// I'm not sure what this is supposed to do, but I don't think it ever worked properly.
+		// This used to be set to some "bitwise op results" of booleans, which doesn't make a
+		// whole lot of sense, and we don't have permission groups called "channelpermissions".
+		foreach ($old_canviewthreads AS $nodeid)
+		{
+			if (!($user_perms['channelpermissions']["$nodeid"] & $bf_ugp_forumpermissions['canviewthreads']))
+			{
+				$remove_subs[] = $nodeid;
+			}
+		}
+
+		$add_subs = [];
+		foreach ($user_perms['channelpermissions'] AS $nodeid => $perms)
+		{
+			if (
+				($perms & $bf_ugp_forumpermissions['canviewthreads'] AND $perms & $bf_ugp_forumpermissions['canview']) AND
+				(!($this->existing['channelpermissions']["$nodeid"] & $bf_ugp_forumpermissions['canviewthreads']) OR !($this->existing['channelpermissions']["$nodeid"] & $bf_ugp_forumpermissions['canview']))
+			)
+			{
+				$add_subs[] = $nodeid;
+			}
+		}
+
+		$remove_subs = array_unique(array_merge($remove_subs, $remove_forums));
+
+		if (!empty($remove_subs) OR !empty($add_subs))
+		{
+			$forum_list = array_unique(array_merge($remove_subs, $add_subs));
+		}
+	}
+
+	/**
+	* Rebuilds the birthday datastore if the user's birthday has changed
+	*
+	* @param	integer	User ID
+	*/
+	private function update_birthday_datastore($userid)
+	{
+		if (
+			(isset($this->existing['birthday']) AND $this->fetch_field('birthday') != $this->existing['birthday'])
+			OR (isset($this->existing['showbirthday']) AND $this->fetch_field('showbirthday') != $this->existing['showbirthday'])
+			OR $this->usergroups_changed()
+		)
+		{
+			vB_Library::instance('user')->buildBirthdays();
+		}
+	}
+
+	/**
+	* Resets the session styleid and styleid cookie to the user's profile choice
+	*
+	* @param	integer	User ID
+	*/
+	function update_style_cookie($userid)
+	{
+		if (isset($this->user['styleid']) AND $this->options['allowchangestyles'] AND $userid == $this->userinfo['userid'])
+		{
+			$this->assertor->update('session',
+				['styleid' => $this->user['styleid']],
+				['sessionhash' => $this->session->get('dbsessionhash')]
+			);
+			if (!@headers_sent())
+			{
+				vbsetcookie('userstyleid', '', 1);
+			}
+		}
+	}
+
+	/**
+	* Resets the languageid cookie to the user's profile choice
+	*
+	* @param	integer	User ID
+	*/
+	function update_language_cookie($userid)
+	{
+		$languagecache = $this->datastore->get_value('languagecache');
+		if (isset($this->user['languageid']) AND !empty($languagecache[$this->user['languageid']]['userselect']))
+		{
+			if (!@headers_sent())
+			{
+				vbsetcookie('languageid', '', 1);
+			}
+		}
+	}
+
+	/**
+	* Resets the threadedmode cookie to the user's profile choice
+	*
+	* @param	integer	User ID
+	*/
+	function update_threadedmode_cookie($userid)
+	{
+		if (isset($this->user['threadedmode']))
+		{
+			if (!@headers_sent())
+			{
+				vbsetcookie('threadedmode', '', 1);
+			}
+		}
+	}
+
+	/**
+	* Checks to see if a user's usergroup memberships have changed
+	*
+	* @return	boolean	Returns true if memberships have changed
+	*/
+	function usergroups_changed()
+	{
+//		if (!isset($this->existing['usergroupid']))
+//		{
+//			return true;
+//		}
+
+		if (isset($this->user['usergroupid']) AND
+			(!isset($this->existing['usergroupid']) OR $this->user['usergroupid'] != $this->existing['usergroupid']))
+		{
+			return true;
+		}
+		else if (isset($this->user['membergroupids']) AND
+			(!isset($this->existing['membergroupids']) OR $this->user['membergroupids'] != $this->existing['membergroupids']))
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
+
+	private function update_usergroup_channel_subscriptions(int $userid)
+	{
+		// TODO: Should *losing* a usergroup that has an auto channel sub remove the sub?
+
+		$newprimarygroupid = null;
+		if (!empty($this->user['usergroupid']) AND
+			$this->user['usergroupid'] != ($this->existing['usergroupid'] ?? -1)
+		)
+		{
+			$newprimarygroupid = $this->user['usergroupid'];
+		}
+
+		$newmembergroupids = [];
+		$oldmembergroupids = [];
+		if (!empty($this->user['membergroupids']) AND
+			$this->user['membergroupids'] != ($this->existing['membergroupids'] ?? '')
+		)
+		{
+			$newmembergroupids = explode(',', $this->user['membergroupids']);
+			if (isset($this->existing['membergroupids']))
+			{
+				$oldmembergroupids = explode(',', $this->existing['membergroupids']);
+			}
+			sort($newmembergroupids);
+			sort($oldmembergroupids);
+			$newmembergroupids = array_diff($newmembergroupids, $oldmembergroupids);
+		}
+
+		try
+		{
+			/** @var vB_Library_Usergroup */
+			$usergroupLib = vB_Library::instance('usergroup');
+			$usergroupLib->registerUserUsergroupChanges(
+				$userid,
+				$newprimarygroupid,
+				$newmembergroupids
+			);
+		}
+		// don't derail the whole user generation if something about the subscription fails...
+		catch (Throwable $e)
+		{
+			trigger_error((string) $e, E_USER_WARNING);
+		}
+	}
+
+	/**
+	* Checks usergroupid and membergroupids to see if the user has admin privileges
+	*
+	* @param	integer	Usergroupid
+	* @param	string	Membergroupids (comma separated)
+	*
+	* @return	boolean	Returns true if user has admin privileges
+	*/
+	function is_admin($usergroupid, $membergroupids)
+	{
+		$datastore = vB::getDatastore();
+
+		$membergroupids = ($membergroupids ? explode(',', $membergroupids) : []);
+
+		// check if user has access to controlpanel (extracted from userContext)
+		$bf_ugp_adminpermissions = $datastore->get_value('bf_ugp_adminpermissions');
+		$permissionContext = new vB_PermissionContext($datastore, $usergroupid, $membergroupids);
+		$admin_permissions = $permissionContext->getPermission('adminpermissions');
+
+		return ($admin_permissions & $bf_ugp_adminpermissions['cancontrolpanel']);
+	}
+
+	/**
+	* Checks usergroupid and membergroupids to see if the user has super moderator privileges
+	*
+	* @param	integer	Usergroupid
+	* @param	string	Membergroupids (comma separated)
+	*
+	* @return	boolean	Returns true if user has super moderator privileges
+	*/
+	function is_supermod($usergroupid, $membergroupids)
+	{
+		$datastore = vB::getDatastore();
+
+		$membergroupids = ($membergroupids ? explode(',', $membergroupids) : []);
+
+		$bf_ugp_adminpermissions = $datastore->get_value('bf_ugp_adminpermissions');
+		$permissionContext = new vB_PermissionContext($datastore, $usergroupid, $membergroupids);
+		$admin_permissions = $permissionContext->getPermission('adminpermissions');
+
+		return ($admin_permissions & $bf_ugp_adminpermissions['ismoderator']);
+	}
+
+	/**
+	* Returns true if any admin OTHER THAN the user specified exists.
+	* Note that this function does not check if specified user is an admin.
+	*
+	* @param    integer    $userid    User ID of user to be checked
+	*
+	* @return   True if any user other than the specified user is an admin.
+	*/
+	function any_other_admin_exists($userid)
+	{
+		$usergroupcache = vB::getDatastore()->get_value('usergroupcache');
+		$bf_ugp_adminpermissions = vB::getDatastore()->get_value('bf_ugp_adminpermissions');
+		$bf_ugp_genericoptions = vB::getDatastore()->get_value('bf_ugp_genericoptions');
+		$adminPrimaryGroups = [];
+		$adminSecondaryGroups = [];
+		foreach ($usergroupcache AS $usergroupid => $usergroup)
+		{
+			if ($usergroup['adminpermissions'] & $bf_ugp_adminpermissions['cancontrolpanel'])
+			{
+				$adminPrimaryGroups[] = $usergroupid;
+				if ($usergroup['genericoptions'] & $bf_ugp_genericoptions['allowmembergroups'])
+				{
+					$adminSecondaryGroups[] = $usergroupid;
+				}
+			}
+		}
+		unset($usergroupid, $usergroup);
+
+		/*
+		Primarygroup check will be able to use the usergroupid index. That's much
+		faster than the table scan required for FIND_IN_SET that the membergroupids
+		requires, so don't run the latter query unless we absolutely need it.
+		 */
+		$queryData = [vB_dB_Query::TYPE_KEY => vB_dB_Query::QUERY_SELECT,
+			vB_dB_Query::CONDITIONS_KEY => [
+				[
+					'field' => 'userid',
+					'value' => $userid,
+					'operator' => vB_dB_Query::OPERATOR_NE,
+				],
+				[
+					'field' => 'usergroupid',
+					'value' => $adminPrimaryGroups,
+					'operator' => vB_dB_Query::OPERATOR_EQ,
+				],
+			],
+			vB_Db_Query::PARAM_LIMIT => 1,
+		];
+		$primaryAdminUser = $this->assertor->getRow('user', $queryData);
+
+		if (!empty($primaryAdminUser))
+		{
+			return true;
+		}
+
+		// At this point, we have to check membergroupids, but if none of the admin groups
+		// allow being set as secondary, we're done.
+		if (!empty($adminSecondaryGroups))
+		{
+			$secondaryCheck = $this->assertor->getRow('anyAdminAsSecondaryExists', [
+				'userid' => $userid,
+				'groupids' => $adminSecondaryGroups,
+			]);
+
+			if (!empty($secondaryCheck))
+			{
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	/**
+	* Inserts or deletes a record from the administrator table if necessary
+	*
+	* @param	integer	User ID of this user
+	* @param	boolean	Whether or not the usergroups of this user have changed
+	* @param	boolean	Whether or not the user is now an admin
+	* @param	boolean	Whether or not the user was an admin before this update
+	*/
+	function set_admin($userid, $usergroups_changed, $isadmin, $wasadmin = false)
+	{
+		if ($isadmin AND !$wasadmin)
+		{
+			// insert admin record
+			$admindm = new vB_Datamanager_Admin(vB_DataManager_Constants::ERRTYPE_SILENT);
+			$admindm->set('userid', $userid);
+			$admindm->save();
+			unset($admindm);
+
+			$this->insertedadmin = true;
+		}
+		else if ($usergroups_changed AND $wasadmin AND !$isadmin)
+		{
+			// delete admin record
+			$info = ['userid' => $userid];
+
+			$admindm = new vB_Datamanager_Admin(vB_DataManager_Constants::ERRTYPE_SILENT);
+			$admindm->set_existing($info);
+			$admindm->delete();
+			unset($admindm);
+		}
+	}
+
+	/**
+	* Inserts or deletes a record from the moderators table if necessary
+	*
+	* @param	integer	User ID of this user
+	* @param	boolean	Whether or not the usergroups of this user have changed
+	* @param	boolean	Whether or not the user is now a super moderator
+	* @param	boolean	Whether or not the user was a super moderator before this update
+	*/
+	function set_supermod($userid, $usergroups_changed, $issupermod, $wassupermod = false)
+	{
+		if ($issupermod AND !$wassupermod)
+		{
+			$datastore = vB::getDatastore();
+
+			// insert super moderator record
+			$moddata = new vB_DataManager_Moderator(vB_DataManager_Constants::ERRTYPE_SILENT);
+			$moddata->set('userid', $userid);
+			$moddata->set('nodeid', 0);
+
+			//we could seperate these into two lists but that just complicates the logic and
+			//the names are unique accross both fields (and should remain so for sanity's sake
+			//anyway).
+			$skip_perms = [
+				'newthreademail',
+				'newpostemail',
+			];
+
+			// need to insert permissions without looping everything
+			// the following doesn't yet work.
+			//Supermod has almost everything.
+			$modPerms = $datastore->getValue('bf_misc_moderatorpermissions');
+			$permissions = 0;
+			foreach ($modPerms AS $name => $perm)
+			{
+				if (!in_array($name, $skip_perms))
+				{
+					$permissions += $perm;
+				}
+			}
+			// VBV-20879 -- "Can permanently delete posts" should be no by default
+			$permissions &= ~$modPerms['canremoveposts'];
+			$moddata->set('permissions', $permissions);
+
+			$modPerms = $datastore->getValue('bf_misc_moderatorpermissions2');
+			$permissions = 0;
+			foreach ($modPerms AS $name => $perm)
+			{
+				if (!in_array($name, $skip_perms))
+				{
+					$permissions += $perm;
+				}
+			}
+			// VBV-20879 -- Also turning off the other 3 permanent delete posts
+			// (vm, group messages, group discussions)
+			$permissions &= ~$modPerms['canremovevisitormessages'];
+			$permissions &= ~$modPerms['canremovegroupmessages'];
+			$permissions &= ~$modPerms['canremovediscussions'];
+			$moddata->set('permissions2', $permissions);
+
+			$moddata->save();
+			unset($moddata);
+		}
+		else if ($usergroups_changed AND $wassupermod AND !$issupermod)
+		{
+			// delete super moderator record
+			$info = ['userid' => $userid, 'nodeid' => 0];
+
+			$moddata = new vB_DataManager_Moderator(vB_DataManager_Constants::ERRTYPE_SILENT);
+			$moddata->set_existing($info);
+			$moddata->delete();
+			unset($moddata);
+		}
+	}
+
+	/**
+	* @param	integer	$userid
+	*/
+	function update_ban_status($userid)
+	{
+		$userid = intval($userid);
+		$usergroupid = $this->fetch_field('usergroupid');
+		$usergroupcache = vB::getDatastore()->get_value('usergroupcache');
+		$bf_ugp_genericoptions = vB::getDatastore()->get_value('bf_ugp_genericoptions');
+
+		if ($usergroupcache["$usergroupid"]['genericoptions'] & $bf_ugp_genericoptions['isnotbannedgroup'])
+		{
+			// user is going to a non-banned group, so there's no reason to keep this record (it won't be used)
+			$this->assertor->delete('userban', ['userid' => $userid]);
+		}
+		else
+		{
+			// check to see if there is already a ban record for this user...
+			if (!($check = $this->assertor->getRow('userban', ['userid' => $userid])))
+			{
+				// ... there isn't, so create one
+				$ousergroupid = $this->existing['usergroupid'];
+				$odisplaygroupid = $this->existing['displaygroupid'];
+
+				// make sure the ban lifting record doesn't loop back to a banned group
+				if (!($usergroupcache["$ousergroupid"]['genericoptions'] & $bf_ugp_genericoptions['isnotbannedgroup']))
+				{
+					$ousergroupid = 2;
+				}
+				if (!($usergroupcache["$odisplaygroupid"]['genericoptions'] & $bf_ugp_genericoptions['isnotbannedgroup']))
+				{
+					$odisplaygroupid = 0;
+				}
+
+				// insert a ban record
+				/*insert query*/
+				$this->assertor->insert('userban', [
+					'userid' => $userid,
+					'usergroupid' => $ousergroupid,
+					'displaygroupid' => $odisplaygroupid,
+					'customtitle' => intval($this->fetch_field('customtitle')),
+					'usertitle' => $this->fetch_field('usertitle'),
+					'adminid' => $this->userinfo['userid'],
+					'bandate' => vB::getRequest()->getTimeNow(),
+					'liftdate' => 0,
+				]);
+				// clear user status, VBV-15853
+				$this->assertor->update('vBForum:usertextfield', ['status' => ''], ['userid' => $userid]);
+			}
+		}
+	}
+
+	/**
+	* Sends a welcome pm to the user
+	*
+	*/
+	function send_welcomepm($fromuser = null, $recipient = false)
+	{
+		if ($this->options['welcomepm'] AND $username = unhtmlspecialchars($this->fetch_field('username')))
+		{
+			if (!$fromuser)
+			{
+				$fromuser = $this->assertor->getRow('user', ['userid' => $this->options['welcomepm']]);
+			}
+
+			if ($fromuser)
+			{
+				cache_permissions($fromuser, false);
+				$maildata = vB_Api::instanceInternal('phrase')->fetchPrivateMessagePhrases(
+					$recipient,
+					'welcomepm',
+					[$this->options['bbtitle']],
+					[$this->options['bbtitle']]
+				);
+
+				$data = [
+					'sentto' => $recipient,
+					'title' => $maildata['subject'],
+					'rawtext' => $maildata['message'],
+					'sender' => $fromuser['userid']
+				];
+
+				$pm_library = vB_Library::instance('Content_Privatemessage');
+				//we're potentially adding a bunch of idential messages all at once. Turn off protections against doing just that.
+				$pm_library->add($data, ['skipFloodCheck' => true, 'skipDupCheck' => true]);
+			}
+		}
+	}
+}
+
+/*=========================================================================*\
+|| #######################################################################
+|| # Downloaded: 12:50, Tue Dec 24th 2024
+|| # CVS: $RCSfile$ - $Revision: 117908 $
+|| #######################################################################
+\*=========================================================================*/

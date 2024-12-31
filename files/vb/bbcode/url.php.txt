@@ -1,0 +1,358 @@
+<?php
+/*========================================================================*\
+|| ###################################################################### ||
+|| # vBulletin 6.1.0 Alpha 4 Week 2 - Licence Number VBCW2VFT7A
+|| # ------------------------------------------------------------------ # ||
+|| # Copyright 2000-2024 MH Sub I, LLC dba vBulletin. All Rights Reserved.  # ||
+|| # This file may not be redistributed in whole or significant part.   # ||
+|| # ----------------- VBULLETIN IS NOT FREE SOFTWARE ----------------- # ||
+|| # http://www.vbulletin.com | http://www.vbulletin.com/license.html   # ||
+|| ###################################################################### ||
+\*========================================================================*/
+
+/**
+ * @package vBulletin
+ */
+
+/**
+ * @package vBulletin
+ */
+class vB_BbCode_Url extends vB_BbCode
+{
+	public const TYPE = 'Url';
+
+	public const USES_DATA_STORAGE = true;
+
+	// whether or not a URL was loaded. Cache-only does not count towards this.
+	private bool $urlWasLoaded = false;
+
+	public static function generateFreshFromDataAndOption(vB_BbCodeHelper $bbCodeHelper, string $data, ?string $option) : static
+	{
+		$record = static::getDefaultRecord();
+		// set hash
+		$record['hash'] = static::getHash($bbCodeHelper, $data, $option);
+
+
+		// Previously, we were always fetching and caching during as soon as possible, i.e. during node add/update.
+		// This was when we were generating previews for all URL bbcodes in a post. We've sinced changed it to
+		// only show the previews for URLs on its own line, so let's delay the fetch as long as possible as to
+		// avoid the now unnecessary delays on bbcodes that don't need it.
+		$cacheData = [];
+		['link' => $link, ]  =	static::getLinkAndText($bbCodeHelper, $data, $option);
+		$cacheData['url'] = $link;
+		$cacheData['vbmeta'] = 'pending just-in-time fetch';
+		// For now, assume this never expires. When data is completely missing, the just on time fetch logic
+		// will not be blocked by this expires.
+		$record['expires'] = 0;
+		$record['data'] = $cacheData;
+
+		$modified = true;
+		return new static($bbCodeHelper, $record, $modified);
+	}
+
+	// We do not want this class to fetch expired URLs at construct. Instead, we want to wait for the deferred
+	// fetch at render, so that we can abide by the URL fetches per-page limit
+	protected function refreshExpiredDataAtConstruction() : void
+	{
+		// do nothing
+	}
+
+	// [bbcode:option]data[/bbcode]
+	public static function getHash(vB_BbCodeHelper $bbCodeHelper, string $data, ?string $option) : string
+	{
+		['link' => $link, 'text' => $text, 'defaultTitle' => $defaultTitle,] = static::getLinkAndText($bbCodeHelper, $data, $option);
+
+		$unique = [
+			'url' => $link,
+		];
+		return md5(json_encode($unique));
+	}
+
+	private static function getLinkAndText(vB_BbCodeHelper $bbCodeHelper, $data, $option) : array
+	{
+		// we have have just the url as $data, or we may have the url & text as $option & $data
+		$text = $data;
+		$link = trim($option);
+
+		if (!$link)
+		{
+			$link = trim($data);
+			$link = static::cleanAndCanonicalizeUrl($bbCodeHelper, $link);
+			$defaultTitle = true;
+		}
+		else
+		{
+			$link = static::cleanAndCanonicalizeUrl($bbCodeHelper, $link);
+			$maybelink = static::cleanAndCanonicalizeUrl($bbCodeHelper, $data);
+			$defaultTitle = ($link == $maybelink);
+		}
+		return ['link' => $link, 'text' => $text, 'defaultTitle' => $defaultTitle,];
+	}
+
+	private $doLoadUrls = true;
+	private $doShowPreview = false;
+	private $doTruncate = true;
+	public function setRenderOptionsAndContext(array $renderOptions, array $renderContext) : void
+	{
+		$doPreview = $renderOptions['url_preview'] ?? false;
+		$doPreview = ($doPreview AND !empty($renderContext['tagIsOnOwnLine']));
+
+		$this->doShowPreview = $doPreview;
+
+		$this->doLoadUrls = $renderOptions['url_load_allowed'] ?? true;
+
+		// 573+ merge forward required.
+		// We want to truncate long URLs by default, but not in WYSIWYG editor.
+		$doTruncate = $renderOptions['url_truncate'] ?? true;
+		$this->doTruncate = $doTruncate;
+	}
+
+	// I'm not sure what this was covering, but keeping it for now, just in case.
+	private function linkChanged(string $link) : bool
+	{
+		// This shouldn't happen, because the hash includes the URL information, but just in case
+		$linkChanged = ($link != $this->record['data']['url'] ?? '');
+		if ($linkChanged)
+		{
+			$this->record['data'] = [
+				'url' => $link,
+			];
+
+			return true;
+		}
+
+		return false;
+	}
+
+	private function hasCache() : bool
+	{
+		$expired = $this->isDataExpired();
+
+		// This might happen because we now delay the first time load until the render requires it.
+		$dataIsMissing = (empty($this->record['data']['lastfetch']));
+
+		if (!$expired AND !$dataIsMissing)
+		{
+			return true;
+		}
+
+		return false;
+	}
+
+	public function canHandleBbCode(string $data, ?string $option) : bool
+	{
+		return true;
+	}
+
+	// [bbcode:option]data[/bbcode]
+	// [url="https://somesite.com/abcdefg#xyz"]some custom text to be linked[/url]
+	// [url]https://somesite.com[/url]
+	// [url="https://somesite.com/abcdefg#xyz"][otherbbcodes]asdf[/otherbbcodes] abcd[/url] (where
+	// [otherbbcodes]asdf[/otherbbcodes] abcd will hit this function already rendered)
+	public function renderBbCode($data, $option) : string
+	{
+		['link' => $link, 'text' => $text, 'defaultTitle' => $defaultTitle,] = static::getLinkAndText($this->bbcodeHelper, $data, $option);
+
+		$ellipsizedText = static::trimAnchorContent($text, $link, $defaultTitle);
+
+		$doFollow = $this->shouldDoUrlFollow($link);
+		$rel = ($doFollow ? '' : ' rel="nofollow"' );
+
+		// $defaultTitle check -- do not expand to preview if we have a custom link text
+		$previewBlock = ($this->doShowPreview AND $defaultTitle);
+		$pagedata = null;
+		if ($previewBlock)
+		{
+			$linkHasChanged = $this->linkChanged($link);
+			if (!$linkHasChanged AND $this->hasCache())
+			{
+				$pagedata = $this->record['data'];
+			}
+			else
+			{
+				// If we've never fetched this before, or the bbcode cache is expired, let's try to load the URL again from the
+				// global URL cache, live-fetching it if we're allowed to (doLoadUrls, which should be true while we're under the
+				// url-fetches-per-page limit).
+				$url = $this->record['data']['url'];
+				$urlUnescaped = vB_String::unHtmlSpecialChars($url);
+				/** @var vB_Library_UrlCache */
+				$urlCacheLib = vB_Library::instance('urlCache');
+				$cachedUrl = $urlCacheLib->fetchUrl($urlUnescaped, !$this->doLoadUrls, $this->urlWasLoaded);
+				if ($cachedUrl AND empty($cachedUrl->data['errors']))
+				{
+					$this->record['expires'] = $cachedUrl->expires;
+					$this->record['data'] = $cachedUrl->data;
+					// We want to keep track of the original URL in the rawtext in the cache, not any normalized ones
+					// used inside of the urlCache library.
+					$this->record['data']['url'] = $url;
+					$this->modified = true;
+
+					// todo: do we still need to cache all of the data other than the URL itself, now that we have the
+					// global URL cache? The two layers of caching has their own pros and cons (different caching times between
+					// URL bbcodes and other things using this data, for example), but overall may not be worth the complexity and
+					// redundant storage.
+
+					$pagedata = $this->record['data'];
+				}
+				else
+				{
+					// for now, let's just keep the expired data in the cache... we may end up using it.
+				}
+			}
+		}
+
+		// errors check is to skip the preview for upload_invalid_url coming out of vB_Api_Content_Link
+		// Also, $pagedata may be empty now if we exceeded the perpage url load limit
+		if ($previewBlock AND !empty($pagedata) AND empty($pagedata['errors']))
+		{
+			$defaults = $this->fetchDefaults();
+
+			// The link is escaped by the caller unless were are in "html" mode. We need to clean up how we do the escaping in the parser
+			// To avoid situations like this were it is unclear if we need to escape.
+			// However the imglink comes from loading the page not the post text and is not escaped.
+			$htmlsafeimglink = htmlentities($pagedata['images'][0] ?? $defaults['image']);
+
+			//we don't need to worry about quotes and this reduces potential double encoding issues.
+			$metasafe = htmlentities($pagedata['meta'], ENT_NOQUOTES);
+			$titlesafe = htmlentities($pagedata['title'], ENT_NOQUOTES);
+
+			$html = <<<EOHTML
+<div class="b-bbcode b-bbcode__url b-bbcode__url--preview">
+	<a href="$link" target="_blank" rel="nofollow" class="urlimg_container">
+		<img class="js-img-fallback" src="$htmlsafeimglink">
+	</a>
+	<div class="urlinfo">
+		<div class="title ellipsis">
+			<a href="$link" target="_blank"{$rel}>
+				{$titlesafe}
+			</a>
+		</div>
+		<div class="url ellipsis">
+			<a href="$link" target="_blank"{$rel}>
+				$link
+			</a>
+		</div>
+		<div class="meta">
+			{$metasafe}
+		</div>
+	</div>
+</div>
+EOHTML;
+		}
+		else
+		{
+			// THIS IS REALLY WEIRD, but it's what the old code used to do, so I'm going to keep that for now.
+			// Note the preview block above uses htmlentities() instead, so there's a slightly differing potential
+			// behavior but I'm not entirely sure what the differences will be and if that'll be important.
+			$htmlsafelink = str_replace(['`', '"', "'", '['], ['&#96;', '&quot;', '&#39;', '&#91;'], $link);
+			if ($this->doTruncate)
+			{
+				$text = $ellipsizedText;
+			}
+			// standard URL hyperlink
+			$html = "<a href=\"$htmlsafelink\" target=\"_blank\"{$rel}>$text</a>";
+		}
+
+
+		return $html;
+	}
+
+	public function getRenderMetaData() : array
+	{
+		return [
+			self::RENDER_META_URL_LOADED => $this->urlWasLoaded,
+		];
+	}
+
+	private function fetchDefaults()
+	{
+		// In its own function because 1) we may want to change the vb options dependency here and
+		// 2) in case we have more defaults later.
+		$options = vB::getDatastore()->getValue('options');
+		$image =  $options['frontendurl'] . '/core/images/default/google-material/image_placeholder.svg';
+
+		return [
+			'image' => $image,
+		];
+	}
+
+	private function shouldDoUrlFollow($link) : bool
+	{
+		$options = vB::getDatastore()->getValue('options');
+		$urlNoFollow = $options['url_nofollow'];
+		if (!$urlNoFollow)
+		{
+			return true;
+		}
+
+		// If internal URL, do follow
+		$urlClass = vB::getUrlLoader();
+		$isInternal = $urlClass->isSiteUrl($link);
+		if ($isInternal)
+		{
+			return true;
+		}
+
+		// else, check url_nofollow_whitelist
+		$current_url = @vB_String::parseUrl($options['bburl']);
+		$urlNoFollowWhiteList = $options['url_nofollow_whitelist'];
+		$vBHttpHost = vB::getRequest()->getVbHttpHost();
+		$current_host = preg_replace('#:(\d)+$#', '', $vBHttpHost);
+		$allowed = preg_split('#\s+#', $urlNoFollowWhiteList, -1, PREG_SPLIT_NO_EMPTY);
+		$allowed[] = preg_replace('#^www\.#i', '', $current_host);
+		$allowed[] = preg_replace('#^www\.#i', '', $current_url['host']);
+		$target_url = preg_replace('#^([a-z0-9]+:(//)?)#', '', $link);
+
+		foreach ($allowed AS $host)
+		{
+			if (vB_String::stripos($target_url, $host) !== false)
+			{
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	private static function trimAnchorContent($text, $link, $defaultTitle) : string
+	{
+		if ($defaultTitle OR str_replace('  ', '', $text) == $link)
+		{
+			$tmp = vB_String::unHtmlSpecialChars($link);
+			if (vB_String::vbStrlen($tmp) > 55)
+			{
+				$text = vB_String::htmlSpecialCharsUni(vB_String::vbChop($tmp, 36) . '...' . substr($tmp, -14));
+			}
+			else
+			{
+				// under the 55 chars length, don't wordwrap this
+				$text = str_replace('  ', '', $text);
+			}
+		}
+
+		return $text;
+	}
+
+	private static function cleanAndCanonicalizeUrl(vB_BbCodeHelper $bbCodeHelper, $url)
+	{
+		$rightlink = trim($url);
+		$rightlink = $bbCodeHelper->stripSmilies($rightlink);
+
+		// remove double spaces -- fixes issues with wordwrap
+		$rightlink = str_replace('  ', '', $rightlink);
+
+		if (!preg_match('#^[a-z0-9]+(?<!about|javascript|vbscript|data):#si', $rightlink))
+		{
+			$rightlink = "https://$rightlink";
+		}
+
+		return $rightlink;
+	}
+}
+
+/*=========================================================================*\
+|| #######################################################################
+|| # Downloaded: 12:50, Tue Dec 24th 2024
+|| # CVS: $RCSfile$ - $Revision: 107965 $
+|| #######################################################################
+\*=========================================================================*/

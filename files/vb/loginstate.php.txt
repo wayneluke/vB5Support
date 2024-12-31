@@ -1,0 +1,44 @@
+<?php
+/*========================================================================*\
+|| ###################################################################### ||
+|| # vBulletin 6.1.0 Alpha 4 Week 2 - Licence Number VBCW2VFT7A
+|| # ------------------------------------------------------------------ # ||
+|| # Copyright 2000-2024 MH Sub I, LLC dba vBulletin. All Rights Reserved.  # ||
+|| # This file may not be redistributed in whole or significant part.   # ||
+|| # ----------------- VBULLETIN IS NOT FREE SOFTWARE ----------------- # ||
+|| # http://www.vbulletin.com | http://www.vbulletin.com/license.html   # ||
+|| ###################################################################### ||
+\*========================================================================*/
+
+/**
+ * @package vBulletin
+ */
+
+/**
+ * vB LoginState enum.
+ *
+ * @package vBulletin
+ */
+class vB_LoginState
+{
+	use vB_Trait_NoSerialize;
+	// enums are PHP 8.1+ and we still have PHP 7.4 min version.
+	// vBulletin will attempt to log this user in via default username & password mechanism.
+	const LOGIN_DEFAULT = 0;
+	// vBulletin will return the login result returned by the hook.
+	const LOGIN_HANDLED = 1;
+	// vBUlletin will attempt to login this user via the userinfo replaced by the hook.
+	// This is meant to be used in cases where a custom field other than the username
+	// or email replaces the login name, but the password/authentication scheme remains
+	// the same.
+	const LOGIN_USERINFO_REPLACED = 2;
+	// vBulletin will reject this login attempt, and execute login strikes.
+	const LOGIN_REJECTED = 3;
+}
+
+/*=========================================================================*\
+|| #######################################################################
+|| # Downloaded: 12:50, Tue Dec 24th 2024
+|| # CVS: $RCSfile$ - $Revision: 107965 $
+|| #######################################################################
+\*=========================================================================*/

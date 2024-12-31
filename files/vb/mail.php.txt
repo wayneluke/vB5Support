@@ -1,0 +1,1106 @@
+<?php
+/*========================================================================*\
+|| ###################################################################### ||
+|| # vBulletin 6.1.0 Alpha 4 Week 2 - Licence Number VBCW2VFT7A
+|| # ------------------------------------------------------------------ # ||
+|| # Copyright 2000-2024 MH Sub I, LLC dba vBulletin. All Rights Reserved.  # ||
+|| # This file may not be redistributed in whole or significant part.   # ||
+|| # ----------------- VBULLETIN IS NOT FREE SOFTWARE ----------------- # ||
+|| # http://www.vbulletin.com | http://www.vbulletin.com/license.html   # ||
+|| ###################################################################### ||
+\*========================================================================*/
+
+/**
+ * @package vBulletin
+ */
+
+/**
+* Mail class.
+* May use either the SMTP or Queue implementations to send the mail, depending on
+* the options.
+*
+* @package 		vBulletin
+*/
+class vB_Mail
+{
+	use vB_Trait_NoSerialize;
+
+	/**
+	* Destination address
+	*
+	* @var	string
+	*/
+	protected $toemail = '';
+
+	/**
+	* Subject
+	*
+	* @var	string
+	*/
+	protected $subject = '';
+
+	/**
+	* Message
+	*
+	* @var	string
+	*/
+	protected $message = '';
+
+	/**
+	* All headers to be sent with the message
+	*
+	* @var	string
+	*/
+	protected $headers = '';
+
+	/**
+	* Sender email
+	*
+	* @var	string
+	*/
+	protected $fromemail = '';
+
+	/**
+	* Line delimiter
+	*
+	* @var	string
+	*/
+	protected $delimiter = "\r\n";
+	//if you change the delimiter you need to change the regex.  Look for $vboptions['extra_smtp_headers']
+
+	/**
+	* Switch to enable/disable debugging. When enabled, warnings are not suppressed
+	*
+	* @var	boolean
+	*/
+	protected $debug = false;
+
+	/**
+	* Message to log if logging is enabled
+	*
+	* @var	string
+	*/
+	protected $log = '';
+
+	/**
+	 *	Used for unit tests. fetchLibrary() will return the test stub if this is set to greater than 0.
+	 *
+	 *	@var	int
+	 */
+	protected static int $enableTestCapture = 0;
+
+	/**
+	 * Array of phrase shortcode replacements
+	 *
+	 * @var array
+	 */
+	protected $shortcode_replace_map = [];
+
+	/**
+	 * Escape node rawtext and convert linebreaks to br tags for HTML emails
+	 *
+	 * @param string             $rawtext
+	 * @param string             $htmlstate
+	 * @param vB_Utility_String  $stringUtil
+	 *
+	 * @return string
+	 */
+	public static function getPostTextForEmail(string $rawtext, string $htmlstate, vB_Utility_String $stringUtil) : string
+	{
+		// Eventually, we might do simplified bbcode parsing & respecting $htmlstate etc for emails.
+		// For now however, just escape all HTML and convert newlines to linebreaks.
+		$escapedText = $stringUtil->htmlspecialchars($rawtext);
+		return nl2br($escapedText);
+	}
+
+
+	/**
+	 * Generate node preview text for HTML emails. Note that HTML in the original rawtext is escaped as part
+	 * part of generating the preview text. Meant to be used together with wrapPreviewTextForEmail(). Split up
+	 * because this can be cached for multiple recipients.
+	 *
+	 * @param string             $rawtext
+	 * @param string             $htmlstate
+	 * @param vB_Utility_String  $stringUtil
+	 *
+	 * @return string
+	 */
+	public static function getPreviewTextForEmail(string $rawtext, string $htmlstate, vB_Utility_String $stringUtil) : string
+	{
+		$vboptions = vB::getDatastore()->getValue('options');
+		// Guard is for interim crons before upgrade, though I think it's unlikely it's hit in the wild
+		$previewlength = ($vboptions['emailpreview'] ?? $vboptions['threadpreview']);
+		if ($previewlength < 0)
+		{
+			$fulltext = static::getPostTextForEmail($rawtext, $htmlstate, $stringUtil);
+			return $fulltext;
+		}
+		else if ($previewlength == 0)
+		{
+			return '';
+		}
+		else
+		{
+			// Note, getPreviewText() will put the text through htmlSpecialCharsUni()
+			// getPreviewText() does not newlines to br tags, so we have to do it ourselves.
+			$previewText = vB_String::getPreviewText($rawtext, $previewlength);
+			$previewText = nl2br($previewText);
+			return $previewText;
+		}
+	}
+
+	/**
+	 * Generate node preview text for HTML emails. Note that HTML in the original rawtext is escaped as part
+	 * part of generating the preview text. Meant to be used together with getPreviewTextForEmail(). Split up
+	 * because this cannot be cached for multiple recipients, as it depends on languageid.
+	 *
+	 * @param string             $previewtext   from vB_Mail::getPreviewTextForEmail()
+	 * @param int                $languageid    email recipient's languageid
+	 *
+	 * @return string   Post snippet wrapped with the appropriate prefix based on emailpreview setting
+	 */
+	public static function wrapPreviewTextForEmail(string $previewtext, int $languageid) : string
+	{
+		$vboptions = vB::getDatastore()->getValue('options');
+		$previewlength = ($vboptions['emailpreview'] ?? $vboptions['threadpreview']);
+		/**
+		 * @var vB_Api_Phrase
+		 */
+		$phraseApi = vB_Api::instanceInternal('phrase');
+		if ($previewlength < 0)
+		{
+			['phrases' => $phrases] = $phraseApi->renderPhrases([0 => ['here_is_fulltext_x', $previewtext]], $languageid);
+			return $phrases[0];
+		}
+		else if ($previewlength == 0)
+		{
+			return '';
+		}
+		else
+		{
+			['phrases' => $phrases] = $phraseApi->renderPhrases([0 => ['here_is_a_preview_x', $previewtext]], $languageid);
+			return $phrases[0];
+		}
+	}
+
+	/**
+	 * Equivalent to calling vB_Mail::wrapPreviewTextForEmail(getPreviewTextForEmail(...),...) . Meant for single-recipient
+	 * emails only
+	 *
+	 * @param string             $rawtext
+	 * @param string             $htmlstate
+	 * @param vB_Utility_String  $stringUtil
+	 * @param int                $languageid
+	 *
+	 * @return string
+	 */
+	public static function getWrappedPreviewTextForEmail(string $rawtext, string $htmlstate, vB_Utility_String $stringUtil, int $languageid) : string
+	{
+		$previewtext = static::getPreviewTextForEmail($rawtext, $htmlstate, $stringUtil);
+		return static::wrapPreviewTextForEmail($previewtext, $languageid);
+	}
+
+	/**
+	 * Starts the process of sending an email - either immediately or by adding it to the mail queue.
+	 *
+	 * @param string $toemail Destination email address
+	 * @param string $subject Email message subject
+	 * @param string $message Email message body
+	 * @param boolean $sendnow If true, do not use the mail queue and send immediately
+	 * @param string $from Optional name/email to use in 'From' header
+	 * @param string $uheaders Additional headers
+	 * @param string $username Username of person sending the email
+	 * @param bool $skipFloodCheck If true, the flood check will be skipped
+	 * @param string $contentType Content type for email.
+	 *
+	 * @return bool
+	 */
+	public static function vbmail2($toemail, $subject, $message, $sendnow = false, $from = '', $uheaders = '', $username = '', $skipFloodCheck = false, $contentType = 'text/html', $extra = [])
+	{
+		return static::vbmail($toemail, $subject, $message, $sendnow, $from, $uheaders, $username, $skipFloodCheck, $contentType, $extra);
+	}
+
+	public static function vbmailWithUnsubscribe(array $recipientData, array $mailContent, array $vbMailOptions = [])
+	{
+		// If we are in the installer then we shouldn't be sending emails to end users.  Especially since looking up the unsubscribe
+		// data is not likely to be successful.
+		if (vB::isInstaller())
+		{
+			return false;
+		}
+
+		$required = [
+			'toemail',
+			'subject',
+			'message',
+		];
+		foreach ($required AS $__key)
+		{
+			if (!isset($mailContent[$__key]))
+			{
+				throw new vB_Exception_Api('invalid_data_w_x_y_z', [$__key, 'mailContent', __CLASS__, __FUNCTION__]);
+			}
+		}
+		$required = [
+			'userid',
+			'languageid',
+		];
+		foreach ($required AS $__key)
+		{
+			// We might want to change this check to array_key_exists() if we want languageid to be nullable. However, in
+			// most cases we want the outgoing email phrases to match the recipient user's localization, so it's highly
+			// unlikely we intentionally skip the languageid.
+			if (!isset($recipientData[$__key]))
+			{
+				throw new vB_Exception_Api('invalid_data_w_x_y_z', [$__key, 'recipientData', __CLASS__, __FUNCTION__]);
+			}
+		}
+
+		$toemail = $mailContent['toemail'];
+		$subject = $mailContent['subject'];
+		$message = $mailContent['message'];
+		$from = $mailContent['from'] ?? '';
+		$uheaders = $mailContent['uheaders'] ?? '';
+		$username = $mailContent['username'] ?? '';
+		/*
+		E.g.
+		$mailContent = [
+			'toemail' => (string) '',
+			'subject' => (string) '',
+			'message' => (string) '',
+			// optionals
+			'from' => (string) '',
+			'uheaders' => (string) '',
+			'username' => (string) '',
+		];
+		$recipientData = [
+			'userid' => (int) 0,
+			'languageid' => (int) 1,
+		];
+
+		*/
+		// Set header
+		// Note, header & footer link must be per-user, as we need to fetch(or generate) the opaque hash per-user.
+		// add standard mail footer for manual unsubscribe link(s)
+		$extra = [
+			'unsubscribeUserid' => $recipientData['userid'],
+			'languageid' => $recipientData['languageid'],
+			'email' => $recipientData['email'] ?? $toemail,
+		];
+
+		// Usually, if we want links we want html email. Leaving an opt out in case we have some edge cases.
+		$contentType = $vbMailOptions['contentType'] ?? 'text/html';
+		$skipFloodCheck = $vbMailOptions['skipFloodCheck'] ?? false;
+		$sendnow = $vbMailOptions['sendnow'] ?? false;
+
+		return static::vbmail($toemail, $subject, $message, $sendnow, $from, $uheaders, $username, $skipFloodCheck, $contentType, $extra);
+	}
+
+	/**
+	 * Starts the process of sending an email - either immediately or by adding it to the mail queue.
+	 *
+	 * @param string $toemail Destination email address
+	 * @param string $subject Email message subject
+	 * @param string $message Email message body
+	 * @param boolean $sendnow If true, do not use the mail queue and send immediately
+	 * @param string $from Optional name/email to use in 'From' header
+	 * @param string $uheaders Additional headers
+	 * @param string $username Username of person sending the email
+	 * @param bool $skipFloodCheck If true, the flood check will be skipped
+	 * @param string $contentType Content type for email.
+	 *
+	 * @return bool
+	 *
+	 * @deprecated use vbmail2() for html emails
+	 */
+	public static function vbmail($toemail, $subject, $message, $sendnow = false, $from = '', $uheaders = '', $username = '', $skipFloodCheck = false, $contentType = 'text/plain', $extra = [])
+	{
+		if (empty($toemail))
+		{
+			return false;
+		}
+
+		if (!($mail = self::fetchLibrary(!$sendnow AND vB::getDatastore()->getOption('usemailqueue'))))
+		{
+			return false;
+		}
+
+		if (!$mail->prepareMail($toemail, $subject, $message, $from, $uheaders, $username, $contentType, $extra))
+		{
+			return false;
+		}
+
+		$floodReturn['valid'] = true;
+		if (!empty($from) AND !$skipFloodCheck)
+		{
+			$floodReturn = self::emailFloodCheck();
+		}
+
+		if ($floodReturn['valid'])
+		{
+			return $mail->send();
+		}
+		else
+		{
+			return $floodReturn['error'];
+		}
+	}
+
+	/**
+	* Begin adding email to the mail queue
+	*/
+	public static function vbmailStart()
+	{
+		$mail = vB_Mail_Queue::fetchInstance();
+		$mail->setBulk(true);
+	}
+
+	/**
+	* Stop adding mail to the mail queue and insert the mailqueue data for sending later
+	*/
+	public static function vbmailEnd()
+	{
+		$mail = vB_Mail_Queue::fetchInstance();
+		$mail->setBulk(false);
+	}
+
+	/**
+	* Reads the email message queue and delivers a number of pending emails to the message sender
+	*/
+	public static function execMailQueue()
+	{
+		$vboptions = vB::getDatastore()->getValue('options');
+		$mailqueue = vB::getDatastore()->getValue('mailqueue');
+
+		if ($mailqueue !== null AND $mailqueue > 0 AND $vboptions['usemailqueue'])
+		{
+			// mailqueue template holds number of emails awaiting sending
+
+			$mail = vB_Mail_Queue::fetchInstance();
+			$mail->execQueue();
+		}
+	}
+
+	/**
+	 * Constructor
+	 */
+	protected function __construct()
+	{
+		$sendmail_path = @ini_get('sendmail_path');
+		if (!$sendmail_path OR vB::getDatastore()->getOption('use_smtp') OR defined('FORCE_MAIL_CRLF'))
+		{
+			// no sendmail, so we're using SMTP or a server that lines CRLF to send mail // the use_smtp part is for the MailQueue extension
+			$this->delimiter = "\r\n";
+		}
+		else
+		{
+			$this->delimiter = "\n";
+		}
+	}
+
+	/**
+	 * Factory method for mail.
+	 *
+	 * @param	bool	$deferred	Whether mail sending can be deferred
+	 *
+	 * @return	vB_Mail
+	 */
+	public static function fetchLibrary($deferred = false)
+	{
+		if (self::$enableTestCapture AND class_exists('vB_Mail_Test'))
+		{
+			$mail = new vB_Mail_Test($deferred);
+			return $mail;
+		}
+
+		if ($deferred)
+		{
+			return vB_Mail_Queue::fetchInstance();
+		}
+
+		if (vB::getDatastore()->getOption('use_smtp'))
+		{
+			return new vB_Mail_Smtp();
+		}
+
+		return new vB_Mail();
+	}
+
+	/**
+	 * Starts the process of sending an email - preps it so it's fully ready to send.
+	 * Call send() to actually send it.
+	 *
+	 * @param string $toemail Destination email address
+	 * @param string $subject Email message subject
+	 * @param string $message Email message body
+	 * @param string $from Optional name/email to use in 'From' header
+	 * @param string $uheaders Additional headers
+	 * @param string $username Username of person sending the email
+	 * @param string $contentType Encoding for mail.
+	 *
+	 * @return bool True on success, false on failure
+	 *
+	 * @deprecated use prepareMail()
+	 */
+	public function start2($toemail, $subject, $message, $from = '', $uheaders = '', $username = '', $contentType = 'text/html', $extra = [])
+	{
+		return $this->prepareMail($toemail, $subject, $message, $from, $uheaders, $username, $contentType, $extra);
+	}
+
+	/**
+	 * Escape text for inclusion in an email header.
+	 *
+	 * @param string $text
+	 *
+	 * @return string Escaped header fragment
+	 */
+	public static function encodeForHeader($text)
+	{
+		// This is copied mostly verbatim (with var renames) from how start() handles default email headers.
+		$vboptions = vB::getDatastore()->getValue('options');
+		$charset = vB_String::getCharset();
+		if ((strtolower($charset) == 'iso-8859-1' OR $charset == '') AND preg_match('/&[a-z0-9#]+;/i', $text))
+		{
+			$text = utf8_encode($text, $charset);
+
+			$encoding = 'UTF-8';
+			$unicode_encode_fun = 'utf8_encode';
+		}
+		else if ($vboptions['utf8encode'])
+		{
+			$text = to_utf8($text, $charset);
+
+			$encoding = 'UTF-8';
+			$unicode_encode_fun = 'to_utf8';
+		}
+		else
+		{
+			// we know nothing about the message's encoding in relation to UTF-8,
+			// so we can't modify the message at all; just set the encoding
+			$encoding = $charset;
+			$unicode_encode_fun = false;
+		}
+
+		// This unhtmlspecialchars is based on start()'s handling of mailfromname... this might become problematic
+		// if people seriously want literal html-escaped strings in the headers for some reason...
+		// Leaving it for consistency until the need to remove this arises. If we do remove this.
+		$text = static::encodeEmailHeader(vB_String::unHtmlSpecialChars($text, boolval($unicode_encode_fun)), $encoding);
+
+		return $text;
+	}
+
+	/**
+	 * Starts the process of sending an email - preps it so it's fully ready to send.
+	 * Call send() to actually send it.
+	 *
+	 * @param string $toemail Destination email address
+	 * @param string $subject Email message subject
+	 * @param string $message Email message body
+	 * @param string $from Optional name/email to use in 'From' header
+	 * @param string $uheaders Additional headers
+	 * @param string $username Username of person sending the email
+	 * @param string $contentType Encoding for mail.
+	 *
+	 * @return bool True on success, false on failure
+	 *
+	 * @deprecated use prepareMail()
+	 */
+	public function start($toemail, $subject, $message, $from = '', $uheaders = '', $username = '', $contentType = 'text/plain', $extra = [])
+	{
+		return $this->prepareMail($toemail, $subject, $message, $from, $uheaders, $username, $contentType, $extra);
+	}
+
+	/**
+	 * Starts the process of sending an email - preps it so it's fully ready to send.
+	 * Call send() to actually send it.
+	 *
+	 * @param string $toemail Destination email address
+	 * @param string $subject Email message subject
+	 * @param string $message Email message body
+	 * @param string $from Optional name/email to use in 'From' header
+	 * @param string $uheaders Additional headers
+	 * @param string $username Username of person sending the email
+	 * @param string $contentType Encoding for mail.
+	 *
+	 * @return bool True on success, false on failure
+	 */
+	public function prepareMail($toemail, $subject, $message, $from = '', $uheaders = '', $username = '', $contentType = 'text/html', $extra = [])
+	{
+		$toemail = $this->fetchFirstLine($toemail);
+
+		if (empty($toemail))
+		{
+			return false;
+		}
+
+		$delimiter =& $this->delimiter;
+		$vboptions = vB::getDatastore()->getValue('options');
+
+		$toemail = vB_String::unHtmlSpecialChars($toemail);
+		$subject = $this->fetchFirstLine($subject);
+		$message = preg_replace("#(\r\n|\r|\n)#s", $delimiter, trim($message));
+
+		$charset = vB_String::getCharset();
+		if ((strtolower($charset) == 'iso-8859-1' OR $charset == '') AND preg_match('/&[a-z0-9#]+;/i', $message))
+		{
+			$message = utf8_encode($message);
+			$subject = utf8_encode($subject);
+			$username = utf8_encode($username);
+
+			$encoding = 'UTF-8';
+			$unicode_encode_fun = 'utf8_encode';
+		}
+		else if ($vboptions['utf8encode'])
+		{
+			$message = to_utf8($message, $charset);
+			$subject = to_utf8($subject, $charset);
+			$username = to_utf8($username, $charset);
+
+			$encoding = 'UTF-8';
+			$unicode_encode_fun = 'to_utf8';
+		}
+		else
+		{
+			// we know nothing about the message's encoding in relation to UTF-8,
+			// so we can't modify the message at all; just set the encoding
+			$encoding = $charset;
+			$unicode_encode_fun = false;
+		}
+
+		// we probably shouldn't be running unhtmlspecialchars blindly without confirming $contentType if we
+		// ever use html contenttype, since message may contain raw user data (e.g. usernames/displaynames)...
+		// This makes escaping on the caller side useless, and as such we should not assume ANY caller currently
+		// does proper escaping.
+		if ($contentType === 'text/plain')
+		{
+			$message = vB_String::unHtmlSpecialChars($message, boolval($unicode_encode_fun));
+			// I'm not sure what this unhtmlspecialchars in the subject is about. We generally don't escape subjects as it's not rendered as html
+			// and this could potentially over-unescape things, e.g. if literal &amp; was desired in the subject for some reason.
+			$subject = static::encodeEmailHeader(vB_String::unHtmlSpecialChars($subject, boolval($unicode_encode_fun)), $encoding, false, false);
+		}
+		else
+		{
+			$subject = static::encodeEmailHeader($subject, $encoding, false, false);
+		}
+
+		$from = $this->fetchFirstLine($from);
+		if (empty($from))
+		{
+			$vbphrase = vB_Api::instanceInternal('phrase')->fetch(['x_mailer']);
+			if (isset($vbphrase['x_mailer']))
+			{
+				$mailfromname = sprintf($this->fetchFirstLine($vbphrase['x_mailer']), $vboptions['bbtitle']);
+			}
+			else
+			{
+				$mailfromname = $vboptions['bbtitle'];
+			}
+
+			if ($unicode_encode_fun)
+			{
+				$mailfromname = $unicode_encode_fun($mailfromname);
+			}
+			// We should probably leave it to the callers to provide us with "pure" data and not make us assume and unescape like this,
+			// but this is not the body content, so this is probably OK.
+			// This is probably to work around issues if usernames or forum names contain html entities, but I haven't verified.
+			$mailfromname = static::encodeEmailHeader(vB_String::unHtmlSpecialChars($mailfromname, boolval($unicode_encode_fun)), $encoding);
+
+			$headers = "From: $mailfromname <" . $vboptions['webmasteremail'] . '>' . $delimiter;
+			$headers .= 'Auto-Submitted: auto-generated' . $delimiter;
+
+			// Exchange (Oh Microsoft) doesn't respect auto-generated: http://www.vbulletin.com/forum/project.php?issueid=27687
+			if ($vboptions['usebulkheader'])
+			{
+				$headers .= 'Precedence: bulk' . $delimiter;
+			}
+		}
+		else
+		{
+			if ($username)
+			{
+				$mailfromname = $username . " - " . $vboptions['bbtitle'];
+			}
+			else
+			{
+				$mailfromname = $from;
+			}
+
+			if ($unicode_encode_fun)
+			{
+				$mailfromname = $unicode_encode_fun($mailfromname);
+			}
+			$mailfromname = static::encodeEmailHeader(vB_String::unHtmlSpecialChars($mailfromname, boolval($unicode_encode_fun)), $encoding);
+
+			$headers = "From: $mailfromname <$from>" . $delimiter;
+			$headers .= "Sender: " . $vboptions['webmasteremail'] . $delimiter;
+		}
+
+		$fromemail = empty($vboptions['bounceemail']) ? $vboptions['webmasteremail'] : $vboptions['bounceemail'];
+		$headers .= 'Return-Path: ' . $fromemail . $delimiter;
+
+		$http_host = vB::getRequest()->getVbHttpHost();
+		if (!$http_host)
+		{
+			$http_host = substr(md5($message), 12, 18) . '.vb_unknown.unknown';
+		}
+
+		$msgid = '<' . gmdate('YmdHis') . '.' . substr(md5($message . microtime()), 0, 12) . '@' . $http_host . '>';
+		$headers .= 'Message-ID: ' . $msgid . $delimiter;
+
+		$headers .= preg_replace("#(\r\n|\r|\n)#s", $delimiter, $uheaders);
+		unset($uheaders);
+
+		// Note, this requires that the custom uheaders end with a newline. Otherwise this can cause very weird issues
+		// where somewhere along the email the mine-version header can somehow get stuck in the middle of the uheader.
+		// We should probably just rtrim() $delimiter and append when we have uheaders, just in case, but don't want to
+		// make that change right now.
+		$headers .= 'MIME-Version: 1.0' . $delimiter;
+		$headers .= 'Content-Type: ' . $contentType . ($encoding ? "; charset=\"$encoding\"" : '') . $delimiter;
+		$headers .= 'Content-Transfer-Encoding: 8bit' . $delimiter;
+
+		if (!empty($vboptions['extra_smtp_headers']))
+		{
+			$headers .= preg_replace("#\r[^\n]|[^r]\n#", $delimiter, $vboptions['extra_smtp_headers']) . $delimiter;
+		}
+
+		if (!empty($extra['unsubscribeUserid']))
+		{
+			/** @var vB_Library_Unsubscribe */
+			$lib = vB_Library::instance('unsubscribe');
+			$data = $lib->fetchUrlParameters($extra['unsubscribeUserid']);
+			if (!empty($data['hash']))
+			{
+				// note, HTTPS is *required* by spec, do we want to test that as well?
+				$unsubUrl = vB5_Route::buildUrl('dashboard|fullurl', ['action' => 'unsubscribe'], $data);
+				if (!empty($vboptions['emailunsubscribeheader']))
+				{
+					// TODO: some claim that this header should NOT be RFC 2047 encoded as that'll be ignored
+					// by certain mail clients.. for now skipping the encoding.
+					$headers .= 'List-Unsubscribe: <' . $unsubUrl . '>' . $delimiter;
+					$headers .= 'List-Unsubscribe-Post: List-Unsubscribe=One-Click' . $delimiter;
+				}
+
+				if (!empty($vboptions['emailunsubscribefooter']))
+				{
+					$components = [
+						'unsub_url' => $unsubUrl,
+						'phrase_data' => [
+							'unsub' => ['unsubscribe_all_emails'],
+						],
+					];
+					// We are expecting HTML emails here. Not going to bother coding something separate for $contentType == 'text/plain' until a need arises.
+					$message .= $delimiter . '<br/><br/>' . $this->generateMailFooterHtml($components, $extra['languageid'] ?? null) . $delimiter;
+				}
+			}
+		}
+		else
+		{
+
+		}
+
+		$this->toemail = $toemail;
+		$this->subject = $subject;
+		$this->message = $message;
+		$this->headers = $headers;
+		$this->fromemail = $fromemail;
+
+		return true;
+	}
+
+	private function generateMailFooterHtml(array $components, int $languageid) : string
+	{
+		$strUtil = vB::getString();
+		/** @var vB_Api_Phrase */
+		$phraseApi = vB_Api::instanceInternal('phrase');
+		['phrases' => $phrases] = $phraseApi->renderPhrases($components['phrase_data'], $languageid);
+		$unsubscribeText = $phrases['unsub'];
+		$unsubUrl = $components['unsub_url'];
+		// HTML is excluded from the phrasing because we may end up modifying this (e.g. to include inline styles)
+		// and having to filter that out from translations is not worth while. In reality we should probably have this
+		// as a template or something.
+		$unsubscribeFooter = '<a href="' . $strUtil->htmlspecialchars($unsubUrl) . '">' . $unsubscribeText . '</a>';
+
+		// We might have more components in the future, e.g. Privacy Policy link
+		//$privacyPolicy = $delimiter . "<a href=\"{$components['privacy_policy_url']}\">{$phrases['privacy_policy']}</a>";
+
+		return $unsubscribeFooter;
+	}
+
+	/**
+	* Set all the necessary variables for sending a message.
+	*
+	* @param string	$toemail Destination address
+	* @param string	$subject Subject
+	* @param string	$message Message
+	* @param string	$headers All headers to be sent with the message
+	* @param string	$fromemail Sender email
+	*/
+	public function quickSet($toemail, $subject, $message, $headers, $fromemail)
+	{
+		$this->toemail = $toemail;
+		$this->subject = $subject;
+		$this->message = $message;
+		$this->headers = $headers;
+		$this->fromemail = $fromemail;
+	}
+
+	/**
+	 * Send the mail.
+	 * Note: If you define DISABLE_MAIL in config.php as:
+	 *	 delimited email addresses	- Only mail for the recipients will be sent
+	 *	<filename>.log				- Mail will be logged to the given file if writable
+	 *  any other value				- Mail will be disabled
+	 *
+	 * @param bool $force_send If true, DISABLE_MAIL will be ignored.
+	 *
+	 * @return boolean True on success, false on failure
+	 */
+	public function send($force_send = false)
+	{
+		// No recipient, abort
+		if (!$this->toemail)
+		{
+			return false;
+		}
+
+		// Phrase shortcodes
+		$this->doShortcodeReplacements();
+
+		// Check debug settings
+		if (!$force_send AND defined('DISABLE_MAIL'))
+		{
+			if (is_string(DISABLE_MAIL))
+			{
+				// check for a recipient whitelist
+				if (strpos(DISABLE_MAIL, '@') !== false)
+				{
+					// check if the address is allowed
+					if (strpos(DISABLE_MAIL, $this->toemail) === false)
+					{
+						return false;
+					}
+				}
+				else if (strpos(DISABLE_MAIL, '.log') !== false)
+				{
+					// mail is only logged
+					$this->logEmail('DEBUG', DISABLE_MAIL);
+
+					return true;
+				}
+				else
+				{
+					// recipient not in the whitelist and not logging
+					return false;
+				}
+			}
+			else
+			{
+				// DISABLE_MAIL defined but isn't a string so just disable
+				return false;
+			}
+		}
+
+		// Send the mail
+		if ($this->execSend() AND !vB::isInstaller())
+		{
+			vB_Library::instance('user')->updateEmailFloodTime();
+		}
+		else
+		{
+			return false;
+		}
+
+		return true;
+	}
+
+	/**
+	* Actually send the message.
+	*
+	* @return boolean True on success, false on failure
+	*/
+	protected function execSend()
+	{
+		if (!$this->toemail)
+		{
+			return false;
+		}
+
+		@ini_set('sendmail_from', $this->fromemail);
+
+		if ($delay = intval(vB::getDatastore()->getOption('mail_delay')))
+		{
+			@sleep($delay);
+		}
+
+		if (vB::getDatastore()->getOption('needfromemail'))
+		{
+			$result = @mail($this->toemail, $this->subject, $this->message, trim($this->headers), '-f ' . $this->fromemail);
+		}
+		else
+		{
+			$result = @mail($this->toemail, $this->subject, $this->message, trim($this->headers));
+		}
+
+		$this->logEmail($result);
+
+		return $result;
+	}
+
+	/**
+	 * Does the phrase shortcode replacements for emails.
+	 */
+	protected function doShortcodeReplacements()
+	{
+		$options = vB::getDatastore()->getValue('options');
+
+		// Phrase {shortcode} replacements
+		// This replacement happens in several places. Please keep them synchronized.
+		// You can search for {shortcode} in php and js files.
+		// For email, the replacements happen here in send() since all email gets
+		// routed through this function, and doing this elsewhere, such as in
+		// fetchEmailPhrases() is problematic, since we don't always call fetchEmailPhrases
+		// and we don't know who the recipient is in that function.
+		if (empty($this->shortcode_replace_map))
+		{
+			$this->shortcode_replace_map = [
+				'{sitename}'        => $options['bbtitle'],
+				'{musername}'       => '{musername}',
+				'{username}'        => '{username}',
+				'{userid}'          => '{userid}',
+				'{registerurl}'     => vB5_Route::buildUrl('register|fullurl'),
+				'{activationurl}'   => vB5_Route::buildUrl('activateuser|fullurl'),
+				'{helpurl}'         => vB5_Route::buildUrl('help|fullurl'),
+				'{contacturl}'      => vB5_Route::buildUrl('contact-us|fullurl'),
+				'{homeurl}'         => $options['frontendurl'],
+				'{date}'            => vbdate($options['dateformat']),
+				'{webmasteremail}'  => $options['webmasteremail'],
+				// ** leave deprecated codes in to avoid breaking existing data **
+				// deprecated - the previous *_page codes have been replaced with the *url codes
+				'{register_page}'   => vB5_Route::buildUrl('register|fullurl'),
+				'{activation_page}' => vB5_Route::buildUrl('activateuser|fullurl'),
+				'{help_page}'       => vB5_Route::buildUrl('help|fullurl'),
+				// deprecated - session url codes are no longer needed
+				'{sessionurl}'      => '',
+				'{sessionurl_q}'    => '',
+			];
+		}
+
+		// update user-specific information for each recipient
+		$user_replacements = vB_Library::instance('user')->getEmailReplacementValues($this->toemail);
+		$this->shortcode_replace_map['{musername}'] = $user_replacements['{musername}'];
+		$this->shortcode_replace_map['{username}'] = $user_replacements['{username}'];
+		$this->shortcode_replace_map['{userid}'] = $user_replacements['{userid}'];
+
+		// do the replacement
+		$shortcode_find = array_keys($this->shortcode_replace_map);
+		$this->subject = str_replace($shortcode_find, $this->shortcode_replace_map, $this->subject);
+		$this->message = str_replace($shortcode_find, $this->shortcode_replace_map, $this->message);
+	}
+
+	/**
+	* Returns the first line of a string -- good to prevent errors when sending emails (above)
+	*
+	* @param string $text String to be trimmed
+	*
+	* @return string
+	*/
+	protected function fetchFirstLine($text)
+	{
+		$text = preg_replace("/(\r\n|\r|\n)/s", "\r\n", trim($text));
+		$pos = strpos($text, "\r\n");
+		if ($pos !== false)
+		{
+			return substr($text, 0, $pos);
+		}
+
+		return $text;
+	}
+
+	/**
+	* Encodes a mail header to be RFC 2047 compliant. This allows for support
+	* of non-ASCII character sets via the quoted-printable encoding.
+	*
+	* @param string $text The text to encode
+	* @param string $charset The character set of the text
+	* @param bool $force_encode Whether to force encoding into quoted-printable even if not necessary
+	* @param bool $quoted_string Whether to quote the string; applies only if encoding is not done
+	*
+	* @return	string	The encoded header
+	*/
+	protected static function encodeEmailHeader($text, $charset = 'utf-8', $force_encode = false, $quoted_string = true)
+	{
+		$text = trim($text);
+
+		if (!$charset)
+		{
+			// don't know how to encode, so we can't
+			return $text;
+		}
+
+		if ($force_encode == true)
+		{
+			$qp_encode = true;
+		}
+		else
+		{
+			$qp_encode = false;
+
+			for ($i = 0; $i < strlen($text); $i++)
+			{
+				if (ord($text[$i]) > 127)
+				{
+					// we have a non ascii character
+					$qp_encode = true;
+					break;
+				}
+			}
+		}
+
+		if ($qp_encode == true)
+		{
+			// see rfc 2047; not including _ as allowed here, as I'm encoding spaces with it
+			$outtext = preg_replace_callback('#([^a-zA-Z0-9!*+\-/ ])#',
+				function($matches)
+				{
+					return '=' . strtoupper(dechex(ord($matches[1])));
+				}, $text
+			);
+			$outtext = str_replace(' ', '_', $outtext);
+			$outtext = "=?$charset?q?$outtext?=";
+
+			return $outtext;
+		}
+		else
+		{
+			if ($quoted_string)
+			{
+				$text = str_replace(['"', '(', ')'], ['\"', '\(', '\)'], $text);
+
+				return "\"$text\"";
+			}
+			else
+			{
+				return preg_replace('#(\r\n|\n|\r)+#', ' ', $text);
+			}
+		}
+	}
+
+	/**
+	* Sets the debug member
+	*
+	* @param $debug boolean
+	*/
+	public function setDebug($debug)
+	{
+		$this->debug = $debug;
+	}
+
+	/**
+	 * Logs email to file
+	 *
+	 * @param bool $status
+	 * @param bool $errfile
+	 *
+	 * @return
+	 */
+	protected function logEmail($status = true, $errfile = false)
+	{
+		if ((defined('DEMO_MODE') AND DEMO_MODE == true))
+		{
+			return;
+		}
+
+		$vboptions = vB::getDatastore()->getValue('options');
+
+		// log file is passed or taken from options
+		$errfile = $errfile ? $errfile : $vboptions['errorlogemail'];
+
+		// no log file specified
+		if (!$errfile)
+		{
+			return;
+		}
+
+		// trim .log from logfile
+		$errfile = (substr($errfile, -4) == '.log') ? substr($errfile, 0, -4) : $errfile;
+
+		if ($vboptions['errorlogmaxsize'] != 0 AND $filesize = @filesize("$errfile.log") AND $filesize >= $vboptions['errorlogmaxsize'])
+		{
+			@copy("$errfile.log", $errfile . vB::getRequest()->getTimeNow() . '.log');
+			@unlink("$errfile.log");
+		}
+
+		$timenow = date('r', vB::getRequest()->getTimeNow());
+
+		$fp = @fopen("$errfile.log", 'a+b');
+
+		if ($fp)
+		{
+			if ($status === true)
+			{
+				$output = "SUCCESS\r\n";
+			}
+			else
+			{
+				$output = "FAILED";
+				if ($status !== false)
+				{
+					$output .= ": $status";
+				}
+				$output .= "\r\n";
+			}
+			if ($this->delimiter == "\n")
+			{
+				$append = "$timenow\r\nTo: " . $this->toemail . "\r\nSubject: " . $this->subject . "\r\n" . $this->headers . "\r\n\r\n" . $this->message . "\r\n=====================================================\r\n\r\n";
+				@fwrite($fp, $output . $append);
+			}
+			else
+			{
+				$append = preg_replace("#(\r\n|\r|\n)#s", "\r\n", "$timenow\r\nTo: " . $this->toemail . "\r\nSubject: " . $this->subject . "\r\n" . $this->headers . "\r\n\r\n" . $this->message . "\r\n=====================================================\r\n\r\n");
+
+				@fwrite($fp, $output . $append);
+			}
+			fclose($fp);
+		}
+	}
+
+	public static function emailFloodCheck()
+	{
+		$session = vB::getCurrentSession();
+
+		if (empty($session))
+		{
+			return ['valid' => true, 'error' => []];
+		}
+		$usercontext = $session->fetch_userinfo();
+		if (empty($usercontext['userid']))
+		{
+			$usercontext['emailstamp'] = $session->get('emailstamp');
+		}
+		$timenow =  vB::getRequest()->getTimeNow();
+		$timepassed = $timenow - $usercontext['emailstamp'];
+		$vboptions = vB::getDatastore()->getValue('options');
+
+		if ($vboptions['emailfloodtime'] > 0 AND $timepassed < $vboptions['emailfloodtime'] AND empty($usercontext['is_admin']))
+		{
+			return [
+				'valid' => false,
+				'error' => ['emailfloodcheck', [$vboptions['emailfloodtime'], ($vboptions['emailfloodtime'] - $timepassed)]]
+			];
+		}
+
+		return ['valid' => true, 'error' => []];
+	}
+
+	public static function setTestMode(int $mode = 0)
+	{
+		self::$enableTestCapture = $mode;
+	}
+}
+
+/*=========================================================================*\
+|| #######################################################################
+|| # Downloaded: 12:50, Tue Dec 24th 2024
+|| # CVS: $RCSfile$ - $Revision: 116397 $
+|| #######################################################################
+\*=========================================================================*/

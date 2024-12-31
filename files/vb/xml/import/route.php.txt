@@ -1,0 +1,205 @@
+<?php if (!defined('VB_ENTRY')) die('Access denied.');
+/*========================================================================*\
+|| ###################################################################### ||
+|| # vBulletin 6.1.0 Alpha 4 Week 2 - Licence Number VBCW2VFT7A
+|| # ------------------------------------------------------------------ # ||
+|| # Copyright 2000-2024 MH Sub I, LLC dba vBulletin. All Rights Reserved.  # ||
+|| # This file may not be redistributed in whole or significant part.   # ||
+|| # ----------------- VBULLETIN IS NOT FREE SOFTWARE ----------------- # ||
+|| # http://www.vbulletin.com | http://www.vbulletin.com/license.html   # ||
+|| ###################################################################### ||
+\*========================================================================*/
+
+class vB_Xml_Import_Route extends vB_Xml_Import
+{
+	protected function import($onlyGuid = [])
+	{
+		// get all columns but the key
+		$routeTable = $this->db->fetchTableStructure('routenew');
+		$routeTableColumns = array_diff($routeTable['structure'], ['arguments', 'contentid', $routeTable['key']]);
+
+		if (empty($this->parsedXML['route']))
+		{
+			$this->parsedXML['route'] = [];
+		}
+
+		if (is_string($onlyGuid))
+		{
+			$onlyGuid = [$onlyGuid];
+		}
+
+		$routes = vB_XML_Parser::getList($this->parsedXML, 'route');
+
+		$redirects = [];
+		foreach ($routes AS $route)
+		{
+			$route['arguments'] = $route['arguments'] ?? '';
+
+			if (!empty($onlyGuid) AND !in_array($route['guid'], $onlyGuid, true))
+			{
+				continue;
+			}
+
+			$values = [];
+			foreach($routeTableColumns AS $col)
+			{
+				if (isset($route[$col]))
+				{
+					$values[$col] = $route[$col];
+				}
+			}
+
+			//this is a guid in the xml rather than an id which the db wants.
+			//we can't look it up now because we might not have seen that route yet.
+			if (isset($values['redirect301']))
+			{
+				$redirects[$route['guid']] = $values['redirect301'];
+				unset($values['redirect301']);
+			}
+
+			if (!isset($route['class']))
+			{
+				$values['class'] = '';
+			}
+			$condition = array('guid' => $route['guid']);
+			$existing = $this->db->getRow('routenew', $condition);
+
+			if ($existing AND !empty($existing['routeid']))
+			{
+				//If we have a route with this guid we leave it alone. The customer may have intentionally changed it
+				//see VBV-13586.
+				$routeid = $existing['routeid'];
+			}
+			else
+			{
+				$class = (!empty($route['class']) AND class_exists($route['class'])) ? $route['class'] : vB5_Route::DEFAULT_CLASS;
+
+				//Arguments *should* always be a serialized array.  Sometimes it's an empty string.
+				//Try to handle that case (we previously did the unserialization/serialization in the exportArguments function
+				//and the base class just returned the string unchanged -- I think all of the classes that do anything with
+				//it do have an array here.
+				$isempty = (trim($route['arguments']) == '');
+				if($isempty)
+				{
+					$arguments = [];
+				}
+				else
+				{
+					//in theory this could be serialized false, unfortuantely there isn't a good way to
+					//distinguish between that and a failure.  However that's an invalid value anyway
+					$arguments = vb_unserialize($route['arguments']);
+					if($arguments === false)
+					{
+						throw new Exception ('Invalid arguments: ' . $route['arguments']);
+					}
+				}
+
+				$newarguments = [$class, 'importArguments']($arguments);
+				if(!$isempty OR count($newarguments))
+				{
+					$values['arguments'] = serialize($newarguments);
+				}
+				else
+				{
+					$values['arguments'] = '';
+				}
+
+				//the prior version of this assumes we can unserialize $values['arguments'], which may not be a good assumption
+				//make sure what we pass is always an array by passing new arguments
+				$values['contentid'] = [$class, 'importContentId']($newarguments);
+
+				// route.regex needs to be unique. If it's not, add (usually append) -1, -2, -3 etc. at
+				// the place where the marker is found in the route.
+				// If regex ends up getting changed, prefix will be changed to match (note
+				// that they both need to contain the marker placeholder).
+				$testRegex = str_replace('{{DEDUPE-INSERT-MARKER}}', '', $values['regex']);
+				$dupeCheck = $this->db->getRow('routenew', array('regex' => $testRegex));
+				if (!empty($dupeCheck))
+				{
+					// need to change the URL for the new page going into the system
+					if (strpos($values['regex'], '{{DEDUPE-INSERT-MARKER}}') !== false)
+					{
+						$i = 1;
+						while(true)
+						{
+							$testRegex = str_replace('{{DEDUPE-INSERT-MARKER}}', '-' . $i, $values['regex']);
+							$dupeCheck = $this->db->getRow('routenew', ['regex' => $testRegex]);
+							if (empty($dupeCheck))
+							{
+								// found a winner
+								$values['regex'] = $testRegex;
+
+								// prefix needs to match regex
+								$values['prefix'] = str_replace('{{DEDUPE-INSERT-MARKER}}', '-' . $i, $values['prefix']);
+
+								break;
+							}
+
+							// something's not right; let's avoid an infinite loop
+							if ($i > 1000)
+							{
+								throw new Exception('Unable to rename route regex for ' . $values['guid'] . '. Possible infinite loop.');
+							}
+
+							++$i;
+						}
+					}
+					else
+					{
+						// not sure what the best behavior is if we have an unresolvable conflict
+						// do we throw an exception and cause the upgrade to fail?
+						// if we get here, it means there is a newly added default vBulletin
+						// route that doesn't contain the dedupe marker insertion point.
+						// there's a unit test in place that *should* prevent that from ever shipping
+					}
+				}
+				// always remove the insert marker, if it hasn't been already
+				$values['regex'] = str_replace('{{DEDUPE-INSERT-MARKER}}', '', $values['regex']);
+				$values['prefix'] = str_replace('{{DEDUPE-INSERT-MARKER}}', '', $values['prefix']);
+
+
+				// do the insert
+				$routeid = $this->db->insertIgnore('routenew', $values);
+
+				//We need to make sure the name is unique. Collisions should be very rare but not impossible.
+
+				if (is_array($routeid))
+				{
+					$routeid = array_pop($routeid);
+				}
+			}
+
+			vB_Xml_Import::setImportedId(vB_Xml_Import::TYPE_ROUTE, $route['guid'], $routeid);
+		}
+
+		if (count($redirects))
+		{
+			$map = array();
+			$routes = $this->db->select('routenew', array('guid' => $redirects), array('routeid', 'guid'));
+			foreach ($routes AS $route)
+			{
+				$map[$route['guid']] = $route['routeid'];
+			}
+
+			foreach($redirects AS $source => $dest)
+			{
+				if (isset($map[$dest]))
+				{
+				 	$this->db->update('routenew', array('redirect301' => $map[$dest]), array('guid' => $source));
+				}
+				else
+				{
+					throw new Exception("Could not find redirect route '$dest' for route '$source'");
+				}
+			}
+		}
+	}
+
+}
+
+/*=========================================================================*\
+|| #######################################################################
+|| # Downloaded: 12:50, Tue Dec 24th 2024
+|| # CVS: $RCSfile$ - $Revision: 110140 $
+|| #######################################################################
+\*=========================================================================*/

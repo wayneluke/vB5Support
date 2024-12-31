@@ -1,0 +1,383 @@
+<?php if (!defined('VB_ENTRY')) die('Access denied.');
+/*========================================================================*\
+|| ###################################################################### ||
+|| # vBulletin 6.1.0 Alpha 4 Week 2 - Licence Number VBCW2VFT7A
+|| # ------------------------------------------------------------------ # ||
+|| # Copyright 2000-2024 MH Sub I, LLC dba vBulletin. All Rights Reserved.  # ||
+|| # This file may not be redistributed in whole or significant part.   # ||
+|| # ----------------- VBULLETIN IS NOT FREE SOFTWARE ----------------- # ||
+|| # http://www.vbulletin.com | http://www.vbulletin.com/license.html   # ||
+|| ###################################################################### ||
+\*========================================================================*/
+
+/**
+ * vB_Api_WidgetData_RSSFeed
+ *
+ * @package vBApi
+ * @access public
+ */
+class vB_Api_WidgetData_RSSFeed extends vB_Api
+{
+	protected $disableWhiteList = [
+		/*
+		'fetchConfig',
+		'fetchHierarchicalWidgetInstancesByPageTemplateId',
+		'fetchSectionsByPageTemplateId',
+		'fetchTabbedSubWidgetConfigs',
+		'fetchDefaultConfigWithoutInstance',
+		*/
+	];
+	/*
+	protected function __construct()
+	{
+		parent::__construct();
+
+		// System modules are not placeable when not in debug mode
+		$vbconfig = vB::getConfig();
+		if (empty($vbconfig['Misc']['debug']))
+		{
+			$this->nonPlaceableWidgetCategories[] = 'System';
+		}
+	}
+	*/
+
+	private function parseRssOrAtomFeed(SimpleXMLElement $xml, string $url) : array
+	{
+		$is_atom = isset($xml->entry);
+		$is_rss = isset($xml->channel->item);
+		if ($is_atom)
+		{
+			return $this->mapAtomFeed($xml, $url);
+		}
+		else if ($is_rss)
+		{
+			return $this->mapRssFeed($xml, $url);
+		}
+		else
+		{
+			return $this->mapUnknownFeed($xml, $url);
+		}
+	}
+
+	private function mapUnknownFeed(SimpleXMLElement $vbRss, string $url) : array
+	{
+		// Currently unimplemented, but may want to add a hook to pass this off to a package
+		// if they can handle non-standard feeds
+
+		return [];
+	}
+
+	private function mapAtomFeed(SimpleXMLElement $xml, string $url) : array
+	{
+		/*
+		Useful docs:
+		https://validator.w3.org/feed/docs/atom.html#text
+		https://www.rfc-editor.org/rfc/rfc4287
+		 */
+		$strUtil = vB::getString();
+		$hooks = vB::getHooks();
+		$feed = [];
+		// With simple XML, xml->entry is always going to be iterable regardless of single <entry> element vs multiple elements.
+		// See mapRssFeed() notes on string casting. In particular, Atom feeds also frequently have "type" attributes on summary and content,
+		// which will just about guarantee they are SimpleXmlElement object not a string.
+		foreach ($xml->entry AS $__entry)
+		{
+			// atom:feed elements MUST contain exactly one atom:updated element.
+			$__timestamp = strtotime($__entry->updated);
+			$__feeditem = [
+				// atom:feed elements MUST contain exactly one atom:title element.
+				'title'       => $this->stringifyAndConvert($strUtil, $__entry->title),
+				// summary is optional, though just about every feed in the wild will have this.
+				// Update: Seems like some prefer (full) content over summary
+				'description' => $this->stringifyAndConvert($strUtil, ($__entry->summary ?? $__entry->content ?? '')),
+				// link is kind of a PITA to get... wrapped in its own function
+				'url'         => $this->stringifyAndConvert($strUtil, $this->get_atom_link($__entry)),
+				'timestamp'   => $__timestamp,
+			];
+			$hooks->invoke('hookRssFeedMapItem', [
+				'url' => $url,
+				'type' => 'atom',
+				'in_item' => $__entry,
+				'out_item' => &$__feeditem,
+			]);
+			$feed[] = $__feeditem;
+		}
+
+		return $feed;
+	}
+
+	private function get_atom_link($entry) : string
+	{
+		/*
+		An atom entry may have 0 or multiple links:
+   o  atom:feed elements SHOULD contain one atom:link element with a rel
+      attribute value of "self".  This is the preferred URI for
+      retrieving Atom Feed Documents representing this Atom feed.
+   o  atom:feed elements MUST NOT contain more than one atom:link
+      element with a rel attribute value of "alternate" that has the
+      same combination of type and hreflang attribute values.
+   o  atom:feed elements MAY contain additional atom:link elements
+      beyond those described above.
+
+	  Looking at a few atom feeds in the wild, it seems like most will have
+	   <link>...</link>
+	   <link rel="alternate"></link">
+		 */
+		$links = $entry->link ?? null;
+
+		if (empty($links))
+		{
+			return '';
+		}
+		else
+		{
+			foreach ($links AS $__link)
+			{
+				$__rel = $__link['rel'] ?? '';
+				if (empty($__rel) OR $__rel == 'alternate')
+				{
+					return (string) ($__link['href'] ?? '');
+				}
+			}
+		}
+
+		return '';
+	}
+
+	private function mapRssFeed(SimpleXMLElement $xml, string $url) : array
+	{
+		/*
+		Useful docs:
+		https://www.rssboard.org/rss-draft-1#element-channel-item
+
+		 */
+
+		// Note on all the string casting -- frequently, SimpleXML leaves values in CDATA as
+		// SimpleXMLElement instead of flat strings. This causes problems when we try to serialize
+		// the content & cache the data, so we must ensure we cast out of any SimpleXMLElements
+		$strUtil = vB::getString();
+		$hooks = vB::getHooks();
+		$feed = [];
+		foreach ($xml->channel->item AS $__item)
+		{
+			// According to the RSS 2.0.1 specs, EVERYTHING in an item is optional, but one of title OR description must be set
+			// https://www.rssboard.org/rss-2-0-1#hrelementsOfLtitemgt
+			// title and description may contain HTML
+			// https://www.rssboard.org/rss-draft-1#element-channel-item-title
+			// https://www.rssboard.org/rss-draft-1#data-types-characterdata
+			$__timestamp = strtotime((string) ($__item->{'dc:date'} ?? $__item->pubDate ?? ''));
+			$__feeditem = [
+				'title'       => $this->stringifyAndConvert($strUtil, $__item->title ?? ''),
+				'description' => $this->stringifyAndConvert($strUtil, $__item->description ?? ''),
+				'url'         => $this->stringifyAndConvert($strUtil, $__item->link ?? ''),
+				'timestamp'   => $__timestamp,
+			];
+			$hooks->invoke('hookRssFeedMapItem', [
+				'url' => $url,
+				'type' => 'rss',
+				'in_item' => $__item,
+				'out_item' => &$__feeditem,
+			]);
+			$feed[] = $__feeditem;
+		}
+
+		return $feed;
+	}
+
+	// todo: since this is public API, avoid trusting function param  data.
+	public function getData(int $widgetinstanceid) : array
+	{
+		$defaultContent = [
+			'items' => [
+			],
+			'url' => '',
+			'from_cache' => false,
+		];
+
+		/** @var vB_Api_Widget */
+		$widgetApi = vB_Api::instanceInternal('widget');
+		try
+		{
+			$widgetConfig = $widgetApi->fetchConfig($widgetinstanceid);
+		}
+		catch (vB_Exception_Api $e)
+		{
+			return $defaultContent;
+		}
+
+		// Check module view permissions before returning any data since this is a public API.
+		if ($widgetApi->doSkipModule($widgetinstanceid, $widgetConfig))
+		{
+			return $defaultContent;
+		}
+
+		$url = $widgetConfig['url'];
+		$maxEntries = $widgetConfig['maxEntries'];
+		$updatePeriod__Seconds = $widgetConfig['updatePeriod'];
+		$updatePeriod__Minutes = intval($updatePeriod__Seconds / 60);
+
+		// Also tag url to the cachekey so that if admin changes the URL of the feed,
+		// we'll immediately miss any previously cached data for that widget instance.
+		$cacheKey = 'vB_WidgetInstanceData_' . $widgetinstanceid . '_' . md5($url);
+		if ($updatePeriod__Minutes > 0)
+		{
+			$cache = vB_Cache::instance(vB_Cache::CACHE_LARGE);
+			$content = $cache->read($cacheKey);
+			if ($content !== false AND $url === $content['url'])
+			{
+				$content['from_cache'] = true;
+				return $content;
+			}
+		}
+
+
+		$xml = $this->fetchRemoteXml($url);
+
+		if ($xml === false)
+		{
+			return $defaultContent;
+		}
+
+		// We may want to add a "Sort by" widget option and a "first <maxEntries> / last <maxEntries>"
+		// widget option to allow admins to sort & slice this however they want.
+		// For now however, defaulting to sort by most recent at top, and only show the first (most recent)
+		// <maxEntries>
+		// as I think that's the most common.
+		$entries = $this->parseRssOrAtomFeed($xml, $url);
+		usort($entries, fn($a, $b) => ($b['timestamp'] - $a['timestamp']));
+
+		// Assignment order here is intentional to keep the wrapper array elements' order consistent between default, from cache & this.
+		// Not important, but just nicer when debugging and you're expecting e.g. from_cache at the end of the array.
+		$content = [];
+		$content['items'] = ($maxEntries > 0 ? array_slice($entries, 0, $maxEntries) : $entries);
+		$content['url'] = $url;
+		$content['from_cache'] = false;
+
+		// ATM not sure what events should purge the cache...
+		$cacheClearEvents = [
+			'clearWidgetData_' . $widgetinstanceid
+		];
+		if ($updatePeriod__Minutes > 0)
+		{
+			$cache->write($cacheKey, $content, $updatePeriod__Minutes, $cacheClearEvents);
+		}
+
+		return $content;
+	}
+
+	private function stringifyAndConvert(vB_Utility_String $strUtil, SimpleXMlElement|string $value) : string
+	{
+		// simpleXMLElement seems to always be in UTF-8 internally. Ideally so is the board, but if it's
+		// different we have to convert it.
+		// Furthermore, this also handles explicitly converting any elements that are SimpleXmlElement
+		// objects instead of strings, as former will cause issues with serializing the feed data array
+		// for caching.
+		$value = (string) $value;
+		try
+		{
+			$converted = $strUtil->toDefault($value, 'utf-8');
+			return $converted;
+		}
+		catch (Exception $e)
+		{
+			// There's a chance the conversion can throw exceptions. In that case, we don't want the whole
+			// page to crash, just the widget.
+			// Let's just return the original value and hope for the best.
+			return $value;
+		}
+
+	}
+
+	private function fetchRemoteXml(string $url) : SimpleXMLElement|false
+	{
+		$vurl = vB::getUrlLoader();
+		$vurl->setOption(vB_Utility_Url::FOLLOWLOCATION, 1);
+		$vurl->setOption(vB_Utility_Url::TIMEOUT, 5);
+		$vurl->setOption(vB_Utility_Url::ENCODING, 'gzip');
+		$vurl->setOption(vB_Utility_Url::HEADER, 1);
+
+		// Replicate hook in vB_RSS_Poster::fetch_xml()
+		vB::getHooks()->invoke('hookRssFetchXmlPreGet', [
+			'url' => $url,
+			'vurl' => &$vurl,
+		]);
+
+		$result = $vurl->get($url);
+
+		if (empty($result['body']))
+		{
+			return false;
+		}
+
+		// It seems that simplexml_load_string() internally uses UTF-8.
+		// Also, if an encoding=<charset> xml attribute is set, it SEEMS to actually
+		// respect that but convert it internally from that source charset to UTF-8.
+		// However, if the encoding attribute is missing, it always seems to assume
+		// UTF-8 then break if it's not. Though it's probably rare that the encoding
+		// is not set, if that does happen
+		// If the encoding XML attribute is missing, let's double check
+		// the http headers and use that to convert to UTF-8
+		if (!preg_match('#(<?xml.*encoding=[\'"])(.*?)([\'"].*?>)#m', $result['body']))
+		{
+			$charset = $this->getCharsetFromHeaders($result['headers']);
+			if ($charset)
+			{
+				$string = vB::getString();
+				// Convert it to utf-8 that SimpleXml implicitly assumes without the encoding attribute.
+				// This was tested with an XML document in Windows-1252 encoding with the content-type
+				// header specifying the charset instead of the xml attribute, with the characters
+				// like "O with slash", which in Windows-1252 is 0xD8, which in utf-8 would be a
+				// start of multibyte header, e.g. for "Arabic number sign" 0xD880 (utf-8), so two
+				// "O with slash"es back to back would be invalid in UTF-8. In such a case, without
+				// this explicit conversion, simplexml_load_string() below will fail with a
+				// "Input is not proper UTF-8, indicate encoding !"
+				$result['body'] = $string->toCharset($result['body'], $charset, 'utf-8');
+			}
+		}
+
+		// suppress warnings from leaking out to page.
+		$old = libxml_use_internal_errors(true);
+		$xml = simplexml_load_string($result['body']);
+		// use libxml_get_errors() here before setting errors back to old (false) if you
+		// want to do something with them.
+		libxml_use_internal_errors($old);
+		return $xml;
+	}
+
+	private function getCharsetFromHeaders($headers)
+	{
+		// This isn't in the vB_Utility_Url class in some form yet because we would have to
+		// always grab the header and ignore the setOption(vB_Utility_Url::HEADER, 0) and I
+		// don't want to making sweeping changes yet. Also, for regular (HTML) pages there
+		// may be more than just the header that might indicate the charset, e.g. <meta charset/>
+		// <meta http-equiv="Content-Type" />, etc, that we would want to handle before we
+		// can make it more global.
+		// For XMLs, we are just going to assume either the http header and/or the xml encoding
+		// attribute is set, and we'll only check the headers iff the latter is not.
+		$contenttype = $headers['content-type'] ?? '';
+		// regex from https://stackoverflow.com/a/33192813 , but 1) allow double quotes and 2)
+		// match at least 1 (+) instead of 0 or more (*). Though I've not seen it in the wild,
+		// apparently characters after the charset=<charset> is allowed in the header.
+		if ($contenttype AND preg_match('#charset=(?<charset>[^()<>@,;:\\/\[\]\?\.=\s]+)#i', $contenttype, $matches))
+		{
+			// if I'm understanding https://www.w3.org/Protocols/rfc1341/4_Content-Type.html correctly,
+			// I think in charset={value}, value can actually be a quoted string that includes any of the above characters...
+			// Putting in a fallback to allow quotes and stripping it here, but I don't think a legitimate charset will actually
+			// contain any of the above (or anything outside of [A-Za-z0-9-]) so not adding a fallback for that. And even if we
+			// DO get charsets with characters outside of above, our string class won't be able to handle that until we specifically
+			// add it to the known encodings.
+			$charset = trim($matches['charset'], '"');
+
+			return $charset;
+		}
+
+		return '';
+	}
+}
+
+/*=========================================================================*\
+|| #######################################################################
+|| # Downloaded: 12:50, Tue Dec 24th 2024
+|| # CVS: $RCSfile$ - $Revision: 109511 $
+|| #######################################################################
+\*=========================================================================*/

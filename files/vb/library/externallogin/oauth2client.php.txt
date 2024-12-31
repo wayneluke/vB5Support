@@ -1,0 +1,236 @@
+<?php
+/*========================================================================*\
+|| ###################################################################### ||
+|| # vBulletin 6.1.0 Alpha 4 Week 2 - Licence Number VBCW2VFT7A
+|| # ------------------------------------------------------------------ # ||
+|| # Copyright 2000-2024 MH Sub I, LLC dba vBulletin. All Rights Reserved.  # ||
+|| # This file may not be redistributed in whole or significant part.   # ||
+|| # ----------------- VBULLETIN IS NOT FREE SOFTWARE ----------------- # ||
+|| # http://www.vbulletin.com | http://www.vbulletin.com/license.html   # ||
+|| ###################################################################### ||
+\*========================================================================*/
+
+/**
+ * @package vBLibrary
+ */
+
+use League\OAuth2\Client\Token\AccessToken;
+
+/**
+ * Provides a basic implementation the external login concept with the PHP League OAUTH2 client interface
+ * with the
+ *
+ * @package vBLibrary
+ * @access public
+ */
+abstract class vB_Library_ExternalLogin_OAuth2Client extends vB_Library_ExternalLogin
+{
+	protected $provider;
+	protected $enabled;
+	protected $register_enabled;
+
+	//The text here is not intended to be used.  The child class should overload these with valid provider specific phrase names.
+	//This just provides something to display if the child is badly coded (without maintaining default phrases that are never used).
+	protected $errors = [
+		'noexternaluser' => 'No External ID',
+		'notloggedin' => 'Cannot link an account unless you are logged in',
+		'no_oauth_user_found_register_x', 'No Oauth User found',
+	];
+
+	public function getTokenRedirect()
+	{
+		$this->verifyEnabled();
+		$authUrl = $this->provider->getAuthorizationUrl();
+
+		$state = $this->provider->getState();
+		$this->updateSessionAuthRecord(['additional_params' => ['state' => $state]]);
+		return $authUrl;
+	}
+
+	public function confirmToken($code, $checkstate)
+	{
+		$this->verifyEnabled();
+
+		$auth = $this->getSessionAuthRecord();
+		$state = $auth['additional_params']['state'] ?? '';
+
+		if($state != $checkstate)
+		{
+			throw new vB_Exception_Api('invalid_oauth_state');
+		}
+
+		$token = $this->provider->getAccessToken('authorization_code', ['code' => $code]);
+		$this->updateSessionAuthRecord(['additional_params' => ['token' => $token]]);
+	}
+
+	public function getExternalUseridForLinking()
+	{
+		$external_userid = $this->getOauthUserFromSession()->getId();
+		if (!$external_userid)
+		{
+			throw new vB_Exception_Api($this->errors['noexternaluser']);
+		}
+
+		if (!$this->checkExternalUseridAvailability($external_userid))
+		{
+			throw new vB_Exception_Api('externallogin_extid_notunique');
+		}
+
+		return $external_userid;
+	}
+
+	//this requires that we confirmed the token within the current session.
+	public function linkCurrentUserWithApp($params = [])
+	{
+		$external_userid = $this->getExternalUseridForLinking();
+
+		// grab current userid
+		$userid =  vB::getCurrentSession()->get('userid');
+		if (!$userid)
+		{
+			throw new vB_Exception_Api($this->errors['notloggedin']);
+		}
+
+		$this->saveUserLink([
+			'userid' => $userid,
+			'external_userid' => $external_userid,
+		]);
+	}
+
+	//We need this for the registration because we haven't logged the new user in yet
+	//(and if we do then the we can't fetch the external id from the guest session).
+	//But we should not expose this via the API to avoid allowing anybody to attach
+	//their auth to any user (which would be *bad*).
+	public function linkUserWithApp($userid)
+	{
+		$external_userid = $this->getExternalUseridForLinking();
+
+		$this->saveUserLink([
+			'userid' => $userid,
+			'external_userid' => $external_userid,
+		]);
+	}
+
+	public function verifyAuthAndLogin($url = '', $userid = null)
+	{
+		$external_userid = $this->getOauthUserFromSession()->getId();
+		$userAuth = $this->getUserAuthRecord($external_userid);
+
+		if ($userAuth)
+		{
+			//if we are trying to restore a specific user, let's make sure the mapped account matches
+			//before we try to authenticate and don't.
+			if($userid AND $userAuth['userid'] != $userid)
+			{
+				throw new vB_Exception_Api('error_external_wrong_vb_user', $this->productid);
+			}
+
+			// log in using userid
+			$result = $this->loginUser($userAuth['userid']);
+			$result['success'] = true;
+			return $result;
+		}
+		else
+		{
+			$extra = [];
+			if ($url)
+			{
+				if(vB::getUrlLoader()->isSiteUrl($url))
+				{
+					$extra['urlpath'] = $url;
+				}
+			}
+
+			$registrationUrl = vB5_Route::buildUrl('register|fullurl', [], $extra);
+			throw new vB_Exception_Api($this->errors['no_oauth_user_found_register_x'], [$registrationUrl]);
+		}
+	}
+
+	public function getEnabled()
+	{
+		return [
+			'enabled' => $this->enabled,
+			'register_enabled' => ($this->enabled AND $this->register_enabled),
+		];
+	}
+
+	//the user information is provider specific, so the child will need to handle that
+	//but we want to provide a consistent interface so that we can potentially consolidate
+	//front end handling across differnet providers.
+	abstract public function getRegistrationData();
+
+	//use protected instead of private since this class is intended to be extended
+	//and there may be nuance here that child classes need to fix for their specific instances.
+
+	/**
+	 * Helper function to sort out the actual flag values from
+	 * @param bool $enabled -- is this login library enabled
+	 * @param bool $register -- is this login library enabled for registration
+	 * @param bool $configset -- is the necesary config set
+	 *
+	 * @return void
+	 */
+	protected function setEnabled($enabled, $register, $configset)
+	{
+		$this->enabled = ($enabled AND $configset);
+		$this->register_enabled = ($register AND $configset);
+	}
+
+	protected function verifyEnabled()
+	{
+		if(!$this->enabled)
+		{
+			//should come up with a better error here but hopefully this shouldn't happen
+			throw new vB_Exception_Api('invaliddata');
+		}
+	}
+
+	/**
+	 *	@return League\OAuth2\Client\Provider\ResourceOwnerInterface
+	 */
+	protected function getOauthUserFromSession()
+	{
+		//There isn't really a great way to signal when doing the OAUTH2 callback what we want to do once we get
+		//done after we validate the user. The validation process involves various redirects between vBulletin and
+		//the auth server and, with Google at least, CORS issues prevent handling this without redirecting the
+		//entire page.  Moreover the redirect url is validated to the letter so passing information -- even what
+		//we intended to do when we requested the token is difficult to pass through the process (as well as
+		//making sure any error handling happens on the page invoking the action).
+		//
+		//We also need to be very careful about validating the token and not leaking data.  So we'll seperate
+		//calls and rely on the token having been "prepped" in the session before calls that need to use it.
+		//
+		//It's not ideal to have this reliance on prep work but the redirect flow is difficult to navigate
+		//in an API context.
+
+
+		//The auth record isn't cached but we also don't use it for anything else.
+		//If we need it repeatedly we should either cache it or split the function up so we pass it in
+		$auth = $this->getSessionAuthRecord();
+		if(empty($auth['additional_params']['token']))
+		{
+			throw new vB_Exception_Api('invalid_oauth_token');
+		}
+
+		try
+		{
+			//json_decode doesn't correctly pick up the class so we need to run this through the constructor.
+			$token = new AccessToken($auth['additional_params']['token']);
+			$user = $this->provider->getResourceOwner($token);
+		}
+		catch(Exception $e)
+		{
+			throw new vB_Exception_Api('invalid_oauth_token');
+		}
+
+		return $user;
+	}
+
+}
+
+/*=========================================================================*\
+|| #######################################################################
+|| # Downloaded: 12:50, Tue Dec 24th 2024
+|| # CVS: $RCSfile$ - $Revision: 111252 $
+|| #######################################################################
+\*=========================================================================*/

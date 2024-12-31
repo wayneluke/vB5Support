@@ -1,0 +1,130 @@
+<?php if (!defined('VB_ENTRY')) die('Access denied.');
+/*========================================================================*\
+|| ###################################################################### ||
+|| # vBulletin 6.1.0 Alpha 4 Week 2 - Licence Number VBCW2VFT7A
+|| # ------------------------------------------------------------------ # ||
+|| # Copyright 2000-2024 MH Sub I, LLC dba vBulletin. All Rights Reserved.  # ||
+|| # This file may not be redistributed in whole or significant part.   # ||
+|| # ----------------- VBULLETIN IS NOT FREE SOFTWARE ----------------- # ||
+|| # http://www.vbulletin.com | http://www.vbulletin.com/license.html   # ||
+|| ###################################################################### ||
+\*========================================================================*/
+
+/**
+ * vB_Api_Reputation
+ *
+ * @package vBApi
+ * @access public
+ */
+class vB_Api_Reputation extends vB_Api
+{
+	/**
+	 * @var vB_dB_Assertor
+	 */
+	protected $assertor;
+
+	protected function __construct()
+	{
+		parent::__construct();
+
+		$this->assertor = vB::getDbAssertor();
+	}
+
+	/**
+	 * Vote a node
+	 *
+	 * @param int $nodeid Node ID.
+	 * @return array New Node info.
+	 * @see vB_Api_Node::getNode()
+	 * @throws vB_Exception_Api
+	 * @deprecated
+	 */
+	public function vote($nodeid)
+	{
+		// Likes have been superseded by reactions.
+		// Deprecated, but might be needed for mobile.
+		/** @var vB_Api_Reactions */
+		$reactionsApi = vB_Api::instanceInternal('reactions');
+		/** @var vB_Library_Reactions */
+		$reactionsLib = vB_Library::instance('reactions');
+		$thumbsup = $reactionsLib->getThumbsUp();
+		$thumbsupid = $thumbsup['votetypeid'] ?? 0;
+
+		$result = $reactionsApi->voteNode($nodeid, $thumbsupid);
+		$votesCount = $result['nodevotes'][$thumbsupid]['votes'];
+
+		return ['nodeid' => $nodeid, 'votes' => $votesCount];
+	}
+
+	/**
+	 * Unvote a node
+	 *
+	 * @param int $nodeid Node ID.
+	 * @return array New Node info.
+	 * @see vB_Api_Node::getNode()
+	 * @throws vB_Exception_Api
+	 * @deprecated
+	 */
+	public function unvote($nodeid)
+	{
+		// Likes have been superseded by reactions.
+		// Deprecated, but might be needed for mobile.
+		/** @var vB_Api_Reactions */
+		$reactionsApi = vB_Api::instanceInternal('reactions');
+		/** @var vB_Library_Reactions */
+		$reactionsLib = vB_Library::instance('reactions');
+		$thumbsup = $reactionsLib->getThumbsUp();
+		$thumbsupid = $thumbsup['votetypeid'] ?? 0;
+
+		$result = $reactionsApi->unvoteNode($nodeid, $thumbsupid);
+		$votesCount = $result['nodevotes'][$thumbsupid]['votes'];
+
+		return ['nodeid' => $nodeid, 'votes' => $votesCount];
+	}
+
+	protected function checkCanUseRep($node)
+	{
+		$loginuser = &vB::getCurrentSession()->fetch_userinfo();
+		if (!$loginuser['userid'])
+		{
+			throw new vB_Exception_Api('not_logged_no_permission');
+		}
+		$usercontext = &vB::getUserContext($loginuser['userid']);
+
+		// TODO: Better permission check
+//		if (!$usercontext->getChannelPermission('forumpermissions', 'canview', $node['channelid']) OR !$usercontext->getChannelPermission('forumpermissions', 'canviewthreads', $node['channelid']))
+//		{
+//			throw new vB_Exception_Api('no_permission');
+//		}
+//		if (!($usercontext->getChannelPermission('forumpermissions', 'canviewothers', $node['channelid']) AND $node['userid'] != $loginuser['userid']))
+//		{
+//			throw new vB_Exception_Api('no_permission');
+//		}
+		if (!$usercontext->hasPermission('genericpermissions', 'canuserep'))
+		{
+			throw new vB_Exception_Api('no_permission');
+		}
+
+		$contenttypes = vB_Types::instance()->getContentTypes();
+
+		if (!in_array($node['contenttypeid'], array(
+			$contenttypes['vBForum_Text']['id'],
+			$contenttypes['vBForum_Gallery']['id'],
+			$contenttypes['vBForum_Video']['id'],
+			$contenttypes['vBForum_Link']['id'],
+			$contenttypes['vBForum_Poll']['id'],
+			$contenttypes['vBForum_Event']['id'],
+		)))
+		{
+			// Only allow to vote on above content types.
+			throw new vB_Exception_Api('invalid_vote_node');
+		}
+	}
+}
+
+/*=========================================================================*\
+|| #######################################################################
+|| # Downloaded: 12:50, Tue Dec 24th 2024
+|| # CVS: $RCSfile$ - $Revision: 116047 $
+|| #######################################################################
+\*=========================================================================*/

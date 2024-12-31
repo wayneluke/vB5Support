@@ -1,0 +1,754 @@
+<?php if (!defined('VB_ENTRY')) die('Access denied.');
+/*========================================================================*\
+|| ###################################################################### ||
+|| # vBulletin 6.1.0 Alpha 4 Week 2 - Licence Number VBCW2VFT7A
+|| # ------------------------------------------------------------------ # ||
+|| # Copyright 2000-2024 MH Sub I, LLC dba vBulletin. All Rights Reserved.  # ||
+|| # This file may not be redistributed in whole or significant part.   # ||
+|| # ----------------- VBULLETIN IS NOT FREE SOFTWARE ----------------- # ||
+|| # http://www.vbulletin.com | http://www.vbulletin.com/license.html   # ||
+|| ###################################################################### ||
+\*========================================================================*/
+
+/**
+ * vB_Library_Nodevote
+ *
+ * @package vBLibrary
+ * @access public
+ */
+class vB_Library_Nodevote extends vB_Library
+{
+	/**
+	 *	DB Assertor object
+	 */
+	protected $assertor;
+
+	const DATASTOREKEY_METADATA = 'vBNodevoteMetadata';
+	// We might need to change this to a % or something.
+	// emojis frequently use : and , in their names, which could be
+	// problematic.
+	const DELIMITER = ':';
+
+	// keyed by ids
+	private $votetypes = [];
+	private $votegroups = [];
+	// keyed by labels
+	private $votegroupsByLabel = [];
+	private $votetypesByGroupAndTypeLabels = [];
+
+	protected function __construct()
+	{
+		parent::__construct();
+		$this->assertor = vB::getDbAssertor();
+		$this->loadNodevoteMetaData();
+	}
+
+	public function afterUserMerge($sourceuserid, $destuserid)
+	{
+		/*
+		The main challenge to this comes from the fact that merging two user's votes
+		must take the votegroup's onchange into account. For example, if it's a
+		checkbox type and the votes are two separate ones, we can merge simply.
+		If it's a checkbox type, but the votes are the same, we should ignore one (and
+		it doesn't matter which we ignore)
+		However, if it's a radio, and the votes are different, we can only keep
+		one, so we should respect the destuser's vote, as that's the current convention
+		for similar issues (e.g. we keep the destuser's display name)
+		 */
+		// This method could be a nasty memory bomb if the users were prolific voters...
+		$destvotes = $this->assertor->select('nodevote', ['whovoted' => $destuserid]);
+		$destvotesLookup = [];
+		foreach ($destvotes AS $__vote)
+		{
+			$destvotesLookup[$__vote['nodeid']][$__vote['votegroupid']][$__vote['votetypeid']][] = $__vote;
+		}
+		unset($destvotes);
+
+		$sourcevotes = $this->assertor->select('nodevote', ['whovoted' => $sourceuserid]);
+		$updateIgnore = [];
+		// nodeid, votetypeid.
+		$minusAggregatesByNodeidAndTypeid = [];
+		foreach ($sourcevotes AS $__vote)
+		{
+			$__nid = $__vote['nodeid'];
+			$__tid = $__vote['votetypeid'];
+			$__gid = $__vote['votegroupid'] ?? 0;
+			$__votegroup = $this->votegroups[$__gid] ?? [];
+			$__onchange = $__votegroup['onchange'];
+			$__destVoteInGroupExists = !empty($destvotesLookup[$__nid][$__gid]);
+			$__destVoteTypeExists = !empty($destvotesLookup[$__nid][$__gid][$__tid]);
+
+			// Check collision
+			if ($__destVoteInGroupExists AND ($__onchange == 'deny' OR $__onchange == 'radio'))
+			{
+				// Deny aren't allowed to change votes, and radio are only allowed 1 vote per group
+				// So we have to throw this vote away. Just decrement the aggregate, and leave nodevote for orphan deletion.
+				$minusAggregatesByNodeidAndTypeid[$__nid][$__tid] = ($minusAggregatesByNodeidAndTypeid[$__nid][$__tid] ?? 0) + 1;
+				continue;
+			}
+			else
+			{
+				// We need to check collisions for aggregate updates, but in terms of nodevotes itself, we can just do UPDATE IGNORE
+				// and any that collide can be safely deleted.
+				if ($__destVoteTypeExists)
+				{
+					$minusAggregatesByNodeidAndTypeid[$__nid][$__tid] = ($minusAggregatesByNodeidAndTypeid[$__nid][$__tid] ?? 0) + 1;
+				}
+				$updateIgnore[] = $__vote['voteid'];
+			}
+		}
+
+		if (!empty($updateIgnore))
+		{
+			$this->assertor->assertQuery('transferNodevotesIgnore', ['destuserid' => $destuserid, 'voteids' => $updateIgnore,]);
+		}
+
+		foreach ($minusAggregatesByNodeidAndTypeid AS $__nodeid => $__changes)
+		{
+			foreach ($__changes AS $__votetypeid => $__delta)
+			{
+				// We may need some way to bulk this...
+				$__conditions = [
+					'nodeid' => $__nodeid,
+					'votetypeid' => $__votetypeid,
+					'minus' => $__delta,
+				];
+				$this->assertor->assertQuery('subtractNodevoteaggregate', $__conditions);
+				$this->postNodevoteAggregateChange($__nodeid, $__votetypeid, -$__delta);
+			}
+		}
+
+		// Note, we do this instead of relying on afterUserDelete(), because that will try to fix the nodevote aggregates again
+		// incorrectly.
+		$this->assertor->delete('nodevote', ['whovoted' => $sourceuserid]);
+	}
+
+	public function afterUserDelete($userid)
+	{
+		if (empty($userid))
+		{
+			return;
+		}
+		// Typically we keep the nodes posted by a deleted user but unassign their id & name from them,
+		// so just update the userid.
+		$this->assertor->update('nodevote', ['userid' => 0], ['userid' => $userid]);
+
+		// We do not allow guest voting atm so delete the votes from this user
+		$nodevotes = $this->assertor->getRows('nodevote', ['whovoted' => $userid]);
+		$this->assertor->delete('nodevote', ['whovoted' => $userid]);
+
+		// Clean up the aggregates... This could be a performance killer if the user was a prolific voter..
+		$decrements = [];
+		foreach ($nodevotes AS ['voteid' => $__voteid, 'nodeid' => $__nodeid, 'votetypeid' => $__votetypeid])
+		{
+			if (!isset($decrements[$__nodeid]))
+			{
+				$decrements[$__nodeid] = [];
+			}
+
+			$decrements[$__nodeid][$__votetypeid] = ($decrements[$__nodeid][$__votetypeid] ?? 0) + 1;
+		}
+		foreach ($decrements AS $__nodeid => $__rows)
+		{
+			foreach ($__rows AS $__vtid => $__minus)
+			{
+				$__conditions = [
+					'nodeid' => $__nodeid,
+					'votetypeid' => $__vtid,
+					'minus' => $__minus,
+				];
+				$this->assertor->assertQuery('subtractNodevoteaggregate', $__conditions);
+				$this->postNodevoteAggregateChange($__nodeid, $__vtid, -$__minus);
+			}
+		}
+	}
+
+	private function updateNodevoteAgg($nodeid, $votetypeid, $incOrDec = 1)
+	{
+		if ($incOrDec == 0 OR empty($nodeid) OR empty($votetypeid))
+		{
+			return;
+		}
+
+		$condition = [
+			'nodeid' => $nodeid,
+			'votetypeid' => $votetypeid
+		];
+		/*
+		if ($incOrDec > 0)
+		{
+			$query = 'incrementNodevoteaggregate';
+		}
+		else
+		{
+			$query = 'decrementNodevoteaggregate';
+		}
+		$this->assertor->assertQuery($query, $condition);
+		*/
+		// This query should be able to use the vote_agg_helper index and should be fast.
+		// We've noticed some unreliability and database contention in some places that we have yet to
+		// reproduce locally, but if performance is OK, doing it this way should allow us to skip holding
+		// a transaction open for the entire process (particular post hook below, which depends entirely on
+		// products' logic), which might help with the database issues, and if we're doing the tally each time,
+		// we don't need to rely on the transaction and can let it "fix" itself if the count ever drifts
+		// for any reason.
+		$this->assertor->assertQuery('updateNodevoteaggregateForNodeAndType', $condition);
+
+		$this->postNodevoteAggregateChange($nodeid, $votetypeid, $incOrDec);
+	}
+
+	public function digestVoteUnvoteRequest($nodeidOrVoteid, $votetypeid = null)
+	{
+		$currentUserid = vB::getCurrentSession()->get('userid');
+		if (empty($currentUserid))
+		{
+			throw new vB_Exception_Api('nodevote_requires_login');
+		}
+
+		// Since we don't have overloading...
+		// $nodeidOrVoteid is understood to be a nodeid iff votetypeid is provided,
+		// and voteid otherwise.
+		if ($votetypeid == null)
+		{
+			$check = $this->assertor->getRow('nodevote', ['voteid' => $nodeidOrVoteid, 'whovoted' => $currentUserid]);
+			if (empty($check))
+			{
+				throw new vB_Exception_Api('invalid_data_w_x_y_z', [$nodeidOrVoteid, '$nodeidOrVoteid', __CLASS__, __FUNCTION__]);
+			}
+			$votetypeid = $check['votetypeid'];
+			$nodeid = $check['nodeid'];
+		}
+		else
+		{
+			$nodeid = $nodeidOrVoteid;
+			// This is to support a legacy mode where we used to allow voting via "<votegrouplabel>:<votetypelabel>"
+			// instead of an integer votetypeid. DEPRECATED
+			if (!is_numeric($votetypeid) AND  strpos($votetypeid, ':') !== false)
+			{
+				[$votegroupLabel, $votetypeLabel] = explode(':', $votetypeid);
+				$votetype = $this->votetypesByGroupAndTypeLabels[$votegroupLabel][$votetypeLabel] ?? [];
+
+				if (empty($votetype))
+				{
+					throw new vB_Exception_Api('invalid_data_w_x_y_z', [$votetypeid, '$votetypeid', __CLASS__, __FUNCTION__]);
+				}
+				$votetypeid = $votetype['votetypeid'];
+			}
+		}
+
+		$votetype = $this->votetypes[$votetypeid] ?? [];
+		$groupid = $votetype['votegroupid'] ?? 0;
+		$votegroup = $this->votegroups[$groupid] ?? [];
+
+		$node = vB_Library::instance('node')->getNodeBare($nodeid);
+
+		// ATM we have no restrictions on which nodes can get voted on. So even attach etc would be able to be voted on.
+		// But let's make sure that we're at least working with an existing node.
+		if (empty($node['nodeid']))
+		{
+			// Most likely if we don't have a nodeid, getNodeBare() probably already threw invalid_node_id before we got here.
+			throw new vB_Exception_Api('invalid_node_id');
+		}
+
+		// something about the votetypeid -> group mapping is broken, or invalid votetypeid, or an orphaned nodevote
+		// record when using voteid mode for $nodeidOrVoteid... let's just give up without looking more into it.
+		if (empty($votetype['votetypeid']) OR empty($votegroup['votegroupid']))
+		{
+			throw new vB_Exception_Api('invalid_data');
+		}
+
+		return [
+			$currentUserid,
+			$votetype,
+			$votegroup,
+			$node,
+		];
+	}
+
+	/*
+	public function unvoteByVoteid($voteid)
+	{
+		[$currentUserid, $votetype, $votegroup, $node] = $this->digestVoteUnvoteRequest($voteid);
+		$currentUserid = vB::getCurrentSession()->get('userid');
+		$check = $this->assertor->getRow('nodevote', ['voteid' => $voteid, 'whovoted' => $currentUserid]);
+		if (empty($check))
+		{
+			throw new vB_Exception_Api('invalid_data');
+		}
+
+		return $this->unvoteNode($check['nodeid'], $check['votetypeid']);
+	}
+	*/
+
+	public function unvoteNode($nodeid, $votetypeidorkey)
+	{
+		[$currentUserid, $votetype, $votegroup, $node] = $this->digestVoteUnvoteRequest($nodeid, $votetypeidorkey);
+		$votetypeid = $votetype['votetypeid'];
+
+		if ($votegroup['onchange'] == 'deny')
+		{
+			throw new vB_Exception_Api('nodevote_change_denied');
+		}
+
+		$conditions = [
+			// these are indexed conditions and will help with the query
+			'nodeid'      => $nodeid,
+			'votegroupid' => $votegroup['votegroupid'],
+			'whovoted'    => $currentUserid,
+			// should we add a nodeid, whovoted, votetypeid index specifically for these check queries?
+			'votetypeid'  => $votetypeid,
+		];
+		$check = $this->assertor->getRow('nodevote', $conditions);
+		$voteid = $check['voteid'] ?? 0;
+		if (!empty($voteid))
+		{
+			$this->assertor->delete('nodevote', ['voteid' => $voteid]);
+			$this->updateNodevoteAgg($nodeid, $votetypeid, -1);
+		}
+		else
+		{
+			throw new vB_Exception_Api('invalid_data');
+		}
+	}
+
+	// might be good to have a "toggle" function that does not throw exceptions and just works like
+	// one would expect on frontend. One problem it'd have is if a user clicks it twice by accident
+	// and two requests fire off, but it'd be easier to use.
+	public function voteNode($nodeid, $votetypeidorkey)
+	{
+		[$currentUserid, $votetype, $votegroup, $node] = $this->digestVoteUnvoteRequest($nodeid, $votetypeidorkey);
+		$votetypeid = $votetype['votetypeid'];
+
+		$timenow = vB::getRequest()->getTimeNow();
+		$insert = [
+			'nodeid'      => $nodeid,
+			'userid'      => $node['userid'],
+			'votetypeid'  => $votetypeid,
+			'votegroupid' =>  $votegroup['votegroupid'],
+			'whovoted'    =>  $currentUserid,
+			'dateline'    => $timenow,
+		];
+		$conditions = [
+			'nodeid'      => $nodeid,
+			'votegroupid' => $votegroup['votegroupid'],
+			'whovoted'    => $currentUserid,
+		];
+		$voteid = 0;
+
+		//onchange ENUM('deny', 'radio', 'checkbox', 'allow'),
+		switch ($votegroup['onchange'])
+		{
+			case 'deny':
+				// If we already cast a vote in this votegroup, casting another vote is NOT allowed.
+				// check for ANY votes in this group.
+				$check = $this->assertor->getRow('nodevote', $conditions);
+				if (!empty($check))
+				{
+					// todo: if we want a different error message for an "exact" dupe
+					// we can check $check['votetypeid'] ?? 0 == $votetypeid
+
+					throw new vB_Exception_Api('nodevote_change_denied');
+				}
+				else
+				{
+					$voteid = $this->assertor->insert('nodevote', $insert);
+					$this->updateNodevoteAgg($nodeid, $votetypeid, 1);
+				}
+				break;
+			/*
+			case 'allow':
+				// Fully allowed. Multiples of the same votetype is also allowed.
+				$voteid = $this->assertor->insert('nodevote', $insert);
+				$this->updateNodevoteAgg($nodeid, $votetypeid, 1);
+				break;
+			*/
+			case 'checkbox':
+				// Casting multiple votes of different votetype within the same group
+				// is allowed. "Exact duplicate" is not allowed.
+				// Look for THIS SPECIFIC votetype in this group
+				$conditions['votetypeid'] = $votetypeid;
+				$check = $this->assertor->getRow('nodevote', $conditions);
+				if (!empty($check))
+				{
+					throw new vB_Exception_Api('nodevote_dupe_notallowed');
+				}
+				$voteid = $this->assertor->insert('nodevote', $insert);
+				$this->updateNodevoteAgg($nodeid, $votetypeid, 1);
+				break;
+			case 'radio':
+			default:
+				// Casting another vote just overwrites the old vote.
+				// Check for ANY votes in this group (technically only ONE is allowed).
+				$check = $this->assertor->getRow('nodevote', $conditions);
+				$voteid = $check['voteid'] ?? 0;
+				if (!empty($check) AND $check['votetypeid'] == $votetypeid)
+				{
+					throw new vB_Exception_Api('nodevote_dupe_notallowed');
+				}
+				else if (!empty($check))
+				{
+					// Update existing record. Namely, need to update the votetypeid & dateline. The
+					// rest *should* be the same.
+					$updates = $insert;
+					$this->assertor->update('nodevote', $updates, ['voteid' => $voteid]);
+					$this->updateNodevoteAgg($nodeid, $check['votetypeid'], -1);
+					$this->updateNodevoteAgg($nodeid, $votetypeid, 1);
+				}
+				else
+				{
+					$voteid = $this->assertor->insert('nodevote', $insert);
+					$this->updateNodevoteAgg($nodeid, $votetypeid, 1);
+				}
+				break;
+		}
+
+		return $voteid;
+	}
+
+	private function validateLabel(string &$label)
+	{
+		$label = trim($label);
+
+		// Previously, we disallowed numeric labels, because we wanted to allow people to
+		// add nodevotetypes and specify the grouptype as EITHER label OR id... but we don't
+		// allow that anymore.
+		if (empty($label))
+		{
+			throw new vB_Exception_Api('nodevote_label_error', [$label]);
+		}
+
+		// Disallow at least one character we'll use as a delimiter
+		/*
+		if (strpos($label, self::DELIMITER) !== false)
+		{
+			throw new vB_Exception_Api('nodevote_label_error');
+		}
+		*/
+
+		// Not sure if we care about enforcing more limits. We should probably be referencing them by IDs
+		// in most places...
+	}
+
+	public function updateVotetypeLabel(int $votetypeid, string $label)
+	{
+		$this->validateLabel($label);
+
+		$old = $this->assertor->getRow('nodevotetype', ['votetypeid' => $votetypeid]);
+		if (empty($old))
+		{
+			throw new vB_Exception_Api('invalid_data_w_x_y_z', [$votetypeid, '$votetypeid', __CLASS__, __FUNCTION__]);
+		}
+
+		$check = $this->assertor->getRow('nodevotetype', ['label' => $label, 'votegroupid' => $old['votegroupid']]);
+		if (!empty($check) AND $check['votetypeid'] != $votetypeid)
+		{
+			throw new vB_Exception_Api('votetype_x_exists', $label);
+		}
+
+		$this->assertor->update('nodevotetype', ['label' => $label], ['votetypeid' => $votetypeid]);
+
+		$this->reloadNodevoteMetaDataFromDB();
+	}
+
+	public function addVotetype(string $label, ?string $votegrouplabel = null)
+	{
+		// This is a legacy support, but before we allowed colons in labels, we used to allow
+		// for specifying votetypes via <votegroup.label>:<votetype.label>. This code is left
+		// behind to continue to support legacy consumers, but we should not continue to use it
+		// as to avoid ambiguities with newer type & group labels that CAN contain semicolons.
+		if ($votegrouplabel == null AND strpos($label, ':') !== false)
+		{
+			// If votegroup is null, we expect $labelOrId to be a string key in the form of
+			// <votegrouplabel>:<votetypelabel>
+			[$votegrouplabel, $label]  = explode(':', $label);
+		}
+
+
+		$this->validateLabel($label);
+
+		$votegroup = $this->getOrAddGroup($votegrouplabel);
+		$votegroupid = $votegroup['votegroupid'];
+
+		$check = $this->assertor->getRow('nodevotetype', ['label' => $label, 'votegroupid' => $votegroupid]);
+		if (!empty($check))
+		{
+			throw new vB_Exception_Api('votetype_x_exists', $label);
+		}
+
+		// todo: how to hook up phrases to vote types?
+
+		$votetypeid = $this->assertor->insert('nodevotetype', ['label' => $label, 'votegroupid' => $votegroupid]);
+
+		$this->reloadNodevoteMetaDataFromDB();
+
+		return $votetypeid;
+	}
+
+	private function getOrAddGroup(string $votegroupLabel)
+	{
+		$votegroup = $this->votegroupsByLabel[$votegroupLabel] ?? [];
+		if (!empty($votegroup))
+		{
+			return $votegroup;
+		}
+
+		// Add group
+		$groupid = $this->addVotegroup($votegroupLabel);
+		return $this->votegroups[$groupid];
+	}
+
+	public function addVotegroup($label, $onchange = 'radio')
+	{
+		$this->validateLabel($label);
+
+		$check = $this->assertor->getRow('nodevotegroup', ['label' => $label]);
+		if (!empty($check))
+		{
+			throw new vB_Exception_Api('votegroup_x_exists', $label);
+		}
+
+		// enum check
+		if (!in_array($onchange, ['deny', 'radio', 'checkbox', ]))
+		{
+			throw new vB_Exception_Api('invalid_data_w_x_y_z', [$onchange, '$onchange', __CLASS__, __FUNCTION__]);
+		}
+
+		// todo: how to hook up phrases to vote groups?
+
+		$groupid = $this->assertor->insert('nodevotegroup', ['label' => $label, 'onchange' => $onchange]);
+
+		$this->reloadNodevoteMetaDataFromDB();
+
+		return $groupid;
+	}
+
+	private function postNodevoteAggregateChange($nodeids, $votetypeids, $delta)
+	{
+		/*
+		$nodeids INT | INT[] nodeids that are affected
+		$votetypeids INT | INT[] votetypes that are affected
+		$delta INT Expected change
+		Notes:
+		This function may be called when:
+			A node receives a vote
+			A node is unvoted
+			A user is deleted
+			-- Sample action: for any $votetypeids that the extension handles, fetch all nodevoteaggregates and
+			   update any impacted sphinx or mysql helper/aggregate indices
+			Votetype(s) or votegroup(s) removed
+			-- Special note: in this scenario nodeids will be empty, the votetypeids may no longer exist, and
+			   relevant nodevoteaggregate records will have already been removed.
+			   The handler is expected to "zero out" any downstream indices for all nodeids in such a case.
+		 */
+		if (!is_array($nodeids))
+		{
+			if (is_null($nodeids))
+			{
+				$nodeids = [];
+			}
+			else
+			{
+				$nodeids = [$nodeids];
+			}
+		}
+
+		if (!is_array($votetypeids))
+		{
+			$votetypeids = [$votetypeids];
+		}
+
+		$votetypeids = array_map('intval', $votetypeids);
+		$nodeids = array_map('intval', $nodeids);
+		$delta = intval($delta);
+
+		vB::getHooks()->invoke('hookNodevoteAggregateChange', [
+			'nodeids' => $nodeids,
+			'votetypeids' => &$votetypeids,
+			'delta' => $delta,
+		]);
+	}
+
+	public function removeVotegroup(string $votegroupLabel)
+	{
+		$votegroup = $this->votegroupsByLabel[$votegroupLabel] ?? [];
+		if (empty($votegroup))
+		{
+			throw new vB_Exception_Api('invalid_data');
+		}
+		return $this->removeVotegroupById($votegroup['votegroupid']);
+	}
+
+	private function removeVotegroupById(int $votegroupid)
+	{
+		if (empty($this->votegroups[$votegroupid]))
+		{
+			throw new vB_Exception_Api('invalid_data');
+		}
+		$condition = ['votegroupid' => $votegroupid];
+		$this->assertor->delete('nodevotegroup', $condition);
+		$votetypeids = $this->assertor->getColumn('nodevotetype', 'votetypeid', $condition);
+		$this->assertor->delete('nodevotetype', $condition);
+		$this->assertor->delete('nodevote', $condition);
+		$this->assertor->delete('nodevoteaggregate', ['votetypeid' => $votetypeids]);
+		$this->postNodevoteAggregateChange(null, $votetypeids, 0);
+		$this->reloadNodevoteMetaDataFromDB();
+	}
+
+	public function removeVotetype(string $votetypeLabel, ?string $votegroupLabel = null)
+	{
+		// This is a legacy support, but before we allowed colons in labels, we used to allow
+		// for specifying votetypes via <votegroup.label>:<votetype.label>. This code is left
+		// behind to continue to support legacy consumers, but we should not continue to use it
+		// as to avoid ambiguities with newer type & group labels that CAN contain semicolons.
+		if ($votegroupLabel == null AND strpos($votetypeLabel, ':') !== false)
+		{
+			// If votegroup is null, we expect $labelOrId to be a string key in the form of
+			// <votegrouplabel>:<votetypelabel>
+			[$votegroupLabel, $votetypeLabel] = explode(':', $votetypeLabel);
+		}
+
+
+		$votetype = $this->votetypesByGroupAndTypeLabels[$votegroupLabel][$votetypeLabel] ?? [];
+
+		if (empty($votetype))
+		{
+			throw new vB_Exception_Api('invalid_data');
+		}
+
+		return $this->removeVotetypeById($votetype['votetypeid']);
+	}
+
+	private function removeVotetypeById(int $votetypeid)
+	{
+		if (empty($this->votetypes[$votetypeid]))
+		{
+			throw new vB_Exception_Api('invalid_data');
+		}
+
+		$condition = ['votetypeid' => $votetypeid];
+		$this->assertor->delete('nodevotetype', $condition);
+		$this->assertor->delete('nodevote', $condition);
+		$this->assertor->delete('nodevoteaggregate', $condition);
+		$this->postNodevoteAggregateChange(null, $votetypeid, 0);
+		$this->reloadNodevoteMetaDataFromDB();
+	}
+
+	private function loadNodevoteMetaData()
+	{
+		$metadata = vB::getDatastore()->getValue(self::DATASTOREKEY_METADATA);
+		$check = ($metadata ? json_decode($metadata, true) : []);
+		if (
+			!isset($check['votetypes']) OR
+			!isset($check['votegroups']) OR
+			!isset($check['votegroupsByLabel']) OR
+			!isset($check['votetypesByGroupAndTypeLabels'])
+		)
+		{
+			$this->reloadNodevoteMetaDataFromDB();
+		}
+		else
+		{
+			[
+				'votetypes' => $this->votetypes,
+				'votegroups' => $this->votegroups,
+				'votegroupsByLabel' => $this->votegroupsByLabel,
+				'votetypesByGroupAndTypeLabels' => $this->votetypesByGroupAndTypeLabels,
+			] = $check;
+		}
+	}
+
+	public function reloadNodevoteMetaDataFromDB()
+	{
+		$this->votetypes = $this->assertor->getRows('nodevotetype', [], false, 'votetypeid');
+		$this->votegroups = $this->assertor->getRows('nodevotegroup', [], false, 'votegroupid');
+		$this->votegroupsByLabel = array_column($this->votegroups, null, 'label');
+		$this->votetypesByGroupAndTypeLabels = [];
+		foreach ($this->votetypes AS &$__data)
+		{
+			$__glabel = $this->votegroups[$__data['votegroupid']]['label'] ?? '';
+			$__tlabel = $__data['label'];
+			if (empty($__glabel) OR empty($__tlabel))
+			{
+				continue;
+			}
+
+			if (!isset($votetypesByGroupAndTypeLabels[$__glabel]))
+			{
+				$votetypesByGroupAndTypeLabels[$__glabel] = [];
+			}
+			$this->votetypesByGroupAndTypeLabels[$__glabel][$__tlabel] = $__data;
+		}
+
+		// Not sure if there's a really huge benefit to storing this in DS.
+		// currently ds : db work = 1 fetch + json-decode : 2 fetches w sorts
+		$store = [
+			'votetypes' => $this->votetypes,
+			'votegroups' => $this->votegroups,
+			'votegroupsByLabel' => $this->votegroupsByLabel,
+			'votetypesByGroupAndTypeLabels' => $this->votetypesByGroupAndTypeLabels,
+		];
+		$ds = vB::getDatastore();
+		$ds->build(self::DATASTOREKEY_METADATA, json_encode($store), 0);
+	}
+
+	public function getVoteMetaData($what = '')
+	{
+		switch ($what)
+		{
+			case 'votetypes':
+				return $this->votetypes;
+			case 'votegroups':
+				return $this->votegroups;
+			case 'votegroupsByLabel':
+				return $this->votegroupsByLabel;
+			case 'votetypesByGroupAndTypeLabels':
+				return $this->votetypesByGroupAndTypeLabels;
+			default:
+				return $this->votetypes;
+		}
+	}
+
+	public function getNodevoteCounts($nodeids)
+	{
+		if (!is_array($nodeids))
+		{
+			$nodeids = [$nodeids];
+		}
+
+		// not all nodes specified will have votes, not all types will have votes for a given node. To keep the result
+		// consistent, start off with zero-fills
+		// I don't think this is expensive enough to cache yet, but todo cache zerofill in datastore?
+		$zeroFill = array_fill_keys(array_keys($this->votetypes), ['votes' => 0, 'ivoted' => false,]);
+		$votes = array_fill_keys($nodeids, $zeroFill);
+
+		$currentUserid = vB::getCurrentSession()->get('userid');
+		$myVoteData = [];
+		if (!empty($currentUserid))
+		{
+			$rows = $this->assertor->select('nodevote', ['nodeid' => $nodeids, 'whovoted' => $currentUserid]);
+			foreach ($rows AS $__myvote)
+			{
+				$myVoteData[$__myvote['nodeid']][$__myvote['votetypeid']] = true;
+			}
+		}
+
+		$rows = $this->assertor->select('nodevoteaggregate', ['nodeid' => $nodeids]);
+		foreach ($rows AS ['nodeid' => $__nodeid, 'votetypeid' => $__typeid, 'votes' => $__votes])
+		{
+			$votes[$__nodeid][$__typeid] = [
+				'votes' => $__votes,
+				'ivoted' => ($myVoteData[$__nodeid][$__typeid] ?? false) ? 1 : 0,
+				'votetypeid' => $__typeid,
+			];
+		}
+
+		return $votes;
+	}
+}
+
+/*=========================================================================*\
+|| #######################################################################
+|| # Downloaded: 12:50, Tue Dec 24th 2024
+|| # CVS: $RCSfile$ - $Revision: 106452 $
+|| #######################################################################
+\*=========================================================================*/

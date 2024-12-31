@@ -1,0 +1,145 @@
+<?php
+/*========================================================================*\
+|| ###################################################################### ||
+|| # vBulletin 6.1.0 Alpha 4 Week 2 - Licence Number VBCW2VFT7A
+|| # ------------------------------------------------------------------ # ||
+|| # Copyright 2000-2024 MH Sub I, LLC dba vBulletin. All Rights Reserved.  # ||
+|| # This file may not be redistributed in whole or significant part.   # ||
+|| # ----------------- VBULLETIN IS NOT FREE SOFTWARE ----------------- # ||
+|| # http://www.vbulletin.com | http://www.vbulletin.com/license.html   # ||
+|| ###################################################################### ||
+\*========================================================================*/
+
+/**
+ * @package vBApi
+ */
+class vB_Api_NodeField extends vB_Api
+{
+	private $library;
+
+	protected function __construct()
+	{
+		$this->library = vB_Library::instance('nodefield');
+	}
+
+	/**
+	 * Save a category value.
+	 *
+	 * @param array $data --
+	 * 	int nodefieldcategoryid -- optional. If provided will update the category
+	 * 	string title -- the name of the category
+	 *
+	 * @return array -- ['categoryid' => $id]
+	 */
+	public function saveCategory($data)
+	{
+		$this->checkHasAdminPermission('canadminforums');
+		$id = $this->library->saveCategory($data);
+		return ['categoryid' => $id];
+	}
+
+	/**
+	 * Get the list of categories
+	 *
+	 * @return array -- ['categorylist' => $list]
+	 */
+	public function getCategoryList()
+	{
+		$list = $this->library->getCategoryList();
+		return ['categorylist' => $list];
+	}
+
+	/**
+	 *	Get a category
+	 *	@param int $categoryid
+	 *	@return ['categorylist' => $category]
+	 */
+	public function getCategory($categoryid)
+	{
+		$category = $this->library->getCategory($categoryid);
+		return ['category' => $category];
+	}
+
+	public function deleteCategory($categoryid)
+	{
+		$this->checkHasAdminPermission('canadminforums');
+		$this->library->deleteCategory($categoryid);
+		return ['success' => true];
+	}
+
+	public function saveField($data)
+	{
+		$this->checkHasAdminPermission('canadminforums');
+		$id = $this->library->saveField($data);
+		return ['fieldid' => $id];
+	}
+
+	public function getFieldList($fieldid = null)
+	{
+		$list = $this->library->getFieldList();
+		return ['fieldlist' => $list];
+	}
+
+	public function getFieldsForNode($nodeid)
+	{
+		//make sure the current user has permissions to view this node.
+		vB_Api::instanceInternal('node')->getNode($nodeid);
+
+		$list = $this->library->getFieldsForNode($nodeid);
+		return ['fieldlist' => $list];
+	}
+
+	/**
+	 * 	Return the values for display.
+	 *
+	 * 	Return the values for the node structured by the categories. This differs from getFieldsForNode in that it
+	 * 	only returns categories for which the node has saved values.  It does not return fields for which the value
+	 * 	is blank, nor does it return categories for which all fields are blank.
+	 *
+	 *	@param int $nodeid
+	 *	@return array
+	 */
+	//This is a little close to the UI here but we don't return blank categories/fields for a couple of reaons
+	//1) Trying to sort out if a category has non empty fields is a challenge in the templates and ends up with
+	//	messy code.  We could, alternately, set a flag on the category to indicated if all fields are empty for
+	//	the template to consume (which would be friendlier to alternate UIs that might want to show empty fields) but...
+	//2) We aren't guarenteed to have actual field records for every category (for instance if a field is added after a
+	//	node is saved) and in that instance we won't have a blank entry and if a category has no saved fields that's
+	//	implicitly excluded.
+	//Since at this point we don't want to show empty fields we'll just exclude them but if we add them back we should
+	//have consistent handling between empty and "missing" field values.
+	public function getFieldValuesForDisplay($nodeid)
+	{
+		//make sure the current user has permissions to view this node.
+		vB_Api::instanceInternal('node')->getNode($nodeid);
+
+		$list = $this->library->getFieldValuesForDisplay($nodeid);
+		return ['fieldlist' => $list];
+	}
+
+	public function getFieldsForChannel($channelid)
+	{
+		$list = $this->library->getFieldsForChannel($channelid);
+		return ['fieldlist' => $list];
+	}
+
+	public function getField($fieldid)
+	{
+		$field = $this->library->getField($fieldid);
+		return ['field' => $field];
+	}
+
+	public function deleteField($fieldid)
+	{
+		$this->checkHasAdminPermission('canadminforums');
+		$this->library->deleteField($fieldid);
+		return ['success' => true];
+	}
+}
+
+/*=========================================================================*\
+|| #######################################################################
+|| # Downloaded: 12:50, Tue Dec 24th 2024
+|| # CVS: $RCSfile$ - $Revision: 102970 $
+|| #######################################################################
+\*=========================================================================*/

@@ -1,0 +1,740 @@
+<?php
+/*========================================================================*\
+|| ###################################################################### ||
+|| # vBulletin 6.1.0 Alpha 4 Week 2 - Licence Number VBCW2VFT7A
+|| # ------------------------------------------------------------------ # ||
+|| # Copyright 2000-2024 MH Sub I, LLC dba vBulletin. All Rights Reserved.  # ||
+|| # This file may not be redistributed in whole or significant part.   # ||
+|| # ----------------- VBULLETIN IS NOT FREE SOFTWARE ----------------- # ||
+|| # http://www.vbulletin.com | http://www.vbulletin.com/license.html   # ||
+|| ###################################################################### ||
+\*========================================================================*/
+
+class vB_Api_Reactions extends vB_Api
+{
+	/*
+		Reactions are a loose wrapper around generic Nodevotes. The API & Library serve
+		to link specific nodevotes to specific emojis and commandeer the group of nodevotes
+		that will be considered system default "Reactions" (as opposed to some other subfeature
+		we might use nodevotes for).
+
+		The reason we need this mapping layer is because the nodevotes, currently does not
+		have any presentation / represetation logic -- i.e. "what does a nodevotetype 15 look
+		like?". This was because the only other place this is used internally relies on custom
+		packages to handle that logic, and only had a very few STATIC vote types (e.g. thumbs
+		up, thumbs down) so having a presentation logic was overkill and not worth the time.
+		Some logic that a "reaction" has in addition to nodevotetypes data is:
+		* HTML representation (i.e. the emoji's htmlentity, may change to raw UTF-8 in the future)
+		* Enabled
+		* Reputation enabled (different from above in that this only affects reputation impact)
+		* Search count weight
+
+		Reactions supersede the old "Likes" system, and contribute to Reputation & Search Sorting
+		in the same way that the old Likes used to.
+
+
+
+		At the moment I'm not sure if we want to keep reactions separate from nodevotes, or
+		just hide nodevotes and surface reactions as the defacto API that addons etc should
+		interact with (in which case we probably need to re-route some of the nodevote API
+		methods through this), or keep reactions only for our own, default reactions and
+		conjure up a separate layer for more generic, customizable nodevotes.
+
+		A reason we may NOT want reactions API to be the generic API is that some of the
+		logic endemic to reactions, like enabled, reputation, may not be applicable or
+		necessary for other implementations of nodevotes. Reactions are technically only
+		ONE possible usage of nodevotes, presumably you could use nodevotes for generic
+		voting/polling, wishlisting or bookmarking, or any other feature imaginable where
+		you might need to "track a click per user per node".
+	*/
+
+	//We use this to render a hidden form to the footer for use by the javascript.
+	//We might want to move that to a less central template but for now make sure
+	//the call doesn't break anything.
+	protected $disableFalseReturnOnly = ['fetchEnabledReactionsList'];
+
+	// Wrapping it is handy for intellisense because we can specify the exact derived library class
+	// as the return.
+	private function getLib() : vB_Library_Reactions
+	{
+		return vB_Library::instance('reactions');
+	}
+
+	/**
+	 * Fetch list of all enabled reactions for the "add reaction" popup UI
+	 *
+	 * @return array
+	 *           'reactions' - ordered list of emojis. Each element is an array of
+	 *                   [
+	 *                       'votetypeid'  => int `nodevotetype`.`votetypeid`, useful as parameter #2 to
+	 *                                vB_Api_Nodevote::voteNode($nodeid, $votetypeid),
+	 *                       'label'       => str `nodevotetype`.`label`,
+	 *                       'emojihtml'   => str emoji's htmlentity,
+	 *                       'votegroupid' => int `nodevotetype`.`votegroupid`,
+	 *                   ]
+	 *                   Ordering is via unicode.org specified data.
+	 *
+	 */
+	public function fetchEnabledReactionsList()
+	{
+		$lib = $this->getLib();
+		$ordered = $lib->fetchEnabledReactionsListByOrder();
+
+		return [
+			'reactions' => $ordered,
+		];
+	}
+
+	/**
+	 * Fetch specified conversation's voted reactions data for displaying in conversation footer.
+	 * Will only return nodevotes that are 1) part of the "reactions" group, 2) enabled, and 3)
+	 * has a non-zero vote-count.
+	 *
+	 * @return array
+	 *           'reactions' - ordered list of emojis. Each element is an array of
+	 *                   [
+	 *                       'votetypeid'  => int `nodevotetype`.`votetypeid`, useful as parameter #2 to
+	 *                                vB_Api_Nodevote::voteNode($nodeid, $votetypeid),
+	 *                       'label'       => str `nodevotetype`.`label`,
+	 *                       'emojihtml'   => str emoji's htmlentity,
+	 *                       'votegroupid' => int `nodevotetype`.`votegroupid`,
+	 *                       'votes'       => int  current vote count,
+	 *                       'ivoted'      => bool current user voted or not,
+	 *                   ]
+	 *                   Ordering is currently via number of votes descending, but may change in the future.
+	 *
+	 */
+	public function fetchReactionsForFooter($conversation)
+	{
+		$found = [];
+		$lib = $this->getLib();
+
+		// Implicitly  -- only show reactions that are enabled.
+		$enabled = $lib->fetchEnabledReactionsListByOrder();
+		foreach ($enabled AS $__reaction)
+		{
+			$__key = $__reaction['votetypeid'];
+			if (isset($conversation['nodevotes'][$__key]))
+			{
+				['votes' => $__votes, 'ivoted' => $__ivoted, ] = $conversation['nodevotes'][$__key];
+				// Skip showing reactions without votes.
+				if ($__votes < 1)
+				{
+					continue;
+				}
+
+				// reaction comes with votetypeid, label, emojihtml, votegroupid & key
+				// Also add the vote count & bool ivoted
+				$__reaction['votes'] = $__votes;
+				$__reaction['ivoted'] = $__ivoted;
+				$found[] = $__reaction;
+			}
+		}
+
+		$sortoption = vB::getDatastore()->getOption('footer_reaction_sort');
+		switch ($sortoption)
+		{
+			case 'displayorder':
+				// sort by displayorder ASC... we're already in displayorder ascending so no-op.
+				break;
+			case 'votes':
+			default:
+				// Sort by most votes DESC
+				usort($found, fn($a, $b) => ($b['votes'] - $a['votes']));
+				break;
+		}
+
+		return ['reactions' => $found];
+	}
+
+	/**
+	 * Wrapper to vB_Api_Nodevote::voteNode() in order to hook up reputation
+	 * and search column actions.
+	 *
+	 * @param int $nodeid
+	 * @param int $votetypeid
+	 *
+	 * @return [
+	 *   'success' => (bool) true,
+	 *   'voteid' => (int),
+	 *   'nodevotes' => ['votes' => (int), 'ivoted' => 1|0],
+	 * ]
+	 */
+	public function voteNode($nodeid, $votetypeid)
+	{
+		$this->checkCanUseReactions($nodeid, $votetypeid);
+
+		/** @var vB_Api_Nodevote */
+		$nodevoteApi = vB_Api::instanceInternal('nodevote');
+		// First, let the nodevote api & library handle the actual voting & logic
+		$return = $nodevoteApi->voteNode($nodeid, $votetypeid);
+
+		if ($return['success'])
+		{
+			$this->postNodevoteChange($nodeid, $votetypeid, true);
+			$this->sendReactionNotification($nodeid, $votetypeid);
+		}
+
+		return $return;
+	}
+
+	private function checkReactionEnabled(int $votetypeid)
+	{
+		/** @var vB_Library_Reactions */
+		$lib = vB_Library::instance('reactions');
+		$status = $lib->getEmojisEnabledStatus();
+		if (empty($status[$votetypeid]))
+		{
+			// Note, this should probably report whether this was the voteNode or unvoteNode that called it, but not sure
+			// that's worth walking back the trace for.
+			throw new vB_Exception_Api('invalid_data_w_x_y_z', [$votetypeid, 'votetypeid', __CLASS__, __FUNCTION__]);
+		}
+	}
+
+
+	/**
+	 * Wrapper to vB_Api_Nodevote::voteNode() in order to hook up reputation
+	 * and search column actions.
+	 *
+	 * @param int $nodeid
+	 * @param int $votetypeid
+	 *
+	 * @return [
+	 *   'success' => (bool) true,
+	 *   'nodevotes' => ['votes' => (int), 'ivoted' => 1|0],
+	 * ]
+	 */
+	public function unvoteNode($nodeid, $votetypeid)
+	{
+		$this->checkCanUseReactions($nodeid, $votetypeid);
+
+		// First, let the nodevote api & library handle the actual voting & logic
+		$return = vB_Api::instanceInternal('nodevote')->unvoteNode($nodeid, $votetypeid);
+
+		if ($return['success'])
+		{
+			$this->postNodevoteChange($nodeid, $votetypeid, false);
+			// We may need to remove a sent notification if the "last vote" was removed, so
+			// we have to call this.
+			$this->cleanupOrphanReactionNotification($nodeid, $votetypeid);
+		}
+
+		return $return;
+	}
+
+	private function checkCanUseReactions($nodeid, $votetypeid)
+	{
+		// Reaction settings...
+		$this->checkReactionEnabled($votetypeid);
+
+		// For now, let's restrict reactions voting to the same rep permissions as the like system.
+		// We might change this in the future.
+		$loginuser = &vB::getCurrentSession()->fetch_userinfo();
+		if (!$this->canUseRep($loginuser['userid'], $nodeid))
+		{
+			if (!$loginuser['userid'])
+			{
+				throw new vB_Exception_Api('no_permission_please_login_first');
+			}
+			throw new vB_Exception_Api('no_permission_reaction');
+		}
+	}
+
+	private function updateNodeVotes($nodeid, $votetypeid, $wasVote = true)
+	{
+		// Regardless of reputation, we need to update the vote counts, including the author's self vote if any.
+
+		$assertor = vB::getDbAssertor();
+		/** @var vB_Library_Reactions */
+		$lib = vB_Library::instance('reactions');
+		$enabledvotetypeids = $lib->fetchOnlyEnabledReactionsVotetypeid();
+		if (empty($enabledvotetypeids))
+		{
+			$enabledvotetypeids = [0];
+		}
+		// ***
+		// `node`.`votes` (Search sort)
+		// ***
+		$assertor->assertQuery('vBForum:updateNodeVotes',  ['nodeid' => $nodeid, 'enabledvotetypeids' => $enabledvotetypeids,]);
+	}
+
+	private function postNodevoteChange($nodeid, $votetypeid, $wasVote)
+	{
+		$this->updateReputation($nodeid, $votetypeid, $wasVote);
+		$this->updateNodeVotes($nodeid, $votetypeid, $wasVote);
+		// ***
+		// CLEANUP
+		// ***
+		// Clear cache to make sure the node.votes gets picked up.
+		vB_Cache::allCacheEvent('nodeChg_' . $nodeid);
+
+		// But they have to go after 1) updateNodeVotes & 2) clearing node cache, otherwise
+		// stale data will cause problems.
+		// votes (& all children's startervotes) must be updated in sphinx.
+		/** @var vB_Library_Search */
+		$searchLIB = vB_Library::instance('search');
+		$searchLIB->attributeChanged($nodeid);
+	}
+
+	private function getTotalLikesForUser(int $userid) : int
+	{
+		// At this time, we don't have information about a "previous reaction" this reaction may or may not be
+		// replacing, or un-voting. Without that information, we don't know whether that vote was a countable
+		// one or not, so we cannot perform a differential increment/decrement on the totallikes tally, and
+		// we're left with having to completely re-count the totallikes.
+		// We may want to refactor the nodevote methods to return the "previous" data to us when we're doing
+		// a replacement for radiotypes (or unvoting) if this ends up being too unperformant. Running some
+		// test queries, however, indicates that these queries are not that expensive (e.g. ~ 0.02s for individual
+		// user count queries, ~.1s for a complete total query)
+
+		// One thing this does NOT do is check the *current* "canuserep" status of each voter.
+		// Currently, a voter cannot use reactions without canuserep, so this is probably less of a problem
+		// as long as we're aware that we're counting all "historical" votes regardless of the voters' current
+		// status.
+		// Note that this "historical" only refers to the voters' status, NOT the reactions' current status.
+		// Unlike reputation, we *can* figure out which reactions should and should not count for total likes
+		// because we don't have to worry about reppower. Similar to reppower however, we don't know what the
+		// reactionoptions were at the time of each vote (e.g. 100 votes in the past may not have been countable,
+		// but is countable now), so we ignore that and only take the *current* state of the reaction types
+		// into account.
+		$assertor = vB::getDbAssertor();
+		/** @var vB_Library_Reactions */
+		$lib = vB_Library::instance('reactions');
+		$enabledvotetypeids = $lib->fetchOnlyEnabledReactionsVotetypeid();
+		// Handle totallikes counts... current spec is that similar to reputables, specific reactions will be marked as countable.
+		$countableTypes = $lib->getUserRepCountableTypes();
+		$countableAndEnabled = [];
+		foreach ($enabledvotetypeids AS $__id)
+		{
+			$__countable = $countableTypes[$__id] ?? false;
+			if ($__countable)
+			{
+				$countableAndEnabled[] = $__id;
+			}
+		}
+
+		if (empty($countableAndEnabled))
+		{
+			return 0;
+		}
+
+		// Note, if this query turns out to be too slow even with the totallikes_agg_helper index,
+		// we could convert this function to do an update instead and move it off to the system events.
+		// Alternatively, add some kind of bulk register/update logic into system events and do deferred
+		// bulk user updates.
+		$queryConds = [vB_dB_Query::TYPE_KEY => vB_dB_Query::QUERY_COUNT];
+		$queryConds[vB_dB_Query::CONDITIONS_KEY] = [
+			'userid' =>  $userid,
+			'votetypeid' => $countableAndEnabled,
+			// This is needed to prevent self-reactions from counting in the tally.
+   			['field' => 'whovoted', 'value' => $userid, 'operator' =>  vB_dB_Query::OPERATOR_NE],
+		];
+		$check = $assertor->getRow('nodevote', $queryConds);
+
+		return $check['count'] ?? 0;
+	}
+
+	// This is based on the old vB_Api_Reputation::vote() logic.
+	private function updateReputation($nodeid, $votetypeid, $wasVote = true)
+	{
+		/*
+		Warning, some of this logic only works because reactions are a "checkbox" category.
+		That is, e.g. clicking on "thumbs up" then "thumbs down" does not affect each other.
+		If it were radio, the latter would effectively "unvote" the previous "thumbs up" vote,
+		and that would complicate the reputation and count logics as we would need to undo
+		the reputation & search logic of the previous vote.
+		 */
+
+		$assertor = vB::getDbAssertor();
+		$node = vB_Api::instanceInternal('node')->getNodeFullContent($nodeid);
+		$node = $node[$nodeid];
+		$loginuser = vB::getCurrentSession()->fetch_userinfo();
+
+
+		// If they can't use reputation, just don't update the rep and return quietly.
+		// Note, this check is currently effectively duplicated because we check
+		// it for the vote action as well as this reputation action, but that is
+		// intentional as presumably reactions may get its own setting.
+
+		$cannotUseRep = !$this->canUseRep($loginuser['userid'], $node);
+		// With old likes & reputations, users could not like their own post. Allowing self-reactions is
+		// pretty normal now, so we'll allow the reaction, but just skip the reputation change so users
+		// can't try to snowball their own rep.
+		$selfVote = ($node['userid'] == $loginuser['userid']);
+
+		// Reputations only apply to users. If the target user does not exist for any reason (e.g. anonymous guest post, deleted user),
+		// or is not allowed to gain reputation points for some reason, just skip this quietly.
+		$targetUserinfo = vB_Library::instance('user')->fetchUserinfo($node['userid']);
+		$targetUserCannotGetRep = (!$targetUserinfo['userid'] OR !$this->canTargetUserGainReputation($targetUserinfo));
+
+		if ($cannotUseRep OR $selfVote OR $targetUserCannotGetRep)
+		{
+			// TODO: do we want to still update the totallikes even without rep perms?
+			return;
+		}
+
+
+		// Check if the user has already reputation this node
+		$existingreputation = $assertor->getRow('vBForum:reputation', [
+			'nodeid' => $nodeid,
+			'whoadded' => $loginuser['userid'],
+		]);
+
+
+		// This part is new in reactions. So we'll eventually have certain reactions marked (by admin) as
+		// "reputable", and those will contribute to reputations.
+		/** @var vB_Library_Reactions */
+		$lib = vB_Library::instance('reactions');
+		$typesToFactors = $lib->getReputableTypesAndFactors();
+		$enabledvotetypeids = $lib->fetchOnlyEnabledReactionsVotetypeid();
+		// Currently, the reactions nodevotegroup type is "radio". This means each user can only vote one reaction
+		// per node, but they can *switch* their vote.
+		// If they have an existing reputation, that means they switched their vote. So we "replace" the old reputation
+		// score contribution with the new one.
+		// If we ever change the grouptype to "checkbox" instead of "radio" and allow for multiple reactions per node
+		// per user, we need to re-work this logic altogether.
+
+		// Currently, we do not yet have different reputation factors, they're either 0 or 1. We may have
+		// negative reputation in the future, which may need to be tallied separately.
+		$positiveFactor = 0;
+		if (in_array($votetypeid, $enabledvotetypeids) AND $typesToFactors[$votetypeid] > 0)
+		{
+			$positiveFactor = $typesToFactors[$votetypeid];
+		}
+
+		// It's pretty common for positive & negative reactions to be tallied separately, e.g. upvotes/downvotes,
+		// thumbsup/thumbs down. If we ever add handling for negative reputation, we'll need to be careful about
+		// not mixing signals with the "positive" reputation code below. (note that "negative" deltas currently
+		// only happen due to *removing* a previous vote, NOT from adding a vote)
+
+		// "Replace" the old reputation contribution with the new (even if new is 0). This should handle both vote & unvotes.
+		// Note that this technically makes it possible that they can LOSE reputation on a vote (or GAIN on an unvote)
+		// iff the voter's reputation power changed since their last vote.
+		// Note that this is a bit dubious, because this is affecting "historical" reputation scores, which we do not do for the
+		// full reputation rebuild (because we can't, since we don't have the full contextual history of what vote contributed
+		// to what `reputation` record with how much reppower). However, this is a bit different from the reputation rebuild,
+		// since the voter who's contributing to the author's reputation is actively changing their vote at this moment, so
+		// I think it has more justification to change the historical score.
+		$deltaReputation = -($existingreputation['reputation'] ?? 0);
+		$newReputation = 0;
+		if ($positiveFactor != 0)
+		{
+			// If any factor exists, that was at least one vote now or from the past that was "reputable".
+			// Let's recalculate the reputation contribution from the voting user.
+
+			$score = vB_Library::instance('reputation')->fetchReppower($loginuser);
+			$newReputation = $score * $positiveFactor;
+			$deltaReputation += $newReputation;
+		}
+		else
+		{
+			// Otherwise, they've either not voted a "reputable" vote, or they've fully unvoted everything,
+			// so just the removal of the pre-existing reputation is all that's needed.
+		}
+		// deltaReputation may be negative depending on a variety of factors, but in the simplest cases, would be positive
+		// for voting & negative for unvoting.
+		$targetUserinfo['reputation'] += $deltaReputation;
+
+		// Trying to keep track of the history of which vote counted to the totallikes tally and which votes didn't, as well
+		// as what was enabled or countable at that time, is going to be nearly impossible or require a LOT of data tracking.
+		// Let's just do a full re-tally at this time, similar to how we handle node.votes, as that simplies a lot of things
+		// at the cost of being a bit slower.
+		$targetUserinfo['totallikes'] = $this->getTotalLikesForUser($targetUserinfo['userid']);
+
+		// ***
+		// TARGET USER UPDATE (reputation, totallikes)
+		// ***
+		try
+		{
+			// init user data manager
+			$userdata = new vB_DataManager_User(vB_DataManager_Constants::ERRTYPE_STANDARD);
+			$userdata->set_existing($targetUserinfo);
+			$userdata->set('reputation', $targetUserinfo['reputation']);
+			$userdata->set('totallikes', $targetUserinfo['totallikes']);
+			// Note, pre_save() will also trigger rank updates (reputation & totallikes may affect rank)
+			$userdata->pre_save();
+			// TODO: We should figure out what to do about reputation & totallikes counters when a node that has likes on it is removed...
+
+			// Moved the reputation record saving/deleting/updating to below outside of this block.. see if that's going to be a problem.
+
+			$userdata->save();
+		}
+		catch (Exception $e)
+		{
+			// catching generic exceptions since DM may throw different types
+
+			// let's not break the vote action due to reputation fails...
+		}
+
+
+		// ***
+		// UPSERT REPUTATION RECORD
+		// ***
+		$values = [
+			'reputation' => $newReputation,
+			'userid' => $targetUserinfo['userid'],
+			'nodeid' => $nodeid,
+			'whoadded' => $loginuser['userid'],
+			'dateline' => vB::getRequest()->getTimeNow(),
+		];
+		if ($existingreputation)
+		{
+			$condition = ['reputationid' => $existingreputation['reputationid']];
+			if ($newReputation > 0)
+			{
+				$assertor->update('vBForum:reputation', $values, $condition);
+			}
+			else
+			{
+				$assertor->delete('vBForum:reputation', $condition);
+			}
+		}
+		else if ($newReputation > 0)
+		{
+			$values[vB_dB_Query::TYPE_KEY] = vB_dB_Query::QUERY_INSERTIGNORE;
+			/*insert query*/
+			$assertor->assertQuery('vBForum:reputation', $values);
+		}
+	}
+
+	private function cleanupOrphanReactionNotification($nodeid, $votetypeid, $wasVote = true)
+	{
+		// TODO: We probably want to refactor the LikedNode notification in phrasing & usage.
+		// Previously, we only had 1 "Like" action on the node, but we now have 7 reactions
+		// that should hypothetically trigger a "XYZ reacted to..." notification.
+		// We should update the phrasing from "XYZ liked" to "reacted to", and also figure
+		// out which reactions (if not all) should generate the notification.
+		// For now, we're just going with the "reputable" ones, but that's an arbitrary decision.
+		$assertor = vB::getDbAssertor();
+		$node = vB_Api::instanceInternal('node')->getNodeFullContent($nodeid);
+		$node = $node[$nodeid];
+		$recipient = $node['userid'];
+
+		/** @var vB_Library_Reactions */
+		$lib = vB_Library::instance('reactions');
+		$notifyTypes = $lib->getNotifiableTypes();
+		if (!isset($notifyTypes[$votetypeid]))
+		{
+			// This reaction doesn't interact with notifications
+			return;
+		}
+		$notifyTypeids = array_keys($notifyTypes);
+
+		$conditions = [
+			vB_dB_Query::CONDITIONS_KEY => [
+				['field' => 'whovoted', 'value' => $recipient, 'operator' => vB_dB_Query::OPERATOR_NE],
+				['field' => 'nodeid', 'value' => $nodeid, 'operator' => vB_dB_Query::OPERATOR_EQ],
+				['field' => 'votetypeid', 'value' => $notifyTypeids, 'operator' => vB_dB_Query::OPERATOR_EQ],
+			],
+			vB_dB_Query::COLUMNS_KEY => ['whovoted'],
+			vB_dB_Query::PARAM_LIMIT => 1,
+		];
+		// This query *should* be pretty fast:
+		// EXPLAIN output: possible_keys: enforce_single,node_votes,vote_agg_helper, Extra: Using where; Using index
+		// Edit: 2023-12-18
+		// Note, if we need to sort by dateline, e.g. to be able to roll-back the 'senderid', we should probably add a new
+		// index like `notificationhelper` (`nodeid`, `dateline`, `whovoted`, `votetypeid`) to avoid filesort during unvote.
+		// Ideally, whatever new index we add should be formulated to also help the fetchNodeReactors query that's run at
+		// notification-view time
+		$anyNonSelfVote = $assertor->assertQuery('nodevote', $conditions);
+
+		/** @var vB_Library_Notification */
+		$notificationLib = vB_Library::instance('notification');
+		// Remove any existing notifications if we no longer have ANOTHER's vote. E.g. last vote was "Unvoted"
+		if (!$anyNonSelfVote->valid())
+		{
+			/*
+				TODO Add a new delete event for LikedNode and replace below with a dismiss event!
+			 */
+			$typesByTypename = $notificationLib->getNotificationTypes();
+			$typeid = $typesByTypename[vB_Notification_LikedNode::TYPENAME]['typeid'];
+			$notificationInfo = [
+				'recipient'		=> $recipient,
+				'sentbynodeid'	=> $nodeid,
+				'typeid'		=> $typeid,
+			];
+			$notification = $assertor->getRow('vBForum:notification', $notificationInfo);
+			if (isset($notification['notificationid']))
+			{
+				$notificationLib->deleteNotification($notification['notificationid']);
+			}
+		}
+		// Note, what we should also probably do here in an else block is to update the senderid of the
+		// maintained notification. We'll want to "roll back" to the last recent non-self voter, so
+		// we should sort by dateline DESC and grab that user instead of $anyNonSelfVote above.
+		// For now, skipping that as it's an edge case.
+	}
+
+	private function sendReactionNotification($nodeid, $votetypeid)
+	{
+		$node = vB_Api::instanceInternal('node')->getNodeFullContent($nodeid);
+		$node = $node[$nodeid];
+		$recipient = $node['userid'];
+		$loginuser = vB::getCurrentSession()->fetch_userinfo();
+
+		// Do not send or update notifications for self-reactions
+		if ($recipient == $loginuser['userid'])
+		{
+			return;
+		}
+
+		// TODO: Also check globalignores & skip send?
+
+		/** @var vB_Library_Reactions */
+		$lib = vB_Library::instance('reactions');
+		$notifyTypes = $lib->getNotifiableTypes();
+		if (!isset($notifyTypes[$votetypeid]))
+		{
+			// This reaction doesn't interact with notifications
+			return;
+		}
+
+		/** @var vB_Library_Notification */
+		$notificationLib = vB_Library::instance('notification');
+		// Send or update notification via the notification system.
+		$contextData = [
+			'sentbynodeid' => $nodeid,
+			'sender' => $loginuser['userid'],
+		];
+		$notificationLib->triggerNotificationEvent('node-reputation-vote', $contextData, [$recipient]);
+		$notificationLib->insertNotificationsToDB();
+	}
+
+	private function canTargetUserGainReputation($targetUserinfo)
+	{
+		$usergroupcache = vB::getDatastore()->getValue('usergroupcache');
+		$bf_ugp_genericoptions = vB::getDatastore()->getValue('bf_ugp_genericoptions');
+		if (!($usergroupcache[$targetUserinfo['usergroupid']]['genericoptions'] & $bf_ugp_genericoptions['isnotbannedgroup']))
+		{
+			return false;
+		}
+
+		return true;
+	}
+
+	// Based on vB_Api_Reputation but doesn't throw exceptions
+	private function canUseRep($loginuserid, $nodeOrNodeid)
+	{
+		if (!$loginuserid)
+		{
+			return false;
+		}
+		$usercontext = vB::getUserContext($loginuserid);
+
+		// TODO: Better permission check
+//		if (!$usercontext->getChannelPermission('forumpermissions', 'canview', $node['channelid']) OR !$usercontext->getChannelPermission('forumpermissions', 'canviewthreads', $node['channelid']))
+//		{
+//			throw new vB_Exception_Api('no_permission');
+//		}
+//		if (!($usercontext->getChannelPermission('forumpermissions', 'canviewothers', $node['channelid']) AND $node['userid'] != $loginuserid))
+//		{
+//			throw new vB_Exception_Api('no_permission');
+//		}
+		if (!$usercontext->hasPermission('genericpermissions', 'canuserep'))
+		{
+			return false;
+		}
+
+		$contenttypes = vB_Types::instance()->getContentTypes();
+
+		// overloading, handle nodeid
+		if (is_numeric($nodeOrNodeid))
+		{
+			$nodeOrNodeid = vB_Library::instance('node')->getNodeBare($nodeOrNodeid);
+		}
+
+		if (!in_array($nodeOrNodeid['contenttypeid'], [
+			$contenttypes['vBForum_Text']['id'],
+			$contenttypes['vBForum_Gallery']['id'],
+			$contenttypes['vBForum_Video']['id'],
+			$contenttypes['vBForum_Link']['id'],
+			$contenttypes['vBForum_Poll']['id'],
+			$contenttypes['vBForum_Event']['id'],
+		]))
+		{
+			// TODO: Not sure if above type limiting is still necessary or valid. This was copied from
+			// the reputation/like restrictions.
+			return false;
+		}
+
+
+		return true;
+	}
+
+	/**
+	 * Fetch who reacted to a node
+	 * @param int $nodeid
+	 * @param int $votetypeid
+	 *
+	 * @return array ['users' => Array of users, where each user is an array of
+	 *     [
+	 *         'userid' => int,
+	 *         'username' => bool,
+	 *         'infractiongroupid' => int,
+	 *         'displaygroupid' => int,
+	 *         'ismoderator' => bool,
+	 *         'isadmin' => bool,
+	 *         'avatarurl' => string,
+	 *         'profileurl' => string,
+	 *         'username' => string,
+	 *         'displayname' => string,
+	 *         'musername' => string,
+	 *         'usertitle' => string,
+	 *         'customtitle' => int,
+	 *         'doshowdisplayname' => bool,
+	 * 	   ]
+	 * ]
+	 */
+	public function fetchWhovoted(int $nodeid, int $votetypeid)
+	{
+		if (!vB::getUserContext()->hasPermission('genericpermissions', 'canseewholiked'))
+		{
+			throw new vB_Exception_Api('no_permission');
+		}
+
+		$node = vB_Api::instanceInternal('node')->getNodeFullContent($nodeid);
+		$node = $node[$nodeid];
+
+		$assertor = vB::getDbAssertor();
+		$users = $assertor->getRows('vBForum:reactions_fetchwhovoted', ['nodeid' => $nodeid, 'votetypeid' => $votetypeid]);
+
+		$userApi = vB_Api::instanceInternal('user');
+		$avatars = $userApi->fetchAvatars(array_column($users, 'userid'));
+
+		foreach ($users AS &$user)
+		{
+			$user['ismoderator'] = false;
+			$user['isadmin'] = false;
+			$userinfo = vB_User::fetchUserinfo($user['userid']);
+			$user['usertitle'] = $userinfo['usertitle'];
+
+			$usercontext = &vB::getUserContext($user['userid']);
+
+			if ($usercontext->hasPermission('adminpermissions', 'ismoderator'))
+			{
+				$user['ismoderator'] = true;
+			}
+
+			if ($usercontext->hasAdminPermission('cancontrolpanel'))
+			{
+				$user['isadmin'] = true;
+			}
+
+			$user['avatar'] = $avatars[$user['userid']];
+			$user['profileurl'] =  vB5_Route::buildUrl('profile', ['userid'=>$user['userid']]);
+			$user['musername'] = $userApi->fetchMusername($user);
+			['check' => $check] = $userApi->doShowDisplaynameAndUsername($user);
+			$user['doshowdisplayname'] = $check;
+		}
+
+		return ['users' => $users,];
+	}
+
+}
+
+/*=========================================================================*\
+|| #######################################################################
+|| # Downloaded: 12:50, Tue Dec 24th 2024
+|| # CVS: $RCSfile$ - $Revision: 101013 $
+|| #######################################################################
+\*=========================================================================*/

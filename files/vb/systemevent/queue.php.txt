@@ -1,0 +1,276 @@
+<?php
+/*========================================================================*\
+|| ###################################################################### ||
+|| # vBulletin 6.1.0 Alpha 4 Week 2 - Licence Number VBCW2VFT7A
+|| # ------------------------------------------------------------------ # ||
+|| # Copyright 2000-2024 MH Sub I, LLC dba vBulletin. All Rights Reserved.  # ||
+|| # This file may not be redistributed in whole or significant part.   # ||
+|| # ----------------- VBULLETIN IS NOT FREE SOFTWARE ----------------- # ||
+|| # http://www.vbulletin.com | http://www.vbulletin.com/license.html   # ||
+|| ###################################################################### ||
+\*========================================================================*/
+
+/**
+ * @package vBulletin
+ */
+class vB_Systemevent_Queue
+{
+	use vB_Trait_NoSerialize;
+
+	public const PRIORITY_HIGH = 16;
+	public const PRIORITY_NORMAL = 8;
+	public const PRIORITY_LOW = 4;
+	public const PRIORITY_MINIUM = 1;
+
+	//pass this in to avoid a dependency on the vB object.
+	private vB_Db_Assertor $db;
+
+	//some variables to allow tweaking the queue, possibly from some configuration.
+	private int $waittime = 10;
+
+	private int $runtime = 60;
+	private int $timebuffer = 15;
+
+	public function __construct(vB_Db_Assertor $db)
+	{
+		$this->db = $db;
+	}
+
+	public function register(vB_Systemevent_Item $event, int $priority = self::PRIORITY_NORMAL, int $runafter = 0) : void
+	{
+		$runafter = max($runafter, vB::getRequest()->getTimeNow());
+		$this->db->insert('vBEvent:systemevent', [
+			'priority' => $priority,
+			'data' => $event->getData(),
+			'runafter' => $runafter,
+			'status' => '',
+			'errormessage' => '',
+			'processkey' => '',
+			'processtime' => 0,
+		]);
+	}
+
+
+	/**
+	 *	Delete errors from the queue.
+	 *
+	 *	@param int $olderthanseconds -- Duration in seconds.  Only events older than this (based on runafter)
+	 *		will be deleted. A value of zero will delete all error events.
+	 */
+	public function deleteErrors(int $olderthanseconds) : void
+	{
+		$cutoff = vB::getRequest()->getTimeNow() - $olderthanseconds;
+		$this->db->delete('vBEvent:systemevent', [
+			'status' => 'error',
+			['field'=>'runafter', 'value' => $cutoff, vB_dB_Query::OPERATOR_KEY => vB_dB_Query::OPERATOR_LTE],
+		]);
+	}
+
+	public function isEmpty() : bool
+	{
+		//do we have at least one event ready to run?
+		$row = $this->db->getRow('vBEvent:systemevent', [
+			vB_dB_Query::COLUMNS_KEY => 'systemeventid',
+			vB_dB_Query::CONDITIONS_KEY => [
+				'status' => '',
+				['field' => 'runafter', 'value' => vB::getRequest()->getTimeNow(), vB_dB_Query::OPERATOR_KEY => vB_dB_Query::OPERATOR_LTE]
+			],
+		]);
+
+		return !$row;
+	}
+
+	//run one or more queue events
+	public function runQueue(int $waitlimit = 0) : void
+	{
+		//we *must* use the same key for the entire process run.
+		$processkey = $this->getProcessKey();
+
+		$runtime = $this->configureTimelimit();
+
+		$eventid = 0;
+		$currentEvent = null;
+
+		//We hopefully don't timeout but if we do try to recover.
+		register_shutdown_function(function() use (&$eventid, &$currentEvent)
+		{
+			$this->processTimeout($eventid, $currentEvent);
+		});
+
+		$waitcount = 0;
+		$starttime = time();
+		$maxtime = $starttime + $runtime;
+
+		while(time() < $maxtime)
+		{
+			$eventrow = $this->claimNextEvent($processkey);
+			if(!$eventrow)
+			{
+				//if we've already waited the maximum number of times or if waiting would push us
+				//past our allotted time we're done.  Otherwise wait and try again.  Intended to
+				//try to be a little more responsive than a 1 minute cron interval allows.
+				$waitcount++;
+				if(($waitcount > $waitlimit) OR ((time() + $this->waittime) > $maxtime))
+				{
+					break;
+				}
+				else
+				{
+					sleep($this->waittime);
+					continue;
+				}
+			}
+
+			$eventid = $eventrow['systemeventid'];
+			$currentEvent = vB_Systemevent_Item::restoreFromData($eventrow['data']);
+
+			//If something went wrong restoring the event then skip running it but clear it out of queue.
+			//it's not getting any better over time
+			if($currentEvent)
+			{
+				try
+				{
+					$currentEvent->run();
+				}
+				catch (Throwable $e)
+				{
+					//log error and move on.
+					if($e instanceof vB_Exception_Api)
+					{
+						$errors = $e->get_errors();
+					}
+					else
+					{
+						$errors = [['unexpected_error', $e->getMessage()]];
+					}
+					$errors[] = ['exception_trace', vB_Exception::getFullTrace($e)];
+
+					//this should't fail but let's be super paranoid
+					$phrases = vB_Api::instance('phrase')->renderPhrases($errors);
+					if(isset($phrases['errors']))
+					{
+						$errorText = 'Could not process exception, real error: ' . $e->getMessage();
+					}
+					else
+					{
+						$errorText = implode("\n", $phrases['phrases']);
+					}
+
+					try
+					{
+						$data = [
+							'processkey' => '',
+							'processtime' => 0,
+							'status' => 'error',
+							'errormessage' => $errorText,
+						];
+						$this->db->update('vBEvent:systemevent', $data, ['systemeventid' => $eventid]);
+						continue;
+					}
+					catch (Throwable $e)
+					{
+						//if we get an error here this isn't much we can do about it.  But we *really* don't want to
+						//to processs the event again so try to delete it (and hope that works).
+					}
+				}
+			}
+
+			$this->db->delete('vBEvent:systemevent', ['systemeventid' => $eventid]);
+		}
+	}
+
+	private function configureTimelimit() : int
+	{
+		//We really don't want this to timeout so let's try to set to unlimited.
+		//This probably won't fail but if for some reasons it does let's use the lesser of the
+		//configured max or our internal max.  Note that max_execution_time isn't precisely the
+		//same as elasped time and vary across systems.  However it's *at least* as much as elapsed
+		//time.
+		vB_Utility_Functions::setPhpTimeout(0);
+		$runtime = ini_get('max_execution_time');
+
+		//We succeeded in setting the time.  This shouldn't time out so use the full runtime.
+		if($runtime == 0)
+		{
+			$runtime = $this->runtime;
+		}
+		else
+		{
+			//set the runtime to either the configured runtime or the hard(ish) limit minus a
+			//buffer to try to avoid timeouts (we the runtime is used to determine if we
+			//start another event process, we won't deliberately interrupt anything).
+			$runtime = min($runtime - $this->timebuffer, $this->runtime);
+		}
+
+		return $runtime;
+	}
+
+	private function claimNextEvent(string $processkey) : ?array
+	{
+		//Normally we use the "request" time (roughtly the start of the vB process) but
+		//given that we expect this script to run for a long time and timing is a bit
+		//critical we really want to use the real time for marking/checking the events.
+		//
+		//For instance if the script starts 10 seconds before an events run time and we
+		//wait 20 seconds we should run that event instead of waiting for the next process run.
+		$this->db->assertQuery('vBEvent:claimNextEvent', [
+			'processkey' => $processkey,
+			'timenow' => time(),
+		]);
+
+		//there should only be one at any given time.
+		$eventrow = $this->db->getRow('vBEvent:systemevent', [
+			'processkey' => $processkey
+		]);
+
+		return $eventrow;
+	}
+
+	private function processTimeout(int $eventid, ?vB_Systemevent_Item $event) : void
+	{
+		//We may not have an event.  Either because there wasn't one or because we completed processing normally.
+		if ($event)
+		{
+			try
+			{
+				$unlockevent = $event->interrupt();
+			}
+			catch(Throwable $e)
+			{
+				$unlockevent = false;
+			}
+
+			if($unlockevent)
+			{
+				//clear the claim so that another process can pick this up
+				$this->db->update('vBEvent:systemevent',
+					[
+						'processkey' => '',
+						'processtime' => 0,
+					],
+					[
+						'systemeventid' => $eventid,
+					]
+				);
+			}
+			else
+			{
+				//the event has signaled that once started it shouldn't run again even if it didn't complete.
+				$this->db->delete('vBEvent:systemevent', ['systemeventid' => $eventid]);
+			}
+		}
+	}
+
+	//This just needs to be a unique string.  It's ephemeral so we don't need to worry about changing it
+	private function getProcessKey() : string
+	{
+		return uniqid('ev', true);
+	}
+}
+/*=========================================================================*\
+|| #######################################################################
+|| # Downloaded: 12:50, Tue Dec 24th 2024
+|| # CVS: $RCSfile$ - $Revision: 106777 $
+|| #######################################################################
+\*=========================================================================*/
+

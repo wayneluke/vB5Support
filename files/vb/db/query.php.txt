@@ -1,0 +1,526 @@
+<?php
+/*========================================================================*\
+|| ###################################################################### ||
+|| # vBulletin 6.1.0 Alpha 4 Week 2 - Licence Number VBCW2VFT7A
+|| # ------------------------------------------------------------------ # ||
+|| # Copyright 2000-2024 MH Sub I, LLC dba vBulletin. All Rights Reserved.  # ||
+|| # This file may not be redistributed in whole or significant part.   # ||
+|| # ----------------- VBULLETIN IS NOT FREE SOFTWARE ----------------- # ||
+|| # http://www.vbulletin.com | http://www.vbulletin.com/license.html   # ||
+|| ###################################################################### ||
+\*========================================================================*/
+
+/**
+ * @package vBDatabase
+ */
+
+/**
+ * The base query class for the assertor query object.
+ *
+ * For the moment most of the query logic is here rather than the type specific child classes.
+ * The main reason for this is that this is generally applicable to SQL backends.  We'll
+ * need to refactor this eventually, but that's probably better done when we have a better
+ * sense of the requirements of the additional backends.
+ *
+ * This class is internal to the assertor interface and should not be called directly from
+ * application code.
+ *
+ * @package vBDatabase
+ */
+
+abstract class vB_dB_Query
+{
+	use vB_Trait_NoSerialize;
+
+	/**
+	 * This class is called by the new vB_dB_Assertor database class
+	 * It does the actual execution. See the vB_dB_Assertor class for more information
+	 *
+	 * $queryid can be either the id of a query from the dbqueries table, or the
+	 * name of a table.
+	 *
+	 * if it is the name of a table , $params MUST include self::TYPE_KEY of either update, insert, select, or delete.
+	 *
+	 * $params includes a list of parameters. Here's how it gets interpreted.
+	 *
+	 * If the queryid was the name of a table and type was "update", one of the params
+	 * must be the primary key of the table. All the other parameters will be matched against
+	 * the table field names, and appropriate fields will be updated. The return value will
+	 * be false if an error is generated and true otherwise
+	 *
+	 * If the queryid was the name of a table and type was "delete", one of the params
+	 * must be the primary key of the table. All the other parameters will be ignored
+	 * The return value will be false if an error is generated and true otherwise
+	 *
+	 * If the queryid was the name of a table and type was "insert", all the parameters will be
+	 * matched against the table field names, and appropriate fields will be set in the insert.
+	 * The return value is the primary key of the inserted record.
+	 *
+	 * If the queryid was the name of a table and type was "select", all the parameters will be
+	 * matched against the table field names, and appropriate fields will be part of the
+	 * "where" clause of the select. The return value will be a vB_dB_Result object
+	 * The return value is the primary key of the inserted record.
+	 *
+	 * If the queryid is the key of a record in the dbqueries table then each params
+	 * value will be matched to the query. If there are missing parameters we will return false.
+	 * If the query generates an error we return false, and otherwise we return either true,
+	 * or an inserted id, or a recordset.
+	 *
+	 */
+
+	const CONDITIONS_KEY = '#filters';
+	const FIELDS_KEY = '#fields'; // Used with UPDATE
+	const VALUES_KEY = '#values';
+	const TYPE_KEY =  '#type';
+	const COLUMNS_KEY = '#columns'; // Used with SELECT
+	const QUERYTYPE_KEY =  '#querytype';
+	const OPERATOR_KEY = 'operator';
+	const PRIORITY_QUERY = '#priority';
+	const DEBUG_QUERY = '#debug';
+	const CONDITION_ALL = '#all';
+
+	const OPERATOR_LT = 'LT';
+	const OPERATOR_LTE = 'LTE';
+	const OPERATOR_GT = 'GT';
+	const OPERATOR_GTE = 'GTE';
+	const OPERATOR_EQ = 'EQ';
+	const OPERATOR_NE = 'NE';
+	const OPERATOR_BEGINS = 'BEGINS';
+	const OPERATOR_ENDS = 'ENDS';
+	const OPERATOR_INCLUDES = 'INCLUDES';
+	const OPERATOR_ISNULL = 'IS NULL';
+	const OPERATOR_ISNOTNULL = 'IS NOT NULL';
+	const OPERATOR_AND = '#AND';
+	const OPERATOR_NAND = '#NAND';
+	const OPERATOR_OR = '#OR';
+	const OPERATOR_FALSE = 'FALSE';
+	const VALUE_ISNULL = '#NULL';
+
+	const QUERY_SELECT = 's';
+	const QUERY_COUNT = 'co';
+	const QUERY_SUMMARY = 'sum';
+	const QUERY_STORED = 'st';
+	const QUERY_UPDATE ='u';
+	const QUERY_INSERT = 'i';
+	const QUERY_INSERTIGNORE = 'ig';
+	const QUERY_REPLACE = 'r';
+	const QUERY_MULTIPLEINSERT = 'mi';
+	const QUERY_DELETE = 'd';
+	const QUERY_METHOD = 'm';
+	const QUERY_DROP = 'dr';
+	const QUERY_CREATE = 'cr';
+	const QUERY_ALTER = 'a';
+
+	const PARAM_LIMIT = '#limit';
+	const PARAM_LIMITSTART = '#limit_start';
+	const PARAM_LIMITPAGE = '#limit_page';
+
+	const BITFIELDS_KEY = '#bitfields';
+	const BITFIELDS_SET = '#bitset';
+	const BITFIELDS_UNSET = '#bitunset';
+
+	const SORT_ASC	= 'ASC';
+	const SORT_DESC	= 'DESC';
+	// these are for internal use
+	const QUERY_TABLE = 't';
+
+	//we may just want to change the constants to match this table, though
+	//it does provide a decent way to ensure that the type passed matches one of the
+	//constants.
+	private static array $typemap = [
+		self::QUERY_STORED => 'Stored',
+		self::QUERY_SELECT => 'Select',
+		self::QUERY_COUNT => 'Summary',
+		self::QUERY_SUMMARY => 'Summary',
+		self::QUERY_UPDATE => 'Update',
+		self::QUERY_INSERT => 'Insert',
+		self::QUERY_INSERTIGNORE => 'InsertIgnore',
+		self::QUERY_REPLACE => 'Replace',
+		self::QUERY_DELETE => 'Delete',
+		self::QUERY_MULTIPLEINSERT => 'MultipleInsert',
+		self::QUERY_METHOD => 'Method',
+		self::QUERY_CREATE => 'Create',
+		self::QUERY_ALTER => 'Alter',
+		self::QUERY_DROP => 'Drop',
+	];
+
+	/*Properties====================================================================*/
+
+	// The database connections
+	protected $db = false;
+	protected $dbSlave = false;
+
+	//The character used for quoting in an sql string- usually '.
+	protected $quotechar = "'";
+
+	//We need to know whether we are using a table query when we compose the sql replacements
+	protected $table_query = false;
+
+	//this should be overriden in the child classes eventually
+	protected $db_type;
+	protected $query_type = false;
+
+	/** are we ready to execute? **/
+	protected $data_loaded = false;
+
+	/** are we ready to execute? **/
+	protected $datafields = false;
+
+	/** What is the primary key of the table, if applicable? */
+	protected $primarykey = false;
+
+	/** What is the text of the stored query from the dictionary, if applicable? */
+	protected $query_string = false;
+
+	/** The parameters are are going to use to populate the query data */
+	protected $params = false;
+
+	/** The array from a describe statement for database structure, if applicable? */
+	protected $structure = [];
+
+	/** The replacement variables from a stored query**/
+	protected $replacements = false;
+
+	/** The original query id **/
+	protected $queryid = false;
+
+	/** The most recent error **/
+	protected $error = false;
+
+	/** All errors for this query **/
+	protected $errors = [];
+
+	/** sortorder, for select queries only (obviously) **/
+	protected $sortorder = false;
+
+	protected $query_data = [];
+
+	/**if applicable, the name of querydef method we are going to call and the object it's in **/
+	protected $method_name = false;
+	protected $querydef_object = false;
+
+	/**the name of the class in the packages that contains the DB code **/
+	protected $class_name = false;
+
+	//fields which must be loaded as text even if the value looks like a number. This is for MySQL enum fields with numeric values.
+	// and possibly other.
+
+	protected $forcetext = [];
+
+	//The querydefs class
+	protected $querydefs = false;
+
+	/**
+	 * Causes the SQL for the next query that is exectuted to be displayed
+	 * for debugging purposes. This only works if debug mode is turned on
+	 *
+	 * @var	bool
+	 */
+	protected $debugDisplayNextQuerySql = false;
+
+	protected static $configDebug = false;
+
+	/**
+	 *	Holds the query builder object.  We don't need a copy for every query so we
+	 *	store them here.
+	 */
+	protected static $queryBuilders = [];
+
+	/*Initialisation================================================================*/
+
+	public static function getQuery($queryid, $params, &$db, $dbtype, $dbSlave)
+	{
+		//init querybuilder if needed
+		if (!isset(self::$queryBuilders[$dbtype]))
+		{
+			$config = vB::getConfig();
+			$queryClass = 'vB_Db_' . $dbtype . '_QueryBuilder';
+			self::$queryBuilders[$dbtype] = new $queryClass($db, !empty($config['Misc']['debug_sql']) OR !empty($params[self::DEBUG_QUERY]));
+			self::$configDebug = !empty($config['Misc']['debug_sql']);
+		}
+		else
+		{
+			self::$queryBuilders[$dbtype]->setDebugSQL(self::$configDebug OR !empty($params[self::DEBUG_QUERY]));
+		}
+
+		[$class, $queryid] = self::splitQueryId($dbtype, $queryid);
+
+		$querydefs = new $class();
+		$tableData = $querydefs->getTableData();
+		$queryData = $querydefs->getQueryData();
+
+		//First we need to find out what kind of query we have. If it's a table-based query
+		// then we have a "type" in the params array.
+		if (!isset($params[self::TYPE_KEY]))
+		{
+			//We can still recover is this is a method or stored query.
+			if (!empty($queryData[$queryid]))
+			{
+				$params[self::TYPE_KEY] = self::QUERY_STORED;
+			}
+			else if (method_exists($querydefs, $queryid))
+			{
+				$params[self::TYPE_KEY] = self::QUERY_METHOD;
+			}
+			else //Last try. If this is wrong we'll know in a moment.
+			{
+				$params[self::TYPE_KEY] = self::QUERY_SELECT;
+			}
+		}
+
+		if (!isset(self::$typemap[$params[self::TYPE_KEY]]))
+		{
+			throw new Exception('invalid_query_definition');
+		}
+
+		$queryClass = 'vB_dB_' . $dbtype . '_Query_' . self::$typemap[$params[self::TYPE_KEY]];
+		$query = new $queryClass($queryid, $db, $dbSlave);
+		$query->setQueryDefs($querydefs, $queryid);
+
+		if (isset($tableData[$queryid]))
+		{
+			$query->structure = $tableData[$queryid];
+		}
+		else if ($query->table_query)
+		{
+			throw new vB_Exception_Api('invalid_query_definition_x', $queryid);
+		}
+		$query->setQueryData($queryData);
+		return $query;
+	}
+
+	// This needs to be public because we also have logic to fetch the table structure
+	// in the assertor class.  We should probably move that logic to a query.
+	public static function splitQueryId(string $dbtype, string $queryid) : array
+	{
+		$values = explode(':', $queryid, 2);
+		if (count($values) > 1)
+		{
+			[$class_prefix, $queryid] = $values;
+		}
+		else
+		{
+			$class_prefix = 'vB';
+		}
+
+		$class = $class_prefix . '_dB_' . $dbtype . '_QueryDefs';
+		if (!class_exists($class))
+		{
+			//if we hit this its likely a lot of stuff isn't working.  So the error is deliberately unphrased.
+			throw new Exception('Query class ' . $class . ' not found');
+		}
+
+		return [$class, $queryid];
+	}
+
+
+	/**
+	 * validates that we know what to do with this queryid
+	 *
+	 *	@param 	string	id of the query
+	 *  @param 	mixed		the shared db object
+	 * 	@param	array		the user information
+	 */
+	 protected function __construct($queryid, &$db, $dbSlave)
+	 {
+		$this->db = $db;
+	 	$this->dbSlave = $dbSlave;
+		$this->queryid = $queryid;
+	 }
+
+	/**
+	 * This loads and validates the data- ensures we have all we need
+	 * @param	array		the data for the query
+	 */
+	abstract public function setQuery($params, $sortorder);
+
+	/**
+	 * This loads and validates the data for a table. There's some extra work required
+	 *
+	 * @param	array		the data for the query
+	 */
+	public function setTableQuery($params, $sortorder)
+	{
+		if (empty($this->structure))
+		{
+			throw new Exception('invalid_data');
+		}
+
+		$this->primarykey = $this->structure['key'] ?? [];
+		$this->forcetext = $this->structure['forcetext'] ?? [];
+
+		$this->sortorder = $sortorder;
+
+		$this->data_loaded = true;
+		$this->params = $params;
+		return true;
+	}
+
+	/**
+	 * This function is the public interface to actually execute the SQL.
+	 *	@return 	mixed
+	 */
+	abstract public function execSQL();
+
+
+	//helper functions for buildQuery.  This is intended to allow child classes to implement their
+	//own buildQuery function (instead of doing a bunch of switching on the query type) without
+	//duplicating a bunch of cruft.
+	protected function getWhere(vB_dB_QueryBuilder $queryBuilder, array $values) : string
+	{
+		$where = '';
+		if (isset($values[self::CONDITIONS_KEY]))
+		{
+			if (is_string($values[self::CONDITIONS_KEY]) AND $values[self::CONDITIONS_KEY] == self::CONDITION_ALL)
+			{
+				$where = self::CONDITION_ALL;
+			}
+			else
+			{
+				$where = $queryBuilder->conditionsToFilter($values[self::CONDITIONS_KEY], $this->forcetext);
+			}
+		}
+		else
+		{
+			$where = $queryBuilder->valueArrayToFilter($values, $this->forcetext);
+		}
+
+		return $where;
+	}
+
+	/**
+	 *	Extracts special known values from the values array.  Amoung other things this prevents
+	 * 	attempting to process them as regular columns for queries that don't expect them.
+	 */
+	protected function extractParamsFromValues(array &$values) : array
+	{
+		//these are special values and no good will come of processing them as regular values.
+		$params = [];
+		//there are some additional columns we ignore in the query builder class.  We should
+		//really make sure we strip all of those out here and then remove that logic from the query builder.
+		foreach ([self::COLUMNS_KEY, self::PARAM_LIMIT, self::PARAM_LIMITSTART] AS $key)
+		{
+			if (!empty($values[$key]))
+			{
+				$params[$key] = $values[$key];
+				unset($values[$key]);
+			}
+		}
+		return $params;
+	}
+
+	/**
+	 * This function generates the query text against a table.
+	 *
+	 * @param	array $values
+	 * @return string
+	 */
+	protected function buildQuery(array $values) : string
+	{
+		//QUERY_DELETE, QUERY_SUMMARY and QUERY_COUNT are handled directly by the subclass via an overloaded
+		//function (we should start moving this logic there for everything).
+
+		$queryBuilder = self::$queryBuilders[$this->db_type];
+
+		//these are special values and no good will come of processing them as regular values.
+		$params = $this->extractParamsFromValues($values);
+
+		if (in_array($this->query_type, [self::QUERY_UPDATE, self::QUERY_SELECT]))
+		{
+			$where = '';
+			if (!isset($values[self::CONDITIONS_KEY]) AND ($this->query_type == self::QUERY_UPDATE))
+			{
+				//this case only applies to updates
+				if (
+					!empty($this->primarykey)
+					AND (
+						(!is_array($this->primarykey) AND isset($values[$this->primarykey]))
+						OR
+						// Make sure that all primary keys has $values set
+						(is_array($this->primarykey) AND array_intersect($this->primarykey, array_keys($values)) == $this->primarykey)
+					)
+				)
+				{
+					$where = $queryBuilder->primaryKeyToFilter($this->primarykey, $values, $this->forcetext);
+				}
+				//not sure that the fact that we can fall through here without setting the where is a good thing.
+			}
+			else
+			{
+				$where = $this->getWhere($queryBuilder, $values);
+			}
+		}
+
+		switch($this->query_type)
+		{
+			case self::QUERY_UPDATE:
+				$setline = $queryBuilder->valueArrayToSetLine($values, $this->forcetext);
+				return $queryBuilder->makeUpdateQuery($this->queryid, $where, $setline, $params);
+				break;
+
+			case self::QUERY_INSERT:
+				return $queryBuilder->makeInsertQuery($this->queryid, false, $values, $this->forcetext);
+				break;
+
+			case self::QUERY_INSERTIGNORE:
+				return $queryBuilder->makeInsertQuery($this->queryid, true, $values, $this->forcetext);
+				break;
+
+//			case self::QUERY_REPLACE:
+//				return $queryBuilder->makeReplaceQuery($this->queryid, $values, $this->forcetext);
+//				break;
+
+			case self::QUERY_MULTIPLEINSERT:
+				return $queryBuilder->makeInsertMultipleQuery($this->queryid, $values, $this->forcetext);
+				break;
+
+			case self::QUERY_SELECT:
+				//this needs to get cleaned up, we should know value we need here.
+				$structure = $this->structure['structure'] ?? $this->structure;
+				return $queryBuilder->makeSelectQuery($this->queryid, $where, $this->sortorder, $structure, $params);
+				break;
+
+			default:
+				//should probably throw an exception here.
+				return '';
+				break;
+		} // switch
+	}
+
+	/**
+	 * Causes the SQL for the next query that is exectuted to be displayed
+	 * for debugging purposes. This only works if debug mode is turned on
+	 * @deprecated never worked quite right and now does nothing.
+	 */
+	public function debugDisplayNextQuerySql()
+	{
+		$this->debugDisplayNextQuerySql = true;
+	}
+
+	/**
+	 * Sets the query Query definitions
+	 *
+	 * @param mixed The query data from the querydefs
+	 */
+	protected function setQueryData(&$queryData)
+	{
+		$this->query_data = $queryData;
+	}
+
+	/**
+	 * Sets the querydef object
+	 *
+	 * @param	object	The querydef object
+	 */
+	protected function setQueryDefs(&$querydefs)
+	{
+		$this->querydefs = $querydefs;
+	}
+}
+
+/*=========================================================================*\
+|| #######################################################################
+|| # Downloaded: 12:50, Tue Dec 24th 2024
+|| # CVS: $RCSfile$ - $Revision: 116804 $
+|| #######################################################################
+\*=========================================================================*/

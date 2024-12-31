@@ -1,0 +1,427 @@
+<?php
+/*========================================================================*\
+|| ###################################################################### ||
+|| # vBulletin 6.1.0 Alpha 4 Week 2 - Licence Number VBCW2VFT7A
+|| # ------------------------------------------------------------------ # ||
+|| # Copyright 2000-2024 MH Sub I, LLC dba vBulletin. All Rights Reserved.  # ||
+|| # This file may not be redistributed in whole or significant part.   # ||
+|| # ----------------- VBULLETIN IS NOT FREE SOFTWARE ----------------- # ||
+|| # http://www.vbulletin.com | http://www.vbulletin.com/license.html   # ||
+|| ###################################################################### ||
+\*========================================================================*/
+
+/**
+ * vB_Api_Calendar
+ * Calendar API
+ *
+ * @package vBApi
+ */
+class vB_Api_Calendar extends vB_Api
+{
+	private function getCalendarRange(int $calendarstart, int $calendarend) : array
+	{
+		// full calendar can show up to 3 months (partial). E.g. say you're
+		// viewing June 2024 and the week starts on Sunday and ends on Staurday.
+		// June that year starts on a Saturday and ends on a Sunday. You'd see
+		// May 26-31 for the first week's Sunday - Friday, the whole month of
+		// June 1-30, then July 1-6 for the last week's Monday - Saturday.
+		// In that case
+
+		// Calendar should be in UTC (see fullcalendar.js), and
+		// events_during.from & .to should be (unixtimes || 0).
+		$pre_month = gmdate('m', $calendarstart);
+		$pre_year = gmdate('Y', $calendarstart);
+		$pre_day = gmdate('d', $calendarstart);
+
+		$post_month = ($calendarend > 0 ? gmdate('m', $calendarend) : 0);
+		$post_day = ($calendarend > 0 ? gmdate('d', $calendarend) : 0);
+		$post_year = ($calendarend > 0 ? gmdate('Y', $calendarend) : 0);
+
+		// If focused month starts on the first day of the week, the calendar
+		// doesn't show any of the previous month.
+		if ($pre_day == 1)
+		{
+			$current_month = $pre_month;
+			$current_year = $pre_year;
+
+			$pre_month = 0;
+			$pre_year = 0;
+			$pre_day = 0;
+		}
+		else
+		{
+			// "pre" month was December, rollover to January of next year.
+			if ($pre_month == 12)
+			{
+				$current_month = 1;
+				$current_year = $pre_year + 1;
+			}
+			else
+			{
+				$current_month = $pre_month + 1;
+				$current_year = $pre_year;
+			}
+		}
+		// Assume focused month is always shown in full, so "current" day is always gonna be 1
+		$current_day = 1;
+
+		// If focused month ends on the last day of the week, the calendar
+		// doesn't show any of the following month.
+		if ($post_month == $current_month)
+		{
+			$post_month = 0;
+			$post_year = 0;
+			$post_day = 0;
+		}
+
+		return [
+			'pre' => [
+				'year' => $pre_year,
+				'month' => $pre_month,
+				'day' => $pre_day,
+			],
+			'current' => [
+				'year' => $current_year,
+				'month' => $current_month,
+				'day' => $current_day,
+			],
+			'post' => [
+				'year' => $post_year,
+				'month' => $post_month,
+				'day' => $post_day,
+			],
+		];
+	}
+
+	private function formatContentEventsToCalendarItems(array $searchResult, array &$out_Items) : void
+	{
+		if (empty($searchResult['results']))
+		{
+			return;
+		}
+
+		foreach ($searchResult['results'] AS $__node)
+		{
+			$routeArgs = [
+				'nodeid'        => $__node['nodeid'],
+				'userid'        => $__node['userid'],
+				'contenttypeid' => $__node['contenttypeid'],
+				'title'         => $__node['title'],
+				'description'   => $__node['description'],
+				'parentid'      => $__node['parentid'],
+			];
+			$__topicUrl = vB5_Route::buildUrl($__node['content']['routeid'] .  '|fullurl', $routeArgs);
+			$__icsUrl = vB5_Route::buildUrl('dashboard|fullurl', ['action' => 'calendarexport'], ['nodeid' => $__node['nodeid']]);
+
+			// For some strange reason, previewtext may be *set* but empty for
+			// this data coming out of the search API results (which goes
+			// through the node library, I think)
+			if (empty($__node['content']['previewtext']))
+			{
+				// Do we want to do a full render OR a completely stripped version here instead of the preview text?
+				// For full stripping (like ICS output):
+				// $stripquotes = true;
+				// $fast_and_dirty = false;
+				// $showlinks = true;
+				// $stripimg = true;
+				// $keepquotetags = false;
+				// $previewtext = vB_String::stripBbcode($__node['content']['rawtext'], $stripquotes, $fast_and_dirty, $showlinks, $stripimg, $keepquotetags);
+				// $previewtext = vB_String::stripTags($previewtext);
+				$__node['content']['previewtext'] = vB_String::getPreviewText($__node['content']['rawtext']);
+			}
+
+			$out_Items[] = [
+				//
+				// descriptive
+				//
+				'type'             => 'node',
+				'id'               => $__node['nodeid'],
+				'title'            => $__node['title'],
+				'url'              => $__topicUrl,
+				'ics_url'          => $__icsUrl,
+				'description'      => $__node['content']['previewtext'],
+				//
+				// date related
+				//
+				'eventstartdate'   => $__node['content']['eventstartdate'],
+				'eventenddate'     => $__node['content']['eventenddate'],
+				'date_is_unix'     => 1,
+				'allday'           => $__node['content']['allday'],
+				'ignoredst'        => $__node['content']['ignoredst'],
+				'eventhighlightid' => $__node['content']['eventhighlightid'],
+			];
+		}
+	}
+
+	private function fetchBirthdays(array $date, array &$out_Items, int $lastactivityCutoffDays = 180, bool $filterDay = false, string $filterDayDirection = 'GTE')
+	{
+		$assertor = vB::getDbAssertor();
+
+		// skip inactive users...
+		$activityCutoff = vB::getRequest()->getTimeNow() - $lastactivityCutoffDays * 86400;
+
+		$usergroupids = $this->getShowBirthdayUsergroupids();
+		$conditions = [
+			'birthday_month' => $date['month'],
+			'calendar_show_birthday' => 1,
+			'usergroupid' => $usergroupids,
+			['field' => 'lastactivity', 'value' => $activityCutoff, vB_dB_Query::OPERATOR_KEY => vB_dB_Query::OPERATOR_GTE]
+		];
+
+		if ($filterDay AND $date['day'] > 0)
+		{
+			$direction = ($filterDayDirection == 'GTE' ? vB_dB_Query::OPERATOR_GTE : vB_dB_Query::OPERATOR_LTE);
+			$conditions[] = [
+				'field' => 'birthday_day',
+				'value' => $date['day'],
+				'operator' => $direction,
+			];
+		}
+
+		$columns = [
+			'userid',
+			'username',
+			'displayname',
+			'birthday_search',
+			'birthday_month',
+			'birthday_day',
+			'showbirthday',
+		];
+		$query = $assertor->select('user', $conditions, false, $columns);
+		$strUtil = vB::getString();
+		foreach ($query AS $__row)
+		{
+			$__profileUrl = vB5_Route::buildUrl('profile|fullurl', ['userid' => $__row['userid'], 'username' => $__row['username']]);
+			// We can't just use birthday_search, because that's usually not gonna be the viewing year.
+			$__birthday = $this->convertArrayToISODate($date['year'], $__row['birthday_month'], $__row['birthday_day']);
+
+			$out_Items[] = [
+				//
+				// descritiptive
+				//
+				'type'             => 'birthday',
+				'id'               => $__row['userid'],
+				// displayname is stored unescaped while node titles are stored escaped.
+				// It's not great to escape it here, but let's make it consistent.
+				'title'            => $strUtil->htmlspecialchars($__row['displayname']),
+				//'rawtitle'         => $__row['displayname'],
+				'url'              => $__profileUrl,
+				//'previewtext'      => $__row['displayname'],
+				//
+				// date related
+				//
+				// For a full day event, we're feeding the ISO-8601 standard date string
+				// as the start date. Let's not deal with DST offsets since full day events
+				// generally don't mean "00:00:00 at this timezone and DST", but rather just
+				// "this day for each/every timezone".
+				'eventstartdate'   => $__birthday,
+				'eventenddate'     => 0,
+				'date_is_unix'     => 0,
+				'allday'           => 1,
+				'ignoredst'        => 0,
+				'eventhighlightid' => 0,
+			];
+		}
+
+	}
+
+
+	private function fetchHolidays(array $date, array &$out_Items, bool $filterDay = false, string $filterDayDirection = 'GTE')
+	{
+		/*
+		Initially, I considered having a search field like
+			`search_month_day` SMALLINT UNSIGNED GENERATED ALWAYS
+				AS (`month` * 100 + `day`) STORED,
+		Where this generated field would allow us to collapse the "pre", "current"
+		and "post" queries into a single query like
+			`search_month_day` >= 0526 AND `search_month_day` <= 0706
+		when the calendar is focused on june but also including a few days
+		before and after june.
+
+		However, the fact that the month_day wraps around at the edges (Jaunary,
+		December) makes this more complicated than the simple case above..., and
+		while in the best case we end up with 1 range, in the worst case we end
+		up with 3 ranges, so I don't think we'd actually end up with much better
+		performance since a simple composite (month, day) index vs the (month *
+		100 + day) search field would both require 3 unions anyways.
+		For now, scrapped that idea.
+
+		I think the most immediate refactor we can make is to convert the 3 individual
+		queries into unions to avoid the extra db roundtrips, and if we have enough
+		holidays for it to matter, add the composite (month, day) index for the filtering.
+		Unsure if adding the year to the composite index will help or hurt atm, as the
+		optimizer just isn't bothering with using either index with a test set of about
+		300 holidays.
+		 */
+
+
+		$assertor = vB::getDbAssertor();
+
+		$conditions = [
+			'month' => $date['month'],
+			// we need to grab both the recurring and the year-specific holidays.
+			'year' => [0, $date['year']],
+		];
+
+		if ($filterDay AND $date['day'] > 0)
+		{
+			$direction = ($filterDayDirection == 'GTE' ? vB_dB_Query::OPERATOR_GTE : vB_dB_Query::OPERATOR_LTE);
+			$conditions[] = [
+				'field' => 'day',
+				'value' => $date['day'],
+				'operator' => $direction,
+			];
+		}
+
+		$columns = [];
+		$query = $assertor->select('calendarevent', $conditions, false, $columns);
+		$strUtil = vB::getString();
+		foreach ($query AS $__row)
+		{
+			$__eventdate = $this->convertArrayToISODate($date['year'], $__row['month'], $__row['day']);
+
+			$out_Items[] = [
+				//
+				// descritiptive
+				//
+				'type'             => 'holiday',
+				'id'               => $__row['eventid'],
+				// explicitly allowing HTML in title & description.
+				// This allows for e.g. use of fontawesome icons.
+				'title'            => $__row['title'],
+				'description'      => $__row['description'],
+				'url'              => '',
+				//
+				// date related
+				//
+				// For a full day event, we're feeding the ISO-8601 standard date string
+				// as the start date. Let's not deal with DST offsets since full day events
+				// generally don't mean "00:00:00 at this timezone and DST", but rather just
+				// "this day for each/every timezone".
+				'eventstartdate'   => $__eventdate,
+				'eventenddate'     => 0,
+				'date_is_unix'     => 0,
+				'allday'           => 1,
+				'ignoredst'        => 0,
+				'eventhighlightid' => 0,
+			];
+		}
+
+	}
+
+
+	// Currently this class is a glorified wrapper around search & some queries and merging to drive calendar widget views.
+	public function getEvents(array $search, int $resultsPerPage, int $currentPage, array $additionalOptions = []) : array
+	{
+		// Calendar should be in UTC (see fullcalendar.js), and events_during.from & .to should be unixtimes || 0.
+		// according to templates, we *should* have either an events_during array or at least an eventstartdate.
+		$calendarstart = $search['events_during']['from'] ?? $search['eventstartdate'] ?? 0;
+		$calendarend = $search['events_during']['to'] ?? 0;
+
+		['pre' => $pre, 'current' => $current, 'post' => $post] = $this->getCalendarRange($calendarstart, $calendarend);
+		$events = [];
+
+		/** @var vB_Api_Search */
+		$searchApi = vB_Api::instanceInternal('search');
+		$contentEvents = $searchApi->getInitialResults($search, $resultsPerPage, $currentPage);
+		$this->formatContentEventsToCalendarItems($contentEvents, $events);
+
+		if (!empty($additionalOptions['show_birthdays']))
+		{
+			$datastore = vB::getDatastore();
+			$lastactivityCutoffDays = $datastore->getOption('activememberdays');
+			// We could make this a UNION ALL stored/method query instead of doing 3 separate queries.. but for now
+			// going with code simplicity.
+			$this->fetchBirthdays($current, $events, $lastactivityCutoffDays);
+			if ($pre['month'] > 0)
+			{
+				$this->fetchBirthdays($pre, $events, $lastactivityCutoffDays, true, 'GTE');
+			}
+			if ($post['month'] > 0)
+			{
+				$this->fetchBirthdays($post, $events, $lastactivityCutoffDays, true, 'LTE');
+			}
+		}
+
+		if (!empty($additionalOptions['show_holidays']))
+		{
+			$this->fetchHolidays($current, $events);
+			if ($pre['month'] > 0)
+			{
+				$this->fetchHolidays($pre, $events, true, 'GTE');
+			}
+			if ($post['month'] > 0)
+			{
+				$this->fetchHolidays($post, $events, true, 'LTE');
+			}
+		}
+
+		return ['results' => $events];
+
+	}
+
+	private function convertArrayToISODate(int $year, int $month, int $day) : string
+	{
+		$date = new DateTime();
+		$date->setDate($year, $month, $day);
+		// fullcalendar requires "A Moment-ish input, like an ISO8601 string."
+		// -- https://fullcalendar.io/docs/v3/event-object
+		// [DateTimeInterface::ISO8601] ... is not compatible with ISO-8601 ...
+		// Use DateTimeInterface::ISO8601_EXPANDED, DateTimeInterface::ATOM for
+		// compatibility with ISO-8601 instead.
+		// -- https://www.php.net/manual/en/class.datetimeinterface.php#datetimeinterface.constants.iso8601
+		return $date->format(DateTime::ATOM);
+	}
+
+	private function getShowBirthdayUsergroupids() : array
+	{
+		// copied from build_birthdays()
+		$datastore = vB::getDatastore();
+		$usergroupcache = $datastore->getValue('usergroupcache');
+		$bf_ugp_genericoptions = $datastore->getValue('bf_ugp_genericoptions');
+
+		// Seems quicker to grab the ids rather than doing a JOIN
+		$usergroupids = [];
+		foreach($usergroupcache AS $usergroupid => $usergroup)
+		{
+			if ($usergroup['genericoptions'] & $bf_ugp_genericoptions['showbirthday'])
+			{
+				$usergroupids[] = $usergroupid;
+			}
+		}
+
+		return $usergroupids;
+	}
+
+	public function exportEvent(int $nodeid) : array
+	{
+		/** @var vB_Library_Calendar */
+		$lib = vB_Library::instance('calendar');
+
+		/** @var vB_Api_Node */
+		$nodeApi = vB_Api::instanceInternal('node');
+		$node = $nodeApi->getFullContentforNodes([$nodeid => $nodeid]);
+
+		$eventTypeid = vB_Types::instance()->getContentTypeId('vBForum_Event');
+		$output = '';
+		if (!empty($node[$nodeid]) AND $node[$nodeid]['contenttypeid'] == $eventTypeid)
+		{
+			$output = $lib->convertEventToIcs($node[$nodeid]);
+		}
+		else
+		{
+			throw new vB_Exception_Api('invalid_node_id');
+		}
+
+		return [
+			'ics' => $output,
+		];
+	}
+}
+
+/*=========================================================================*\
+|| #######################################################################
+|| # Downloaded: 12:50, Tue Dec 24th 2024
+|| # CVS: $RCSfile$ - $Revision: 116044 $
+|| #######################################################################
+\*=========================================================================*/

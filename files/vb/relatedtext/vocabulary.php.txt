@@ -1,0 +1,204 @@
+<?php
+/*========================================================================*\
+|| ###################################################################### ||
+|| # vBulletin 6.1.0 Alpha 4 Week 2 - Licence Number VBCW2VFT7A
+|| # ------------------------------------------------------------------ # ||
+|| # Copyright 2000-2024 MH Sub I, LLC dba vBulletin. All Rights Reserved.  # ||
+|| # This file may not be redistributed in whole or significant part.   # ||
+|| # ----------------- VBULLETIN IS NOT FREE SOFTWARE ----------------- # ||
+|| # http://www.vbulletin.com | http://www.vbulletin.com/license.html   # ||
+|| ###################################################################### ||
+\*========================================================================*/
+
+/**
+* @package	vBulletin
+*/
+class vB_RelatedText_Vocabulary
+{
+	use vB_Trait_NoSerialize;
+
+	private vB_Utility_String $stringutil;
+
+	private int $minlength;
+	private int $maxlength;
+
+	// This is a word => $ordinal map where the ordinals are array offsets into the  vocabularly array
+	// (which should be [$word1, $word2, ...] so the invers should be [$word1 => 0, $word2 => 1, ...]
+	// The primary purpose is so we only need to keep one copy (possibly two because in some cases we'll
+	// need the vocabulary and the inverse to avoid constant looping of the array) of the word strings
+	// reducing the overall size of the stored data.
+	private array $inverseVocabulary = [];
+	private array $doccounts = [];
+	private int $totalDocs = 0;
+
+	public static function createFromFile(string $filename, vB_Utility_String $stringutil) : self
+	{
+		// the min/max values will be overwritten by the load function
+		$vocab = new self($stringutil, 0, 0);
+		$vocab->readVocabulary($filename);
+		return $vocab;
+	}
+
+	public function __construct(vB_Utility_String $stringutil, int $minlength, int $maxlength)
+	{
+		$this->stringutil = $stringutil;
+		$this->minlength = $minlength;
+		$this->maxlength = $maxlength;
+	}
+
+	public function getCount() : int
+	{
+		return count($this->inverseVocabulary);
+	}
+
+	public function getVocabulary() : array
+	{
+		return array_flip($this->inverseVocabulary);
+	}
+
+	public function wordToOrdinal(string $word) : ?int
+	{
+		return $this->inverseVocabulary[$word] ?? null;
+	}
+
+	public function ordinalToWord(int $ordinal) : ?string
+	{
+		// This is going to be an O(n) operation on a large array but we don't actually look up the
+		// words that frequently (compared to looking up the ordinal from a word at least implicitly)
+		// and it's probably not worth the memory overhead of keeping two copies of the array.
+		$word = array_search($ordinal, $this->inverseVocabulary);
+		if ($word !== false)
+		{
+			return $word;
+		}
+
+		return $null;
+	}
+
+	public function getDocCounts() : array
+	{
+		return $this->doccounts;
+	}
+
+	public function getTotalDocCount() : int
+	{
+		return $this->totalDocs;
+	}
+
+	public function processText(string $text) : array
+	{
+		$this->totalDocs++;
+
+		$tokens = $this->tokenize($text);
+
+		$counts = [];
+		foreach ($tokens AS $token)
+		{
+			$tokenlen = $this->stringutil->strlen($token);
+			if ($tokenlen >= $this->minlength AND $tokenlen <= $this->maxlength)
+			{
+				// if we haven't see the term, add it to our vocabulary.
+				$this->inverseVocabulary[$token] ??= count($this->inverseVocabulary);
+
+				$ordinal = $this->inverseVocabulary[$token];
+
+				// this is the first time we've seen this term for this document.
+				if (!isset($counts[$ordinal]))
+				{
+					$counts[$ordinal] = 0;
+					$this->doccounts[$ordinal] = ($this->doccounts[$ordinal] ?? 0) + 1;
+				}
+
+				$counts[$ordinal]++;
+			}
+		}
+
+		// we want the array to be in ordinal order
+		ksort($counts);
+		return $counts;
+	}
+
+	// filter terms that are too common or not common enough;
+	public function filterTermsByFrequency(int $minDocCount, float $maxDocRatio) : void //vB_RelatedText_Vocabulary_Filter_Map
+	{
+		// We want this to be ordinal indexed.  We could shave some max memory usage by doing the ordinal updates in place
+		// but that's going to require dancing to avoid looping through the inverseVocabulary array multiple times
+		// (we can take advantage of the fact that the ordinal values in that array and the doccounts are in ascending order
+		// so we can know that the next removal is further in the array than the last one but let's see if we really need to first).
+		$vocab = array_flip($this->inverseVocabulary);
+		unset($this->inverseVocabulary);
+
+		// This can be done based entirely the document statistics without needing access to the
+		// data arrays.
+		foreach ($this->doccounts AS $ordinal => $count)
+		{
+			if ($count < $minDocCount OR (($count / $this->totalDocs) > $maxDocRatio))
+			{
+				unset($this->doccounts[$ordinal]);
+				unset($vocab[$ordinal]);
+			}
+		}
+
+		$this->inverseVocabulary = array_flip($vocab);
+	}
+
+	/**
+	 *	Remove terms from the data array that are no longer in the vocabulary.
+	 *
+	 *	This is typically due to calling filterTermsByFrequency
+	 */
+	public function filterRemovedTerms(array &$data) : void
+	{
+		foreach ($data AS &$record)
+		{
+			foreach ($record AS $ordinal => $count)
+			{
+				// doccounts is uses the ordinals as keys which makes it convenient/efficient for an "existance" check
+				// without needing to seperately track which oridinals were removed.
+				if (!isset($this->doccounts[$ordinal]))
+				{
+					unset($record[$ordinal]);
+				}
+			}
+		}
+	}
+
+	public function writeVocabulary(string $filename) : void
+	{
+		$persist = new vB_RelatedText_Persist($filename, false);
+
+		$persist->writeInt($this->minlength);
+		$persist->writeInt($this->maxlength);
+		$persist->writeStringKeyIntArray($this->inverseVocabulary);
+		$persist->writeInt($this->totalDocs);
+		$persist->writeIntArray($this->doccounts);
+	}
+
+	private function readVocabulary(string $filename) : void
+	{
+		$persist = new vB_RelatedText_Persist($filename, true);
+
+		$this->minlength = $persist->readInt();
+		$this->maxlength = $persist->readInt();
+
+		$this->inverseVocabulary = $persist->readStringKeyIntArray();
+		$this->totalDocs = $persist->readInt();
+		$this->doccounts = $persist->readIntArray();
+	}
+
+	//This is taken from the Rubix library which we were originally using but we might
+	//want to replace it with something more like the parsing we do for the search library.
+  private function tokenize(string $text) : array
+  {
+  	$matches = [];
+		preg_match_all("/[\w'-]+/u", $text, $matches);
+		return $matches[0];
+	}
+}
+
+/*=========================================================================*\
+|| #######################################################################
+|| # Downloaded: 12:50, Tue Dec 24th 2024
+|| # CVS: $RCSfile$ - $Revision: 108523 $
+|| #######################################################################
+\*=========================================================================*/

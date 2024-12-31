@@ -1,0 +1,537 @@
+<?php if (!defined('VB_ENTRY')) die('Access denied.');
+/*========================================================================*\
+|| ###################################################################### ||
+|| # vBulletin 6.1.0 Alpha 4 Week 2 - Licence Number VBCW2VFT7A
+|| # ------------------------------------------------------------------ # ||
+|| # Copyright 2000-2024 MH Sub I, LLC dba vBulletin. All Rights Reserved.  # ||
+|| # This file may not be redistributed in whole or significant part.   # ||
+|| # ----------------- VBULLETIN IS NOT FREE SOFTWARE ----------------- # ||
+|| # http://www.vbulletin.com | http://www.vbulletin.com/license.html   # ||
+|| ###################################################################### ||
+\*========================================================================*/
+
+class vB_Notification_Moderator_MonitoredWord extends vB_Notification_Moderator
+{
+	const TYPENAME = 'MonitoredWord';
+
+	protected static $triggers = [
+		'node-monitored-word-found' => 20,
+		'user-monitored-word-found' => 20,
+	];
+
+	protected $notifyBitfieldName = 'monitoredword';
+	protected $emailBitfieldName = 'monitoredword';
+
+	/**
+	 * Combines a notification with a previous one to avoid showing duplicate notifications.
+	 *
+	 * combineNotifications() works in conjunction with the overwrite rule 'combine'.
+	 *
+	 * @param  array The notification to be combined into the other one (notification being added)
+	 * @param  array The notification we will combine the other one into (original notification)
+	 * @param  bool  Whether or not we are combining with a notification from the database (if not,
+	 *               it's combining with a notification in the pending queue)
+	 *
+	 * @return array Combined notification information
+	 */
+	public function combineNotifications($addNotificationData, $targetNotificationData, $addNotificationFromDb)
+	{
+		// if $targetNotificationData is not specified, it will use $this object's
+		// data and save the combined data back to this object's data.
+
+		$saveToSelf = !$targetNotificationData;
+		$targetNotificationData = $saveToSelf ? $this->notificationData : $targetNotificationData;
+		$targetCustomDataIsString = is_string($targetNotificationData['customdata']);
+
+		$this->flagCombinedNotifications($addNotificationData, $targetNotificationData, $addNotificationFromDb);
+
+		$targetCustomData = self::normalizeCustomData($targetNotificationData['customdata']);
+		$addCustomData = self::normalizeCustomData($addNotificationData['customdata']);
+
+		$combined = array();
+
+		if ($addNotificationFromDb)
+		{
+			// When combining with a notification that's already in the db, then we need
+			// to query the data in the database and use that instead. The reason is the
+			// previous notification might have data that has been removed so we need to
+			// check the cannonical source.
+
+			if ($addCustomData['maintype'] == 'node')
+			{
+				$nodeid = $addNotificationData['sentbynodeid'];
+				$node = vB_Library::instance("node")->getNodeFullContent($nodeid);
+				$node = $node[$nodeid];
+
+				$items = array();
+				foreach (array('title', 'rawtext', 'edit_reason', 'taglist') AS $key)
+				{
+					if (!empty($node[$key]))
+					{
+						$k = $key;
+						$v = $node[$key];
+						if ($key == 'edit_reason')
+						{
+							$k = 'reason';
+						}
+						if ($key == 'taglist')
+						{
+							$k = 'tags';
+							$v = implode(' ', explode(',', $v));
+						}
+						$items[$k] = $v;
+					}
+				}
+				if (empty($node['rawtext']) AND !empty($node['description']))
+				{
+					$items['description'] = $node['description'];
+				}
+
+				$combined['words'] = array();
+				$combined['subtypes'] = array();
+
+				foreach ($items AS $subtype => $text)
+				{
+					$monitored = vB_String::getMonitoredWords($text);
+					if (!empty($monitored))
+					{
+						$combined['words'] = array_merge($combined['words'], $monitored);
+						$combined['subtypes'][] = $subtype;
+					}
+				}
+
+				$combined['words'] = array_unique($combined['words']);
+				$combined['subtypes'] = array_unique($combined['subtypes']);
+				sort($combined['subtypes']);
+				sort($combined['words']);
+
+				if (empty($combined['words']))
+				{
+					// retract the notification since there are no longer any
+					// monitored words found
+					$this->cancelNotification();
+					return false;
+				}
+			}
+			else if ($addCustomData['maintype'] == 'user')
+			{
+				// since all subtypes of user are handled separately,
+				// we can just use the new data and overwrite the old
+				// (since there are no multiple subtypes to combine)
+				$combined['subtypes'] = $targetCustomData['subtypes'];
+				$combined['words'] = $targetCustomData['words'];
+			}
+		}
+		else
+		{
+			// We are at a notification that's not being combined with a preexisting
+			// notification from the database. Since it's combining with a notification
+			// from the current queue to be added, we can just combine the values
+			// without doing any database lookups
+
+			$sources = array($targetCustomData, $addCustomData);
+			$elements = array('words', 'subtypes');
+
+			// combine monitored words and subtypes from both notifictions
+			foreach ($elements AS $element)
+			{
+				$combined[$element] = array();
+				foreach ($sources AS $source)
+				{
+					if (is_array($source[$element]) AND !empty($source[$element]))
+					{
+						$temp = array_values($source[$element]);
+						$combined[$element] = array_merge($combined[$element], $temp);
+					}
+				}
+				$combined[$element] = array_unique($combined[$element]);
+				sort($combined[$element]);
+			}
+		}
+
+
+		// save combined values back to the target array
+		$targetCustomData['words'] = array_values($combined['words']);
+		$targetCustomData['subtypes'] = array_values($combined['subtypes']);
+
+		if ($targetCustomDataIsString)
+		{
+			$targetCustomData = json_encode($targetCustomData);
+		}
+
+		$targetNotificationData['customdata'] = $targetCustomData;
+
+		// increase priority over the previous notifications
+		if (!empty($addNotificationData['priority']) AND $addNotificationData['priority'] > $targetNotificationData['priority'])
+		{
+			$targetNotificationData['priority'] = $addNotificationData['priority'];
+		}
+		++$targetNotificationData['priority'];
+
+		if ($saveToSelf)
+		{
+			// save the target array back to the object if requested
+			$this->notificationData = $targetNotificationData;
+		}
+
+		return $targetNotificationData;
+	}
+
+	final protected static function defineUnique($notificationData, $skipValidation)
+	{
+		$items = array();
+
+		// sender (the user editing the node or userinfo)
+		$items['senderid'] = (int) $notificationData['sender'];
+
+		// the edited node (if it's a node)
+		if (!empty($notificationData['sentbynodeid']))
+		{
+			$items['sentbynodeid'] = (int) $notificationData['sentbynodeid'];
+		}
+
+		$customData = self::normalizeCustomData($notificationData['customdata']);
+
+		// the edited user (if it's a user)
+		if (!empty($customData['targetuserid']))
+		{
+			$items['customdata_targetuserid'] = (int) $customData['targetuserid'];
+		}
+
+		// the main type ('node' or 'user')
+		$items['customdata_maintype'] = $customData['maintype'];
+
+		// add the subtype for the 'user' main type so we get a separate
+		// notification for each one (signature, userfields, status, title, etc.)
+		if ($customData['maintype'] == 'user')
+		{
+			$items['customdata_subtype'] = $customData['subtypes'];
+		}
+
+		return $items;
+	}
+
+	/**
+	 * @see vB_Notification::fetchPhraseArray()
+	 */
+	public static function fetchPhraseArray($notificationData)
+	{
+		// Note: This function currently uses phrases directly for the sub-types
+		// which are inserted into the main phrase as data/parameters, and the
+		// visitor message title phrase a_visitor_message. This may be problematic
+		// if the output of this function is used for sending email notifications.
+
+		$assertor = vB::getDbAssertor();
+
+		$customData = self::normalizeCustomData($notificationData['customdata']);
+
+		$phraseVarName = '';
+		$phraseData = array();
+
+		$wordCount = count($customData['words']);
+		$words = implode(', ', $customData['words']);
+
+		$subtypeCount = count($customData['subtypes']);
+		$subtypes = implode(', ', $customData['subtypes']);
+		$subtypeVarnames = array();
+		foreach ($customData['subtypes'] AS $subtype)
+		{
+			$subtypeVarnames[] = 'monitored_word_subtype_' . $customData['maintype'] . '_' . $subtype;
+		}
+		$subtypePhrases = vB_Api::instanceInternal('phrase')->fetch($subtypeVarnames);
+		$subtypePhrases = implode(', ', $subtypePhrases);
+
+		// the phrases end in _ss, _sp, _ps, _pp for the 4 combinations
+		// of words being singluar or plural and areas being singular or plural
+		$pluralPhraseSuffix = '_';
+		$pluralPhraseSuffix .= ($wordCount == 1) ? 's' : 'p';
+		$pluralPhraseSuffix .= ($subtypeCount == 1) ? 's' : 'p';
+
+		// sender user profile URL
+		$userUrl = '#';
+		try
+		{
+			$userUrl = vB5_Route::buildUrl('profile|fullurl', array(
+				'userid' => $notificationData['senderid'],
+				'username' => $notificationData['sender_username'],
+			));
+		}
+		catch (Throwable $e){}
+
+		// edited user profile URL (might not be the same as the sender)
+		$targetUserUrl = '#';
+		$targetUserName = '';
+		$targetDisplayname_safe = '';
+		$targetUserid = 0;
+		$editedOwnProfile = true;
+		if (!empty($customData['targetuserid']))
+		{
+			$editedOwnProfile = ($customData['targetuserid'] == $notificationData['senderid']);
+
+			if ($editedOwnProfile)
+			{
+				$targetUserUrl = $userUrl;
+				$targetUserName = $notificationData['sender_username'];
+				$targetDisplayname_safe = vB_String::htmlSpecialCharsUni($notificationData['sender_displayname']);
+				$targetUserid = $notificationData['sender'];
+			}
+			else
+			{
+				$targetUser = $assertor->getRow('user', array('userid' => $customData['targetuserid']));
+				try
+				{
+					$targetUserUrl = vB5_Route::buildUrl('profile|fullurl', array(
+						'userid' => $targetUser['userid'],
+						'username' => $targetUser['username'],
+					));
+				}
+				catch (Throwable $e){}
+				$targetUserName = $targetUser['username'];
+				$targetDisplayname_safe = vB_String::htmlSpecialCharsUni($targetUser['displayname']);
+				$targetUserid = $targetUser['userid'];
+			}
+		}
+
+		// node URL
+		$nodeUrl = '';
+		if (!empty($notificationData['sentbynodeid']))
+		{
+			try
+			{
+				$nodeUrl = vB5_Route::buildUrl('node|fullurl', array(
+					'nodeid' => $notificationData['sentbynodeid']
+				));
+			}
+			catch (Throwable $e){}
+		}
+
+		// node title to use (might not be for *this* node, it might be the starter)
+		if (empty($notificationData['aboutstartertitle']))
+		{
+			$node = $assertor->getRow('vBForum:node', array('nodeid' => $notificationData['sentbynodeid']));
+			$nodeUseTitle = $node['title'];
+		}
+		else
+		{
+			$nodeUseTitle = $notificationData['aboutstartertitle'];
+		}
+
+		// flags
+		$isStarter = (!empty($notificationData['sentbynodeid']) AND $notificationData['sentbynodeid'] == $notificationData['aboutstarterid']);
+		$isChannel = (!empty($node) AND $node['displayorder'] != null);
+		$isReplyOrComment = (!$isStarter AND !$isChannel);
+		$isVisitorMessage = ($isStarter AND empty($nodeUseTitle));
+
+		if ($isVisitorMessage)
+		{
+			$nodeUseTitle = vB_Api::instanceInternal('phrase')->fetch(array('a_visitor_message'));
+			$nodeUseTitle = $nodeUseTitle['a_visitor_message'];
+
+			try
+			{
+				$nodeUrl = vB5_Route::buildUrl('visitormessage|fullurl', array(
+					'nodeid' => $notificationData['sentbynodeid'],
+				));
+			}
+			catch (Throwable $e){}
+		}
+
+		$userid = $notificationData['sender'];
+		$displayname_safe = vB_String::htmlSpecialCharsUni($notificationData['sender_displayname']);
+
+		// set up phrase information
+		switch ($customData['maintype'])
+		{
+			case 'node':
+				if ($isReplyOrComment)
+				{
+					$phraseVarName = 'ab_used_monitored_word_c_in_area_d_in_post_in_ef' . $pluralPhraseSuffix;
+				}
+				else
+				{
+					$phraseVarName = 'ab_used_monitored_word_c_in_area_d_in_ef' . $pluralPhraseSuffix;
+				}
+				$phraseData = array(
+					$userUrl,
+					$displayname_safe,
+					$words,
+					$subtypePhrases,
+					$nodeUrl,
+					$nodeUseTitle,
+					$userid,
+				);
+				break;
+
+			case 'user':
+				if ($editedOwnProfile)
+				{
+					$phraseVarName = 'ab_used_monitored_word_c_in_area_d_on_their_profile_ef' . $pluralPhraseSuffix;
+				}
+				else
+				{
+					$phraseVarName = 'ab_used_monitored_word_c_in_area_d_on_profile_ef' . $pluralPhraseSuffix;
+				}
+				$phraseData = array(
+					$userUrl,
+					$displayname_safe,
+					$words,
+					$subtypePhrases,
+					$targetUserUrl,
+					$targetDisplayname_safe,
+					$userid,
+					$targetUserid,
+				);
+				break;
+
+			default:
+				break;
+		}
+
+		return array(
+			$phraseVarName,
+			$phraseData,
+		);
+	}
+
+	/**
+	 * @see vB_Notification::renderEmailPhrases()
+	 */
+	public static function renderEmailPhrases($data)
+	{
+		$assertor = vB::getDbAssertor();
+		$customData = self::normalizeCustomData($data['customdata']);
+		$phraseAPI = vB_Api::instanceInternal('phrase');
+
+		// 1. words
+		$words = $customData['words'];
+
+		// 2. subtypes
+		$subtypeVarnames = [];
+		foreach ($customData['subtypes'] AS $subtype)
+		{
+			$subtypeVarnames[] = 'monitored_word_subtype_' . $customData['maintype'] . '_' . $subtype;
+		}
+		$subtypePhrases = $phraseAPI->renderPhrasesNoShortcode($subtypeVarnames, $data['languageid']);
+		$subtypes = $subtypePhrases['phrases'];
+		unset($subtypeVarnames, $subtypePhrases);
+
+		// 3. location (each branch sets url and (title or phrase))
+		$url = '#';
+		$title = '';
+		$phrase = '';
+		if (!empty($customData['targetuserid']))
+		{
+			// user profile
+			$targetUser = $assertor->getRow('user', ['userid' => $customData['targetuserid']]);
+			try
+			{
+				$url = vB5_Route::buildUrl('profile|fullurl', [
+					'userid' => $targetUser['userid'],
+					'username' => $targetUser['username'],
+				]);
+			}
+			catch (Throwable $e){}
+			unset($targetUser);
+
+			$phrase = 'a_user_profile';
+		}
+		else if (!empty($data['sentbynodeid']))
+		{
+			// content node (starter, reply, visitor message, etc)
+			try
+			{
+				$url = vB5_Route::buildUrl('node|fullurl', ['nodeid' => $data['sentbynodeid']]);
+			}
+			catch (Throwable $e){}
+
+			// node title to use (might not be for *this* node, it might be the starter)
+			if (!empty($data['aboutstartertitle']))
+			{
+				$title = $data['aboutstartertitle'];
+			}
+			else
+			{
+				$node = $assertor->getRow('vBForum:node', ['nodeid' => $data['sentbynodeid']]);
+				if (!empty($node['title']))
+				{
+					$title = $node['title'];
+				}
+				else
+				{
+					$node = $assertor->getRow('vBForum:node', ['nodeid' => $node['starter']]);
+					if (!empty($node['title']))
+					{
+						$title = $node['title'];
+					}
+					else
+					{
+						try
+						{
+							$url = vB5_Route::buildUrl('visitormessage|fullurl', [
+								'nodeid' => $data['sentbynodeid'],
+							]);
+						}
+						catch (Throwable $e){}
+
+						$phrase = 'a_visitor_message';
+					}
+
+				}
+				unset($node);
+			}
+		}
+
+		// resolve phrase for location
+		if (!empty($phrase) AND empty($title))
+		{
+			$titlePhrase = $phraseAPI->renderPhrasesNoShortcode([$phrase => $phrase], $data['languageid']);
+			$titlePhrase = $titlePhrase['phrases'];
+			$title = $titlePhrase[$phrase];
+			unset($titlePhrase, $phrase);
+		}
+
+		// 4. sender
+		if (!empty($data['sender']))
+		{
+			$senderLabel = vB_User::getEmailUserLabel($data['sender']);
+		}
+		else
+		{
+			// I think this was done like this to possibly reduce # of extra phrase variants, but this might
+			// cause problems for localization if the language isn't subject-verb-object order because the
+			// capital A (A guest) here implies subject first.
+			$phrase = 'a_guest_cap';
+			$sender = $phraseAPI->renderPhrasesNoShortcode([$phrase => $phrase], $data['languageid']);
+			$senderLabel = $sender['phrases'][$phrase];
+		}
+
+
+
+		$vboptions = vB::getDatastore()->getValue('options');
+		$string = vB::getString();
+		$bbtitle_escaped = $string->htmlspecialchars($vboptions['bbtitle']);
+
+		$maildata = $phraseAPI->fetchEmailPhrases(
+			'notification_monitoredword',
+			[
+				$string->htmlspecialchars($data['recipient_displayname']),
+				$senderLabel,
+				$url,
+				$string->htmlspecialchars(implode(', ', $words)),
+				$string->htmlspecialchars(implode(', ', $subtypes)),
+				$bbtitle_escaped,
+			],
+			[vB_String::unHtmlSpecialChars($title)],
+			$data['languageid']
+		);
+
+		return $maildata;
+	}
+}
+
+/*=========================================================================*\
+|| #######################################################################
+|| # Downloaded: 12:50, Tue Dec 24th 2024
+|| # CVS: $RCSfile$ - $Revision: 109371 $
+|| #######################################################################
+\*=========================================================================*/

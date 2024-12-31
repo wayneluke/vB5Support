@@ -1,0 +1,156 @@
+<?php
+/*========================================================================*\
+|| ###################################################################### ||
+|| # vBulletin 6.1.0 Alpha 4 Week 2 - Licence Number VBCW2VFT7A
+|| # ------------------------------------------------------------------ # ||
+|| # Copyright 2000-2024 MH Sub I, LLC dba vBulletin. All Rights Reserved.  # ||
+|| # This file may not be redistributed in whole or significant part.   # ||
+|| # ----------------- VBULLETIN IS NOT FREE SOFTWARE ----------------- # ||
+|| # http://www.vbulletin.com | http://www.vbulletin.com/license.html   # ||
+|| ###################################################################### ||
+\*========================================================================*/
+
+/**
+ * @package vBApi
+ */
+class vB_Api_Bookmark extends vB_Api
+{
+	private ?array $bookmarksCache = null;
+
+	/**
+	 * Add a bookmark of $nodeid for the current user
+	 *
+	 * @param int $nodeid
+	 *
+	 * @return array{success:bool, created:int, bookmarkid:int}
+	 */
+	public function addBookmark(int $nodeid) : array
+	{
+		$currentUserId = vB::getCurrentSession()->get('userid');
+		if (empty($currentUserId))
+		{
+			throw new vB_Exception_Api('not_logged_no_permission');
+		}
+		$timenow = vB::getRequest()->getTimeNow();
+
+		$assertor = vB::getDbAssertor();
+		$id = $assertor->replace('nodebookmark', [
+			'userid' => $currentUserId,
+			'nodeid' => $nodeid,
+			'created' => $timenow,
+		]);
+
+		$this->bookmarksCache[$currentUserId][$nodeid] = [
+			'bookmarkid' => $id,
+			'userid' => $currentUserId,
+			'nodeid' => $nodeid,
+			'created' => $timenow,
+		];
+
+		return ['success' => true, 'created' => $timenow, 'bookmarkid' => $id,];
+	}
+
+	/**
+	 * Add a bookmark of $nodeid for the current user
+	 *
+	 * @param int $nodeid
+	 *
+	 * @return array{success:bool}
+	 */
+	public function removeBookmark(int $nodeid) : array
+	{
+		$currentUserId = vB::getCurrentSession()->get('userid');
+		if (empty($currentUserId))
+		{
+			throw new vB_Exception_Api('not_logged_no_permission');
+		}
+
+		$assertor = vB::getDbAssertor();
+		$assertor->delete('nodebookmark', [
+			'userid' => $currentUserId,
+			'nodeid' => $nodeid,
+		]);
+
+		unset($this->bookmarksCache[$currentUserId][$nodeid]);
+
+		return ['success' => true,];
+	}
+
+	/**
+	 * Returns true if the current user has bookmarked the specified node
+	 *
+	 * @param int $nodeid
+	 *
+	 * @return array{hasBookmark:bool}
+	 */
+	public function isBookMarked(int $nodeid) : array
+	{
+		$currentUserId = vB::getCurrentSession()->get('userid');
+		if (empty($currentUserId))
+		{
+			throw new vB_Exception_Api('not_logged_no_permission');
+		}
+		$bookmarks = $this->fetchAndCacheBookmarksForUser($currentUserId);
+
+		return [
+			'isBookmarked' => !empty($bookmarks[$nodeid]),
+		];
+	}
+
+	// This is cached because it might be called per node in a loop and we don't want to hit the db more than once for this.
+	private function fetchAndCacheBookmarksForUser(int $userid) : array
+	{
+		if (!isset($this->bookmarksCache[$userid]))
+		{
+			$assertor = vB::getDbAssertor();
+			$this->bookmarksCache[$userid] = $assertor->getRows('nodebookmark', ['userid' => $userid,], false, 'nodeid');
+		}
+		return $this->bookmarksCache[$userid];
+	}
+
+	/**
+	 * Fetches all bookmarks for the current user, filtered by nodes that they can still view.
+	 *
+	 * @return array{bookmarks:array<array{nodeid:int, created:int}>}
+	 *         ['bookmarks' => [
+	 *             ['nodeid' => int, 'created' => unixtimestamp],
+	 *             ['nodeid' => int, 'created' => unixtimestamp],
+	 *             ...
+	 *         ]]
+	 */
+	public function getBookmarks(int $page = 1, int $perpage = 10) : array
+	{
+		$currentUserId = vB::getCurrentSession()->get('userid');
+		if (empty($currentUserId))
+		{
+			throw new vB_Exception_Api('not_logged_no_permission');
+		}
+
+		$bookmarks = $this->fetchAndCacheBookmarksForUser($currentUserId);
+		$nodeids = array_column($bookmarks, 'nodeid', 'nodeid');
+		$return = [];
+		/** @var vB_Api_Node */
+		$nodeApi = vB_Api::instanceInternal('node');
+		$nodes = $nodeApi->getContentforNodes($nodeids, ['showVM' => true,]);
+		foreach ($nodes AS $__nodeid => $__node)
+		{
+			$__created = $bookmarks[$__nodeid]['created'] ?? 0;
+			$return[] = ['nodeid' => $__nodeid, 'created' => $__created, 'node' => $__node];
+		}
+		// We slice here, which is not ideal, but we don't want to return any "gaps" due to invalid nodes (e.g. soft-deleted
+		// nodes the user no longer has view perms for) with pagination, so we need to query with the perms like in search
+		// queries, or do it after we implicitly filter via getFullContentForNodes() above.
+		$total = count($return);
+		array_subkey_sort($return, 'created');
+		$return = array_slice($return, ($page - 1) * $perpage, $perpage);
+
+		return ['bookmarks' => $return, 'totalcount' => $total, 'page' => $page, 'perpage' => $perpage];
+	}
+}
+
+/*=========================================================================*\
+|| #######################################################################
+|| # Downloaded: 12:50, Tue Dec 24th 2024
+|| # CVS: $RCSfile$ - $Revision: 102970 $
+|| #######################################################################
+\*=========================================================================*/

@@ -1,0 +1,220 @@
+<?php
+/*========================================================================*\
+|| ###################################################################### ||
+|| # vBulletin 6.1.0 Alpha 4 Week 2 - Licence Number VBCW2VFT7A
+|| # ------------------------------------------------------------------ # ||
+|| # Copyright 2000-2024 MH Sub I, LLC dba vBulletin. All Rights Reserved.  # ||
+|| # This file may not be redistributed in whole or significant part.   # ||
+|| # ----------------- VBULLETIN IS NOT FREE SOFTWARE ----------------- # ||
+|| # http://www.vbulletin.com | http://www.vbulletin.com/license.html   # ||
+|| ###################################################################### ||
+\*========================================================================*/
+
+/**
+* Class to do data save/delete operations for RSS Feeds
+*
+* @package	vBulletin
+*/
+class vB_DataManager_RSSFeed extends vB_DataManager
+{
+	/**
+	* Array of recognised and required fields for RSS feeds, and their types
+	*
+	* @var	array
+	*/
+	protected $validfields = [
+ 		'rssfeedid'         => [vB_Cleaner::TYPE_UINT,     vB_DataManager_Constants::REQ_INCR, vB_DataManager_Constants::VF_METHOD, 'verify_nonzero'],
+ 		'title'             => [vB_Cleaner::TYPE_STR,      vB_DataManager_Constants::REQ_YES],
+ 		'url'               => [vB_Cleaner::TYPE_STR,      vB_DataManager_Constants::REQ_YES],
+ 		'ttl'               => [vB_Cleaner::TYPE_UINT,     vB_DataManager_Constants::REQ_YES, vB_DataManager_Constants::VF_METHOD],
+		'maxresults'        => [vB_Cleaner::TYPE_UINT,     vB_DataManager_Constants::REQ_NO],
+		'userid'            => [vB_Cleaner::TYPE_UINT,     vB_DataManager_Constants::REQ_YES, vB_DataManager_Constants::VF_METHOD],
+		'nodeid'            => [vB_Cleaner::TYPE_UINT,     vB_DataManager_Constants::REQ_YES, vB_DataManager_Constants::VF_METHOD],
+		'iconid'            => [vB_Cleaner::TYPE_UINT,     vB_DataManager_Constants::REQ_NO],
+		'titletemplate'     => [vB_Cleaner::TYPE_STR,      vB_DataManager_Constants::REQ_YES],
+		'bodytemplate'      => [vB_Cleaner::TYPE_STR,      vB_DataManager_Constants::REQ_YES],
+		'searchwords'       => [vB_Cleaner::TYPE_STR,      vB_DataManager_Constants::REQ_NO],
+		'itemtype'          => [vB_Cleaner::TYPE_STR,      vB_DataManager_Constants::REQ_YES, vB_DataManager_Constants::VF_METHOD],
+		'topicactiondelay'  => [vB_Cleaner::TYPE_UINT,     vB_DataManager_Constants::REQ_NO],
+		'searchwords'       => [vB_Cleaner::TYPE_STR,      vB_DataManager_Constants::REQ_NO],
+		'lastrun'           => [vB_Cleaner::TYPE_UINT,     vB_DataManager_Constants::REQ_AUTO],
+		'options'           => [vB_Cleaner::TYPE_NOCLEAN,  vB_DataManager_Constants::REQ_NO],
+		'prefixid'          => [vB_Cleaner::TYPE_NOHTML,   vB_DataManager_Constants::REQ_NO]
+	];
+
+	/**
+	* Array of field names that are bitfields, together with the name of the variable in the registry with the definitions.
+	*
+	* @var	array
+	*/
+	protected $bitfields = ['options' => 'bf_misc_feedoptions'];
+
+	/**
+	* The main table this class deals with
+	*
+	* @var	string
+	*/
+	protected $table = 'vBForum:rssfeed';
+
+	protected $keyField = 'rssfeedid';
+
+	protected $rssfeed;
+
+	/**
+	* Verifies that the specified forumid is valid
+	*
+	* @param	integer	Forum ID (allow -1 = all forums)
+	*
+	* @return	boolean
+	*/
+	protected function verify_nodeid(&$forumid)
+	{
+		try
+		{
+			$node = vB_Api::instanceInternal('node')->getNodeContent($forumid);
+			$node = $node[$forumid];
+		}
+		catch (vB_Exception_Api $ex)
+		{
+			return false;
+		}
+
+		if ($forumid != -1 AND empty($node))
+		{
+			$this->error('invalid_channel_specified');
+			return false;
+		}
+
+		if ($node['category'])
+		{
+			$this->error('forum_is_a_category_allow_posting');
+			return false;
+		}
+
+		return true;
+	}
+
+	/**
+	* Accepts a username and converts it into the appropriate user id
+	*
+	* @param	string	Username
+	*
+	* @return	boolean
+	*/
+	public function set_user_by_name($username)
+	{
+		if ($username != '' AND $user = $this->assertor->getRow('user', ['username' => $username]))
+		{
+			$this->do_set('userid', $user['userid']);
+			return true;
+		}
+		else
+		{
+			$this->error('invalid_user_specified');
+			return false;
+		}
+	}
+
+	/**
+	* Ensures that the given TTL (time to live) value is sane
+	*
+	* @param	integer	TTL in seconds
+	*
+	* @return	boolean
+	*/
+	protected function verify_ttl(&$ttl)
+	{
+		switch ($ttl)
+		{
+			case 43200: // every 12 hours
+			case 36000: // every 10 hours
+			case 28800: // every 8 hours
+			case 21600: // every 6 hours
+			case 14400: // every 4 hours
+			case 7200: // every 2 hours
+			case 3600: // every hour
+			case 1800: // every half-hour
+			case 1200: // every 20 minutes
+			case 600: // every 10 minutes
+				return true;
+
+			default:
+				$ttl = 1800;
+				return true;
+		}
+	}
+
+	/**
+	* Ensures that the given itemtype is acceptable
+	*
+	* @param	string	Item Type
+	*
+	* @return	boolean
+	*/
+	protected function verify_itemtype(&$itemtype)
+	{
+		switch ($itemtype)
+		{
+			case 'topic':
+			case 'announcement':
+				return true;
+
+			default:
+				$itemtype = 'topic';
+				return true;
+		}
+	}
+
+	/**
+	* Any checks to run immediately before saving. If returning false, the save will not take place.
+	*
+	* @param	boolean	Do the query?
+	*
+	* @return	boolean	True on success; false if an error occurred
+	*/
+	function pre_save($doquery = true)
+	{
+		if ($this->presave_called !== null)
+		{
+			return $this->presave_called;
+		}
+
+		$return_value = true;
+		// Legacy Hook 'rssfeeddata_presave' Removed //
+
+		$this->presave_called = $return_value;
+		return $return_value;
+	}
+
+	/**
+	* Additional data to update after a save call (such as denormalized values in other tables).
+	* In batch updates, is executed for each record updated.
+	*
+	* @param	boolean	Do the query?
+	*/
+	function post_save_each($doquery = true)
+	{
+		// Legacy Hook 'rssfeeddata_postsave' Removed //
+
+		return true;
+	}
+
+	/**
+	* Additional data to update after a delete call (such as denormalized values in other tables).
+	*
+	* @param	boolean	Do the query?
+	*/
+	function post_delete($doquery = true)
+	{
+		$this->db_delete(TABLE_PREFIX, 'vBForum:rsslog', ['rssfeedid' => $this->existing['rssfeedid']]);
+		// Legacy Hook 'rssfeeddata_delete' Removed //
+		return true;
+	}
+}
+
+/*=========================================================================*\
+|| #######################################################################
+|| # Downloaded: 12:50, Tue Dec 24th 2024
+|| # CVS: $RCSfile$ - $Revision: 114274 $
+|| #######################################################################
+\*=========================================================================*/

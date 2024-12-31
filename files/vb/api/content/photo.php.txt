@@ -1,0 +1,400 @@
+<?php if (!defined('VB_ENTRY')) die('Access denied.');
+/*========================================================================*\
+|| ###################################################################### ||
+|| # vBulletin 6.1.0 Alpha 4 Week 2 - Licence Number VBCW2VFT7A
+|| # ------------------------------------------------------------------ # ||
+|| # Copyright 2000-2024 MH Sub I, LLC dba vBulletin. All Rights Reserved.  # ||
+|| # This file may not be redistributed in whole or significant part.   # ||
+|| # ----------------- VBULLETIN IS NOT FREE SOFTWARE ----------------- # ||
+|| # http://www.vbulletin.com | http://www.vbulletin.com/license.html   # ||
+|| ###################################################################### ||
+\*========================================================================*/
+
+/**
+ * vB_Api_Content_Photo
+ *
+ * @package vBApi
+ * @copyright Copyright (c) 2011
+ * @version $Id: photo.php 108508 2022-01-07 21:18:20Z ksours $
+ * @access public
+ */
+class vB_Api_Content_Photo extends vB_Api_Content
+{
+	/** override in client- the text name */
+	protected $contenttype = 'vBForum_Photo';
+
+	/** The table for the type-specific data. */
+	protected $tablename = 'photo';
+
+	/** We need the primary key field name. */
+	protected $primarykey = 'nodeid';
+
+	//Control whether this record will display on a channel page listing.
+	protected $inlist = 0;
+
+	//Let's cache the author information. We need it for checking ancestry- no sense querying too many times.
+	protected $authors = array();
+
+	//skip the flood check
+
+	protected $doFloodCheck = false;
+
+	protected $imageHandler = false;
+
+	/**
+	 * Normal constructor- protected to prevent direct instantiation
+	 */
+	protected function __construct()
+	{
+		parent::__construct();
+		$this->library = vB_Library::instance('Content_Photo');
+	}
+
+	/**
+	 * Add photo record
+	 *
+	 * @param  mixed Array of field => value pairs which define the record.
+	 * @param  array Array of options for the content being created.
+	 *               Understands skipTransaction, skipFloodCheck, floodchecktime.
+	 *
+	 * @return int   photoid
+	 */
+	public function add($data, $options = array())
+	{
+		$data['contenttypeid'] = $this->library->fetchContentTypeId();
+		if (!$this->library->validate($data, vB_Library_Content::ACTION_ADD))
+		{
+			throw new vB_Exception_Api('no_create_permissions');
+		}
+		$parentData = vB_Library::instance('node')->getNodeFullContent($data['parentid']);
+		$parentData = empty($parentData) ? $parentData : $parentData[$data['parentid']];
+		if (!array_key_exists($data['parentid'], $this->authors))
+		{
+			if (empty($parentData) OR !empty($parentData['errors']) OR empty($parentData['userid']))
+			{
+				throw new vB_Exception_Api('invalid_data');
+			}
+			$this->authors[$data['parentid']] = $parentData['userid'];
+		}
+
+		$data['userid'] = vB::getCurrentSession()->get('userid');
+
+		if (!$parentData['canedit'])
+		{
+			throw new vB_Exception_Api('no_permission');
+		}
+
+		//this will throw an exception if validation fails
+		$this->validateFileData($data['filedataid'], $data['userid']);
+
+		if ((vB_Api::instanceInternal('node')->fetchAlbumChannel() == $parentData['parentid']) AND (!vB::getUserContext()->hasPermission('albumpermissions', 'picturefollowforummoderation')))
+		{
+			$data['showapproved'] = 0;
+		}
+
+		$data['options'] = $options;
+		$this->verify_limits($data);
+		$data = $this->cleanInput($data);
+		$this->cleanOptions($options);
+		$result = $this->library->add($data, $options);
+
+		return $result['nodeid'];
+	}
+
+	/**
+	 * For checking the photo specific limits
+	 *
+	 * @param  array       info about the photo that needs to be added
+	 *
+	 * @return bool|string either true if all the tests passed or throws exception
+	 */
+	protected function verify_limits($data)
+	{
+		parent::verify_limits($data);
+
+		$usercontext = vB::getUserContext();
+		$albumChannelId = $this->nodeApi->fetchAlbumChannel();
+		$parentData = vB_Api::instance('node')->getNode($data['parentid']);
+
+		// These check are only valid when posting to the album channel
+		if ($albumChannelId == $parentData['parentid'])
+		{
+			if(empty($data['options']['isnewgallery']))
+			{
+				$albummaxpics = $usercontext->getLimit('albummaxpics');
+				if ($albummaxpics > 0)
+				{
+					$numalbumpics = $this->assertor->getField('vBForum:getNumberAlbumPhotos', array(
+						vB_dB_Query::TYPE_KEY =>vB_dB_Query::QUERY_STORED,
+						'albumid' => $data['parentid'],
+						'contenttypeid' => vB_Types::instance()->getContentTypeID($this->contenttype),
+					));
+					$overcount = $numalbumpics + 1 - $albummaxpics;
+					if ($overcount > 0)
+					{
+						throw new vB_Exception_Api('upload_album_pics_countfull_x', array($overcount));
+					}
+				}
+			}
+
+			$albummaxsize = $usercontext->getLimit('albummaxsize');
+
+			if ($albummaxsize)
+			{
+				$totalsize = $this->assertor->getField('vBForum:getUserPhotosSize', array(
+					vB_dB_Query::TYPE_KEY =>vB_dB_Query::QUERY_STORED,
+					'channelid' => $albumChannelId,
+					'userid' => $data['userid'],
+					'contenttypeid' => $photoType = vB_Types::instance()->getContentTypeID($this->contenttype),
+				));
+
+				$filedata = vB::getDbAssertor()->getRow('filedata', array(
+					vB_dB_Query::TYPE_KEY => vB_dB_Query::QUERY_SELECT,
+					'filedataid' => $data['filedataid']
+				));
+
+				$newsize = $filedata['filesize'] + $totalsize;
+				$size_overage = $newsize - $albummaxsize;
+				if ($size_overage > 0)
+				{
+					throw new vB_Exception_Api('upload_album_sizefull', array($size_overage));
+				}
+			}
+		}
+		else
+		{
+			// Channel  permission for allowed attachemtns per node
+			$maxattachments = vB::getUserContext()->getChannelLimitPermission('forumpermissions', 'maxattachments', $parentData['parentid']);
+
+			// Check max allowed attachments per post
+			if ($maxattachments)
+			{
+				$numpostPhotos = $this->assertor->getField('vBForum:getNumberPosthotos', array(
+					vB_dB_Query::TYPE_KEY =>vB_dB_Query::QUERY_STORED,
+					'nodeid' => $data['parentid'],
+					'contenttypeid' => vB_Types::instance()->getContentTypeID($this->contenttype),
+				));
+				$overcount = $numpostPhotos + 1 - $maxattachments;
+				if ($overcount > 0)
+				{
+					throw new vB_Exception_Api('you_may_only_attach_x_files_per_post', array($maxattachments));
+				}
+			}
+		}
+
+		return true;
+	}
+
+	/**
+	 * Delete photo record
+	 *
+	 * @param  int  photo id
+	 *
+	 * @return bool
+	 */
+	public function delete($photoId)
+	{
+		if (!$this->canDeletePhoto(vB::getCurrentSession()->get('userid'), $photoId))
+		{
+			throw new vB_Exception_Api('no_delete_permissions');
+		}
+
+		return $this->library->delete($photoId);
+	}
+
+	/**
+	 * Checks if user can delete a given photo
+	 *
+	 * @param  int  User Id
+	 * @param  int  Photo Id
+	 *
+	 * @return bool Value to indicate whether user can or not delete photo
+	 */
+	protected function canDeletePhoto($userId, $photoId)
+	{
+		$galleryId = $this->library->fetchParent($photoId);
+
+		/** moderators can delete photos */
+		if (vB::getUserContext()->getChannelPermission("moderatorpermissions", "canmoderateattachments", $galleryId))
+		{
+			return true;
+		}
+
+		/** owner can delete photos */
+		return $this->library->isOwner($galleryId, $userId);
+	}
+
+	/**
+	 * Returns an image record based on photo ID
+	 *
+	 * @param  int   Photo ID
+	 * @param  bool  Include thumbnail
+	 * @param  bool  Include extra data
+	 *
+	 * @return array Array of image data
+	 */
+	public function fetchImageByPhotoid($id, $thumb = false, $includeData = true)
+	{
+		$id = intval($id);
+		if (!$id)
+		{
+			throw new vB_Exception_Api('invalid_request');
+		}
+
+		// old/current api method has bool $thumb that they passed along to the library's
+		// $type param, which makes no sense.
+		$type = vB_Api_Filedata::SIZE_FULL;
+		if ($thumb)
+		{
+			$type = vB_Api_Filedata::SIZE_THUMB;
+		}
+
+		$record = $this->assertor->getRow(
+			'vBForum:getPhotoContent',
+			['nodeid' => $id, 'type' => $type]
+		);
+
+		if (empty($record))
+		{
+			return false;
+		}
+
+		if (!$this->canViewPhotoInternal($record, $thumb))
+		{
+			throw new vB_Exception_Api('no_permission');
+		}
+
+		$imageHandler = vB_Image::instance();
+
+		return $imageHandler->loadFileData($record, $type, $includeData);
+	}
+
+	private function canViewPhotoInternal($photo, $isThumb)
+	{
+		// Note, this does not verify whether $id is a photo or not. Use at your own peril.
+		$photoid = $photo['nodeid'];
+		$galleryid = $photo['galleryid'];
+		$userContext = vB::getUserContext();
+		$userid = $userContext->fetchUserId();
+		// TODO: replace this with a validate ACTION_VIEW check?
+		if (!$userContext->getChannelPermission('forumpermissions', 'canview', $galleryid))
+		{
+			return false;
+		}
+
+
+		/*
+			Let's also let gallery owners be able to view their own gallery contents,
+			since the create perm & view perms are separate.
+
+			This check only works if filedata.userid is the actual gallery owner.
+			validateFileData() called in add() guarantees this for unedited galleries,
+			but I'm not sure if admins can edit a gallery content and what happens to
+			the filedata record in that case. If we can't guarantee the filedata.userid
+			is the gallery owner, we'll have to do some node joins as well, probably,
+			which is not ideal.
+
+			Edit: Admin editing the gallery will add the photos under the CURRENT userid,
+			i.e. that admin's userid. On the plus side this means users cannot leak
+			sensitive filedata via just trying to specify filedataids that they don't own.
+			However, that also means there are cases where there are photos added to the
+			gallery that the gallery owner cannot see (and possibly cannot edit).
+			For now, I'm going to leave that alone, as I'm guessing attachments have the
+			same issue (not yet tested), but in the interest of keeping some of the old
+			behavior (permissive regardless of cangetimageattachment permissions), we
+			may want to switch this check to isGalleryOwner, which requires additional
+			queries to fetch the parent data.
+			Edit 2: After some testing, I decided to add a gallery-owner check if the
+			other checks fail. I was initially expecting this to be required for the
+			gallery preview action as well, but unfortunately that still has additional
+			problems (fetching via filedataid instead of nodeid for previewing).
+		 */
+		$isOwner = ($photo['userid'] == $userid);
+		// Per VBV-16045, check the attach image permissions for photos as well.
+		$canGetImgAttach = $userContext->getChannelPermission(
+			'forumpermissions2',
+			'cangetimgattachment',
+			$galleryid
+		);
+		$canSeeThumb = $userContext->getChannelPermission(
+			'forumpermissions',
+			'canseethumbnails',
+			$galleryid
+		);
+
+		// todo: move this to validate ACTION_VIEW ??
+		$haveAttachPerms = ($isOwner OR $canGetImgAttach OR $isThumb AND $canSeeThumb);
+		if (!$haveAttachPerms)
+		{
+			/*
+			If we still don't have permissions for this photo, there is an edge case that
+			this photo was an admin added photo to a gallery that the current user owns.
+			We have to pull the gallery's node record and check, as the photo record does
+			not reveal anything about this condition.
+
+			We place this check in here instead of above so that we're only doing
+			additional queries & processing iff all other checks failed.
+
+			In the case that a guest is viewing a deleted user's (or guest's if forum allows
+			guest posting) gallery that they would normally not have perms to view for, I
+			think the expected behavior would be to disallow viewing for guests, thus the
+			$userid > 0 check here.
+			 */
+			if ($userid > 0)
+			{
+				$galleryOwner = vB::getDbAssertor()->getColumn(
+					'vBForum:node',
+					'userid',
+					['nodeid' => $galleryid]
+				);
+				$galleryOwner = reset($galleryOwner);
+				if ($galleryOwner == $userid)
+				{
+					return true;
+				}
+			}
+
+			return false;
+		}
+
+		return true;
+	}
+
+	/**
+	 * Validate filedata record
+	 *
+	 * Throws an exception on error, otherwise does nothing.
+	 *
+	 * @param  int   fileDataId to check
+	 * @param  int   UserId
+	 *
+	 * @return void
+	 */
+	private function validateFileData($fileDataId, $userId)
+	{
+		$fileData = $this->assertor->getRow('vBForum:filedata', ['filedataid' => $fileDataId]);
+
+		if (empty($fileData))
+		{
+			throw new vB_Exception_Api('invalid_filedataid_x', [$fileDataId]);
+		}
+
+		if ($fileData['userid'] != $userId)
+		{
+			throw new vB_Exception_Api('invalid_user_filedata');
+		}
+
+		/*
+		todo: Can an admin edit another user's gallery? What happens to the
+		filedata.userid ??
+		edit: in that case the userid for those photos is the admin's userid
+		 */
+	}
+}
+
+/*=========================================================================*\
+|| #######################################################################
+|| # Downloaded: 12:50, Tue Dec 24th 2024
+|| # CVS: $RCSfile$ - $Revision: 108508 $
+|| #######################################################################
+\*=========================================================================*/

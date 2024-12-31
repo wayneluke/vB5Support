@@ -1,0 +1,216 @@
+<?php
+/*========================================================================*\
+|| ###################################################################### ||
+|| # vBulletin 6.1.0 Alpha 4 Week 2 - Licence Number VBCW2VFT7A
+|| # ------------------------------------------------------------------ # ||
+|| # Copyright 2000-2024 MH Sub I, LLC dba vBulletin. All Rights Reserved.  # ||
+|| # This file may not be redistributed in whole or significant part.   # ||
+|| # ----------------- VBULLETIN IS NOT FREE SOFTWARE ----------------- # ||
+|| # http://www.vbulletin.com | http://www.vbulletin.com/license.html   # ||
+|| ###################################################################### ||
+\*========================================================================*/
+
+/**
+ * vB_Library_ReferUser
+ *
+ * @package vBLibrary
+ */
+class vB_Library_ReferUser extends vB_Library
+{
+	/**
+	 * @var object Instance of the database assertor
+	 */
+	protected $assertor = null;
+
+	/**
+	 * Constructor
+	 */
+	protected function __construct()
+	{
+		parent::__construct();
+
+		$this->assertor = vB::getDbAssertor();
+	}
+
+	/**
+	 * Generates and returns a user referral code for the currently logged in user
+	 *
+	 * @return string The referral code
+	 */
+	public function getReferralCode()
+	{
+		$currentUserId = vB::getCurrentSession()->get('userid');
+
+		// generate referral code while avoiding collisions, however unlikely
+		$limit = 10;
+		while(true AND $limit--)
+		{
+			$referralCode = (new vB_Utility_Random())->hex(40);
+			$check = $this->assertor->getRow('vBForum:userreferral', ['referralcode' => $referralCode]);
+			if (!$check)
+			{
+				break;
+			}
+		}
+
+		$values = [
+			'userid' => $currentUserId,
+			'dateline' => vB::getRequest()->getTimeNow(),
+			'referralcode' => $referralCode,
+		];
+
+		$this->assertor->insert('vBForum:userreferral', $values);
+
+		return $referralCode;
+	}
+
+	/**
+	 * Validates a user referral code
+	 *
+	 * @param  string      $referralCode The referral code to validate
+	 *
+	 * @return bool|string Returns the cleaned referral code if it is valid and active, false otherwise
+	 */
+	public function validateReferralCode($referralCode)
+	{
+		$result = $this->validateReferralCodeInternal($referralCode);
+		if ($result)
+		{
+			return $result['referralcode'];
+		}
+
+		return false;
+	}
+
+	/**
+	 * Validates a user referral code and returns the associated user id
+	 *
+	 * @param  string      $referralCode The referral code to validate
+	 *
+	 * @return bool|int Returns the user id associated with the referral code if it is valid and active, false otherwise
+	 */
+	function getUseridFromReferralCode($referralCode)
+	{
+		$result = $this->validateReferralCodeInternal($referralCode);
+		if ($result)
+		{
+			return $result['userid'];
+		}
+
+		return false;
+	}
+
+	/**
+	 * Validates a user referral code and returns associated information
+	 *
+	 * @param  string      $referralCode The referral code to validate
+	 *
+	 * @return bool|array  If the referral code is valid, returns an array with [userid, referralcode], otherwise returns false
+	 */
+	protected function validateReferralCodeInternal($referralCode)
+	{
+		if (!is_string($referralCode))
+		{
+			return false;
+		}
+
+		$cleaner = vB::getCleaner();
+		$referralCode = $cleaner->clean($referralCode, vB_Cleaner::TYPE_STR);
+
+		if (strlen($referralCode) == 40)
+		{
+			$check = $this->assertor->getRow('vBForum:userreferral', ['referralcode' => $referralCode]);
+			if ($check)
+			{
+				$vboptions = vB::getDatastore()->getValue('options');
+				$now = vB::getRequest()->getTimeNow();
+				$validForSeconds = 86400 * $vboptions['user_referral_expire_days'];
+				$validUntil = $check['dateline'] + $validForSeconds;
+
+				if ($now <= $validUntil)
+				{
+					// the referral code is still valid, now check if the referring
+					// user *still* has permission to refer users at this time.
+					$referringUserContext = vB::getUserContext($check['userid']);
+					if ($referringUserContext->hasPermission('genericpermissions2', 'canreferusers'))
+					{
+						return [
+							'referralcode' => $referralCode,
+							'userid' => $check['userid'],
+						];
+					}
+				}
+			}
+		}
+
+		return false;
+	}
+
+	/**
+	 * Deletes old, expired referral codes; used by cron job
+	 */
+	public function deleteExpiredReferralCodes()
+	{
+		$vboptions = vB::getDatastore()->getValue('options');
+		$now = vB::getRequest()->getTimeNow();
+		$cutoff = $now - (86400 * $vboptions['user_referral_expire_days']);
+
+		$conditions = [
+			['field' => 'dateline', 'value' => $cutoff, vB_dB_Query::OPERATOR_KEY => vB_dB_Query::OPERATOR_LT],
+		];
+		$this->assertor->delete('vBForum:userreferral', $conditions);
+	}
+
+	/**
+	 * Return a report of referrers
+	 *
+	 * @param array $startdate Start Date of the report. an array of 'year', 'month', 'day', 'hour' and 'minute'
+	 * @param array $enddate End Date of the report. an array of 'year', 'month', 'day', 'hour' and 'minute'
+	 * @return array Referrers information
+	 */
+	public function fetchReferrers($startdate, $enddate)
+	{
+		// clean inputs
+		$keys = ['hour', 'minute', 'second', 'month', 'day', 'year'];
+		$inputs = ['start' => $startdate, 'end' => $enddate];
+		foreach ($inputs AS $k => $date)
+		{
+			$clean = [];
+			foreach ($keys AS $key)
+			{
+				$clean[$key] = ($date[$key] ?? 0);
+			}
+			$inputs[$k] = $clean;
+		}
+		$startdate = $inputs['start'];
+		$enddate = $inputs['end'];
+
+		//checking for the month appears to be a proxy for "is the date set".
+		//logic moved here from the method query where it doesn't belong
+		$start = 0;
+		if (!empty($startdate['month']))
+		{
+			$start = vbmktime_array($startdate);
+		}
+
+		$end = 0;
+		if (!empty($enddate['month']))
+		{
+			$end = vbmktime_array($enddate);
+		}
+
+		$users = $this->assertor->getRows('userReferrers', [
+			'startdate' => $start,
+			'enddate' => $end,
+		]);
+
+		return $users;
+	}
+}
+
+/*=========================================================================*\
+|| #######################################################################
+|| # Downloaded: 12:50, Tue Dec 24th 2024
+|| # CVS: $RCSfile$ - $Revision: 115035 $
+|| #######################################################################
+\*=========================================================================*/

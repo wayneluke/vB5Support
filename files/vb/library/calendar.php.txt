@@ -1,0 +1,384 @@
+<?php
+/*========================================================================*\
+|| ###################################################################### ||
+|| # vBulletin 6.1.0 Alpha 4 Week 2 - Licence Number VBCW2VFT7A
+|| # ------------------------------------------------------------------ # ||
+|| # Copyright 2000-2024 MH Sub I, LLC dba vBulletin. All Rights Reserved.  # ||
+|| # This file may not be redistributed in whole or significant part.   # ||
+|| # ----------------- VBULLETIN IS NOT FREE SOFTWARE ----------------- # ||
+|| # http://www.vbulletin.com | http://www.vbulletin.com/license.html   # ||
+|| ###################################################################### ||
+\*========================================================================*/
+
+/**
+ * vB_Library_Calendar
+ *
+ * @package vBLibrary
+ */
+class vB_Library_Calendar extends vB_Library
+{
+	public function deleteOldHolidays(float $cutoffYears = 2) : array
+	{
+		if ($cutoffYears <= 0)
+		{
+			return [
+				'deleted' => [],
+			];
+		}
+
+		$assertor = vB::getDbAssertor();
+		$timenow = vB::getRequest()->getTimeNow();
+		$cutOffDate = $timenow - ($cutoffYears * 365 * 24 * 60 * 60);
+
+		/*
+		Initially, I was trying UNIXTIMESTAMP comparisons via
+			`cron_search`  INT UNSIGNED GENERATED ALWAYS AS
+				(IF(`year` = 0, 0, UNIX_TIMESTAMP(CONCAT(`year`, '-', `month`, '-', `day`, ' 00:00:00')))) VIRTUAL,
+			...
+			KEY `cron_search` (`is_recurring`, `cron_search`)
+		However, UNIX_TIMESTAMP() will assume the provided date is in the session timezone, helpfully convert it to UTC, then
+		generate the timestamp. So on PST, the generated timezone is actually off by 8 (or 7 depending on current DST).
+		While this isn't a huge deal practically for THIS purpose (being off by 12 hours for a 2 year cutoff), I did not want to
+		leave that column with an unexpected error in case we use that column for something else.
+
+		Note that in MySQL, it seems to support an explicit tz offset string, like "...00:00:00+00:00" to force it to be UTC,
+		but it's not explicitly documented in the MySQL docs, AND historically it did NOT support it based on various stackoverflow
+		questions over the years having this exact problem, so I'm not sure if it's a good idea to rely on it. Furthermore, it is
+		currently NOT supported in mariadb 10.4.
+
+		As such, let's just do the comparison the hard way, multiple times.
+		 */
+		$cutoffMonth = gmdate('m', $cutOffDate);
+		$cutoffYear = gmdate('Y', $cutOffDate);
+		$cutoffDay = gmdate('d', $cutOffDate);
+
+
+		$conditions = [
+			'year' => $cutoffYear,
+			'month' => $cutoffMonth,
+			'day' => $cutoffDay,
+		];
+		$eventidsAndTitles = $assertor->getRows('getOldHolidays', $conditions);
+		$eventids = array_column($eventidsAndTitles, 'eventid');
+
+		if (!empty($eventidsAndTitles))
+		{
+			$assertor->delete('calendarevent', ['eventid' => $eventids]);
+		}
+
+		return [
+			'deleted' => $eventidsAndTitles,
+		];
+	}
+
+
+	public function convertEventToIcs(array $node) : string
+	{
+		vB::includeLibraryFile('vendor/autoload.php');
+
+		$event = $this->createEvent($node);
+
+		$calendar = new \Eluceo\iCal\Domain\Entity\Calendar([$event]);
+		$calendar->setProductIdentifier('-//vBulletin 6//EN');
+
+		$componentFactory = new \Eluceo\iCal\Presentation\Factory\CalendarFactory();
+		$calendarComponent = $componentFactory->createCalendar($calendar);
+		$ics_file_contents = $calendarComponent->__toString();
+
+		return $ics_file_contents;
+	}
+
+	private function createEvent(array $node) : \Eluceo\iCal\Domain\Entity\Event
+	{
+		vB::includeLibraryFile('vendor/autoload.php');
+		$content = $node['content'];
+
+		$uid = $this->getEventUID($node);
+
+		$event = new \Eluceo\iCal\Domain\Entity\Event($uid);
+		// summary & description are expected to be plaintext.
+		// It is application dependent, but AFAIK no well known app (google
+		// calendar, outlook) supports/renders HTML in these properties Title is
+		// pre-html-escaped before DB insert, so we may have HTML entities. We
+		// may want to convert them back (we should test this) in the title,
+		// which will show literally, e.g. &amp; instead of & etc.
+		// Description has an X-ALT-DESC that *may* be supported by individual
+		// applications that can take HTML if FMTTYPE=text/html is set.
+		$event->setSummary($this->process_string_for_ics($node['title']));
+
+		$previewtext = '';
+		if ($content['rawtext'])
+		{
+			// I think the closest thing to description is the post body.
+			// However, we want to plaintext-ify it.
+			// getPreviewText() doesn't actually remove bbcode, so going with
+			// stripBbcode() + stripTags() instead.
+			$stripquotes = true;
+			$fast_and_dirty = false;
+			$showlinks = true;
+			$stripimg = true;
+			$keepquotetags = false;
+			$previewtext = vB_String::stripBbcode($content['rawtext'], $stripquotes, $fast_and_dirty, $showlinks, $stripimg, $keepquotetags);
+			$previewtext = vB_String::stripTags($previewtext);
+		}
+		$event->setDescription($this->process_string_for_ics($previewtext));
+
+		if (!empty($content['location']))
+		{
+			$location = new \Eluceo\iCal\Domain\ValueObject\Location($this->process_string_for_ics($content['location']));
+			// Can we convert content.maplocation to coordinates?
+			// $geographicPosition = new \Eluceo\iCal\Domain\ValueObject\GeographicPosition(float $latitude, float $longitude);
+			// $location->withGeographicPosition($geographicPosition);
+			$event->setLocation($location);
+		}
+
+		$occurence = $this->getOccurrence($content);
+		$event->setOccurrence($occurence);
+
+		// So far, support/rendering the URL field seems spotty. Google calendar & Windows calendar for example do not seem to
+		// display this in any way, while Apple Calendar does (but seems to ignore the Description instead).
+		// Not sure yet if we want to skip it for consistency, or add it and leave it up to the client, and/or add this link in
+		// the description.
+		$nodeUrl = vB5_Route::buildUrl('node|fullurl', ['nodeid' => $node['nodeid']]);
+		$event->setUrl(new \Eluceo\iCal\Domain\ValueObject\Uri($nodeUrl));
+
+		// Skipping setOrganizer() for now, as ORGANIZER requires an email address, which we don't want to give out.
+		//$userinfo = $content['userinfo'];
+
+		return $event;
+	}
+
+	private function getEventUID(array $node) : \Eluceo\iCal\Domain\ValueObject\UniqueIdentifier
+	{
+		// "UID" values MUST NOT include any data that might identify a user,
+		// host, domain, or any other security- or privacy-sensitive
+		// information. It is RECOMMENDED that calendar user agents now generate
+		// "UID" values that are hex-encoded random Universally Unique
+		// Identifier (UUID) values as defined in Sections 4.4 and 4.5 of
+		// [RFC4122].
+		// -- https://icalendar.org/New-Properties-for-iCalendar-RFC-7986/5-3-uid-property.html
+
+		// The UID globally identifies a calendar component inside a calendaring
+		// system.
+		// ...
+		// Because the UID globally identifies a calendar component, not having
+		// a good way of generating this property can cause a lot of problems.
+		// Using a simple UID generation algorithm might lead to overridden
+		// events with the same UID generated by others using the same
+		// generation mechanism. Every creation of a calendar component with a
+		// UID that is already contained by other component will lead in the end
+		// to the update of the older component. Once generated, the calendar
+		// component should keep the same UID all the time, so that no matter
+		// which part of the event is changed, the UID-Reference is the same and
+		// the calendar can be updated until that event will be deleted.
+		// -- https://devguide.calconnect.org/Data-Model/UID/
+
+		// Given that we need to KEEP the same UID for a given event ("no matter which part of the event is changed"),
+		// we should have some deterministic way to generate this. Let's use the nodeid since I think as long as the
+		// same node is being referenced, it should be the "same event".
+
+		// if we have recurring event, we might need to also add a "RECURRENT-ID" -- see the following reference
+		// https://devguide.calconnect.org/Data-Model/UID/#handling-uids-inside-recurrent-events
+
+		//    The description of the "UID" property in [RFC5545] contains some
+		//    recommendations on how the value can be constructed.  In particular,
+		//    it suggests use of host names, IP addresses, and domain names to
+		//    construct the value.  However, this is no longer considered good
+		//    practice, particularly from a security and privacy standpoint, since
+		//    use of such values can leak key information about a calendar user or
+		//    their client and network environment.  This specification updates
+		//    [RFC5545] by stating that "UID" values MUST NOT include any data that
+		//    might identify a user, host, domain, or any other security- or
+		//    privacy-sensitive information.  It is RECOMMENDED that calendar user
+		//    agents now generate "UID" values that are hex-encoded random
+		//    Universally Unique Identifier (UUID) values as defined in
+		//    Sections 4.4 and 4.5 of [RFC4122].
+		//
+		//    The following is an example of such a property value:
+		//
+		//    UID:5FC53010-1267-4F8E-BC28-1D7AE55A7C99
+		//
+		//    Additionally, if calendar user agents choose to use other forms of
+		//    opaque identifiers for the "UID" value, they MUST have a length less
+		//    than 255 octets and MUST conform to the "iana-token" ABNF syntax
+		//    defined in Section 3.1 of [RFC5545].
+		// -- https://datatracker.ietf.org/doc/html/rfc7986
+
+		// We are now generating a v4 UUID for event records for this purpose.
+		$uid = $node['content']['eventuid'];
+		return new \Eluceo\iCal\Domain\ValueObject\UniqueIdentifier($uid);
+	}
+
+	private function getOccurrence(array $content) : \Eluceo\iCal\Domain\ValueObject\Occurrence
+	{
+		vB::includeLibraryFile('vendor/autoload.php');
+
+		// Regarding $content['ignoredst'] ...
+		// With ignoreDST, overall there are a few possible cominbations of event creation & viewing the event:
+		//
+		// 	Server (or author) DST ON, ignoreDST = false when creating event
+		// 	* Viewing while DST ON
+		// 	* Viewing while DST OFF
+		//
+		// 	Server (or author) DST OFF, ignoreDST = false when creating event
+		// 	* Viewing while DST ON
+		// 	* Viewing while DST OFF
+		//
+		// 	Server (or author) DST ON, ignoreDST = true when creating event
+		// 	* Viewing while DST ON
+		// 	* Viewing while DST OFF
+		//
+		// 	Server (or author) DST OFF, ignoreDST = true when creating event
+		// 	* Viewing while DST ON
+		// 	* Viewing while DST OFF
+		//
+		// However, the DST state at creation time doesn't actually affect this function, because we're not really concerned with
+		// what unixtimestamp a given provided datetime string (like "July 4th 2024 8PM") was converted into (which would be affected
+		// by the at-creation DST state, I think), but just the stored unixtimestamp itself.
+		//
+		// That means for our purposes, ignoreDST ONLY affects us in the following:
+		// ignoreDST = false
+		// * Viewing while DST ON : unixtimestamp is converted to the tzoffset, and iff currently DST is on, an extra hour is added.
+		// * Viewing while DST OFF : unixtimestamp is converetd to the tzoffset.
+		//
+		// ignoreDST = true
+		// * viewing while DST ON : unixtimestamp is converted to the tzoffset, DST state is ignored (e.g. PDT and PST would see the
+		//   same time)
+		// * viewing while DST OFF : unixtimestamp is converted to the tzoffset, DST state is ignored (e.g. PDT and PST would see the
+		//   same time)
+		//
+		// IIRC, this flag is a vB construct carried over from vB4 purely to get around the fact that an event time would show a
+		// different hour depending on the DST state at the time of event creation/viewing (e.g. looking at the same event during
+		// January and July would have an hour difference if server is following USA DST rules, without ignoreDST). This is
+		// because vBulletin does not know for sure whether the target date would or would not have DST in effect, as it currently
+		// has no concept of the user's or even the server's DST "rules" -- i.e. if DST is observed at all, and if yes, when it
+		// starts and ends.
+		//
+		// Most calendars are smart enough to automatically handle DST and NOT change the hour of the event based on the current
+		// DST state, which follows the "ignoreDST = true" behavior.
+		//
+		// So I think it makes the most sense to just always assume ignoreDST = true and not try to do a weird hour compenstation.
+		// IMO ignoreDST = false is probably NEVER what the user wants -- the specified time should be that specific time of the
+		// specified day, whether or not the DST state is different between when the event is being created, and when that event
+		// happens.
+
+
+
+		// If we don't set a timezone ($appyTimezone = false), ICS will use a "floating time" which
+		// means every timezone gets the "same time". E.g.
+		//   DTSTART:20240729T200000
+		// means 8PM no matter the timezone. VS
+		//   DTSTART:20240729T200000Z
+		// (with trailing Z) which means 8PM UTC, and properly adjusted for others.
+		// We can also use a different timezone than UTC, which will end up with a TZID property in the DTSTART & DTEND
+		// properties, e.g.:
+		//   DTSTART;TZID=America/New_York:20240725T090000
+		//   DTEND;TZID=America/New_York:20240728T040001
+		// but atm I'm not sure if that would really gain us anything over just using UTC.
+		$utcTimezone = new DateTimeZone('UTC');
+		// Note, I'm not sure if it's the '@unixtimestamp' syntax causing this, but passing in the DateTimeZone into the
+		// DateTime() constructor changes the timezone_type from 3 (Identifier) to type 1 (UTC Offset)
+		// With type 3 UTC, DateTime->getDateTimeZone()->getName() returns "UTC", while with type 1, it returns "+00:00".
+		// Eluceo\iCal\Presentation\Component\Property\Value\DateTimeValue::convertDateTimeToString() currently expects
+		// "UTC" (type2 or 3?) and does NOT support type 1 for the non-floating-time output check, so maintaing the
+		// timezone type is important.
+		// Forcibly setting the timezone after instancing instead of passing it in the constructor seems to maintain
+		// the timezone_type.
+		$startPhpDateTime = new DateTime('@' . $content['eventstartdate']);
+		$startPhpDateTime->setTimezone($utcTimezone);
+		// DTEND is NON-INCLUSIVE (https://datatracker.ietf.org/doc/html/rfc5545#section-3.6.1), so add 1s to our inclusive
+		// endtime. However, this really doesn't affect anything, as our events (& most calendars) don't go down to 1s precision,
+		// so this would really only affect displays for "All day" events that end in 59:59 in vB6 but generally doesn't have a
+		// time-component in calendar apps (i.e. floating dates).
+		// What this results in is that the exported ICS for all-day events is 1 day later than in vBulletin (if it specifies
+		// enddate, i.e. multi-day events) but that is the correct behavior and 3rd party calendars will display it correctly.
+		$endPhpDateTime = new DateTime('@' . ($content['eventenddate'] + 1));
+		$endPhpDateTime->setTimezone($utcTimezone);
+
+
+		// We currently have these options for occurence:
+		// \Eluceo\iCal\Domain\ValueObject\MultiDay;
+		// \Eluceo\iCal\Domain\ValueObject\SingleDay;
+		// \Eluceo\iCal\Domain\ValueObject\TimeSpan;
+		// Unfortunately, SingleDay & MultiDay are always formatted using floating time, i.e. "Ymd", without
+		// any timezone information. So if we use MultiDay and SingleDay for all day events, they always show
+		// up on the same day(s) as if viewed by a user in the GMT+00 timezone, which is not consistent with
+		// our topic displays which shows different day spans depending on the timezone.
+		// See \Eluceo\iCal\Presentation\Factory\EventFactory::getOccurrenceProperties() where SingleDay & MultiDay
+		// use DateValue instead of DateTimeValue (via DateTimeFactory)
+
+		// 2024-07-19:
+		// Per internal discussions, we're going to use floating time for all day events, and we'll eventually fix our
+		// own calendar & topic displays to "float" the all-day events as well.
+		$useFloatingDate = true;
+		if ($content['allday'] AND $useFloatingDate)
+		{
+			// With floating dates, we need to compensate for the author's local timezone, otherwise we can be off by a day in
+			// either start or end dates depending on which timezone they're in. See issue VB6-732.
+			// So while the above note about ignoreDst is still correct, I think, here we are compensating for the author's
+			// timezone to "convert" a non-floating timestamp to a floating date. Since the floating date doesn't have a timezone,
+			// this hour difference might actually cause issues. Unfortunately with $ignoreDst OFF, we have no certainty what the
+			// dst setting was when creating the event and what the dst setting might be when it's actually the time of the event
+			// for the author, so there's no real good solutions here. For now, going with explicit ignoreDst = true rather than
+			// using the stored ignoreDst so that regardless of when we download the ICS, we always get the same date, and also
+			// avoid having the unit tests be potentially off by an hour depending on DST settings...
+			$ignoreDst = true;
+			/** @var vB_Api_User */
+			$userApi = vB_Api::instanceInternal('user');
+			$authorTZOffset = $userApi->fetchTimeOffset($content['userid'], $ignoreDst);
+			$startPhpDateTime = new DateTime('@' . ($content['eventstartdate'] + $authorTZOffset));
+			$startPhpDateTime->setTimezone($utcTimezone);
+			// For multi-day all-day events, the eluceo\ical library adds 1 day to the enddate in
+			// getOccurrenceProperties(), presumably to account for the non-inclusive enddate.
+			// That means we do NOT want to add 1 second here.
+			$endPhpDateTime = new DateTime('@' . ($content['eventenddate'] + $authorTZOffset));
+			$endPhpDateTime->setTimezone($utcTimezone);
+
+			// Multiday or single day
+			$timeDiff = $content['eventenddate'] - $content['eventstartdate'];
+			if ($timeDiff > 86400)
+			{
+				$startdate = new \Eluceo\iCal\Domain\ValueObject\Date($startPhpDateTime);
+				$enddate = new \Eluceo\iCal\Domain\ValueObject\Date($endPhpDateTime);
+				$occurence = new \Eluceo\iCal\Domain\ValueObject\MultiDay($startdate, $enddate);
+			}
+			else
+			{
+				$date = new \Eluceo\iCal\Domain\ValueObject\Date($startPhpDateTime);
+				$occurence = new \Eluceo\iCal\Domain\ValueObject\SingleDay($date);
+			}
+		}
+		else
+		{
+			$applyTimezone = true;
+			$startDate = new \Eluceo\iCal\Domain\ValueObject\DateTime($startPhpDateTime, $applyTimezone);
+			$endDate = new \Eluceo\iCal\Domain\ValueObject\DateTime($endPhpDateTime, $applyTimezone);
+			$occurence = new \Eluceo\iCal\Domain\ValueObject\TimeSpan($startDate, $endDate);
+		}
+
+		return $occurence;
+	}
+
+	private function process_string_for_ics(?string $str) : string
+	{
+		// This function is to corral some of the common string processing
+		// for VCALENDAR/VEVENT properties
+
+		// Some DB fields are nullable and that might suck for some str functions.
+		// Smooth it out.
+		$str ??= '';
+
+		// ICS default charset is UTF-8, and we assume this in the Content-Type header we set in the controller.
+		$stringUtil = vB::getString();
+		$str = $stringUtil->toUtf8($str);
+
+		return $str;
+	}
+}
+
+/*=========================================================================*\
+|| #######################################################################
+|| # Downloaded: 12:50, Tue Dec 24th 2024
+|| # CVS: $RCSfile$ - $Revision: 103730 $
+|| #######################################################################
+\*=========================================================================*/

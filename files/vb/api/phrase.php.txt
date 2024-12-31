@@ -1,0 +1,640 @@
+<?php
+/*========================================================================*\
+|| ###################################################################### ||
+|| # vBulletin 6.1.0 Alpha 4 Week 2 - Licence Number VBCW2VFT7A
+|| # ------------------------------------------------------------------ # ||
+|| # Copyright 2000-2024 MH Sub I, LLC dba vBulletin. All Rights Reserved.  # ||
+|| # This file may not be redistributed in whole or significant part.   # ||
+|| # ----------------- VBULLETIN IS NOT FREE SOFTWARE ----------------- # ||
+|| # http://www.vbulletin.com | http://www.vbulletin.com/license.html   # ||
+|| ###################################################################### ||
+\*========================================================================*/
+
+/**
+ * vB_Api_Phrase
+ *
+ * @package vBApi
+ */
+class vB_Api_Phrase extends vB_Api
+{
+	protected $disableWhiteList = ['fetch', 'getPhrases'];
+
+	/**
+	 *
+	 * @var vB_Library_Phrase
+	 */
+	protected $library;
+
+	protected function __construct()
+	{
+		parent::__construct();
+		$this->library = vB_Library::instance('phrase');
+	}
+
+	/**
+	 * Fetch phrases by group
+	 *
+	 * @param mixed	Groups(s) to retrieve
+	 * @param int $languageid Language ID. If not set, it will use current session's languageid
+	 *
+	 * @return array Phrase' texts
+	 */
+	public function fetchByGroup($groups, $languageid = NULL)
+	{
+		if (empty($groups))
+		{
+			return [];
+		}
+
+		if (!is_array($groups))
+		{
+			$groups = [$groups];
+		}
+
+		if ($languageid === NULL)
+		{
+			$languageid = $this->library->getLanguageid()["languageid"];
+		}
+
+		$phrasesdata = [];
+		$phrasesdata = vB::getDbAssertor()->getRows('phrase', [
+			'fieldname' => $groups,
+			'languageid' => [$languageid, 0, -1],
+		]);
+
+		return $this->library->parsePhrases($phrasesdata, [], $languageid);
+	}
+
+	/**
+	 * Fetch the "best" languageid in the order of current session's languageid,
+	 * the default languageid from datastore,  or the master languageid (-1).
+	 * This is the languageid that's used by fetch().
+	 *
+	 * @param bool	$getCharset		(Optional) true to also return charset of current
+	 *								languageid. Default false.
+	 *
+	 * @return array 'languageid' => languageid used for current session's phrases
+	 *
+	 */
+	public function getLanguageid($getCharset = false)
+	{
+		return $this->library->getLanguageid($getCharset);
+	}
+
+	/**
+	 * Fetch phrases
+	 *
+	 * @param array $phrases An array of phrase ID to be fetched
+	 * @param int $languageid Language ID. If not set, it will use current session's languageid,
+	 * 	if passed a 0, use the current user/forum default language.
+	 *
+	 * @return array -- phraseid => phrase value
+	 * @deprecated -- use renderPhrases or getPhrases depending on if you
+	 */
+	public function fetch($phrases, $languageid = NULL)
+	{
+		$result = $this->getPhrases($phrases, $languageid);
+		return $result['phrases'];
+	}
+
+	/**
+	 * Fetch raw phrases
+	 *
+	 * Note that these are *not* suitable for display to the user as is
+	 * since many phrases have placeholders and this will not substitute them.
+	 * It is available in situations where the client expects to render the
+	 * phrases itself (particularly in situations where the phrase can be
+	 * cached and reused client side).
+	 *
+	 * @param array $phrases An array of phrase ID to be fetched
+	 * @param int $languageid Language ID. If not set, it will use current session's languageid,
+	 * 	if passed a 0, use the current user/forum default language.
+	 *
+	 * @return array --
+	 * 	'phrases' -- [phraseid => phrase value]
+	 */
+	public function getPhrases($phrases, $languageid = null)
+	{
+		if ($languageid === null)
+		{
+			$languageid = $this->library->getLanguageid()["languageid"];
+		}
+
+		return $this->library->getPhrases($phrases, $languageid);
+	}
+
+	/**
+	 * Fetch raw phrases from the master language
+	 *
+	 * This will pull the phrases from the either the custom phrases or master language
+	 * even if a translation is available in the user's language.  It is mostly intended
+	 * for fetching phrase values for editing purposes.  It's not generally suited
+	 * for direct display other than for editing of the phrase itself
+	 *
+	 * @param array|string $phrases An array of phraseids to be fetched, a string will be treatd as
+	 * 	an array of one phraseid
+	 * @param int $languageid Language ID. If passed a 0, use the current user/forum default language.
+	 *
+	 * @return array --
+	 * 	'phrases' -- [phraseid => phrase value]
+	 */
+	public function getBasePhrases($phrases)
+	{
+		//This is intended for the admincp but can cut across multiple features
+		//(pretty much any place we save phrases as a side effect of storing a record in order
+		//to support translations).  Since it's not hugely sensitive info just ensure that the
+		//user is an admin.
+		$this->checkHasAdminPermission('cancontrolpanel');
+		return $this->library->getBasePhrases($phrases);
+	}
+
+	/**
+	 * Fetch orphan phrases
+	 * @return array Orphan phrases
+	 */
+	public function fetchOrphans()
+	{
+		$this->checkHasAdminPermission('canadminlanguages');
+		$phrases = vB::getDbAssertor()->getRows('phrase_fetchorphans', []);
+		return $phrases;
+	}
+
+	/**
+	 * Process orphan phrases
+	 * @param array $del Orphan phrases to be deleted. In format ['varname@fieldname'] will also
+	 * 	accept url encoded ['varname%40fieldname']
+	 *
+	 * @param array $keep Orphan phrases to be kept -- array of phraseids.
+	 * @return void
+	 */
+	public function processOrphans($del, $keep)
+	{
+		//this function is *way* to close to the UI.  It should probably be two functions
+		//one to delete and one to keep.  It should also take the varnames directly instead
+		//the custom format used by the orphan admincp code. Lastly we should probably
+		//rebuild the languages internally to the API but there are some UI/timeout/performance
+		//concerns that make that complicated (we don't want to do it more often than we need to
+		//and we may want to do it as seperate page load to avoid timeouts).
+		//
+		//Note that we probably no longer need to deal with the fieldnames. At one point phrases
+		//were only unique to the phrase ground (fieldname) but we changed that a while ago to
+		//better handle global lookups/caching so that (languageid, varname) is unique instead
+		//of (languageid, varname, fieldname).
+		$this->checkHasAdminPermission('canadminlanguages');
+
+		require_once(DIR . '/includes/adminfunctions_language.php');
+
+		if ($del)
+		{
+			$varname = null;
+			$fieldname = null;
+
+			//translate the weird single string to a varname/fieldname pair.
+			$delpairs = [];
+			foreach ($del AS $key)
+			{
+				fetch_varname_fieldname($key, $varname, $fieldname);
+				$delpairs[] = ['varname' => $varname, 'fieldname' => $fieldname];
+			}
+
+			vB::getDbAssertor()->assertQuery('deleteOrphans', ['del' => $delpairs]);
+		}
+
+		//the existing UI will in practice pass $keep as
+		//['varname@fieldname' => $phraseid] but the key is completely ignored by the method
+		//query.
+		if ($keep)
+		{
+			vB::getDbAssertor()->assertQuery('keepOrphans', ['keep' => $keep]);
+		}
+
+		return ['success' => true];
+	}
+
+	/**
+	 * Find custom phrases that need updating
+	 * @return array Updated phrases
+	 */
+	public function findUpdates()
+	{
+		$this->checkHasAdminPermission('canadminlanguages');
+
+		// query custom phrases
+		$customcache = [];
+		$phrases = vB::getDbAssertor()->assertQuery('phrase_fetchupdates', []);
+		foreach ($phrases as $phrase)
+		{
+			//this is probably really old and its unlikely that there is a older custom
+			//phrase.  We probably couldn't tell if there was in any case.
+			if ($phrase['globalversion'] == '')
+			{
+				continue;
+			}
+
+			//if we don't have a customversion the phrase is likely old or otherwise needs looking at.
+			//note that some ad hoc "langauge 0" phrases don't have custom versions but they
+			if ($phrase['customversion'] == '' OR vB_Library_Functions::isNewerVersion($phrase['globalversion'], $phrase['customversion']))
+			{
+				if (!$phrase['product'])
+				{
+					$phrase['product'] = 'vbulletin';
+				}
+
+				$customcache["$phrase[languageid]"]["$phrase[phraseid]"] = $phrase;
+			}
+		}
+
+		return $customcache;
+	}
+
+	/**
+	 * Search phrases
+	 * @param array $criteria Criteria to search phrases. It may have the following items:
+	 *              'searchstring'	=> Search for Text
+	 *              'searchwhere'	=> Search in: 0 - Phrase Text Only, 1 - Phrase Variable Name Only, 2 - Phrase Text and  Phrase Variable Name
+	 *              'casesensitive' => Case-Sensitive 1 - Yes, 0 - No
+	 *              'exactmatch'	=> Exact Match 1 - Yes, 0 - No
+	 *              'languageid'	=> Search in Language. The ID of the language
+	 *              'phrasetype'	=> Phrase Type. Phrase group IDs to search in.
+	 *              'transonly'		=> Search Translated Phrases Only  1 - Yes, 0 - No
+	 *              'product'		=> Product ID to search in.
+	 *
+	 * @return array Phrases
+	 */
+	public function search($criteria)
+	{
+		//This should only be called from admincp, and the permission there is 'canadminlanguages'.
+		if (!vB::getUserContext()->hasAdminPermission('canadminlanguages'))
+		{
+			throw new vB_Exception_Api('no_permission');
+		}
+
+		//if searchstring is not set, throw exception
+		if ($criteria['searchstring'] == '')
+		{
+			throw new vB_Exception_Api('please_complete_required_fields');
+		}
+
+		$criteria['searchstring'] = vB::getCleaner()->clean($criteria['searchstring'], vB_Cleaner::TYPE_STR);
+
+		//if searchwhere criteria is not set, defaults to 0 - Phrase Text Only search, mimicking admincp phrase search settings
+		if (!isset($criteria['searchwhere']))
+		{
+			$criteria['searchwhere'] = 0;
+		}
+		$criteria['searchwhere'] = vB::getCleaner()->clean($criteria['searchwhere'], vB_Cleaner::TYPE_INT);
+
+		//if casesensitive criteria is not set, defaults to 0, mimicking admincp phrase search settings
+		if (!isset($criteria['casesensitive']))
+		{
+			$criteria['casesensitive'] = 0;
+		}
+		$criteria['casesensitive'] = vB::getCleaner()->clean($criteria['casesensitive'], vB_Cleaner::TYPE_INT);
+
+		//if exactmatch criteria is not set, defaults to 0, mimicking admincp phrase search settings
+		if (!isset($criteria['exactmatch']))
+		{
+			$criteria['exactmatch'] = 0;
+		}
+		$criteria['exactmatch'] = vB::getCleaner()->clean($criteria['exactmatch'], vB_Cleaner::TYPE_INT);
+
+		//if language criteria is not set, defaults to -10, mimicking admincp phrase search settings
+		if (!isset($criteria['languageid']))
+		{
+			$criteria['languageid'] = -10;
+		}
+		$criteria['languageid'] = vB::getCleaner()->clean($criteria['languageid'], vB_Cleaner::TYPE_INT);
+
+		//if transonly criteria is not set, defaults to 0, mimicking admincp phrase search settings
+		if (!isset($criteria['transonly']))
+		{
+			$criteria['transonly'] = 0;
+		}
+		$criteria['transonly'] = vB::getCleaner()->clean($criteria['transonly'], vB_Cleaner::TYPE_INT);
+
+		//if product criteria is not set, defaults to all products, mimicking admincp phrase search settings
+		if (!isset($criteria['product']))
+		{
+			$criteria['product'] = '';
+		}
+		$criteria['product'] = vB::getCleaner()->clean($criteria['product'], vB_Cleaner::TYPE_STR);
+
+		$phrases = vB::getDbAssertor()->getRows('searchPhrases', ['criteria' => $criteria]);
+		if (empty($phrases))
+		{
+			return [];
+		}
+
+		$phrasearray = [];
+		foreach ($phrases as $phrase)
+		{
+			// check to see if the languageid is already set
+			if ($criteria['languageid'] > 0 AND isset($phrasearray["$phrase[fieldname]"]["$phrase[varname]"]["{$criteria['languageid']}"]))
+			{
+				continue;
+			}
+			$phrasearray["{$phrase['fieldname']}"]["{$phrase['varname']}"]["{$phrase['languageid']}"] = $phrase;
+		}
+
+		return $phrasearray;
+	}
+
+	/**
+	 * Find and replace phrases in languages
+	 *
+	 * @param array $replace A list of phrase ID to be replaced
+	 * @param string $searchstring Search string
+	 * @param string $replacestring Replace string
+	 * @param int $languageid Language ID
+	 * @return void
+	 */
+	public function replace($replace, $searchstring, $replacestring, $languageid)
+	{
+		$this->checkHasAdminPermission('canadminlanguages');
+
+		if (empty($replace))
+		{
+			throw new vB_Exception_Api('please_complete_required_fields');
+		}
+
+		$userinfo = vB::getCurrentSession()->fetch_userinfo();
+
+		require_once(DIR . '/includes/adminfunctions.php');
+		$full_product_info = fetch_product_list(true);
+
+		$phrases = vB::getDbAssertor()->assertQuery('phrase', ['phraseid' => $replace]);
+
+		$products = [];
+		foreach ($phrases as $phrase)
+		{
+			$phrase['product'] = (empty($phrase['product']) ? 'vbulletin' : $phrase['product']);
+			$phrase['text'] = str_replace($searchstring, $replacestring, $phrase['text']);
+
+			if ($phrase['languageid'] == $languageid)
+			{
+				// update
+				vB::getDbAssertor()->assertQuery('phrase', [
+					vB_dB_Query::TYPE_KEY => vB_dB_Query::QUERY_UPDATE,
+					'text' => $phrase['text'],
+					'username' => $userinfo['username'],
+					'dateline' => vB::getRequest()->getTimeNow(),
+					'version' => $full_product_info["$phrase[product]"]['version'],
+					vB_dB_Query::CONDITIONS_KEY => [
+						'phraseid' => $phrase['phraseid']
+					]
+				]);
+			}
+			else
+			{
+				// insert
+				vB::getDbAssertor()->assertQuery('phrase_replace', [
+					'languageid' => $languageid,
+					'varname' => $phrase['varname'],
+					'text' => $phrase['text'],
+					'fieldname' => $phrase['fieldname'],
+					'product' => $phrase['product'],
+					'username' => $userinfo['username'],
+					'dateline' => vB::getRequest()->getTimeNow(),
+					'version' => $full_product_info["$phrase[product]"]['version'],
+				]);
+			}
+			$products[$phrase['product']] = 1;
+		}
+		$this->library->setPhraseDate();
+		return array_keys($products);
+	}
+
+	/**
+	 * Delete a phrase
+	 * @param int $phraseid Pharse ID to be deleted
+	 * @return array -- the record for the phrase to be deleted.
+	 */
+	public function delete($phraseid)
+	{
+		$this->checkHasAdminPermission('canadminlanguages');
+		$getvarname = vB::getDbAssertor()->getRow('phrase', ['phraseid' => $phraseid]);
+
+		if ($getvarname)
+		{
+			vB::getDbAssertor()->assertQuery('phrase', [
+				vB_dB_Query::TYPE_KEY => vB_dB_Query::QUERY_DELETE,
+				'varname' => $getvarname['varname'],
+				'fieldname' => $getvarname['fieldname'],
+			]);
+
+			require_once(DIR . '/includes/adminfunctions.php');
+			require_once(DIR . '/includes/adminfunctions_language.php');
+			build_language(-1);
+		}
+		else
+		{
+			throw new vB_Exception_Api('invalid_phrase_specified');
+		}
+		return $getvarname;
+	}
+
+	/**
+	 * Add a new phrase or update an existing phrase
+	 * @param string $fieldname New Phrase Type for adding, old Phrase Type for editing
+	 * @param string $varname New Varname for adding, old Varname for editing
+	 * @param array $data Phrase data to be added or updated
+	 *              'text' => Phrase text array.
+	 *              'oldvarname' => Old varname for editing only
+	 *              'oldfieldname' => Old fieldname for editing only
+	 *              't' =>
+	 *              'ismaster' =>
+	 *              'product' => Product ID of the phrase
+	 *
+	 * @return standard success array
+	 */
+	public function save($fieldname, $varname, $data)
+	{
+		$this->checkHasAdminPermission('canadminlanguages');
+
+		$this->library->save($fieldname, $varname, $data);
+
+		return ['success' => true];
+	}
+
+	/**
+	 * Fetches an array of existing phrase types from the database
+	 *
+	 * @param	boolean	If true, will return names run through ucfirst()
+	 *
+	 * @return	array
+	 */
+	public function fetch_phrasetypes($doUcFirst = false)
+	{
+		$out = [];
+		$phrasetypes = vB::getDbAssertor()->assertQuery('phrasetype', [
+			vB_dB_Query::CONDITIONS_KEY => [
+				['field' => 'editrows', 'value' => '0', 'operator' => vB_dB_Query::OPERATOR_NE]
+			]
+		]);
+		foreach ($phrasetypes as $phrasetype)
+		{
+			$out["{$phrasetype['fieldname']}"] = $phrasetype;
+			$out["{$phrasetype['fieldname']}"]['field'] = $phrasetype['title'];
+			$out["{$phrasetype['fieldname']}"]['title'] = ($doUcFirst ? ucfirst($phrasetype['title']) : $phrasetype['title']);
+		}
+		ksort($out);
+
+		return $out;
+	}
+
+	/**
+	 * Returns message and subject for an email.
+	 *
+	 * This does NOT insert the {shortcode} substitutions, that is done
+	 * in the mail send() function where we know the recipient's username, etc.
+	 *
+	 * @param string $email_phrase Name of email phrase to fetch
+	 * @param array $email_vars Variables for the email message phrase
+	 * @param array $emailsub_vars Variables for the email subject phrase
+	 * @param int $languageid Language ID from which to pull the phrase (see fetch_phrase $languageid)
+	 * 	note that 0 means forum default language while null means the language for the current user.
+	 * 	The former is the better default for this function because we rarely send email to the current
+	 * 	user.  However we should really be passing that in consistantly.
+	 * @param string	$emailsub_phrase If not empty, select the subject phrase with the given name
+	 *
+	 * @return array
+	 */
+	public function fetchEmailPhrases($email_phrase, $email_vars = [], $emailsub_vars = [], $languageid = 0, $emailsub_phrase = '')
+	{
+		if (empty($emailsub_phrase))
+		{
+			$emailsub_phrase = $email_phrase . '_gemailsubject';
+		}
+
+		$email_phrase .= '_gemailbody';
+
+		$vbphrases = $this->getPhrases([$email_phrase, $emailsub_phrase], $languageid);
+
+		return [
+			'message' => $this->library->renderPhrase($vbphrases['phrases'][$email_phrase], $email_vars),
+			'subject' => $this->library->renderPhrase($vbphrases['phrases'][$emailsub_phrase], $emailsub_vars),
+		];
+	}
+
+	/**
+	 * Returns message and subject for sending a private message
+	 * (would also work for notifications if needed)
+	 *
+	 * This inserts the {shortcode} substitutions.
+	 *
+	 * This is intended to be a replacement for fetchEmailPhrases() and should be used
+	 * in its place when the phrases are going to be used for a notification or private
+	 * message sent within vBulletin. fetchEmailPhrases() should be used when sending
+	 * an actual email. The function signature is the same with the exception of $userid
+	 * as the *first* parameter, done this way since it is not optional.
+	 *
+	 * @param int $userid User ID of the recipient of the message.
+	 * @param string $email_phrase Name of email phrase to fetch
+	 * @param array $email_vars Variables for the email message phrase
+	 * @param array $emailsub_vars Variables for the email subject phrase
+	 * @param int $languageid Language ID from which to pull the phrase (see fetch_phrase $languageid)
+	 * 	note that 0 means forum default language while null means the language for the current user.
+	 * 	The former is the better default for this function because we rarely send email to the current
+	 * 	user.  However we should really be passing that in consistantly.
+	 * @param string	$emailsub_phrase If not empty, select the subject phrase with the given name
+	 *
+	 * @return array
+	 */
+	public function fetchPrivateMessagePhrases($userid, $email_phrase, $email_vars = [], $emailsub_vars = [], $languageid = 0, $emailsub_phrase = '')
+	{
+		if (!$languageid)
+		{
+			// since know who the recipient is, we can use their language preference
+			$user = vB::getDbAssertor()->getRow('user', ['userid' => $userid]);
+			$languageid = (int) $user['languageid'];
+
+			if (!$languageid)
+			{
+				$options = vB::getDatastore()->getValue('options');
+				$languageid = (int) $options['languageid'];
+			}
+		}
+
+		$phrases = $this->fetchEmailPhrases($email_phrase, $email_vars, $emailsub_vars, $languageid, $emailsub_phrase);
+
+		// add the {shortcode} substitutions to the phrases
+		$phrases = $this->library->doShortcodeReplacements($phrases, $userid);
+
+		return $phrases;
+	}
+
+	/**
+	 * Replaces {shortcodes} in a string
+	 *
+	 * The phrase API might not be the best place for this function, since it just replaces
+	 * shortcodes in an arbitrary string. But these shortcodes are mostly associated with
+	 * phrases, so it makes the most sense right now. It also simplifies things, as we can
+	 * reuse the doShortcodeReplacements function.
+	 *
+	 * @param  string The string of text containing the {shortcode} placeholders
+	 *
+	 * @return string The string with the {shortcodes} replaced with their corresponding values.
+	 */
+	public function replaceShortcodesInString($string)
+	{
+		// This function is only intended to replace shortcode values for the current user.
+
+		$values = [];
+		$values['arbitrary_string'] = (string) $string;
+
+		$values = $this->library->doShortcodeReplacements($values);
+
+		return $values['arbitrary_string'];
+	}
+
+	/**
+	 *	Returns rendered phrases from phrase strings and/or data
+	 *
+	 *	@param array $phrases.  Array of phrases to rendered.  Each item is either a phrase_string or an array of
+	 *		form (phrase_string, param1, param2, ...) (standard phrase format).  The keys of this array will be
+	 *		preserved and used to index the corresponding rendered phrase on return.
+	 *
+	 *	@param int $languageid. The languageid to use to render the phrases.  The default (null) means use the
+	 *		value for the current session/user.  The value of 0 means use the site default -- this should generally
+	 *		not be passed as a hardcoded value but is useful because that is a value the user can set as their
+	 *		languge.
+	 *
+	 *	@return array
+	 *		'phrases' => ['key' => rendered phrase]
+	 */
+	public function renderPhrases($phrases, $languageid = null)
+	{
+		return ['phrases' => $this->library->renderPhrases($phrases, $languageid)];
+	}
+
+	/**
+	 *	Returns rendered phrases from phrase strings and/or data
+	 *
+	 *	In some circumstances, primarily email, we need to defer shortcode replacement
+	 *	because we need to handle things for a user other than the current logged in
+	 *	user (many of the shortcodes are user specific).  This allows us to do that.
+	 *
+	 *	@param array $phrases.  Array of phrases to rendered.  Each item is either a phrase_string or an array of
+	 *		form (phrase_string, param1, param2, ...) (standard phrase format).  The keys of this array will be
+	 *		preserved and used to index the corresponding rendered phrase on return.
+	 *
+	 *	@param int $languageid. The languageid to use to render the phrases.  The default (null) means use the
+	 *		value for the current session/user.  The value of 0 means use the site default -- this should generally
+	 *		not be passed as a hardcoded value but is useful because that is a value the user can set as their
+	 *		languge.
+	 *
+	 *	@return array
+	 *		'phrases' => ['key' => rendered phrase]
+	 */
+	public function renderPhrasesNoShortcode($phrases, $languageid = null)
+	{
+		return ['phrases' => $this->library->renderPhrasesNoShortcode($phrases, $languageid)];
+	}
+}
+
+/*=========================================================================*\
+|| #######################################################################
+|| # Downloaded: 12:50, Tue Dec 24th 2024
+|| # CVS: $RCSfile$ - $Revision: 115460 $
+|| #######################################################################
+\*=========================================================================*/

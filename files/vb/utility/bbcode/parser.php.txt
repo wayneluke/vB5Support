@@ -1,0 +1,473 @@
+<?php
+/*========================================================================*\
+|| ###################################################################### ||
+|| # vBulletin 6.1.0 Alpha 4 Week 2 - Licence Number VBCW2VFT7A
+|| # ------------------------------------------------------------------ # ||
+|| # Copyright 2000-2024 MH Sub I, LLC dba vBulletin. All Rights Reserved.  # ||
+|| # This file may not be redistributed in whole or significant part.   # ||
+|| # ----------------- VBULLETIN IS NOT FREE SOFTWARE ----------------- # ||
+|| # http://www.vbulletin.com | http://www.vbulletin.com/license.html   # ||
+|| ###################################################################### ||
+\*========================================================================*/
+
+//This is an attempt to start building out a bbcode parser as a sub module
+//to replace all the duplicate places we parse bbcode.  It's not going to
+//be comprehensive, but we need to start somewhere.
+
+/**
+ * @package vBUtility
+ */
+class vB_Utility_Bbcode_Parser
+{
+	use vB_Utility_Trait_NoSerialize;
+
+	private $stringutil;
+	private $isUtf8;
+	private $adapters;
+
+	//The text to manipulate.  Paradigm is that each text parsed gets it's own parser object.
+	private $text;
+	private $textlen;
+
+	private $noparsetags = [];
+
+	//parse state
+	//For now we'll keep on set of state for the parse object.  If we have to do multiple parses
+	//simultaneosly we might need to keep seperate objects for each one but we'll solve that when
+	//we get there.
+
+	private $position;
+
+	//end parse state
+
+	/**
+	 * @param string $text -- the bbcode text to parse
+	 * @param vB_Utility_String $stringutil -- the string utility initalized to the correct charset for the text
+	 * @param array $tags -- expected format is the return form vB_Api_Bbcode->fetchTagList().  This is not ideal
+	 * 	but it already exists and it's not worth adopting another format at this time.  Currently we only use this
+	 * 	to find "noparse" tags that are enabled, but, as we expand this we'll potentially use more of this
+	 * @param array $adapters -- functions/objects for marshalling dependencys with the vB framework
+	 * 	the intent here is to allow things like different adapters for frontend/backend/and especially unit tests
+	 * 	as needed.
+	 * 	'hashtags' => $callable($tagslist).  Returns a list of valid hashtags with replacement text for those tags.
+	 */
+	public function __construct(string $text, vB_Utility_String $stringutil, array $tags, array $adapters)
+	{
+		$this->stringutil = $stringutil;
+		$this->isUtf8 = $this->stringutil->isDefaultCharset('utf8');
+		$this->setNoParseTags($tags);
+		$this->adapters = $adapters;
+
+		$this->text = $text;
+
+
+		//We'll use this a lot and I'm not sure how fast the MB functions are on large text
+		//We shouldn't be altering the source text so it won't change.
+		$this->textlen = $this->stringutil->strlen($this->text);
+		//we should reset before we actually do anything, but make sure.
+		$this->resetParseState();
+	}
+
+	private function setNoParseTags($tags)
+	{
+		//The values array is not guarenteed to have any keys in particular
+		foreach ($tags['no_option'] AS $key => $values)
+		{
+			if (!empty($values['stop_parse']))
+			{
+				$this->noparsetags[] = $this->stringutil->strtolower($key);
+			}
+		}
+
+		//There currently aren't any tags with an option *and* the stop_parse flag set.
+		//Moreover the parser doesn't yet handle tags with options so this is more of a
+		//reminder that we need to check these values when that gets implemented than
+		//something that's going to do anything effective.
+		foreach ($tags['option'] AS $key => $values)
+		{
+			if (!empty($values['stop_parse']))
+			{
+				$this->noparsetags[] = $this->stringutil->strtolower($key);
+			}
+		}
+	}
+
+	public function replaceHashTokensWithBBCode()
+	{
+		$this->resetParseState();
+		$tokens = $this->extractHashTokens();
+		$replacements = $this->adapters['hashtag']($tokens);
+		return $this->replaceAtOffset($replacements);
+	}
+
+	private function replaceAtOffset(array $replacements) : string
+	{
+		$pos = 0;
+		$newstring = '';
+		foreach ($replacements AS $offset => $replacement)
+		{
+			//if we have some text between replacements
+			if ($offset > $pos)
+			{
+				$newstring .= $this->getRange($pos, $offset-1);
+			}
+
+			$newstring .= $replacement[1];
+
+			//for the moment we don't validate that the replacement matches the text at the
+			//string.  We just assume.  This is internal so we should be able to trust the
+			//caller and avoid the overhead.
+			$pos = $offset + $this->stringutil->strlen($replacement[0]);
+		}
+
+		$newstring .= $this->stringutil->substr($this->text, $pos);
+		return $newstring;
+	}
+
+	private function extractHashTokens()
+	{
+		$accumulation = [];
+
+		$callback = function($offset, $text) use(&$accumulation)
+		{
+			$tokens = $this->extractTokens($offset, $text, '#', 0, 256);
+			foreach ($tokens AS $token)
+			{
+				$accumulation[] = $token;
+			}
+		};
+
+		$this->scanParsedText($callback);
+		return $accumulation;
+	}
+
+	private function extractTokens(int $offset, string $text, string $token, int $min, int $max) : array
+	{
+		$textlen = $this->stringutil->strlen($text);
+
+		//need to figure out what additional meta data we're going to need here, but for
+		//now we'll make it a list of possible text strings for each token
+		//the parser is not going to figure out matching with the actual data.
+		$tokens = [];
+		$pos = $this->stringutil->strpos($text, $token);
+		while ($pos !== false)
+		{
+			$item = [];
+			if ($pos === 0 OR $this->isWhiteSpace($this->stringutil->substr($text, $pos - 1, 1)))
+			{
+				$tokenstart = $pos + 1;
+
+				//the token marker may be at EOS.
+				if ($tokenstart >= $textlen)
+				{
+					break;
+				}
+
+				if ($this->stringutil->substr($text, $tokenstart, 1) == '"')
+				{
+					//if we don't have a character after the quote skip this token and we're done
+					if (($tokenstart + 1) >= $textlen)
+					{
+						break;
+					}
+
+					$endpos = $this->stringutil->strpos($text, '"', $tokenstart + 1);
+
+					//if we don't have a close quote, skip this token and we're done.
+					if ($endpos === false)
+					{
+						break;
+					}
+
+					$size = $endpos - ($tokenstart + 1);
+					if ($size >= $min AND $size <= $max)
+					{
+						$item['quoted'] = true;
+						$item['list'] = [$this->stringutil->substr($text, $tokenstart + 1, $size)];
+					}
+				}
+				else
+				{
+					$tokenlist = [];
+
+					//this is copied from the user mentions logic and may need adjusting as
+					//we regularlize and consolidate handling of these tokens.  To a fair degree
+					//we rely on cases that we don't want to consider failing the implicit validation
+					//check.  That is isn't a problem if we search all of "@sometext [sometag]" because
+					//"sometext [sometag]" will never match a username.
+					//Basic rules.
+					//1) We only search up to next token, but we don't worry any other characters
+					//2) We will search all prefixes of that string that end just before a space or EOS that
+					//	match with length between $min and $max.
+					//3) We will not worry here if the tokens are valid or not, we'll just send the list
+					//	back to the caller to sort out (it depends on things that utility classes should
+					//	not concern themselves with).
+					$nextlinepos = $this->getEndofLineOrEnd($tokenstart, $text, $textlen);
+					$nexttokenpos = $this->getNextOrEnd($token, $tokenstart, $text, $textlen);
+					$endoftoken = min($nextlinepos, $nexttokenpos);
+
+					$substrpos = $tokenstart;
+					while (true)
+					{
+						$substrpos = min($endoftoken, $this->getNextOrEnd(' ', $substrpos, $text, $textlen));
+						//this is deliberately one less than the actual range because we don't want
+						//to count (or fetch) the delimeter that is included.
+						$rangelen = ($substrpos - $tokenstart);
+
+						//if we are beyond the next token marker to the max possible substring, then
+						if ($substrpos > $endoftoken OR $rangelen > $max)
+						{
+							break;
+						}
+
+						if ($rangelen >= $min)
+						{
+							$tokenlist[] = $this->stringutil->substr($text, $tokenstart, $rangelen);
+						}
+
+						//advance the pointer until we are no longer over a space.  We are either over a
+						//space or already at EOS.  This avoids potential tokens with trailing whitespace
+						//when there are multiple
+						while ($substrpos < $textlen AND $this->stringutil->substr($text, $substrpos, 1) == ' ')
+						{
+							$substrpos++;
+						}
+
+						//normally we would just all the next loop to take care of this but, if we are at the
+						//end of the string already then we're going to have an error condition.
+						if ($substrpos >= $endoftoken)
+						{
+							break;
+						}
+					}
+
+					if ($tokenlist)
+					{
+						$item['quoted'] = false;
+						$item['list'] = $tokenlist;
+					}
+				}
+			}
+
+			if ($item)
+			{
+				$item['offset'] = $offset + $pos;
+				$tokens[] = $item;;
+			}
+			$pos = $this->stringutil->strpos($text, $token, $pos + 1);
+		}
+
+		return $tokens;
+	}
+
+
+	private function scanParsedText(callable $callback) : void
+	{
+		$start = $this->position;
+		while (true)
+		{
+			//scan for tags
+			$this->scanNext('[');
+			if ($this->isEnd())
+			{
+				//process the final chunk
+				$this->processScanChunk($start, $this->position - 1, $callback);
+				return;
+			}
+
+			$tagname = $this->getTagName();
+			if ($tagname AND in_array($this->stringutil->strtolower($tagname), $this->noparsetags))
+			{
+				//save the prospective end position. This is the position before the prospective noparse tag.
+				$end = $this->position - 1;
+
+				//move past the delimeter
+				$this->position++;
+
+				//scan through the tag.
+				while (true)
+				{
+					$this->scanNext('[');
+					if ($this->isEnd())
+					{
+						//If we didn't find the close tag.  Treat it as not a tag at all and process the final chunk.
+						$this->processScanChunk($start, $this->position - 1, $callback);
+						return;
+					}
+
+					if ($this->consumeEndTag($tagname))
+					{
+						break;
+					}
+
+					$this->position++;
+				}
+
+				//we found an end tag, capture the chunk just before the no parse tag.
+				$this->processScanChunk($start, $end, $callback);
+
+				//reset the start.  This is the position after the no parse tag.  Note that
+				//if we have consequtive noparse tags this will be after the end tag we'll compute
+				//for that scan loop.  That's okay because there isn't actually a block to capture
+				//before the second tag.
+				$start = $this->position + 1;
+			}
+
+			//if we are *exactly* at the end at this point the next pass will go off the rails.
+			if ($this->isEnd())
+			{
+				return;
+			}
+
+			$this->position++;
+		}
+	}
+
+	private function processScanChunk(int $start, int $end, callable $callback) : void
+	{
+		//If there is a noparse tag at the beginning or end of the text or there are two such tags together, the result
+		//is an "empty" interval between the tags (or beginning/end of text).  We'll end up detecting it a various points
+		//but there isn't any text to parse and we really shouldn't but the caller about it.
+		if ($start <= $end)
+		{
+			$chunk = $this->getRange($start, $end);
+			$callback($start, $chunk);
+		}
+	}
+
+	private function getEndofLineOrEnd(int $offset, string $text, ?int $textlen = null) : int
+	{
+		$linefeed = $this->getNextOrEnd("\r", $offset, $text, $textlen);
+		$carriagereturn = $this->getNextOrEnd("\n", $offset, $text, $textlen);
+
+		return min($linefeed, $carriagereturn);
+	}
+
+	//return either the positon of the marker or the offset to the character position of the "character" after
+	//the last character in string.  This is an invalid position and may cause problems if used as such
+	//(so that needs to be considered before making this function more visible) but it's intended for tracking
+	//delimiters treating EOS as a delimeter.  So comparisons like $pos < $nexDelim or calcuations for fetching
+	//the substring should work as expected without a lot of extra logic to track the false returns from strpos
+	private function getNextOrEnd(string $needle, int $offset, string $text, ?int $textlen = null) : int
+	{
+		$nextpos = $this->stringutil->strpos($text, $needle, $offset);
+		if ($nextpos === false)
+		{
+			$nextpos = $textlen ?? $this->stringutil->strlen($text);
+		}
+		return $nextpos;
+	}
+
+	private function scanNext(string $needle) : void
+	{
+		$this->position = $this->getNextOrEnd($needle, $this->position, $this->text, $this->textlen);
+	}
+
+	/**
+	 * @return int|false
+	 */
+	private function findNext(string $needle)
+	{
+		return $this->stringutil->strpos($this->text, $needle, $this->position);
+	}
+
+	/**
+	 * Check if the current pointer is a start tag and get the name if it's
+	 *
+	 * @return string|false The tag name if we matched a tag, false otherwise
+	 */
+	private function getTagName()
+	{
+		//for now assume no parameters since the tags we are interested in don't have them.
+		//we'll need to exand this to handle all tag syntax (including, potentially, tag markup *in* parameters)
+		$pos = $this->findNext(']');
+		if ($pos === false)
+		{
+			return false;
+		}
+
+		$tag = $this->getRange($this->position, $pos);
+
+		//this isn't entirely charset clean but there is only so much we can do.  The MB libaries don't have good
+		//tools for this at all.
+		$re = $this->addReUtf8('#\[(\w+)\]#');
+		if (preg_match($re, $tag, $matches))
+		{
+			return $matches[1];
+		}
+
+		return false;
+	}
+
+	/**
+	 *	Checks if the current position is an end tag and advances the pointer to the next
+	 *	character after the tag if it is.
+	 *
+	 *	@param string $tagname -- the name of the tag to check for.
+	 *	@return bool true if we matched an end tag.
+	 */
+	private function consumeEndTag(string $tagname) : bool
+	{
+		$pos = $this->findNext(']');
+		if ($pos === false)
+		{
+			return false;
+		}
+
+		$tag = $this->getRange($this->position, $pos);
+
+		//this isn't entirely charset clean but there is only so much we can do.  The MB libaries don't have good
+		//tools for this at all.
+		$re = $this->addReUtf8('#\[/' . preg_quote($tagname, '#') . '\]#i');
+
+		$match = preg_match($re, $tag);
+		if ($match)
+		{
+			$this->position = $pos;
+		}
+		return $match;
+	}
+
+	private function isEnd() : bool
+	{
+		//the last string index is textlen -1;
+		return $this->position >= $this->textlen;
+	}
+
+	/**
+	 * Get the substring from text postions start to end inclusive
+	 */
+	private function getRange(int $start, int $end) : string
+	{
+		return $this->stringutil->substr($this->text, $start, ($end - $start) + 1);
+	}
+
+	private function isWhiteSpace(string $char)
+	{
+		//this is kindof ugly but I don't know a better way to handle it in an utf8 world.
+		$re = $this->addReUtf8('#\s#');
+		return preg_match($re, $char);
+	}
+
+	private function addReUtf8(string $re) : string
+	{
+		if ($this->isUtf8)
+		{
+			$re .= 'u';
+		}
+		return $re;
+	}
+
+	private function resetParseState() : void
+	{
+		$this->position = 0;
+	}
+}
+
+
+/*=========================================================================*\
+|| #######################################################################
+|| # Downloaded: 12:50, Tue Dec 24th 2024
+|| # CVS: $RCSfile$ - $Revision: 103236 $
+|| #######################################################################
+\*=========================================================================*/

@@ -1,0 +1,52 @@
+<?php
+/*========================================================================*\
+|| ###################################################################### ||
+|| # vBulletin 6.1.0 Alpha 4 Week 2 - Licence Number VBCW2VFT7A
+|| # ------------------------------------------------------------------ # ||
+|| # Copyright 2000-2024 MH Sub I, LLC dba vBulletin. All Rights Reserved.  # ||
+|| # This file may not be redistributed in whole or significant part.   # ||
+|| # ----------------- VBULLETIN IS NOT FREE SOFTWARE ----------------- # ||
+|| # http://www.vbulletin.com | http://www.vbulletin.com/license.html   # ||
+|| ###################################################################### ||
+\*========================================================================*/
+
+/**
+ * @package vBulletin
+ */
+class vB_Options_Option_Logintype extends vB_Options_Option
+{
+	protected function validateCustom(array $validation, mixed $rawvalue) : bool|string|array
+	{
+		$data = intval($rawvalue);
+
+		// The only interesting use case.  We don't want to allow email to login if the settings allow dupe emails.
+		if ($data == 0)
+		{
+			$requireuniqueemail = vB::getDatastore()->getOption('requireuniqueemail');
+			if (!$requireuniqueemail)
+			{
+				return ['setting_validation_error_logintype_requireuniqueemail_conflict'];
+			}
+
+			$duplicateEmails = vB::getDbAssertor()->getRows('vBAdminCP:checkDuplicateEmails');
+			$sharedEmailsCount = count($duplicateEmails);
+			if ($sharedEmailsCount > 0)
+			{
+				return ['setting_validation_error_logintype_nonunique_emails_found', $sharedEmailsCount];
+			}
+
+			return true;
+		}
+
+		// Either the username is being used in which case there is no problem or
+		// Either is used and if email is not unique the users can fallback on username if they have multiple accounts
+		// with the same email.  This is a vanishingly rare use case and probably not used much these days anyway.
+		if ($data == 1 OR $data == 2)
+		{
+			return true;
+		}
+
+		// this isn't a valid value -- since this is picklist it shouldn't ever happen.
+		return false;
+	}
+}

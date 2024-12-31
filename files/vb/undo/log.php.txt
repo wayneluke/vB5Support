@@ -1,0 +1,108 @@
+<?php
+/*========================================================================*\
+|| ###################################################################### ||
+|| # vBulletin 6.1.0 Alpha 4 Week 2 - Licence Number VBCW2VFT7A
+|| # ------------------------------------------------------------------ # ||
+|| # Copyright 2000-2024 MH Sub I, LLC dba vBulletin. All Rights Reserved.  # ||
+|| # This file may not be redistributed in whole or significant part.   # ||
+|| # ----------------- VBULLETIN IS NOT FREE SOFTWARE ----------------- # ||
+|| # http://www.vbulletin.com | http://www.vbulletin.com/license.html   # ||
+|| ###################################################################### ||
+\*========================================================================*/
+
+/**
+ * @package vBulletin
+ */
+class vB_Undo_Log
+{
+	use vB_Trait_NoSerialize;
+
+	//pass this in to avoid a dependency on the vB object.
+	private vB_Db_Assertor $db;
+
+	private vB_Interface_Timenow $timenowProvider;
+
+
+	public function __construct(vB_Db_Assertor $db, vB_Interface_Timenow $timenowProvider)
+	{
+		$this->db = $db;
+		$this->timenowProvider = $timenowProvider;
+	}
+
+	public function register(vB_Undo_Item $undo, int $deleteafter = 86400) : int|false
+	{
+		$timenow = $this->getTimeNow();
+		return $this->db->insert('undolog', [
+			'class' => $undo->getClass(),
+			'userid' => $undo->getUserid(),
+			'data' => $undo->getData(),
+			'created' => $timenow,
+			'deleteafter' => $timenow + $deleteafter,
+		]);
+	}
+
+	private function getTimeNow() : int
+	{
+		// Not sure how to FULLY remove dependency on the vB object...
+		// replace this once we figure it out.
+		return $this->timenowProvider->getTimeNow();
+	}
+
+
+
+	/**
+	 *	Delete expired entries
+	 *
+	 */
+	public function deleteExpired() : void
+	{
+		$cutoff = $this->getTimeNow();
+		$this->db->delete('undolog', [
+			['field'=>'deleteafter', 'value' => $cutoff, vB_dB_Query::OPERATOR_KEY => vB_dB_Query::OPERATOR_LTE],
+		]);
+	}
+
+
+	public function getUndoItem(int $undoid) : ?vB_Undo_Item
+	{
+		// the "get" and "run" are split as the caller will likely have to validate some data, at the very least
+		// the current user can actually run this undo
+
+		$row = $this->db->getRow('undolog', [
+			'undoid' => $undoid,
+		]);
+
+		if (empty($row))
+		{
+			return null;
+		}
+
+		$currentEvent = vB_Undo_Item::restoreFromData($undoid, $row['data']);
+		return $currentEvent;
+	}
+
+	public function runUndoItem(vB_Undo_Item $item) : mixed
+	{
+		// Unlike system events, this is meant to run upon specific user requests, NOT on a timer.
+		// As such there is no claiming or locking logic.
+
+		// Not checking for expired, as the deleteafter atm is more of a suggestion than a hard rule.
+		// That might change later.
+
+
+		$result = $item->run();
+		$undoid = $item->getUndoid();
+		if ($undoid)
+		{
+			$this->db->delete('undolog', ['undoid' => $undoid]);
+		}
+		return $result;
+	}
+}
+/*=========================================================================*\
+|| #######################################################################
+|| # Downloaded: 12:50, Tue Dec 24th 2024
+|| # CVS: $RCSfile$ - $Revision: 106777 $
+|| #######################################################################
+\*=========================================================================*/
+

@@ -1,0 +1,146 @@
+<?php
+/*========================================================================*\
+|| ###################################################################### ||
+|| # vBulletin 6.1.0 Alpha 4 Week 2 - Licence Number VBCW2VFT7A
+|| # ------------------------------------------------------------------ # ||
+|| # Copyright 2000-2024 MH Sub I, LLC dba vBulletin. All Rights Reserved.  # ||
+|| # This file may not be redistributed in whole or significant part.   # ||
+|| # ----------------- VBULLETIN IS NOT FREE SOFTWARE ----------------- # ||
+|| # http://www.vbulletin.com | http://www.vbulletin.com/license.html   # ||
+|| ###################################################################### ||
+\*========================================================================*/
+
+/**
+ * @package vBUtility
+ */
+abstract class vB_Utility_Template_ParserNode_Curly extends vB_Utility_Template_ParserNode
+{
+	/**
+	 * Converts a single attribute to an argument string
+	 *
+	 * @param	string|vB_CurlyNode	$attribute
+	 * @return string	PHP version of attribute
+	 */
+	protected function attributeToString(string|int|float|bool|null|vB_CurlyNode $attribute) : string
+	{
+		if ($attribute instanceof vB_CurlyNode)
+		{
+			return $this->createNode($attribute)->compile();
+		}
+		else
+		{
+			return var_export($attribute, true);
+		}
+	}
+
+	/**
+	* Compiles an array of attributes into an escaped argument string
+	* for use by the template eval engine at runtime
+	*
+	* @param $start -- in some cases we want to treat one or more params specially
+	* 	and not include them in the general arguments list. This will start processing
+	* 	the paramters at indicated offset.
+	*
+	* @return	string argument list for function call
+	*/
+	protected function getArgumentsFromAttributes(int $start = 0) : string
+	{
+		return implode(', ', $this->getRenderedAttributes($start));
+	}
+
+	/**
+	 * Compiles an array of attributes into an array of arguments strings for use by the template eval
+	 * engine at runtime.
+	 *
+	 * @param $start -- in some cases we want to treat one or more params specially
+	 * 	and not include them in the general arguments list. This will start processing
+	 * 	the paramters at indicated offset.
+	 *
+	 * @return	array attributes rendered for insertion into compiled template code
+	 */
+	protected function getRenderedAttributes(int $start = 0) : array
+	{
+		//in some cases we want to treat one or more attri
+		$attributes = $this->main_node->attributes;
+		if ($start > 0)
+		{
+			$attributes = array_slice($attributes, $start);
+		}
+
+		return array_map([$this, 'attributeToString'], $attributes);
+	}
+
+	/**
+	 * Compiles an array of attributes into an array of arguments strings for use by the template eval
+	 * engine at runtime, allowing the use of the varname=value syntax to name values.
+	 *
+	 * @param $start -- in some cases we want to treat one or more params specially
+	 * 	and not include them in the general arguments list. This will start processing
+	 * 	the paramters at indicated offset.
+	 *
+	 * @return array attributes rendered for insertion into compiled template code
+	 */
+	protected function getRenderedNamedAttributes(int $start = 0) : array
+	{
+		//This allows params to be named or not but it's not clear when unnamed params would
+		//ever be used for the curlies that use this (currently template and headlink).  Not all
+		//curlies allow it at all and it's not clear it makes sense in general but we should possibly
+		//require names in the future for those tags.
+		$separator = '=';
+
+		$arguments = [];
+		for ($i = $start; $i < count($this->main_node->attributes); $i++)
+		{
+			$argument = $this->main_node->attributes[$i];
+			if ($argument instanceof vB_CurlyNode OR strpos($argument, $separator) === false)
+			{
+				$arguments[] = $this->attributeToString($argument);
+			}
+			else
+			{
+				if ($argument[strlen($argument)-1] === $separator)
+				{
+					// If the value is a curly node then it will be parsed into the next attribute.  We
+					// need to grab that value and then parse the
+					// Otherwise we have something param="" which gets parsed into param= in which
+					// case the next param is, emphatically, not the value and may not actually exist.
+
+					$key = substr($argument, 0, -1);
+
+					$attribute = $this->main_node->attributes[$i + 1] ?? null;
+					if ($attribute instanceof vB_CurlyNode)
+					{
+						$i++;
+						// we need to check this: I am deliberately NOT concatenating the raw variable to empty strings, cause this may be an array
+						$value = $this->attributeToString($attribute);
+					}
+					else
+					{
+						$value = "''";
+					}
+				}
+				else
+				{
+					[$key, $value] = explode($separator, $argument);
+					$value = var_export($value, true);
+				}
+
+				$arguments[] = var_export($key, true) . ' => ' . $value;
+			}
+		}
+		return $arguments;
+	}
+
+	protected function nodename() : string
+	{
+		return '{vb:' . $this->main_node->value . '}';
+	}
+
+}
+
+/*=========================================================================*\
+|| #######################################################################
+|| # Downloaded: 12:50, Tue Dec 24th 2024
+|| # CVS: $RCSfile$ - $Revision: 115380 $
+|| #######################################################################
+\*=========================================================================*/

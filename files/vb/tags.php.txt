@@ -1,0 +1,901 @@
+<?php
+/*========================================================================*\
+|| ###################################################################### ||
+|| # vBulletin 6.1.0 Alpha 4 Week 2 - Licence Number VBCW2VFT7A
+|| # ------------------------------------------------------------------ # ||
+|| # Copyright 2000-2024 MH Sub I, LLC dba vBulletin. All Rights Reserved.  # ||
+|| # This file may not be redistributed in whole or significant part.   # ||
+|| # ----------------- VBULLETIN IS NOT FREE SOFTWARE ----------------- # ||
+|| # http://www.vbulletin.com | http://www.vbulletin.com/license.html   # ||
+|| ###################################################################### ||
+\*========================================================================*/
+
+/**
+ * @package vBulletin
+ */
+class vB_Tags
+{
+	use vB_Trait_NoSerialize;
+
+	/********************************************************
+	 *	Private Members
+	 ********************************************************/
+
+	protected $nodeid;
+	protected $contentinfo = null;
+	protected $tags = null;
+	protected $owner = false;
+	protected $assertor;
+
+	/********************************************************
+	*	Constructors / Factory Methods
+	********************************************************/
+
+	/**
+	*	Create a taggable content item.
+	*
+	* @param int id for the content item to be tagged. Can be 0 if it is used only for validating tags
+	* @param array content info -- database record for item to be tagged, values vary by
+	*	specific content item.  For performance reasons this can be included, otherwise the
+	* 	data will be fetched if needed from the provided id.
+	*/
+
+	public function __construct($nodeid = 0, $contentinfo = false)
+	{
+		$this->nodeid = $nodeid;
+		$this->assertor = vB::getDbAssertor();
+
+		// If this is node related fetch the required info
+		if ($this->nodeid)
+		{
+			$this->owner = $this->getNodeOwner($this->nodeid);
+			if ($contentinfo)
+			{
+				$this->contentinfo = $contentinfo;
+			}
+			else
+			{
+				$this->loadContentInfo();
+			}
+		}
+	}
+
+	/**
+	*	Delete tag attachments for a list of content items
+	*
+	* @param array $nodeidids
+	*/
+	protected function deleteTagAttachmentsList($nodeids)
+	{
+		if ($this->contentinfo === null)
+		{
+			$this->loadContentInfo();
+		}
+
+		$canDelete = true;
+		$unDeletableTags = "";
+
+		foreach ($this->contentinfo AS $tag)
+		{
+			if (!($this->canDeleteTag($tag)))
+			{
+				$canDelete = false;
+				$unDeletableTags .= $tag["tagtext"] . ",";
+			}
+		}
+
+		if (!$canDelete)
+		{
+			throw new vB_Exception_Api('no_permission');
+		}
+
+		foreach ($nodeids AS $nodeid)
+		{
+			$this->assertor->assertQuery('vBForum:tagnode', [
+				vB_dB_Query::TYPE_KEY => vB_dB_Query::QUERY_DELETE,
+				vB_dB_Query::CONDITIONS_KEY => ['nodeid' => $nodeid]
+			]);
+
+			$this->assertor->assertQuery('vBForum:node', [
+				vB_dB_Query::TYPE_KEY => vB_dB_Query::QUERY_UPDATE,
+				vB_dB_Query::CONDITIONS_KEY => ['nodeid' => $nodeid],
+				'taglist' => ''
+			]);
+		}
+		$this->invalidateTagList();
+	}
+
+	/**
+	* Splits the tag list based on an admin-specified set of delimiters (and comma).
+	*
+	* @param	string	List of tags
+	*
+	* @return	array	Tags in seperate array entries
+	* @deprecated
+	*/
+	private function splitTagList($taglist)
+	{
+		return vB_Library::instance('tags')->splitTagList($taglist);
+	}
+
+	/********************************************************
+	*	Public Methods
+	********************************************************/
+
+	/**
+	 * Determines if a user can delete a tag associated with this content item
+	 *
+	 * A user can delete his or her own tags.
+	 * A user with moderator rights can delete a tag.
+	 * If not otherwise specified a user can delete a tag if they own the content item
+	 *
+	 * This function requires that content info is set.
+	 *
+	 * @param int The user id for the tag/content association
+	 * @return bool
+	 */
+	protected function canDeleteTag($tag, &$errors = [])
+	{
+		$tagInfo = $this->fetchTagInfo($tag);
+		//Check if tag exists
+		if (!is_array($tagInfo))
+		{
+			$errors['invalid_tags'] = ['x_is_invalid_tag', $tag];
+			return false;
+		}
+		// Attempt some decent content agnostic defaults
+		// Content types that care should override this function
+
+		//the user can delete his own tag associations
+		if (vB::getCurrentSession()->get('userid') == $tagInfo['userid'])
+		{
+			return true;
+		}
+
+		//moderators can delete tags
+		if ($this->canModerateTag())
+		{
+			return true;
+		}
+
+		// The object's owner can delete tags if they have 'candeletetagown'
+		// This applies to tags added by other users. One of the checks above
+		// will allow the user to delete tags they added themselves.
+		$usercontext = vB::getUserContext();
+		if ($this->isOwnedByCurrentUser() AND $usercontext->getChannelPermission('forumpermissions', 'candeletetagown', $this->nodeid))
+		{
+			return true;
+		}
+		$errors['no_delete_permissions'] = ['no_permission'];
+
+		return false;
+	}
+
+	/**
+	*	Checks to see if the user has permission to "moderate" tags for this content items.
+	*
+	* This is specific to the content type and defaults to false.
+	*	This function requires that content info be set.
+	*
+	* @return bool
+	*/
+	protected function canModerateTag()
+	{
+		// Basic logic is that only super admin can moderate tags.
+		$usercontext = vB::getUserContext();
+
+		//admin and mods can Moderate tag
+		return ($usercontext->getChannelPermission('moderatorpermissions', 'canmoderatetags', $this->nodeid));
+	}
+
+	/**
+	*	Checks to see if the user can add tags to this content item
+	*
+	*	This function requires that content info be set.
+	* @return bool
+	*/
+	protected function canAddTag($targetid = false)
+	{
+		$usercontext = vB::getUserContext();
+
+		if (!$targetid)
+		{
+			$targetid = $this->nodeid;
+		}
+
+		if ($this->isOwnedByCurrentUser())
+		{
+			return ($usercontext->getChannelPermission('forumpermissions', 'cantagown', $targetid));
+		}
+		else
+		{
+			return ($usercontext->getChannelPermission('forumpermissions', 'cantagothers', $targetid));
+		}
+	}
+
+	/**
+	*	Can the current user manage existing tags?
+	*
+	*	The only current operation on existing tags is to remove them from the content
+	* item.
+	*
+	*	This is odd.  It controls whether or not we show the checkboxes beside the
+	* tags in tagUI (and if we check at all for deletes).  It exists primarily to
+	* capture some logic in the thread to handle the situation where a user can
+	* delete tags but not add them (if a user can add tags we'll always display the
+	* delete UI in the legacy logic).  Note that there is a seperate check for each
+	* tag to determine if the user can actually delete that particular tag.  Most
+	* new types aren't likely to require that kind of granularity and probably
+	* won't need to to extend this function.
+	*
+	*	This function requires that content info be set.
+	*
+	* @return bool
+	*/
+	public function canManageTag($nodeid = 0)
+	{
+		if (!$nodeid)
+		{
+			$nodeid = $this->nodeid;
+		}
+
+		$usercontext = vB::getUserContext();
+		if ($usercontext->getChannelPermission('moderatorpermissions', 'canmoderatetags', $nodeid))
+		{
+			return true;
+		}
+
+		if ($this->isOwnedByCurrentUser())
+		{
+			return ($usercontext->getChannelPermission('forumpermissions', 'candeletetagown', $nodeid));
+		}
+		else
+		{
+			return false;
+		}
+	}
+
+	/**
+	*	Determines if the current user owns this content item
+	*
+	*	Ownership is a content specific concept.  For example the "owner" of a thread
+	* is the thread starter.
+	*	This function requires that content info be set.
+	*
+	* @return bool
+	*/
+	protected function isOwnedByCurrentUser()
+	{
+		if (!$this->nodeid)
+		{
+			throw new vB_Exception_Api('invalid_node_id');
+		}
+		// Attempt some decent content agnostic defaults
+		// Content types that care should override this function
+
+		if (empty($this->owner))
+		{
+			$this->owner = $this->getNodeOwner($this->nodeid);
+		}
+
+		return ($this->owner == vB::getCurrentSession()->get('userid'));
+	}
+
+	/**
+	 * Get the id of the node owner
+	 * @return <int> the id of the owner
+	 */
+	protected function getNodeOwner($node)
+	{
+		$node = vB_Library::instance('node')->getNodeBare($node);
+		return $node['userid'];
+	}
+
+	/**
+	*	Get the tag limits for the content type
+	*
+	*	This function requires that content info be set.
+	*
+	* @return ['content_limit' => total tags for content type, 'user_limit' => total tags the
+	*		current user can have on this item]
+	*/
+	public function fetchTagLimits()
+	{
+		$usercontext = vB::getUserContext();
+
+		if ($this->isOwnedByCurrentUser())
+		{
+			$user_limit = $usercontext->getChannelLimits($this->nodeid, 'maxstartertags');
+		}
+		else
+		{
+			$user_limit = $usercontext->getChannelLimits($this->nodeid, 'maxothertags');
+		}
+
+		$tagmaxtopic = $usercontext->getChannelLimits($this->nodeid, 'maxtags');
+		return ['content_limit' => $tagmaxtopic, 'user_limit' => $user_limit];
+	}
+
+ 	/**
+	* Adds tags to the content item. Tags are created if they don't already exist
+	* (assuming the user has permissions)
+	*
+	*	If a tag cannot be processed it is dropped from the list and an error is returned, however
+	* this does not prevent valid tags from being processed.
+	*
+	* @param string|array $taglist	--- List of tags to add (comma delimited, or an array as is). If array, ensure there are no commas.
+	*
+	* @return	array			Array of errors, if any
+	*/
+	public function addTagsToContent($taglist)
+	{
+		$this->invalidateTagList();
+
+		if (!$this->nodeid)
+		{
+			return [];
+		}
+
+		if (!$this->canAddTag())
+		{
+			return ['no_create' => 'tag_no_create'];
+		}
+
+		$errors = [];
+		$limits = $this->fetchTagLimits();
+
+		if (!$taglist)
+		{
+			return $errors;
+		}
+
+		//Let's first remove existing and verify we're not exceeding the limits.
+		$taglist = $this->filterTagListContentLimits($taglist, $limits, $errors);
+		if (empty($taglist))
+		{
+			return $errors;
+		}
+
+		$inserts = $taglist;
+		$existing = $this->assertor->select('vBForum:tag', ['tagtext' => $taglist], false, 'tagtext');
+		foreach ($existing AS $tag)
+		{
+			$key = array_search($tag['tagtext'], $inserts);
+			if ($key !== false)
+			{
+				unset($inserts[$key]);
+			}
+		}
+
+		$timenow = vB::getRequest()->getTimeNow();
+		if (!empty($inserts))
+		{
+			$usercontext = vB::getUserContext();
+			if (!$usercontext->hasPermission('genericpermissions', 'cancreatetag'))
+			{
+				$errors['nopermission'] = ['tag_no_create'];
+				return $errors;
+			}
+
+			// create new tags
+			$taglistInsert = [];
+			foreach ($inserts AS $tag)
+			{
+				$taglistInsert[] = [
+					'tagtext' => $tag,
+					'dateline' => $timenow,
+				];
+			}
+
+			$this->assertor->assertQuery('insertignoreValues', ['table' => 'tag', 'values' => $taglistInsert]);
+		}
+
+		// now associate with content item
+		$data = [
+			'tags' => $taglist,
+			'nodeid' => intval($this->nodeid),
+			'userid' => vB::getCurrentSession()->get('userid'),
+			'dateline' => $timenow,
+		];
+ 		$this->assertor->assertQuery('vBForum:addTagContent', $data);
+
+		//existing content info is invalid now.
+		$this->invalidateTagList();
+		// do any content type specific updates for new tags
+		$this->updateNode();
+
+		return $errors;
+	}
+
+	private function removeTagInfo($nodeid)
+	{
+		$this->assertor->assertQuery('vBForum:tagnode', [
+			vB_dB_Query::TYPE_KEY => vB_dB_Query::QUERY_DELETE,
+			vB_dB_Query::CONDITIONS_KEY => ['nodeid' => $nodeid]
+		]);
+
+		// Not sure if this is necesary since we are likely deleting these records after
+		// merging the tags
+		$taglist = '';
+		$this->assertor->assertQuery('vBForum:node', [
+			vB_dB_Query::TYPE_KEY => vB_dB_Query::QUERY_UPDATE,
+			vB_dB_Query::CONDITIONS_KEY => ['nodeid' => $nodeid],
+			'taglist' => $taglist,
+		]);
+	}
+
+	/**
+	*	Merge the tag attachments for one or more tagged items to this item
+	*
+	*	Designed to handle the results of merging items (the tags also need to be
+	* merged).  Items merged are assumed to be the same type as this item. Merged
+	* tags are detached from the items they are merged from.
+	*
+	*	@param array $sourceids The id of the item whose tags should be merged
+	*
+	*/
+	public function mergeTagAttachments($sourceids)
+	{
+		//check if user can move nodes
+		$canMerge = true;
+		foreach ($sourceids as $source)
+		{
+			if (!$this->canManageTag($source))
+			{
+				$canMerge = false;
+			}
+		}
+
+		if (!$canMerge AND !$this->canManageTag())
+		{
+			throw new vB_Exception_Api('no_merge_permissions');
+		}
+
+		foreach ($sourceids as $key => $sourceid)
+		{
+			if (!$this->canAddTag($sourceid))
+			{
+				unset($sourceids[$key]);
+			}
+		}
+
+		if (empty($sourceids))
+		{
+			return false;
+		}
+
+		$remaining = [];
+		foreach ($sourceids as $sourceid)
+		{
+			//checking available space for tags
+			$remaining[$sourceid] = $this->getSpace($sourceid);
+			if ($remaining[$sourceid] <= 0)
+			{
+				$canMerge = false;
+			}
+		}
+
+		if ($canMerge)
+		{
+			$remaining = min($remaining);
+			$this->invalidateTagList();
+			$safeids = array_map('intval', $sourceids);
+
+			//some places like to include the target id in the array of
+			//merged items.  This fixes that.
+			$safeids = array_diff($safeids, [$this->nodeid]);
+
+			$this->assertor->assertQuery('vBForum:mergeTagContent', [
+				'sourceid' => $safeids,
+				'nodeid' => $this->nodeid,
+				vB_dB_Query::PARAM_LIMIT => $remaining
+			]);
+
+			//Anything that didn't get deleted is a duplicate, to be removed
+			foreach ($safeids as $safeid)
+			{
+				$this->removeTagInfo($safeid);
+			}
+
+			$this->updateNode();
+		}
+		else
+		{
+			throw new vB_Exception_Api('tag_limit_error');
+		}
+	}
+
+	/**
+	*	Delete tag attachments for this item
+	*/
+	protected function deleteTagAttachments($nodeid, $taglist, &$errors)
+	{
+		if (!is_array($taglist))
+		{
+			$taglist = $this->splitTagList($taglist);
+		}
+
+		$notValidTags = "";
+		foreach ($taglist AS $key => $tag)
+		{
+			if (!($this->canDeleteTag($tag, $errors)))
+			{
+				$notValidTags .= $tag . ",";
+				unset($taglist[$key]);
+			}
+		}
+
+		if (!$this->contentinfo)
+		{
+			$this->contentinfo = $this->fetchContentInfo();
+		}
+
+		// Ensure node has tags
+		if (sizeof($this->contentinfo) > 0)
+		{
+			$tags = [];
+			foreach ($this->contentinfo AS $existingTag)
+			{
+				if (in_array($existingTag['tagtext'], $taglist))
+				{
+					$tags[] = $existingTag;
+				}
+			}
+
+			//If we have tags to remove
+			if (sizeof($tags) > 0)
+			{
+				foreach ($tags AS $tag)
+				{
+					$this->assertor->assertQuery('vBForum:tagnode', [
+						vB_dB_Query::TYPE_KEY => vB_dB_Query::QUERY_DELETE,
+						vB_dB_Query::CONDITIONS_KEY => [
+							'nodeid' => $nodeid,
+							'tagid' => $tag['tagid']
+						],
+					]);
+				}
+				$this->invalidateTagList();
+				$this->updateNode();
+			}
+		}
+	}
+
+	protected function getSpace($sourceNode)
+	{
+		$limits = $this->fetchTagLimits();
+		$contentTagLimit = isset($limits['content_limit']) ? intval($limits['content_limit']) : 0;
+		$userTagLimit = isset($limits['user_limit']) ? intval($limits['user_limit']) : 0;
+		$existingTagCount = $this->fetchExistingTagCount();
+
+		//Get the tags count from an specific node (source) excluding tags already contained in $this->nodeid
+		$sourceNodeTags = $this->assertor->getRow('vBForum:filteredTagsCount', [
+			'targetid' => $this->nodeid,
+			'sourceid' => $sourceNode
+		]);
+
+		$sourceNodeTagsCount = $sourceNodeTags["filteredTags"];
+		if (!$sourceNodeTagsCount)
+		{
+			throw new vB_Exception_Api('no_tags_to_move_merge_copy');
+		}
+
+		$contentTagsRemaining = PHP_INT_MAX;
+		if ($contentTagLimit)
+		{
+			$contentTagsRemaining = $contentTagLimit - $existingTagCount - $sourceNodeTagsCount;
+		}
+
+		$userTagsRemaining = PHP_INT_MAX;
+		if ($userTagLimit)
+		{
+			$userTagCount = 0;
+			if ($this->contentinfo === null)
+			{
+				$this->loadContentInfo();
+			}
+
+			foreach ($this->contentinfo as $tag)
+			{
+				if ($tag["userid"] == vB::getCurrentSession()->get('userid'))
+				{
+					$userTagCount++;
+				}
+			}
+			$userTagsRemaining = $userTagLimit - $userTagCount - $sourceNodeTagsCount;
+		}
+		$userTagsRemaining = ($userTagsRemaining < 0 ? ($sourceNodeTagsCount + $userTagsRemaining) : $sourceNodeTagsCount);
+		$contentTagsRemaining = ($contentTagsRemaining < 0 ? ($sourceNodeTagsCount + $contentTagsRemaining) : $sourceNodeTagsCount);
+		$remainingTags = min($userTagsRemaining, $contentTagsRemaining);
+
+		return $remainingTags;
+	}
+
+	/**
+	 * Update the node value
+	 */
+	protected function updateNode()
+	{
+		$taglist = $this->fetchExistingTagList();
+		if (empty($taglist))
+		{
+			$taglist = '';
+		}
+		else
+		{
+			$taglist = implode(',', $taglist);
+		}
+
+		$this->assertor->assertQuery('vBForum:node', [
+			vB_dB_Query::TYPE_KEY => vB_dB_Query::QUERY_UPDATE,
+			vB_dB_Query::CONDITIONS_KEY => ['nodeid' => $this->nodeid],
+			'taglist' => $taglist,
+		]);
+
+		// We reindex the node (for search) from the CALLER, not here, in the rare case we need to
+		// do a batch re-index if multiple nodes were affected.
+		vB_Library::instance('node')->nodesChanged($this->nodeid);
+	}
+
+	/**
+	 *	Delete all tag attachments for this item
+	 */
+	public function deleteTags($tags = '')
+	{
+		$errors = [];
+		if (empty($tags))
+		{
+			$this->invalidateTagList();
+			$this->deleteTagAttachmentsList([$this->nodeid]);
+		}
+		else
+		{
+			$this->deleteTagAttachments($this->nodeid, $tags, $errors);
+		}
+
+		return $errors;
+	}
+
+	/**
+	* Filters the tag list to exclude invalid tags based on the content item the tags
+	* are assigned to.
+	*
+	*	Calls filterTagList internally to handle invalid tags.
+	*
+	* @param	string|array	List of tags to add (comma delimited, or an array as is).
+	*  											If array, ensure there are no commas.
+	* @param	array			array of tag limit constraints.  If a limit is not specified a suitable
+	*										default will be used (currently unlimited, but a specific default should
+	*										not be relied on). Current limits recognized are 'content_limit' which
+	*										is the maximum number of tags for a content item and 'user_limit' which
+	*										is the maximum number of tags the current user can add to the content item.
+	* @param	int				The maximum number of tags the current user can assign to this item (0 is unlimited)
+	*
+	* @return	array			List of valid tags.  If there are too many tags to add, the list will
+	*		be truncated first.  An error will be set in this case.
+	*/
+	protected function filterTagListContentLimits(
+		$taglist,
+		$limits,
+		&$errors
+	)
+	{
+		$contentTagLimit = intval($limits['content_limit'] ?? 0);
+		$userTagLimit = intval($limits['user_limit'] ?? 0);
+
+		//Note that this call ensures we have loaded content, so no need to check that later
+		$existingTagCount = $this->fetchExistingTagCount();
+
+		if ($contentTagLimit AND $existingTagCount >= $contentTagLimit)
+		{
+			$errors['threadmax'] = 'item_has_max_allowed_tags';
+			return [];
+		}
+
+		$validTags = vB_Library::instance('tags')->filterTagList($taglist, $errors);
+		$validTagsLower = array_map(vB_String::vBStrToLower(...), $validTags);
+
+		if ($validTags)
+		{
+			// determine which tags are already in the thread and just ignore them
+			$userTagCount = 0;
+
+			if ($this->contentinfo === null)
+			{
+				$this->loadContentInfo();
+			}
+			foreach ($this->contentinfo AS $tag)
+			{
+				if ($tag['userid'] == vB::getCurrentSession()->get('userid'))
+				{
+					$userTagCount++;
+				}
+
+				// tag is in thread, find it and remove
+				if (($key = array_search(vB_String::vBStrToLower($tag['tagtext']), $validTagsLower)) !== false)
+				{
+					unset($validTags[$key], $validTagsLower[$key]);
+				}
+			}
+
+ 			//approximate "unlimited" as PHP_INT_MAX -- makes the min logic cleaner
+			$contentTagsRemaining = PHP_INT_MAX;
+			if ($contentTagLimit)
+			{
+				$contentTagsRemaining = $contentTagLimit - $existingTagCount - count($validTags);
+
+			}
+
+			$userTagsRemaining = PHP_INT_MAX;
+			if ($userTagLimit)
+			{
+				$userTagsRemaining = $userTagLimit - $userTagCount - count($validTags);
+			}
+
+			$remainingTags = min($contentTagsRemaining, $userTagsRemaining);
+			if ($remainingTags < 0)
+			{
+				$errors['threadmax'] = ['number_tags_add_exceeded_x', vb_number_format($remainingTags * -1)];
+
+				$allowedTagCount = count($validTags) + $remainingTags;
+				if ($allowedTagCount > 0)
+				{
+					$validTags = array_slice($validTags, 0, count($validTags) + $remainingTags);
+				}
+				else
+				{
+					$validTags = [];
+				}
+			}
+		}
+
+		return $validTags;
+	}
+
+	/**
+	*	Get the number of existing tags for this item
+	*
+	*	@return int the tag count
+	*/
+	public function fetchExistingTagCount()
+	{
+		if (is_null($this->tags))
+		{
+			$this->fetchExistingTagList();
+		}
+		return count($this->contentinfo);
+	}
+
+
+	/**
+	*	Get the list of tags associated with this item
+	*
+	* @return array Array of tag text for the associated tags
+	*/
+	public function fetchExistingTagList()
+	{
+		if (!is_null($this->tags))
+		{
+			return $this->tags;
+		}
+
+		if ($this->contentinfo === null)
+		{
+			$this->loadContentInfo();
+		}
+
+		$this->tags = [];
+		foreach ($this->contentinfo AS $tag)
+		{
+			$this->tags[] = $tag['tagtext'];
+		}
+
+		return $this->tags;
+	}
+
+	/**
+	*	Allow access to the content array
+	*
+	* Lazy loads content info array.  Used internally so that we only load this if
+	* we actually need it (and don't load it multiple times).
+	*
+	*	This function is exposed publicly for the benefit of code that needs the
+	* content array but may not know precisely how to load it (because it isn't
+	* aware of the type of content being tagged).
+	*
+	* Actually, this is a bad idea precisely because the code doesn't know what
+	* type its dealing with.  Its a paint to have to create a bunch of getters
+	* for the details, but we need to do just that to ensure a consistant
+	* interface.
+	*
+	*	@return array Content info array.
+	*/
+	protected function fetchContentInfo()
+	{
+		if ($this->contentinfo === null)
+		{
+			$this->loadContentInfo();
+		}
+
+		return $this->contentinfo;
+	}
+
+	/*
+	 * Return the taglist of the current node.
+	 * The taglist info for each tag is userid, tagtext, tagid
+	 */
+	public function getNodeTags()
+	{
+		if ($this->contentinfo === null)
+		{
+			$this->loadContentInfo();
+		}
+
+		return array_values($this->contentinfo);
+	}
+
+	/********************************************************
+	*	Private Methods
+	********************************************************/
+
+	/**
+	*	Load the Content Info
+	*
+	* Actually loads the content info for this type
+	*
+	*	@return void
+	*/
+	protected function loadContentInfo()
+	{
+		if (!$this->nodeid)
+		{
+			throw new vB_Exception_Api('invalid_node_id');
+		}
+
+		$this->contentinfo = [];
+		$query = $this->assertor->assertQuery('vBForum:getTags', ['nodeid' => $this->nodeid]);
+		foreach ($query AS $tag)
+		{
+			$this->contentinfo[$tag['tagid']] = $tag;
+		}
+	}
+
+	/**
+	*	Invalidates the cached list of tags for this item.
+	*
+	*	Should be called by any method that alters the tag
+	* types.
+	*/
+	protected function invalidateTagList()
+	{
+		$this->contentinfo = $this->tags = null;
+	}
+
+	protected function fetchTagInfo($tag)
+	{
+		if (sizeof($this->contentinfo) == 0)
+		{
+			$this->loadContentInfo();
+		}
+
+		if (sizeof($this->contentinfo) > 0)
+		{
+			foreach ($this->contentinfo AS $nodeTag)
+			{
+				if (in_array($tag, $nodeTag))
+				{
+					$tag = $nodeTag;
+				}
+			}
+
+			return $tag;
+		}
+	}
+}
+
+/*=========================================================================*\
+|| #######################################################################
+|| # Downloaded: 12:50, Tue Dec 24th 2024
+|| # CVS: $RCSfile$ - $Revision: 117674 $
+|| #######################################################################
+\*=========================================================================*/

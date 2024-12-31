@@ -1,0 +1,252 @@
+<?php
+/*========================================================================*\
+|| ###################################################################### ||
+|| # vBulletin 6.1.0 Alpha 4 Week 2 - Licence Number VBCW2VFT7A
+|| # ------------------------------------------------------------------ # ||
+|| # Copyright 2000-2024 MH Sub I, LLC dba vBulletin. All Rights Reserved.  # ||
+|| # This file may not be redistributed in whole or significant part.   # ||
+|| # ----------------- VBULLETIN IS NOT FREE SOFTWARE ----------------- # ||
+|| # http://www.vbulletin.com | http://www.vbulletin.com/license.html   # ||
+|| ###################################################################### ||
+\*========================================================================*/
+
+// helper class to transport styleschedule data
+abstract class vB_Entity implements JsonSerializable
+{
+	use vB_Trait_NoSerialize;
+
+	// Since most of our properties are going to be mutable, I recommend we always explicitly type all properties
+	// to get at least miminal validation while relying on the magic getters for the most part
+	// public string $yes;
+	// public $whatisthis;
+	// Note that "Complex" fields requiring more validation can and should have their own cover functions for read/write.
+
+	// This is effectively a "public" field:
+	// protected string $hello;
+	// and can be accessed from the outside via $entity->hello; via the magic getter & setter logic.
+	// e.g.
+	//   $entity->hello = 'hi';
+	//   echo $entity->hello;
+
+	// There's no real difference between above and just having a public field:
+	// public string $goodbye;
+	// e.g.
+	//   $entity->goodbye = 'bye';
+	//   echo $entity->goodbye;
+
+	// This is a "private" field, meant for internal logic:
+	// protected int $_createdtime;
+	// and is NOT accessible from the outside.
+	// e.g.
+	//  $entity->_createdtime = 0; // this always fails
+	//  $entity->createdtime = 0; // this fails without a cover function, see "backing" field below.
+
+	// This is a "backing" field:
+	// protected $_notprivate;
+	// A backing field is only differentiated from a "private" field above by the existence of the
+	// cover function (note the lack of "_" for the cover function):
+	// protected function notprivate($value = null)
+	// {
+	// 	// setter
+	// 	if (func_num_args() == 1)
+	// 	{
+	// 		$this->_notprivate = $this->doWriteTransformsIfNeeded($value);
+	// 	}
+	// 	else
+	// 	{
+	// 		return $this->doReadTransformsIfNeeded($this->_notprivate);
+	// 	}
+	// }
+	// Unlike a "private" field the backing field can be read/written from the outside, but
+	// only via the "public name".
+	// E.g.
+	//  $entity->notprivate = 'abc';   // this works
+	//  echo $entity->notprivate;      // so does this
+	//  $entity->_notprivate;          // this always fails
+	// Note that the backing field does not actually have to be in the "$_" form, it is just
+	// a convention (See virtual field below).
+
+	// This is a virtual field:
+	// protected function bob($value = null) { return random_int(0, 5); };
+	// This is a side effect of the magic getter/setter logic, and while not entirely intended,
+	// and may possibly be a bad idea, but it does work as long as the specific class implements
+	// the logic.
+	// E.g.
+	//   echo $entity->bob;     // this works without an actual backing field.
+	//   $entity->bob = 12345;  // this depends entirely on implementation. For above, this would do nothing.
+	// We could even do things like this, but at this point we're probably doing something wrong:
+	//   protected function foobar($value = null)
+	//   {
+	//   	if (func_num_args() == 1)
+	//   	{
+	//   		$this->_someotherfield = $this->transform_A($value);
+	//   		$this->_someotherfield2 = $this->transform_B($value);
+	//          $this->foobarWriteCounter++;
+	//   	}
+	//   	else
+	//   	{
+	//   		return $this->transform_C($this->someotherfield, $this->someotherfield2, $this->somethigelse);
+	//   	}
+	//   }
+
+	// IMPORTANT: Due to the magic getter/setter logic, any protected functions may be accessible unless it starts with
+	// an underscore (_)
+	// If you did not intend a function to be a public accessor, prepend it with _
+	// E.g.
+	//   protected function thisIsAccessible($something = null, $somethingelse = 123);
+	//   // Regardless of whether the functions will "work" or not, the getter/setter logic will try to call them:
+	//   $entity->thisIsAccessible = true; $entity->thisIsAccessible;
+	//   protected function _thisIsBlocked($something = null, $somethingelse = 123);
+	//   // Getter/setter will NOT try to call this function, so this will fail:
+	//   $entity->_thisIsBlocked; $entity->_thisIsBlocked = true;
+
+	// And I would recommend keeping the accessors protected as to avoid polluting the public space for sanity.
+
+	//
+	// Getter/setter & backing field magic logic
+	//
+
+	final public function __get(string $name) : mixed
+	{
+		// Block access to protected methods starting with _. Also block "direct" access to any backing-fields -- those would be
+		// accessed via the "public" name, e.g. $entity->abc instead of $entity->abc; for protected string $_abc; protected function abc():string;
+		if ($name[0] == '_')
+		{
+			throw new Exception('disallowed property access');
+		}
+
+		if (method_exists($this, $name))
+		{
+			return $this->$name();
+		}
+
+		return $this->$name;
+	}
+
+	// protected bool $_readonly = false; // not sure if we need this yet.
+	final public function __set(string $name, mixed $value): void
+	{
+		// Again, keep our actual protected functions protected.
+		if ($name[0] == '_')
+		{
+			throw new Exception('disallowed property access');
+		}
+
+		// if ($this->_readonly)
+		// {
+		// 	throw new Exception('disallowed property access');
+		// }
+
+		if (method_exists($this, $name))
+		{
+			$this->$name($value);
+		}
+
+		// We're usually rely on typehints for validation.
+		$this->$name = $value;
+	}
+
+
+
+	//
+	// Serialization related:
+	//
+
+	// JsonSerializable::jsonSerialize()
+	final public function jsonSerialize(): mixed
+	{
+		return $this->toArray();
+	}
+
+	// Convert an instance into an array. This is useful for cloning, and returning from the public API
+	// Also useful before inserting data into the database. However note that you will probably need to
+	// do further manipulations on the data (e.g. removing some fields, converting nulls to strings,
+	// other transforms) before a direct insertion.
+	// For now, this is NOT final as we may end up having each subclass write its own depending on how much
+	// of their fields they really want to expose in array form, particulary if the array is meant for
+	// db insert not just API returns.
+	public function toArray() : array
+	{
+		$vars = get_class_vars(static::class);
+		$arr = [];
+		foreach ($vars AS $__key => $__defaultvalue)
+		{
+
+			// TODO: need to figure out how to differentiate between backing-field properties
+			// and properties that SHOULDN'T be part of an array, e.g. styleschedule->vbdatetime
+
+			$__value = null;
+			// Remove any properties prefixed $_ unless it's backing a public field.
+			if ($__key[0] == '_')
+			{
+				unset($arr[$__key]);
+				$publicname = substr($__key, 1);
+				if ($publicname[0] != '_' AND method_exists($this, $publicname))
+				{
+					$__value = $this->$publicname();
+					$__key = $publicname;
+				}
+				else
+				{
+					continue;
+				}
+			}
+			else
+			{
+				$__value = $this->$__key;
+			}
+
+			// Convert nested objects into ararys.
+			// For now limit this recursion to entities only.
+			// May want to add a toArray() interface & check that instead (or check JsonSerializable()).
+			if (is_a($__value, 'vB_Entity'))
+			{
+				$__value = $__value->toArray();
+			}
+
+			$arr[$__key] = $__value;
+		}
+
+		return $arr;
+	}
+
+
+	//
+	// Serialization related, but not sure if these should be in the Entity base or not
+	//
+
+	/**
+	 * Accept a json string and converts it back to an object instance. The string is intended to be an output
+	 * from a json_encode($originalEntity->jsonSerialize(), true) call.
+	 *
+	 * @param string $json
+	 *
+	 * @return vB_Entity
+	 */
+	final public static function jsonDecode(string $json) : static
+	{
+		$arr = json_decode($json, true);
+		return static::createFromArray($arr);
+	}
+
+	// Should work like an inverse of toArray();
+	// Normally meant for creating from a DB record. May be used to transport new records to be saved into
+	// the DB, meaning we must allow for certain fields (e.g. auto-generated keys) to be unset. May also
+	// be used for quick copying an instance alongside toArray().
+	// This is abstract as entity construction is too specific to each type to generalize.
+	abstract public static function createFromArray(array $dbrecord) : static;
+
+
+
+	//
+	// Other common/utility logic:
+	//
+
+}
+
+/*=========================================================================*\
+|| #######################################################################
+|| # Downloaded: 12:50, Tue Dec 24th 2024
+|| # CVS: $RCSfile$ - $Revision: 113078 $
+|| #######################################################################
+\*=========================================================================*/

@@ -1,0 +1,1451 @@
+<?php
+/*========================================================================*\
+|| ###################################################################### ||
+|| # vBulletin 6.1.0 Alpha 4 Week 2 - Licence Number VBCW2VFT7A
+|| # ------------------------------------------------------------------ # ||
+|| # Copyright 2000-2024 MH Sub I, LLC dba vBulletin. All Rights Reserved.  # ||
+|| # This file may not be redistributed in whole or significant part.   # ||
+|| # ----------------- VBULLETIN IS NOT FREE SOFTWARE ----------------- # ||
+|| # http://www.vbulletin.com | http://www.vbulletin.com/license.html   # ||
+|| ###################################################################### ||
+\*========================================================================*/
+
+/**
+ * vB_Library_Template
+ *
+ * @package vBLibrary
+ */
+class vB_Library_Template extends vB_Library
+{
+	private static $templatecache = [];
+
+	/**
+	 * Fetch one template based on its name and style ID.
+	 *
+	 * @param string $template_name Template name.
+	 * @param integer $styleid Style ID. If empty, this method will fetch template from default style.
+	 * @param bool $nopermissioncheck
+	 * @return array
+	 */
+	public function fetch($template_name, $styleid = -1, $nopermissioncheck = false)
+	{
+		$templates = $this->fetchBulk([$template_name], $styleid, 'compiled', $nopermissioncheck);
+
+		// We'll always have a key here.  Previously we would return false if the template didn't exist but it's not
+		// clear why, is inconsistent with fetchBulk, and complicates the logic for rendering.  For now we'll
+		// just return the blank value.
+		return $templates[$template_name];
+	}
+
+	/**
+	 * Fetch the uncompiled code for one template based on its name and style ID.
+	 *
+	 * @param string $template_name Template name.
+	 * @param integer $styleid Style ID. If empty, this method will fetch template from default style.
+	 * @return array
+	 */
+	public function fetchUncompiled($template_name, $styleid = -1)
+	{
+		$templates = $this->fetchBulk([$template_name], $styleid, 'uncompiledtype', false);
+
+		// We'll always have a key here.  Previously we would return false if the template didn't exist but it's not
+		// clear why, is inconsistent with fetchBulk, and complicates the logic for rendering.  For now we'll
+		// just return the blank value.
+		return $templates[$template_name];
+	}
+
+	/**
+	 * Fetches a bulk of templates from the database
+	 *
+	 * @param array $template_names List of template names to be fetched.
+	 * @param integer $styleid Style ID. If empty, this method will fetch template from default style.
+	 * @param string $type
+	 * 	compiled -- default, return an array of the compiled template text and compile type.
+	 * 	uncompiledtype -- return the same array but with the uncompiled text
+	 * 	uncompiled -- return the uncompiled text string (deprecated)
+	 * @param bool $nopermissioncheck
+	 *
+	 * @return array|string template info or uncompiled template code
+	 */
+	public function fetchBulk($template_names, $styleid = -1, $type = 'compiled', $nopermissioncheck = false)
+	{
+		if ($styleid == -1)
+		{
+			$styleid = vB::getDatastore()->getOption('styleid');
+		}
+		$style = false;
+
+		$response = [];
+
+		if ($type == 'compiled')
+		{
+			$fastDs = vB_FastDS::instance();
+			if ($fastDs)
+			{
+				$cached = $fastDs->getTemplates($template_names, $styleid);
+			}
+		}
+
+		$templateids = [];
+		foreach ($template_names AS $template)
+		{
+			// see if we have it in cache already
+			if ($type == 'compiled')
+			{
+				if (!empty(self::$templatecache[$template]))
+				{
+					$response[$template] = self::$templatecache[$template];
+					continue;
+				}
+				else if (!empty($cached[$template]))
+				{
+					self::$templatecache[$template] = $cached[$template];
+					$response[$template] = $cached[$template];
+					continue;
+				}
+			}
+
+			// load the cache only(once) when we need it
+			if (empty($style))
+			{
+				$style = vB_Library::instance('style')->fetchStyleRecord($styleid, $nopermissioncheck);
+				$templateassoc = $style['templatelist'];
+			}
+
+			if (isset($templateassoc[$template]))
+			{
+				$templateids[] = intval($templateassoc[$template]);
+			}
+
+			// Handle bad template names -- they should be blank by default.
+			// This feels weird.  If we want to blank invalid templates that should be handled by the render not here.
+			// this mimics prior behavior but probably needs to be reconsidered.
+			//
+			//	Always set this because it's possible that the "template" is a replacementvar and will get filtered
+			//	out of the query below.  If it's valid it will be overwritten.
+			//
+			//	Match up the default to the expected return type
+			if ($type == 'uncompiled')
+			{
+				$response[$template] = '';
+			}
+			else
+			{
+				$response[$template] = [
+					'compiletype' => 'full',
+					'template' => '',
+				];
+			}
+		}
+
+		if (count($templateids) > 0)
+		{
+			$result = vB::getDbAssertor()->select('template',
+				[
+					'templateid' => $templateids,
+					'templatetype' => 'template',
+				],
+				false,
+				['title', 'compiletype', 'template_un', 'template']
+			);
+
+			foreach ($result AS $template)
+			{
+				if ($type == 'compiled')
+				{
+					$response[$template['title']] = $this->getTemplateReturn($template);
+					self::$templatecache[$template['title']] = $response[$template['title']];
+				}
+				else if ($type == 'uncompiledtype')
+				{
+					$response[$template['title']] = [
+						'compiletype' => $template['compiletype'],
+						'template' => $template['template_un'],
+					];
+				}
+				else
+				{
+					$response[$template['title']] = $template['template_un'];
+				}
+			}
+		}
+
+		return $response;
+	}
+
+	private function getTemplateReturn($template)
+	{
+		$compiletype = $template['compiletype'];
+		//I'm not sure it matter because if we have a text only template we save the text as compiled as well.
+		$templatefield = ($compiletype == 'textonly' ? 'template_un' : 'template');
+
+		return [
+			'compiletype' => $compiletype,
+			'template' => $template[$templatefield],
+		];
+	}
+
+	/**
+	 * Fetches a number of templates from the database and puts them into the templatecache
+	 *
+	 * @param	array	List of template names to be fetched
+	 * @param	string|array	Serialized array or array of template name => template id pairs
+	 * @param	bool	Whether to skip adding the bbcode style refs (unused)
+	 * @param	bool	Whether to force setting the template
+	 */
+	public function cacheTemplates($templates, $templateidlist, $skip_bbcode_style = false, $force_set = false)
+	{
+		// vB_Library_Style::switchCssStyle() may pass us a templateidlist that's already unserialized.
+		if (!is_array($templateidlist))
+		{
+			$templateidlist = vB_Utility_Unserialize::unserialize($templateidlist);
+		}
+
+		foreach ($templates AS $template)
+		{
+			if (isset($templateidlist[$template]))
+			{
+				$templateids[] = intval($templateidlist[$template]);
+			}
+		}
+
+		if (!empty($templateids))
+		{
+			$templates = vB::getDbAssertor()->select('template',
+				['templateid' => $templateids],
+				false,
+				['title', 'compiletype', 'template_un', 'template']
+			);
+
+			// cache templates
+			foreach ($templates AS $template)
+			{
+				if (empty(self::$templatecache[$template['title']]) OR $force_set)
+				{
+					self::$templatecache[$template['title']] = $this->getTemplateReturn($template);
+				}
+			}
+		}
+	}
+
+	/**
+	 *	Rewrites the file cache for the templates for all styles.
+	 */
+	public function saveAllTemplatesToFile()
+	{
+		$template_path = vB::getDatastore()->getOption('template_cache_path');
+
+		$db = vB::getDBAssertor();
+		$result = $db->select('template', [], false, ['templateid', 'template', 'compiletype']);
+
+		foreach ($result AS $template)
+		{
+			$this->saveTemplateToFileSystem($template['templateid'], $template['template'], $template_path, $template['compiletype'] == 'textonly');
+		}
+
+		vB_FastDS::setTemplateDate();
+	}
+
+	public function saveTemplatesToFile($templateids)
+	{
+		$options = vB::getDatastore()->getValue('options');
+
+		if ($options['cache_templates_as_files'] AND $options['template_cache_path'])
+		{
+			$db = vB::getDBAssertor();
+			$result = $db->select('template', ['templateid' => $templateids], false, ['templateid', 'template', 'compiletype']);
+
+			foreach ($result AS $template)
+			{
+				$this->saveTemplateToFileSystem($template['templateid'], $template['template'], $options['template_cache_path'], $template['compiletype'] == 'textonly');
+			}
+		}
+	}
+
+	public function deleteAllTemplateFiles()
+	{
+		$template_path = vB::getDatastore()->getOption('template_cache_path');
+
+		$db = vB::getDBAssertor();
+		$result = $db->select('template', [], false, ['templateid', 'template']);
+
+		foreach ($result AS $template)
+		{
+			$this->deleteTemplateFromFileSystem($template['templateid'], $template_path);
+		}
+	}
+
+	private function saveTemplateToFileSystem($templateid, $compiled_template, $template_path, $textonly)
+	{
+		$template_name = "template$templateid.php";
+
+		$path = $template_path;
+		if (!vB_Utility_Functions::isAbsolutePath($path))
+		{
+			$path = DIR . '/' . $template_path;
+		}
+
+		$real_path = realpath($path);
+		if ($real_path === false)
+		{
+			@mkdir($path, 0777, true);
+			$real_path = realpath($path);
+
+			if ($real_path === false)
+			{
+				throw new vB_Exception_Api('could_not_cache_template', [$templateid, $template_path, $template_name]);
+			}
+		}
+
+		$template_file = $real_path . "/$template_name";
+
+		//determine if we can write to the provided location
+		$can_write_template = false;
+
+		//file is writable
+		if (is_writable($template_file))
+		{
+			$can_write_template = true;
+		}
+		else
+		{
+			//file doesn't exist and directory is writeable
+			if (!file_exists($template_file) AND is_writeable($real_path))
+			{
+				$can_write_template = true;
+			}
+		}
+
+		//if we can write, try to write
+		$file = false;
+		if ($can_write_template)
+		{
+			$file = fopen($template_file, 'w+');
+			if ($file)
+			{
+				//hack to deal with the fact that the presentation layer has a separate runtime class.
+				$compiled_template = str_replace('vB_Template_Runtime', 'vB5_Template_Runtime', $compiled_template);
+
+				if (!$textonly)
+				{
+					fwrite($file, "<?php \nif (!class_exists('vB5_Template', false)) throw new Exception('direct access error');\n");
+				}
+				fwrite($file, $compiled_template);
+				fclose($file);
+			}
+		}
+
+		if (!$can_write_template OR !$file)
+		{
+			throw new vB_Exception_Api('could_not_cache_template', [$templateid, $template_path, $template_name]);
+		}
+	}
+
+	public function deleteTemplateFromFileSystem($templateid, $template_path)
+	{
+		$template_name = "template$templateid.php";
+
+		$real_path = realpath($template_path);
+		if ($real_path === false)
+		{
+			$real_path = realpath(DIR . '/' . $template_path);
+			if ($real_path === false)
+			{
+				//fail quietly on delete, not much we can do about it.
+				return;
+			}
+		}
+
+		$template_file = $real_path . "/$template_name";
+
+		//is_writable not reliable on windows.
+		if (!(strtoupper(substr(PHP_OS, 0, 3)) == 'WIN') AND !is_writable($template_file))
+		{
+			return;
+		}
+
+		if (file_exists($template_file))
+		{
+			unlink($template_file);
+		}
+	}
+
+	/**
+	 * Process the replacement variables.
+	 *
+	 * @param string The html to be processed
+	 * @param integer The styleid to use.
+	 *
+	 * @return string The processed output
+	 */
+	public function processReplacementVars($html, $styleid = -1)
+	{
+		$style = vB_Library::instance('Style')->fetchStyleByID($styleid, false);
+
+		if (!empty($style['replacements']))
+		{
+			if (!isset($replacementvars[$style['styleid']]))
+			{
+				$replacementvars[$style['styleid']] = @unserialize($style['replacements']);
+			}
+
+			if (is_array($replacementvars[$style['styleid']]) AND !empty($replacementvars[$style['styleid']]))
+			{
+				$html = preg_replace(array_keys($replacementvars[$style['styleid']]), $replacementvars[$style['styleid']], $html);
+			}
+		}
+
+		return $html;
+	}
+
+
+	/**
+	 * Insert a new template
+	 *
+	 * @param integer $dostyleid Style ID which the new template belongs to.
+	 * @param string $title Template name.
+	 * @param string $content Template content.
+	 * @param string $product The product ID which the template belongs to.
+	 * @param boolean $savehistory Whether to save the change in template history.
+	 * @param string $histcomment Comment of the change to be saved to template history.
+	 * @param array $extra extra parameters for the function.
+	 *	 			Actually uses params:
+	 * 				forcenotextonly  which bypasses the canadmintemplate permission
+	 * 				textonly  which sets template text only setting
+	 * @return integer New inserted template ID.
+	 */
+	public function insert
+	(
+		$dostyleid,
+		$title,
+		$content,
+		$product = 'vbulletin',
+		$savehistory = false,
+		$histcomment = '',
+		$forcesaveonerror = false,
+		$extra = ['compiletype' => 'full']
+	)
+	{
+		$dostyleid = intval($dostyleid);
+		$title = trim($title);
+		$content = trim($content);
+		$product = trim($product);
+		$histcomment = trim($histcomment);
+
+		if (!$title)
+		{
+			throw new vB_Exception_Api('please_complete_required_fields');
+		}
+
+		$db = vB::getDbAssertor();
+		$result = $db->assertQuery('template_get_existing', ['title' => $title]);
+		$exists = [];
+		foreach ($result AS $curtemplate)
+		{
+			$exists[$curtemplate['styleid']] = $curtemplate;
+		}
+
+		// If the product is blank default to 'vbulletin'.  This should probably be an error
+		// so that we don't get weird behavior if something get's passed wrong.
+		if (!$product)
+		{
+			$product = 'vbulletin';
+		}
+
+		// Validate the product.  If we are adding to the master style, there is no problem.  That's always valid
+		// If this is a child style it either a customization in which case there should be a master style template
+		// *and* the product of the customization needs to match the master product.
+		//
+		// Or it's a custom template for this style only and the product should always be "vbulletin", we don't allow
+		// custom templates to belong to products.
+		//
+		// This should probably be an error.  Quietly *fixing* bad data causes unexpected behavior. However, don't
+		// want to risk regressions by changing it now.
+		if ($dostyleid != -1)
+		{
+			if (!empty($exists['-1']))
+			{
+				$product = $exists['-1']['product'];
+			}
+			else
+			{
+				$product = 'vbulletin';
+			}
+		}
+
+		$stylelib = vB_Library::instance('Style');
+
+		// check if template already exists
+		if (empty($exists[$dostyleid]))
+		{
+			$templateid = $this->saveTemplate(
+				$title,
+				$content,
+				boolval($forcesaveonerror),
+				$product,
+				null,
+				null,
+				$dostyleid,
+				$savehistory,
+				$histcomment,
+				$extra
+			);
+
+			// now to update the template id list for this style and all its dependents...
+			$stylelib->buildStyle(
+				$dostyleid,
+				$title,
+				[
+					'docss' => 0,
+					'dostylevars' => 0,
+					'doreplacements' => 0,
+					'doposteditor' => 0
+				],
+				false
+			);
+		}
+		else
+		{
+			throw new vB_Exception_Api('template_x_exists_error', [$title, $curtemplate['templateid']]);
+		}
+
+		$stylelib->buildStyleDatastore();
+		return $templateid;
+	}
+
+
+	//make sure that we handle all of the associated operations when we delete a template
+	public function delete($templateids)
+	{
+		//this duplicates some of data needed for permission checks but this isn't a high impact
+		//operation so we can live with that to better seperate functions
+
+		$db = vB::getDbAssertor();
+		$templatesToDelete = $db->select('template', ['templateid' => $templateids], false, ['styleid', 'templatetype']);
+
+		//figure out what we need to rebuild
+		$styles = [];
+		foreach ($templatesToDelete AS $row)
+		{
+			// if any of the deleted templates are replacementvars, rebuild them
+			$styles[$row['styleid']] = (($styles[$row['styleid']] ?? false) OR ($row['templatetype'] == 'replacement'));
+		}
+
+		//delete some stuff.
+		$db->delete('template', ['templateid' => $templateids]);
+		$db->delete('templatemerge', ['templateid' => $templateids]);
+
+		//if we are storing the templates on the file systems
+		//handle array or single item
+		if (!is_array($templateids))
+		{
+			$templateids = [$templateids];
+		}
+
+		$options = vB::getDatastore()->getValue('options');
+		//delete cached template files.
+		foreach ($templateids AS $templateid)
+		{
+			if ($options['cache_templates_as_files'] AND $options['template_cache_path'])
+			{
+				$this->deleteTemplateFromFileSystem($templateid, $options['template_cache_path']);
+			}
+		}
+
+		//rebuild cached information
+		$stylelib = vB_Library::instance('style');
+
+		// we might be able to handle the rebuilds a little more elegantly but in practice there is probably only ever one style.
+		foreach ($styles AS $styleid => $dobuildreplacements)
+		{
+			$stylelib->buildStyle($styleid, '', ['docss' => 0, 'dostylevars' => 0, 'doreplacements' => $dobuildreplacements, 'doposteditor' => 0], false);
+		}
+		$stylelib->buildStyleDatastore();
+	}
+
+
+
+	/**
+	 *	Insert a replacement var
+	 *
+	 *	@param	integer	$dostyleid
+	 *	@param	string	$findtext
+	 *	@param	string	$replacetext
+	 * 	@param	string	$product The product ID which the replacement var belongs to.
+	 *
+	 *	@return integer -- The id of the newly created replacement var
+	 *
+	 *	@throws vB_Exception_Api
+	 *		'replacement_x_exists' -- var with that title & styleid already exists
+	 *		'replacmentvar_template_x_exists' -- the title matches the title of a non stylevar template
+	 *			which can cause potential conflicts.
+	 */
+	public function insertReplacementVar($dostyleid, $findtext, $replacetext)
+	{
+		$userinfo = vB::getCurrentSession()->fetch_userinfo();
+		$options = vB::getDatastore()->getValue('options');
+
+		$template = $this->fetchReplacementVar($findtext, $dostyleid);
+		if ($template)
+		{
+			throw new vB_Exception_Api('replacement_x_exists', [$findtext, $dostyleid]);
+		}
+
+		//do not allow a replacement var with the same name as non replacement var template
+		//they will conflict and cause odd behavior on the site.  The reason for this is that
+		//each style has a compiled list of 'title' => templateid including inheritance which
+		//means that two templates with the same title will cause all manner of problems in that
+		//list (especially since the replacement var will get used instead of the template in
+		//the template render code...)
+		//
+		//This can be remove when we fix VBV-14598
+		$existing = vB::getDbAssertor()->getRow('template', [
+			vB_dB_Query::TYPE_KEY => vB_dB_Query::QUERY_SELECT,
+			vB_dB_Query::CONDITIONS_KEY => [
+				'title' => $findtext,
+				['field' => 'templatetype', 'value' => 'replacement', 'operator' =>  vB_dB_Query::OPERATOR_NE]
+			],
+			vB_dB_Query::COLUMNS_KEY => ['templateid']
+		]);
+
+		if ($existing)
+		{
+			throw new vB_Exception_Api('replacmentvar_template_x_exists', [$findtext]);
+		}
+
+		$id = vB::getDbAssertor()->assertQuery('template', [
+			vB_dB_Query::TYPE_KEY => vB_dB_Query::QUERY_INSERT,
+			'styleid' => $dostyleid,
+			'templatetype' => 'replacement',
+			'title' => $findtext,
+			'template' => $replacetext,
+			'username' => $userinfo['username'],
+			'version' => $options['templateversion'],
+			'product' => 'vbulletin',
+			'dateline' => vB::getRequest()->getTimeNow(),
+			'compiletype' => 'textonly',
+		]);
+
+		$stylelib = vB_Library::instance('Style');
+
+		// now to update the template id list for this style and all its dependents...
+		$stylelib->buildStyle($dostyleid, $findtext, [
+			'docss' => 0,
+			'dostylevars' => 0,
+			'doreplacements' => 1,
+			'doposteditor' => 0
+		], false);
+
+		$stylelib->buildStyleDatastore();
+		return $id;
+	}
+
+
+	/**
+	 *	Update the replacement text for a replacement var
+	 *
+	 *	@param integer $replacevarid -- template id for the replace var
+	 *	@paramstring $replacetext
+	 *
+	 * 	@return boolean
+	 */
+	public function updateReplacementVar($replacevarid, $replacetext)
+	{
+		$userinfo = vB::getCurrentSession()->fetch_userinfo();
+		$options = vB::getDatastore()->getValue('options');
+
+		$count = vB::getDbAssertor()->assertQuery('template', [
+			vB_dB_Query::TYPE_KEY => vB_dB_Query::QUERY_UPDATE,
+			'template' => $replacetext,
+			'username' => $userinfo['username'],
+			'version' => $options['templateversion'],
+			'product' => 'vbulletin',
+			'dateline' => vB::getRequest()->getTimeNow(),
+			'compiletype' => 'textonly',
+			 vB_dB_Query::CONDITIONS_KEY => [
+				'templateid' => $replacevarid,
+				'templatetype' => 'replacement',
+			 ]
+		]);
+
+		if ($count)
+		{
+			$template = $this->fetchReplacementVarById($replacevarid);
+			$stylelib = vB_Library::instance('Style');
+
+			// now to update the template id list for this style and all its dependents...
+			$stylelib->buildStyle($template['styleid'], $template['title'], [
+				'docss' => 0,
+				'dostylevars' => 0,
+				'doreplacements' => 1,
+				'doposteditor' => 0
+			], false);
+			$stylelib->buildStyleDatastore();
+		}
+
+		return ($count > 0);
+	}
+
+
+	/**
+	 *	Find the replacement var by title & styleid
+	 *
+	 *	@param string $findtext
+	 *	@param integer $dostyleid
+	 *	@param boolean $inherit -- do we check for variables in parent styles?
+	 *
+	 *	@return false|array -- template record for the replacement variable
+	 *		integer templateid
+	 *		string title
+	 *		integer styleid
+	 *		integer dateline
+	 *		string username
+	 *		string template
+	 *		string template_un
+	 *		string version
+	 */
+	public function fetchReplacementVar($findtext, $dostyleid, $inherit = false)
+	{
+		// masterstyle (-1) doesn't have a style record so this branch won't work.  On the other hand
+		// it can't have a parent style either so we can treat the inherit case as if it were not inherited.
+		if ($inherit AND $dostyleid != -1)
+		{
+			$style = vB_Library::instance('Style')->fetchStyleByID($dostyleid, true);
+
+			$templateids = $style['templatelist'];
+			if (is_string($templateids))
+			{
+				$templateids = unserialize($templateids);
+			}
+			return $this->fetchReplacementVarById($templateids[$findtext]);
+		}
+		else
+		{
+			return $this->fetchReplacementVarInternal([
+				'styleid' => $dostyleid,
+				'title' => $findtext,
+			]);
+		}
+	}
+
+ /**
+	 *	Find the replacement var by templateid
+	 *
+	 *	@param integer $replacevarid
+	 *
+	 *	@return false|array -- template record for the replacement variable
+	 *		integer templateid
+	 *		string title
+	 *		integer styleid
+	 *		integer dateline
+	 *		string username
+	 *		string template
+	 *		string template_un
+	 *		string version
+	 */
+	public function fetchReplacementVarById($replacevarid)
+	{
+		return $this->fetchReplacementVarInternal(['templateid' => $replacevarid]);
+	}
+
+
+	private function fetchReplacementVarInternal($filters)
+	{
+		$filters['templatetype'] = 'replacement';
+
+		//use explicit conditions key to work around assertor bug when one of the filters is the primary key
+		$existing = vB::getDbAssertor()->getRow('template', [
+			vB_dB_Query::CONDITIONS_KEY => $filters,
+			vB_dB_Query::COLUMNS_KEY => ['templateid', 'title', 'styleid', 'dateline', 'username', 'template', 'template_un', 'version']
+		]);
+
+		if (is_null($existing))
+		{
+			return false;
+		}
+
+		return $existing;
+	}
+
+	/**
+	 * Compile a template.
+	 *
+	 * @param string $template_un The uncompiled content of a template.
+	 * @param string $compiletype One of "textonly", "full" and "limited"
+	 * @param bool $forcesaveonerror -- save the template even if there is an error.
+	 */
+	public function compile($template, $compiletype, $forcesaveonerror)
+	{
+		// for completeness, this allows us to "compile" text only templates without
+		// needing special logic.
+		if ($compiletype == 'textonly')
+		{
+			return $template;
+		}
+		else if ($compiletype == 'limited')
+		{
+			$tags = ['usergroup', 'comment', 'literal', 'every'];
+			$curlies = ['stylevar'];
+			$options = ['strictconditionals' => true];
+		}
+		else if ($compiletype == 'full')
+		{
+			//allow everything.
+			$tags = true;
+			$curlies = true;
+			$options = ['strictconditionals' => empty(vb::getConfig()['Misc']['useLegacyConditionals'])];
+		}
+		else
+		{
+			throw new vB_Exception_Api('invalid_data');
+		}
+
+		$parser = new vB_Utility_Template_Parser($template, $tags, $curlies, $options);
+
+		try
+		{
+			$errors = $parser->validate();
+		}
+		catch (vB_Utility_Template_Parser_FatalError $e)
+		{
+			$errors = $e->getErrors();
+			$apiexception = new vB_Exception_Api(reset($errors));
+			if (count($errors) > 1)
+			{
+				$apiexception->add_errors(array_splice($errors, 1));
+			}
+			throw $apiexception;
+		}
+
+		if (!$forcesaveonerror AND !empty($errors))
+		{
+			$apiexception = new vB_Exception_Api('template_compile_error');
+			$apiexception->add_errors($errors);
+			throw $apiexception;
+		}
+
+		$template = $parser->compile();
+
+		//extra set of error checking.  This can be skipped in many situations.
+		if (!$forcesaveonerror)
+		{
+			$errors = $this->checkEvalErrors($template);
+			if (!empty($errors))
+			{
+				if (!is_array($errors) AND vB::isDebug())
+				{
+					$lines = explode("\n", htmlspecialchars($template));
+					$lines = array_map(function ($index, $line) {return $index+1 . ': ' . $line;}, array_keys($lines), $lines);
+
+					// show compiled template code with line numbers to debug the problem
+					$errors .= '<h4>Compiled Template Code:</h4><div style="height:200px; overflow:auto; border:1px solid silver; font-style:normal; font-family:Courier New;"><ol><li>' .
+						implode('</li><li>', $lines) . '</li></ol></div>';
+				}
+
+				throw new vB_Exception_Api('template_eval_error', [$errors]);
+			}
+		}
+
+		// It's not clear what we should do saving when there are errors.  Because the compiled code could
+		// be all kinds of broken.  Might be better to save a blank compiled template (or ensure that validation errors
+		// produce some kind of sane behavior in the compiled code).
+		return $template;
+	}
+
+	// #############################################################################
+	/**
+	*	Checks for problems with conflict resolution
+	*
+	* @param	string Template PHP code
+	* @return string Error message detected or empty string if no error
+	*/
+	private function checkConflictError($compiled)
+	{
+		if (preg_match($this->getConflictTextRe(), $compiled))
+		{
+			$error = fetch_error('template_conflict_exists');
+			if (!$error)
+			{
+				//if the error lookup fails return *something* so the calling code doesn't think
+				//we succeeded.
+				return 'Conflict Error';
+			}
+			else
+			{
+				return $error;
+			}
+		}
+
+		return '';
+	}
+
+	/**
+	* Return regular expression to detect the blocks returned by format_conflict_text
+	*
+	* @return string -- value suitable for passing to preg_match as an re
+	*/
+	private function getConflictTextRe()
+	{
+		// Required for format_conflict_text()
+		require_once(DIR . '/includes/adminfunctions_template.php');
+
+		//we'll start by grabbing the formatting from format_conflict_text directly
+		//this should reduce cases were we change the formatting and forget to change the re
+		$re = format_conflict_text(".*\n", ".*\n", ".*\n", ".*", '.*');
+
+		//we don't have a set number of delimeter characters since we try to even up the lines
+		//in some cases (which can vary based on the version strings).  Since we don't have the
+		//exact version available, we don't know how many got inserted.  We'll match any number
+		//(we use two because we should always have at least that many and it dramatically improves
+		//performance -- probably because we get an early failure on all of the html tags)
+		$re = preg_replace('#<+#', '<<+', $re);
+		$re = preg_replace('#=+#', '==+', $re);
+		$re = preg_replace('#>+#', '>>+', $re);
+
+		//handle variations on newlines.
+		$re = str_replace("\n", "(?:\r|\n|\r\n)", $re);
+
+		//convert the preg format
+		$re = "#$re#isU";
+		return $re;
+	}
+
+
+	private function checkEvalErrors($compiled)
+	{
+		//don't report any errors for the eval.  We don't want to show them and we don't want to log them
+		//We might want to handle and report them as part of our reporting.  But, at the moment, I think
+		//they are more likely than not to be completely spurious aside from various catchable fatal errors
+		//that we'll get below.
+		//If we do want to trap these errors we should use a specialized error handler function rather than
+		//attempt to mess around output buffering like we did in a prior implemenation of this function
+		$oldlevel = error_reporting(0);
+
+		//this is a little dodgey because we don't initialize anything before we attempt to run the template
+		//which -- especially with recent PHP versions -- will result in all kinds of spurious errors.
+		//So let's try to do what we can to pick out the errors that matter and ignore the others.
+		//
+		//Note that there is no guarentee that we'll hit a valid error -- if we hit an error we ignore then
+		//we'll stop processing even if there is an error we'd normally report farther on.  There really isn't
+		//good way around this and at present the ignored errors appear to be relatively rare so reporting
+		//the errors that might be ignored is still generally useful.
+		//
+		//The ParseErrors are the most useful and should happen reliably.
+		$errors = '';
+		try
+		{
+			// Don't use the live runtime -- this increases the number of spurious errors.
+			// Now that we don't have any core dependencies here we might want to push the entire check back into
+			// the utility module.  We might also be able to use PHPToken to simply to a PHP syntax check (which
+			// realistically all we are likely accomplishing here).
+			$compiled = str_replace('vB_Template_Runtime', 'vB_Utility_Template_RuntimeValidation', $compiled);
+			if (strpos($compiled, '$final_rendered') !== false)
+			{
+				eval($compiled);
+			}
+			else
+			{
+				//not clear if this is an obsolete case that's been ported and then ported again
+				//or if it checks one of the "special" template formats that doesn't actually use
+				//the template format.  For the moment leaving to avoid introducing new problems.
+				eval('$devnull = "' . $compiled . '";');
+			}
+		}
+		catch(ParseError $e)
+		{
+			$errors = $e->getLine() . ': ' . $e->getMessage();
+		}
+		catch(TypeError $e)
+		{
+			//type errors are almost certainly spurious at this point.  Do nothing.
+		}
+		catch(Error $e)
+		{
+			//we want to white list errors we want to flag.  Too much chance of artifacts causing problems
+			//when trying to run templates without properly setting the data.
+			$messageContains = [
+				'undefined function',
+				'undefined constant',
+			];
+
+			$message = $e->getMessage();
+			foreach ($messageContains AS $snippet)
+			{
+				if (stripos($message, $snippet) !== false)
+				{
+					$errors = $e->getLine() . ': ' . $message;
+					break;
+				}
+			}
+		}
+		catch(Throwable $e)
+		{
+			//Its not clear that we are likely to hit this case, but if we do let's not show anything
+		}
+
+		error_reporting($oldlevel);
+		return $errors;
+	}
+
+	/**
+	 * Update a template
+	 *
+	 * @param integer $templateid Template ID to be updated
+	 * @param string $title Template name.
+	 * @param string $content Template content.
+	 * @param string $product The product ID which the template belongs to.
+	 * @param string $oldcontent The content of the template at the time it was loaded.  This is used to prevent
+	 *	cases where the template was changed while editing. Pass false to force an update.
+	 * @param boolean $savehistory Whether to save the change in template history.
+	 * @param string $histcomment Comment of the change to be saved to template history.
+	 * @param boolean $forcesaveonerror save the template even though there are errors.
+	 * @param array $aditional extra parameters for the function.
+	 * 				Actually uses params:
+	 * 				forcenotextonly  which bypasses the canadmintemplate permission
+	 * 				textonly  which sets template text only setting
+	 */
+	public function update
+	(
+		$templateid,
+		$title,
+		$content,
+		$product,
+		$oldcontent,
+		$savehistory,
+		$histcomment,
+		$forcesaveonerror = false,
+		$additional = ['compiletype' => 'full']
+	)
+	{
+		$templateid = intval($templateid);
+		$title = trim($title);
+		$content = trim($content);
+		$product = trim($product);
+		$histcomment = trim($histcomment);
+
+		$db = vB::getDbAssertor();
+		$style_lib = vB_Library::instance('Style');
+
+
+		$old_template = $this->fetchByID($templateid);
+
+		// Can't rename a template over an existing one
+		if (strtolower($title) != strtolower($old_template['title']))
+		{
+			$existing = $db->getRow('template', [
+				vB_dB_Query::COLUMNS_KEY => ['templateid'],
+				'styleid' => $old_template['styleid'],
+				'title' => $title,
+			]);
+
+			if ($existing)
+			{
+				throw new vB_Exception_Api('invalidid', ['templateid']);
+			}
+		}
+
+		if ($oldcontent === false)
+		{
+			$hash = md5($old_template['template_un']);
+		}
+		else
+		{
+			$hash = md5($oldcontent);
+		}
+
+		$result = $this->saveTemplate(
+			$title,
+			$content,
+			boolval($forcesaveonerror),
+			$product,
+			$templateid,
+			$hash,
+			$old_template['styleid'],
+			$savehistory,
+			$histcomment,
+			$additional
+		);
+
+		if ($result == 0)
+		{
+			// we have an edit conflict
+			throw new vB_Exception_Api('edit_conflict');
+		}
+		else
+		{
+			unset(self::$templatecache[$title]);
+
+			// Remove templatemerge record
+			$db->assertQuery('templatemerge', [
+				vB_dB_Query::TYPE_KEY => vB_dB_Query::QUERY_DELETE,
+				'templateid' => $templateid
+			]);
+
+			// update any customized templates to reflect a change of product id
+			if ($old_template['styleid'] == -1 AND $product != $old_template['product'])
+			{
+				$result = $db->assertQuery('template_updatecustom_product', [
+					'product'	=> $product,
+					'title' 	=> $title,
+				]);
+			}
+
+			//we need to rebuild the style if a css template is changed, we may need to republish.
+			if (preg_match('#\.css$#i', $title))
+			{
+				$style_lib->buildStyle($old_template['styleid'], $title, [
+					'docss' => 0,
+					'dostylevars' => 0,
+					'doreplacements' => 0,
+					'doposteditor' => 0
+				], false);
+			}
+
+			return true;
+		}
+	}
+
+	/**
+	 * Fetch template by its ID
+	 *
+	 * @param integer $templateid Template ID.
+	 *
+	 * @return array Return template array if $templateid is valid.
+	 */
+	public function fetchByID($templateid)
+	{
+		$templateid = intval($templateid);
+		//not sure why we limit the columns here, but since this feed out the API it's probably for the best.
+		$row = vB::getDbAssertor()->getRow('template', [
+			vB_dB_Query::COLUMNS_KEY => ['title', 'styleid', 'dateline', 'username', 'template', 'template_un', 'version', 'compiletype', 'product'],
+			'templateid' => $templateid,
+			'templatetype' => 'template',
+		]);
+
+		if ($row)
+		{
+			return $row;
+		}
+		else
+		{
+			throw new vB_Exception_Api('invalidid', ['templateid']);
+		}
+	}
+
+	/**
+	 *	Save a template and handle all common operations between an insert and an update
+	 *	caller is responsible for determining if a update or an insert is needed (via
+	 *	providing the existing templateid for the record to be updated)
+	 *
+	 *	@param $title string.  The title of the template
+	 *	@param $template string.  Compiled template text
+	 *	@param $content string. Uncompiled template text
+	 *	@param $timenow int.  Current time as a datestamp
+	 *	@param $username string. Username of the user saving the template
+	 *	@param $version string. The version of the product the template belongs to.
+	 *	@param $product string. The product that the template belongs to.
+	 *	@param $templateid int. The id of the template being saved, null if this is a new template
+	 *	@param $hash string.  The md5 hash of the original text of the template being updated. This is used to
+	 *		avoid conflicting edits.  Null if this is a new template.
+	 *	@param $styleid int.  The ID of the style the template is being saved to.
+	 *	@param $savehistory bool. Whether to save this edit to the template history -- valid for new templates
+	 *	@param $hiscomment string.  A comment on the edit to save with the history
+	 *	@param array $extra
+	 *
+	 */
+	private function saveTemplate
+	(
+		string $title,
+		string $content,
+		bool $forcesaveonerror,
+		string $product,
+		?int $templateid,
+		?string $hash,
+		int $styleid,
+		bool $savehistory,
+		string $histcomment,
+		array $extra
+	)
+	{
+		$db = vB::getDbAssertor();
+
+		$username = vB::getCurrentSession()->fetch_userinfo()['username'];
+		$version = vB_Library::instance('product')->getFullProducts()[$product]['version'];
+
+		$timenow = vB::getRequest()->getTimeNow();
+
+		//not only do we pass this as an array of junk, we have some potentially legacy callers we may need to
+		//take into account.
+
+		if (isset($extra['compiletype']))
+		{
+			$compiletype = $extra['compiletype'];
+		}
+		else if (isset($extra['textonly']))
+		{
+			$compiletype = ($extra['textonly'] ? 'textonly' : 'full');
+		}
+		else
+		{
+			throw new vB_Exception_Api('please_complete_required_fields');
+		}
+
+		$template = $this->compile($content, $compiletype, $forcesaveonerror);
+		if (!$forcesaveonerror)
+		{
+			$errors = $this->checkConflictError($template);
+			if (!empty($errors))
+			{
+				throw new vB_Exception_Api('template_conflict_errors', [$errors]);
+			}
+		}
+
+		$fields = [
+			'templatetype' => 'template',
+			'title' => $title,
+			'template' => $template,
+			'template_un' => $content,
+			'dateline' => $timenow,
+			'username' => $username,
+			'version' => $version,
+			'product' => $product,
+			'compiletype' => $compiletype
+		];
+
+		//update
+		if ($templateid)
+		{
+			$fields['templateid'] = $templateid;
+			$fields['hash'] = $hash;
+			$queryid = 'template_update';
+		}
+		//insert
+		else
+		{
+			$fields['styleid'] = $styleid;
+			$fields[vB_dB_Query::TYPE_KEY] = vB_dB_Query::QUERY_INSERT;
+			$queryid = 'template';
+		}
+
+		// Do update
+		$result = $db->assertQuery($queryid, $fields);
+
+		//If we just did an insert, the templateid is in $result;
+		if (empty($templateid) AND is_numeric($result))
+		{
+			$templateid = $result;
+		}
+		$this->setTextonlyDS($templateid, $fields['compiletype'] == 'textonly');
+
+		//a non positive result indicates failure
+		if ($result)
+		{
+			// now update the file system if we setup to do so and we are in the master style
+			if (defined('DEV_AUTOEXPORT') AND DEV_AUTOEXPORT)
+			{
+				// required for autoexport_write_template() & autoexport_write_default_style_and_themes()
+				require_once(DIR . '/includes/functions_filesystemxml.php');
+				// todo: expand to also autoexport vb5 shim
+				if ($styleid == -1)
+				{
+					$__extra = ['compiletype' => $fields['compiletype']];
+					autoexport_write_template($title, $content, $product, $version, $username, $timenow, "", $__extra);
+					unset($__extra);
+				}
+				else
+				{
+					autoexport_write_default_style_and_themes($styleid);
+				}
+			}
+
+			if ($savehistory)
+			{
+				$db->assertQuery('template_savehistory', [
+					'dostyleid' => $styleid,
+					'title' => $title,
+					'template_un' => $content,
+					'dateline' => $timenow,
+					'username' => $username,
+					'version' => $version,
+					'comment' => $histcomment,
+				]);
+			}
+
+			//if this is a new template the return from the insert query is the templateid
+			if (!$templateid)
+			{
+				$templateid = $result;
+			}
+			//if we are storing the templates on the file systems
+			$options = vB::getDatastore()->getValue('options');
+			if ($options['cache_templates_as_files'] AND $options['template_cache_path'])
+			{
+				$this->saveTemplateToFileSystem($templateid, $template, $options['template_cache_path'], $fields['compiletype'] == 'textonly');
+			}
+
+			vB_Library::instance('Style')->setCssDate();
+			vB_FastDS::setTemplateDate();
+		}
+
+		return $result;
+	}
+
+	/**
+	 * Get template ID by its template name and style id
+	 *
+	 * @param $template_name the name of the template
+	 * @param $styleid
+	 */
+	public function getTemplateID($template_name, $styleid = -1)
+	{
+		$result = $this->getTemplateIds([$template_name], $styleid);
+		return $result['ids'][$template_name];
+	}
+
+	/**
+	 * Get a list of template IDs by thier template names and style id
+	 *
+	 * @param array $template_names -- a list of template names
+	 * @param array $styleid -- must be a style the user has access to.  If not specified, the default style is used.
+	 * @return array ['ids' => $ids] where $ids is a map of names to the template id for that name.  If the name is not
+	 * 	found, the entry for that name in the map will be false.
+	 */
+	public function getTemplateIds($template_names, $styleid = -1)
+	{
+		$cleaner = vB::getCleaner();
+		$template_names = $cleaner->clean($template_names, vB_Cleaner::TYPE_ARRAY);
+		$styleid = $cleaner->clean($styleid, vB_Cleaner::TYPE_INT);
+		$stylelib = vB_Library::instance('style');
+
+		$style = $stylelib->fetchStyleRecord($styleid, true);
+		$ids = [];
+		foreach ($template_names AS $name)
+		{
+			if (isset($style['templatelist'][$name]))
+			{
+				$ids[$name] = $style['templatelist'][$name];
+			}
+			else
+			{
+				$ids[$name] = false;
+			}
+		}
+
+		return ['ids' => $ids];
+	}
+
+	/**
+	 * This updates the datastore list of templates that have textonly and therefore are not rendered.
+	 * @param 	int		$styleid
+	 * @param 	string	$title
+	 * @param 	bool	$textonly
+	 */
+	private function setTextonlyDS($templateid, $textonly)
+	{
+		$dsval = $this->getTextonlyDS();
+
+		if ($textonly)
+		{
+			$dsval[$templateid] = 1;
+		}
+		else
+		{
+			unset($dsval[$templateid]);
+		}
+		vB::getDatastore()->build('textonlyTemplates', json_encode($dsval), 0);
+	}
+
+	public function getTextonlyDS()
+	{
+		$textOnlyJson = vB::getDatastore()->getValue('textonlyTemplates');
+
+		//We should have gotten a value even if it was an empty array.
+		if (is_null($textOnlyJson))
+		{
+			return $this->rebuildTextonlyDS();
+		}
+
+		return json_decode($textOnlyJson, true);
+	}
+
+	/**
+	 * Rebuilds the textonly array;
+	 */
+	public function rebuildTextonlyDS()
+	{
+		$result = vB::getDbAssertor()->select('template', ['compiletype' => 'textonly'], false, 'templateid');
+		$textOnly = [];
+		foreach ($result AS $template)
+		{
+			$textOnly[$template['templateid']] = 1;
+		}
+
+		vB::getDatastore()->build('textonlyTemplates', json_encode($textOnly), 0);
+		return $textOnly;
+	}
+
+	public function getTemplateGroupPhrases()
+	{
+		//this should really be in the database
+		//
+		//If you change this you need to also update the list in class_filesystem_template.xml
+		//we need to run that logic outside of vB and we can't call this function
+		//without bootstrapping the system
+		$groups = [
+			'admin'          => 'group_admin',
+			'article'        => 'group_article',
+			'bbcode'         => 'group_bbcode',
+			'blog'           => 'group_blog',
+			'blogadmin'      => 'group_blogadmin',
+			'color'          => 'group_color',
+			'contententry'   => 'group_contententry',
+			'conversation'   => 'group_conversation',
+			'css'            => 'group_css',
+			'dialog'         => 'group_dialog',
+			'display'        => 'group_display',
+			'editor'         => 'group_editor',
+			'error'          => 'group_error',
+			'group'          => 'group_sgroup',
+			'humanverify'    => 'group_human_verification',
+			'inlinemod'      => 'group_inlinemod',
+			'link'           => 'group_link',
+			'login'          => 'group_login',
+			'media'          => 'group_media',
+			'memberlist'     => 'group_memberlist',
+			'modify'         => 'group_modify',
+			'page'           => 'group_page',
+			'pagenav'        => 'group_pagenav',
+			'photo'          => 'group_photo',
+			'picture'        => 'group_picture_templates',
+			'pmchat'         => 'group_pmchat',
+			'privatemessage' => 'group_private_message',
+			'profile'        => 'group_profile',
+			'screenlayout'   => 'group_screen',
+			'search'         => 'group_search',
+			'sgadmin'        => 'group_sgadmin',
+			'site'           => 'group_site',
+			'subscription'   => 'group_paidsubscription',
+			'subscriptions'  => 'group_subscription',
+			'sprite'         => 'group_sprite',
+			'tag'            => 'group_tag',
+			'top_menu'       => 'group_top_menu',
+			'userfield'      => 'group_user_profile_field',
+			'usersettings'   => 'group_usersetting',
+			'video'          => 'group_video',
+			'widget'         => 'group_widget',
+		];
+
+		vB::getHooks()->invoke('hookTemplateGroupPhrase', [
+			'groups' => &$groups,
+		]);
+
+		return $groups;
+	}
+}
+
+/*=========================================================================*\
+|| #######################################################################
+|| # Downloaded: 12:50, Tue Dec 24th 2024
+|| # CVS: $RCSfile$ - $Revision: 118004 $
+|| #######################################################################
+\*=========================================================================*/

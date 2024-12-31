@@ -1,0 +1,1694 @@
+<?php
+/*========================================================================*\
+|| ###################################################################### ||
+|| # vBulletin 6.1.0 Alpha 4 Week 2 - Licence Number VBCW2VFT7A
+|| # ------------------------------------------------------------------ # ||
+|| # Copyright 2000-2024 MH Sub I, LLC dba vBulletin. All Rights Reserved.  # ||
+|| # This file may not be redistributed in whole or significant part.   # ||
+|| # ----------------- VBULLETIN IS NOT FREE SOFTWARE ----------------- # ||
+|| # http://www.vbulletin.com | http://www.vbulletin.com/license.html   # ||
+|| ###################################################################### ||
+\*========================================================================*/
+
+/**
+ * vB_Library_Content_Infraction
+ *
+ * @package vBLibrary
+ * @access public
+ */
+class vB_Library_Content_Infraction extends vB_Library_Content_Text
+{
+	//override in client- the text name
+	protected $contenttype = 'vBForum_Infraction';
+
+	//The table for the type-specific data.
+	protected $tablename = ['infraction', 'text'];
+
+	//list of fields that are included in the index
+	protected $index_fields = ['note','actionreason', 'customreason'];
+
+	protected $infractionChannel;
+
+	protected $nodeLibrary = null;
+
+	protected $cannotDelete = true;
+
+	/**
+	 * If true, then creating a node of this content type will increment
+	 * the user's post count. If false, it will not. Generally, this should be
+	 * true for topic starters and replies, and false for everything else.
+	 *
+	 * @var	bool
+	 */
+	protected $includeInUserPostCount = false;
+
+	// Phrases that have been requested from the phrase api
+	protected $phrases = [];
+
+	// Do not send a moderator notification when this contenttype is created
+	protected $skipModNotification = true;
+
+	private $cachedInfractionGroups = [];
+	private $infractionGroupsCachedForSession = false;
+
+	/**
+	 * Constructor
+	 */
+	protected function __construct()
+	{
+		parent::__construct();
+
+		$this->infractionChannel = $this->nodeApi->fetchInfractionChannel();
+		$this->nodeLibrary = vB_Library::instance('node');
+
+		// pull phrases for titles & pagetext
+		// This will also have the effect of precaching for phrase render function.
+		$this->phrases = vB_Api::instanceInternal('phrase')->fetch([
+			// infraction title
+			'infraction_for_x_y',
+			'infraction_for_x_y_in_topic_z',
+			'warning_for_x_y',
+			'warning_for_x_y_in_topic_z',
+			// infraction page text
+			'infraction_topic_post',
+			'infraction_topic_profile',
+			// pm title
+			'infraction_received_ginfraction',
+			'warning_received_ginfraction',
+			// pm page text
+			'infraction_received_post',
+			'infraction_received_profile',
+			'warning_received_post',
+			'warning_received_profile',
+			// automatic ban phrases
+			'x_days',
+			'x_weeks',
+			'x_months',
+			'x_years',
+			'permanent',
+		]);
+	}
+
+	/*
+		Overview of functions in this class:
+
+		add
+		update
+		delete
+		reverseInfraction
+
+		getInfraction
+		getNodeInfraction
+		getUserInfractions
+		getAutomaticBanList
+		getInfractionLevels
+		buildInfractionGroupIds
+
+		// protected
+		getInfractionNode
+		validateInfractionData
+		getInfractedNode
+		getInfractionLevelInfo
+		isWarning
+		getExpires
+		getInfractionTitle
+		getInfractionPagetext
+		sendPm
+		updateDenormalizedUserData
+		getPhrase
+		fetchInfractionGroups
+		getAutomaticBanToApply
+		applyAutomaticBan
+	*/
+
+
+
+	// ========================================================================
+	// ===== PUBLIC METHODS ===================================================
+	// ========================================================================
+
+
+
+	/**
+	 * Adds a new infraction node
+	 *
+	 * @param	array $data -- Array of field => value pairs which define the record.
+	 * @param	array	$options -- Array of options for the content being created
+	 *	-- skipTransaction,
+	 *	--skipFloodCheck,
+	 *	-- floodchecktime,
+	 *	-- skipDupCheck,
+	 *	-- skipNotification,
+	 *	-- nl2br: if TRUE, all \n will be converted to <br /> so that it's not removed by the html parser (e.g. comments).
+	 *	-- autoparselinks.
+	 * @return	array
+	 * 	-- nodeid (int),
+	 * 	-- success (bool),
+	 * 	-- cacheEvents (array of strings),
+	 * 	-- nodeVals (array of field => value),
+	 * 	-- attachments (array of attachment records).
+	 */
+	public function add($data, array $options = [], $convertWysiwygTextToBbcode = true)
+	{
+		//Store this so we know whether we should call afterAdd()
+		$skipTransaction = !empty($options['skipTransaction']);
+		$infractionLevels = $this->getInfractionLevels();
+
+		$this->validateInfractionData($data, $infractionLevels);
+		//An infraction should never be rejected because of duplication.
+		$options['skipDupCheck'] = true;
+
+		$infractedNode = $this->getInfractedNode($data);
+		$infractedUserInfo = vB_User::fetchUserinfo($data['infracteduserid']);
+
+		//we're setting the $infractionLevelInfo from $data and $data from $infractionLevelInfo.  We
+		//need to better sort out the custom/predefined cases and untagle the logic.  A lot of it involves
+		//getting a handle on the places we use $infractionLevelInfo because it seems like that's overdefined
+		//based on the DB record and passed around for convenience.  We may be able to set the data and then
+		//use the values set in the data instead in a cleaner way.
+
+		// pre-defined infraction
+		if (!empty($data['infractionlevelid']))
+		{
+			$infractionLevelInfo = $infractionLevels[$data['infractionlevelid']];
+			//this is too close to the html form in troubling ways
+			$isWarning  = (
+				// allows warnings
+				$infractionLevelInfo['warning']
+				// the "warning" checkbox is checked
+				AND !empty($data['warning'][$data['infractionlevelid']])
+			);
+		}
+		// custom infraction
+		else
+		{
+			//some of these defaults should be reconsidered.  Either by requiring the caller to
+			//pass them in or by providing a more considered default value.  At the moment just
+			//adding values intended to not change the prior behavior.
+			$infractionLevelInfo = [
+				'points' => $data['points'] ?? 0,
+				'reputation_penalty' => $data['reputation_penalty'] ?? 0,
+				'expires' => $data['expires'] ?? 0,
+				'period' => $data['period'],
+				'title' => $data['customreason'] ?? '',
+				'warning' => 1, // allow it to be a warning
+				'extend' => 0,  // don't allow it to extend another infraction
+			];
+			$isWarning = empty($data['points']);
+		}
+
+		// set infraction level info
+		$data['points'] = $isWarning ? 0 : $infractionLevelInfo['points'];
+		$data['reputation_penalty'] = $isWarning ? 0 : $infractionLevelInfo['reputation_penalty'];
+		$data['expires'] = $this->getExpires($infractionLevelInfo, $data['infracteduserid']);
+		$data['customreason'] = $data['customreason'] ?? '';
+
+
+		$banToApply = $this->getAutomaticBanToApply($infractedUserInfo, $data, $infractionLevelInfo, $isWarning);
+
+		// make sure we have something for admin note and pm message
+		$data['note'] = empty($data['note']) ? '' : $data['note'];
+		$data['message'] = empty($data['message']) ? '' : $data['message'];
+
+		// set parentid
+		$data['parentid'] = $this->infractionChannel;
+
+		// set title & pagetext
+		$data['title'] = $this->getInfractionTitle($infractionLevelInfo['title'], $isWarning, $infractedUserInfo['displayname'], $infractedNode);
+		$data['rawtext'] = $this->getInfractionPagetext($data, $infractedNode, $infractedUserInfo, $infractionLevelInfo);
+		try
+		{
+			if (!$skipTransaction)
+			{
+				$this->assertor->beginTransaction();
+			}
+			$options['skipTransaction'] = true;
+
+			// *** add the infraction and populate the return info***
+			$result = parent::add($data, $options, $convertWysiwygTextToBbcode);
+			$result['infractionNodeid'] = $result['nodeid'];
+			$result['isWarning'] = $isWarning ? 1 : 0;
+
+			// applying the reputation penalty
+			if ($data['reputation_penalty'])
+			{
+				$this->assertor->assertQuery('decUserReputation', ['penalty' => $data['reputation_penalty'], 'userid' => $infractedUserInfo['userid']]);
+				vB_Cache::allCacheEvent('userChg_' . $infractedUserInfo['userid']);
+			}
+			// invalidate cache
+			$clearCacheNodeIds = [$data['parentid']];
+
+			if (!$skipTransaction)
+			{
+				$this->beforeCommit($result['nodeid'], $data, $options, $result['cacheEvents'], $result['nodeVals']);
+				$this->assertor->commitTransaction();
+			}
+		}
+		catch(exception $e)
+		{
+			if (!$skipTransaction)
+			{
+				$this->assertor->rollbackTransaction();
+			}
+			throw $e;
+		}
+
+		if (!$skipTransaction)
+		{
+			//The child classes that have their own transactions all set this to true so afterAdd is always called just once.
+			$this->afterAdd($result['nodeid'], $data, $options, $result['cacheEvents'], $result['nodeVals']);
+		}
+
+		// update denormalized values
+		if (empty($result['errors']))
+		{
+			if ($infractedNode)
+			{
+				// mark the infracted node's text record as having an infraction or warning
+				// 1 = infraction, 2 = warning, 0 = no infraction or warning (or an expired/reversed infraction)
+				$this->assertor->update('vBforum:text', ['infraction' => ($isWarning ? 2 : 1)], ['nodeid' => $infractedNode['nodeid']]);
+			}
+
+			// update user info for infractions, warnings, and ipoints
+			$this->updateDenormalizedUserData($data['infracteduserid']);
+
+			// update infractiongroupids
+			$this->buildInfractionGroupIds([$infractedUserInfo['userid']]);
+
+			// send PM to infracted user
+			if (!empty($data['message']))
+			{
+				$this->sendPm($data, $infractedNode, $infractedUserInfo, $infractionLevelInfo, $isWarning, $banToApply);
+			}
+			$clearCacheNodeIds[] = $result['nodeid'];
+
+			if ($infractedNode)
+			{
+				$clearCacheNodeIds[] = $infractedNode['nodeid'];
+			}
+		}
+
+		// ban user if applicable
+		if ($banToApply)
+		{
+			$this->applyAutomaticBan($infractedUserInfo, $banToApply, $data);
+		}
+		$this->nodeApi->clearCacheEvents($clearCacheNodeIds);
+		return $result;
+	}
+
+	/**
+	 * Cannot update an infraction (you can only reverse them)
+	 *
+	 * @throws vB_Exception_Api
+	 * @param $nodeid
+	 * @param $data
+	 * @return void
+	 */
+	public function update($nodeid, $data, $convertWysiwygTextToBbcode = true)
+	{
+		throw new vB_Exception_Api('action_not_available');
+	}
+
+	/**
+	 * Deletes an infraction. Currently the only UI for this is in the Admin CP
+	 *
+	 * @param $nodeid
+	 *
+	 * @return void
+	 */
+	public function delete($nodeid)
+	{
+		throw new vB_Exception_Api('cannot_delete_infraction_nodes');
+
+		/*
+		$infraction = $this->assertor->getRow('infraction', ['nodeid' => $nodeid]);
+
+		$returnValue = parent::delete($nodeid);
+
+		if ($infraction)
+		{
+			// don't mark the infracted node's text record, because it's already deleted
+
+			// update user info for infractions, warnings, and ipoints
+			$this->updateDenormalizedUserData($infraction['infracteduserid']);
+
+			// update infractiongroupids
+			$this->buildInfractionGroupIds([$infraction['infracteduserid']]);
+		}
+
+		return $returnValue;
+		*/
+	}
+
+	/**
+	 * Reverse an infraction
+	 *
+	 * @param	int	The infraction nodeid
+	 * @param	string	Reason for the reversal
+	 */
+	public function reverseInfraction($nodeid, $reason)
+	{
+		$user = vB::getCurrentSession()->fetch_userinfo();
+
+		$data = [
+			'action' => 2,
+			'actiondateline' => vB::getRequest()->getTimeNow(),
+			'actionuserid' => $user['userid'],
+			'actionreason' => $reason,
+		];
+
+		$ret = $this->assertor->update('infraction', $data, ['nodeid' => $nodeid]);
+
+		$clearCacheNodeIds = [];
+		$clearCacheNodeIds[] = $nodeid;
+
+		$infraction = $this->assertor->getRow('infraction', ['nodeid' => $nodeid]);
+		if ($infraction)
+		{
+			if ($infraction['infractednodeid'])
+			{
+				// mark the infracted node's text record as not having an infraction any more
+				// 1 = infraction, 2 = warning, 0 = no infraction or warning (or an expired/reversed infraction)
+				$this->assertor->update('vBforum:text', ['infraction' => 0], ['nodeid' => $infraction['infractednodeid']]);
+
+				$clearCacheNodeIds[] = $infraction['infractednodeid'];
+			}
+			// revert the reputation penalty
+			if ($infraction['reputation_penalty'])
+			{
+				$this->assertor->assertQuery('incUserReputation', ['bonus' => $infraction['reputation_penalty'], 'userid' => $infraction['infracteduserid']]);
+				vB_Cache::allCacheEvent('userChg_' . $infraction['infracteduserid']);
+			}
+
+			// update user info for infractions, warnings, and ipoints
+			$this->updateDenormalizedUserData($infraction['infracteduserid']);
+
+			// update infractiongroupids
+			$this->buildInfractionGroupIds([$infraction['infracteduserid']]);
+		}
+
+		// invalidate cache
+		$this->nodeApi->clearCacheEvents($clearCacheNodeIds);
+
+		return $ret;
+	}
+
+	/**
+	 * Returns an infraction node based on its nodeid
+	 *
+	 * @param	int	Node ID
+	 *
+	 * @return	(array|false)	Array of infraction info, or false
+	 */
+	public function getInfraction($nodeid)
+	{
+		$nodeid = (int) $nodeid;
+
+		$infraction = $this->assertor->getRow('infraction', ['nodeid' => $nodeid]);
+
+		if (!$infraction OR !$infraction['nodeid'])
+		{
+			return false;
+		}
+
+		return $this->getInfractionNode($infraction['nodeid']);
+	}
+
+	/**
+	 * Returns the infraction node for the given node (if it has an infraction)
+	 *
+	 * @param	int	Node ID
+	 *
+	 * @return	(array|false)	Array of infraction info, or false if there is no infraction
+	 */
+	public function getNodeInfraction($nodeid)
+	{
+		$nodeid = (int) $nodeid;
+
+		// return only one row, the newest added infraction (there may be previous
+		// reversed or expired infractions on this node)
+		$infraction = $this->assertor->getRow('infraction', ['infractednodeid' => $nodeid], [
+			'field' => 'nodeid',
+			'direction' => vB_dB_Query::SORT_DESC,
+		]);
+
+		if (!$infraction OR !$infraction['nodeid'])
+		{
+			return false;
+		}
+
+		return $this->getInfractionNode($infraction['nodeid']);
+	}
+
+	/**
+	 * Returns the infraction nodes for infractions that the given user has received.
+	 *
+	 * @param	int	User ID
+	 * @param	int	Offset to start returning records from
+	 * @param	int	Limit - the max number of records to return
+	 *
+	 * @return	(array|false)	Array of infraction info, or false if there are no infractions
+	 */
+	public function getUserInfractions($userid, $offset = 0, $limit = 20)
+	{
+		$userid = (int) $userid;
+
+		// we need to pull all records to properly calculate the stats (total points, etc.)
+		$infractions = $this->assertor->getRows('getUserInfractions', ['infracteduserid' => $userid]);
+
+		if (!$infractions)
+		{
+			return false;
+		}
+
+		$infractionCount = count($infractions);
+
+		$offset = max(intval($offset), 0);
+		$offset = $offset >= $infractionCount ? $infractionCount - 1 : $offset;
+
+		$limit = max(intval($limit), 1);
+		$limit = $limit > 100 ? 100 : $limit; // can't return more than 100 records for now
+
+		// calculate statistics
+		$statistics = [
+			'total_records'      => $infractionCount, // total number of infraction/warning records for this user
+			'records_returned'   => null,             // total number of records returned
+			'records_offset'     => $offset,          // offset of the first record returned
+			'total'              => 0,                // total active and expired infractions
+			'active'             => 0,                // total active infractions
+			'points'             => 0,                // total points of active infractions
+			'total_penalty'      => 0,                // total reputation penalties
+			'warnings'           => 0,                // total active warnings
+			'total_infractions'  => 0,                // total active, expired and reversed infractions
+			'total_warnings'     => 0,                // total active, expired and reversed warnings
+		];
+
+		// calculate pagination counts
+		$totalPages = 1;
+		if ($infractionCount > 0)
+		{
+			$totalPages = ceil($infractionCount / $limit);
+		}
+
+		if ($offset < $limit)
+		{
+			$pagenum = 1;
+		}
+		else
+		{
+			$pagenum = ceil(($offset + 1) / $limit);
+		}
+
+		$pagination = [
+			'page'			=> $pagenum,
+			'totalcount'	=> $infractionCount,
+			'totalpages'	=> $totalPages,
+			'perpage'		=> $limit,
+		];
+
+		foreach ($infractions AS $infraction)
+		{
+			if ($infraction['action'] != 2) //exclude reversed infractions/warnings
+			{
+				if ($infraction['points'] == 0)
+				{
+					if ($infraction['action'] == 0) //count active warnings only
+					{
+						++$statistics['warnings'];
+					}
+				}
+				else
+				{
+					++$statistics['total'];
+					if ($infraction['action'] == 0) //count active infractions only
+					{
+						++$statistics['active'];
+						$statistics['points'] += $infraction['points'];
+					}
+				}
+				$statistics['total_penalty'] += $infraction['reputation_penalty'];
+			}
+
+			if ($infraction['points'] == 0)
+			{
+				++$statistics['total_warnings'];
+			}
+			else
+			{
+				++$statistics['total_infractions'];
+			}
+		}
+
+		// limit results
+		$infractions = array_slice($infractions, $offset, $limit);
+		$statistics['records_returned'] = count($infractions);
+
+		// get infraction nodes
+		$infractionNodes = [];
+		foreach ($infractions AS $infraction)
+		{
+			$infractionNodes[$infraction['nodeid']] = $this->getInfractionNode($infraction['nodeid'], true);
+		}
+
+		return [
+			'statistics' => $statistics,
+			'infractions' => $infractionNodes,
+			'pagination' => $pagination,
+		];
+	}
+
+	/**
+	 * Returns the displaynames of users that participated in an infraction conversation.
+	 *
+	 * @param	array	node IDs
+	 *
+	 * @return	(array) displaynames
+	 * first level key is the nodeid, second level key is the userid
+	 */
+	public function getParticipants($nodeids)
+	{
+		//added conditional block to prevent database query if no nodeids meet the canViewInfraction() permissions check
+		//from core\vb\api\content\infraction.php -> getParticipants()
+		if (empty($nodeids))
+		{
+			return [];
+		}
+		else
+		{
+			$children = $this->assertor->assertQuery('vBForum:getChildren', ['nodeid' => $nodeids]);
+
+			if (!$children->valid())
+			{
+				return [];
+			}
+
+			$userids = [];
+			foreach ($children as $child)
+			{
+				$userids[] = $child['userid'];
+			}
+			$dislaynames = $this->assertor->getColumn('user', 'displayname', ['userid' => $userids], false, 'userid');
+			$participants = [];
+			foreach ($children as $child)
+			{
+	// 			if (isset($participants[$child['parent']][$child['userid']]))
+	// 			{
+	// 				continue;
+	// 			}
+				$participants[$child['parent']][$child['userid']] = $dislaynames[$child['userid']];
+			}
+			return $participants;
+		}
+	}
+
+	/**
+	 * returns a certain type of infractions
+	 * @param string $type
+	 * @param boolean $replied_by_me - if true, only infractions that the user commented on
+	 * type = 'user' => infractions given to a user
+	 * type = 'post' => infractions given to a post by a user
+	 */
+	public function getInfractionsByType($type = '', $replied_by_me = false)
+	{
+		return $this->assertor->getRows('getInfractionsByType',
+			[
+				'type' => $type,
+				'replied_by_me' => $replied_by_me,
+				'userid' => vB::getCurrentSession()->get('userid')
+			],
+			false,
+			'nodeid'
+		);
+	}
+
+
+	/**
+	 * Returns a list of automatic bans or an empty array if there are none.
+	 *
+	 * @return	array	Array of automatic bans
+	 */
+	public function getAutomaticBanList()
+	{
+		$automaticBans = vB::getDbAssertor()->getRows(
+			'infractionban',
+			[],
+			[
+				'field' => ['method', 'amount'],
+				'direction' => [vB_dB_Query::SORT_ASC, vB_dB_Query::SORT_ASC]
+			],
+			'infractionbanid'
+		);
+
+		if (!$automaticBans)
+		{
+			return [];
+		}
+
+		foreach ($automaticBans AS &$automaticBan)
+		{
+			// add phrase to describe the "period" and calculate liftdate.
+			switch($automaticBan['period'])
+			{
+				case 'D_1':
+					$period = construct_phrase($this->getPhrase('x_days'), 1);
+					$liftdate = 86400 * 1;
+					break;
+
+				case 'D_2':
+					$period = construct_phrase($this->getPhrase('x_days'), 2);
+					$liftdate = 86400 * 2;
+					break;
+
+				case 'D_3':
+					$period = construct_phrase($this->getPhrase('x_days'), 3);
+					$liftdate = 86400 * 3;
+					break;
+
+				case 'D_4':
+					$period = construct_phrase($this->getPhrase('x_days'), 4);
+					$liftdate = 86400 * 4;
+					break;
+
+				case 'D_5':
+					$period = construct_phrase($this->getPhrase('x_days'), 5);
+					$liftdate = 86400 * 5;
+					break;
+
+				case 'D_6':
+					$period = construct_phrase($this->getPhrase('x_days'), 6);
+					$liftdate = 86400 * 6;
+					break;
+
+				case 'D_7':
+					$period = construct_phrase($this->getPhrase('x_days'), 7);
+					$liftdate = 86400 * 7;
+					break;
+
+				case 'D_10':
+					$period = construct_phrase($this->getPhrase('x_days'), 10);
+					$liftdate = 86400 * 10;
+					break;
+
+				case 'D_14':
+					$period = construct_phrase($this->getPhrase('x_weeks'), 2);
+					$liftdate = 86400 * 14;
+					break;
+
+				case 'D_21':
+					$period = construct_phrase($this->getPhrase('x_weeks'), 3);
+					$liftdate = 86400 * 21;
+					break;
+
+				case 'M_1':
+					$period = construct_phrase($this->getPhrase('x_months'), 1);
+					$liftdate = 86400 * 30;
+					break;
+
+				case 'M_2':
+					$period = construct_phrase($this->getPhrase('x_months'), 2);
+					$liftdate = 86400 * 30 * 2;
+					break;
+
+				case 'M_3':
+					$period = construct_phrase($this->getPhrase('x_months'), 3);
+					$liftdate = 86400 * 30 * 3;
+					break;
+
+				case 'M_4':
+					$period = construct_phrase($this->getPhrase('x_months'), 4);
+					$liftdate = 86400 * 30 * 4;
+					break;
+
+				case 'M_5':
+					$period = construct_phrase($this->getPhrase('x_months'), 5);
+					$liftdate = 86400 * 30 * 5;
+					break;
+
+				case 'M_6':
+					$period = construct_phrase($this->getPhrase('x_months'), 6);
+					$liftdate = 86400 * 30 * 6;
+					break;
+
+				case 'Y_1':
+					$period = construct_phrase($this->getPhrase('x_years'), 1);
+					$liftdate = 86400 * 365;
+					break;
+
+				case 'Y_2':
+					$period = construct_phrase($this->getPhrase('x_years'), 2);
+					$liftdate = 86400 * 365 * 2;
+					break;
+
+				case 'PERMA':
+					$period = $this->getPhrase('permanent');
+					$liftdate = 0;
+					break;
+
+				default:
+					$period = '';
+					$liftdate = 0;
+					break;
+			}
+
+			$automaticBan['period_phrase'] = $period;
+
+			//if this isn't a permaban then the $liftdate is the number of seconds to add to now
+			if ($liftdate > 0)
+			{
+				$liftdate += vB::getRequest()->getTimeNow();
+			}
+
+			$automaticBan['liftdate'] =  $liftdate;
+		}
+
+		return $automaticBans;
+	}
+
+	/**
+	 * Returns an array of information for the infraction levels that are currently set up
+	 *
+	 * @return	array	Infraction levels
+	 */
+	public function getInfractionLevels()
+	{
+		// get infraction levels
+		$infractionLevels = $this->assertor->getRows('infractionlevel');
+
+		// get phrases for infraction level titles
+		$phraseVarNames = [];
+		foreach ($infractionLevels AS $infractionLevel)
+		{
+			$phraseVarNames[] = 'infractionlevel' . $infractionLevel['infractionlevelid'] . '_title';
+		}
+		$vbphrase = vB_Api::instanceInternal('phrase')->fetch($phraseVarNames);
+
+		// add the title
+		foreach ($infractionLevels AS $key => $infractionLevel)
+		{
+			$phraseVarName = 'infractionlevel' . $infractionLevel['infractionlevelid'] . '_title';
+			$infractionLevels[$key]['title'] = isset($vbphrase[$phraseVarName]) ? $vbphrase[$phraseVarName] : "~~$phraseVarName~~";
+		}
+
+		// index the array
+		$infractionLevelsIndexed = [];
+		foreach ($infractionLevels AS $infractionLevel)
+		{
+			$infractionLevelsIndexed[$infractionLevel['infractionlevelid']] = $infractionLevel;
+		}
+
+		// done
+		return $infractionLevelsIndexed;
+	}
+
+	/**
+	 * gets the infraction groups
+	 * @return array infraction groups with infractiongroupid as key >
+	 */
+	public function getInfractionGroups()
+	{
+		$usergroups = vB_Api::instanceInternal('usergroup')->fetchUsergroupList();
+		$infractiongroups = $this->assertor->assertQuery('infractiongroup', [], 'pointlevel');
+		$groups = [];
+		foreach ($infractiongroups AS $infractiongroup)
+		{
+			//some records are a special "all" usergroupid. Set the field to empty for those.
+			$infractiongroup['usergroup'] = (($infractiongroup['usergroupid'] != -1) ? $usergroups[$infractiongroup['usergroupid']] : []);
+			$groups[$infractiongroup['infractiongroupid']] = $infractiongroup;
+		}
+		return $groups;
+	}
+
+	/**
+	 * Get the infraction group information for a user.
+	 *
+	 * @param	array		List of infraction groups
+	 * @param	integer	Infraction Points
+	 * @param interger Usergroupid
+	 *
+	 * @return array	User's final infraction groups
+	 */
+	public function fetchInfractionGroups($ipoints, $usergroupid)
+	{
+		$this->cacheInfractionGroups();
+
+		$data = [
+			'infractiongroupids' => [],
+			'infractiongroupid' => 0,
+		];
+
+		$maxpointlevel = 0;
+		foreach (array_unique([$usergroupid, -1]) AS $checkgroupid)
+		{
+			foreach (($this->cachedInfractionGroups[$checkgroupid] ?? []) AS $pointlevel => $orusergroupids)
+			{
+				if ($pointlevel > $ipoints)
+				{
+					break;
+				}
+
+				foreach ($orusergroupids AS $infinfo)
+				{
+					$data['infractiongroupids'][] = $infinfo['orusergroupid'];
+					if ($infinfo['override'] AND $maxpointlevel<= $pointlevel)
+					{
+						$maxpointlevel = $pointlevel;
+						$data['infractiongroupid'] = $infinfo['orusergroupid'];
+					}
+				}
+			}
+		}
+
+		return $data;
+	}
+
+
+	public function getIndexableFromNode($content, $include_attachments = true)
+	{
+		$indexableContent = parent::getIndexableFromNode($content, $include_attachments);
+
+		//the guards here shouldn't be needed -- the only case this happens is if
+		//the node record exists but the infractin record doesn't.  But it doesn't hurt
+		//and there are examples of this in the wild.
+		$indexableContent['note'] = $content['note'] ?? '';
+		$indexableContent['actionreason'] = $content['actionreason'] ?? '';
+		$indexableContent['customreason'] = $content['customreason'] ?? '';
+		return $indexableContent;
+	}
+
+	// ========================================================================
+	// ===== PROTECTED METHODS ================================================
+	// ========================================================================
+
+
+
+	/**
+	 * Returns the full node information for an infraction node. Used by getUserInfractions and getNodeInfraction
+	 *
+	 * @param	int	Infraction node ID
+	 * @param	bool	Whether on not to include the full node record for the infracted node.
+	 *
+	 * @return	(array|false)	Array of node information or false on failure
+	 */
+	protected function getInfractionNode($nodeid, $includeInfractedNodeInfo = false)
+	{
+		static $infractionLevels = null;
+
+		if ($infractionLevels === null)
+		{
+			$infractionLevels = $this->getInfractionLevels();
+		}
+
+		// get infraction node
+		$infractionNode = $this->nodeLibrary->getNodeFullContent($nodeid);
+		if (!$infractionNode OR empty($infractionNode[$nodeid]))
+		{
+			return false;
+		}
+		$infractionNode = $infractionNode[$nodeid];
+
+		// add infraction level information
+		if ($infractionNode['infractionlevelid'])
+		{
+			$infractionNode['infractionlevel'] = $infractionLevels[$infractionNode['infractionlevelid']];
+		}
+		else
+		{
+			$infractionNode['infractionlevel'] = false; // custom infraction
+		}
+
+		if ($includeInfractedNodeInfo AND $infractionNode['infractednodeid'] > 0)
+		{
+			// add info about the infracted node
+			$infractionNode['infracted_node'] = $this->nodeLibrary->getNodeFullContent($infractionNode['infractednodeid']);
+			$infractionNode['infracted_node'] = $infractionNode['infracted_node'][$infractionNode['infractednodeid']];
+		}
+
+		return $infractionNode;
+	}
+
+	/**
+	 * Validates infraction data
+	 *
+	 * @param	array	The infraction data
+	 * @param	array	The infraction levels
+	 */
+	protected function validateInfractionData(array $data, array $infractionLevels)
+	{
+		// we need either an infractionlevelid or it's a custom infraction
+		if (empty($data['infractionlevelid']))
+		{
+			// customreason is required
+			if (empty($data['customreason']))
+			{
+				throw new vB_Exception_Api('invalid_custom_infraction_description');
+			}
+
+			// points is not required (0 points is a warning)
+			// expires is required, unless period is 'N', which means it never expires
+			if (
+				empty($data['expires'])
+				AND
+				(empty($data['period']) OR $data['period'] != 'N')
+			)
+			{
+				throw new vB_Exception_Api('invalid_timeframe');
+			}
+		}
+
+		$vboptions = vB::getDatastore()->getValue('options');
+		if ($vboptions['uimessage'] AND empty($data['message']))
+		{
+			throw new vB_Exception_Api('no_pm_message_specified');
+		}
+
+		if (empty($data['infracteduserid']))
+		{
+			throw new vB_Exception_Api('no_user_specified');
+		}
+
+		if (!empty($data['infractionlevelid']) AND !isset($infractionLevels[$data['infractionlevelid']]))
+		{
+			throw new vB_Exception_Api('invalid_infraction_level');
+		}
+	}
+
+	/**
+	 * Returns the (to be) infracted node information
+	 *
+	 * @param	(array|null)	The infraction data or null if we are doing a profile/user infraction.
+	 */
+	protected function getInfractedNode(array $data)
+	{
+		if (!empty($data['infractednodeid']))
+		{
+			if ($data['infractednodeid'] < 1)
+			{
+				throw new vB_Exception_Api('invalid_node');
+			}
+
+			$infractedNode = $this->nodeLibrary->getNodeFullContent($data['infractednodeid']);
+			$infractedNode = $infractedNode[$data['infractednodeid']];
+
+			if (empty($infractedNode))
+			{
+				throw new vB_Exception_Api('invalid_node');
+			}
+		}
+		else
+		{
+			$infractedNode = [];
+		}
+
+		return $infractedNode;
+	}
+
+	/**
+	 * Get the expires timestamp for the infraction
+	 *
+	 * @param	array	The information for this infraction level (or custom infraction as it may be)
+	 * @param	int	The userid for the infracted user
+	 * @return	int	The expires timestamp
+	 */
+	protected function getExpires(array $infractionLevelInfo, $userid)
+	{
+		if ($infractionLevelInfo['period'] == 'N')
+		{
+			return 0;
+		}
+
+		$periodMultipliers = [
+			'H' => 3600,
+			'D' => 86400,
+			'W' => 86400 * 7,
+			'M' => 86400 * 30,
+		];
+
+		if (!in_array($infractionLevelInfo['period'], array_keys($periodMultipliers), true))
+		{
+			$infractionLevelInfo['period'] = 'H';
+		}
+
+		$timenow = vB::getRequest()->getTimeNow();
+		$periodMultiplier = $periodMultipliers[$infractionLevelInfo['period']];
+		$expires = $timenow + ($infractionLevelInfo['expires'] * $periodMultiplier);
+
+		// Extend a previous infraction time if applicable
+		if (!empty($infractionLevelInfo['infractionlevelid']) AND $infractionLevelInfo['extend'])
+		{
+			$infractions = $this->assertor->getRows('infraction', [
+				vB_dB_Query::CONDITIONS_KEY =>[
+					['field' => 'infracteduserid', 'value' => $userid, 'operator' => vB_dB_Query::OPERATOR_EQ],
+					['field' => 'action', 'value' => 0, 'operator' => vB_dB_Query::OPERATOR_EQ],
+					['field' => 'expires', 'value' => $timenow, 'operator' => vB_dB_Query::OPERATOR_GT],
+					['field' => 'infractionlevelid', 'value' => $infractionLevelInfo['infractionlevelid'], 'operator' => vB_dB_Query::OPERATOR_EQ],
+				],
+			]);
+
+			foreach ($infractions AS $infraction)
+			{
+				// add any remaining time for previous infractions of the same infraction level
+				$expires += ($infraction['expires'] - $timenow);
+			}
+		}
+
+		return $expires;
+	}
+
+	/**
+	 * Get the title for the infraction node
+	 *
+	 * @param	string $title -- base title
+	 * @param	bool $isWarning
+	 * @param	string $displayname --	The (to be) infracted user's display name
+	 * @param	array	$infractedNode -- The (to be) infracted node information (if any)
+	 *
+	 * @return	string	The title for the infraction node
+	 */
+	private function getInfractionTitle($title, $isWarning, $displayname, array $infractedNode)
+	{
+		$phraseprefix = ($isWarning ? 'warning' : 'infraction');
+		$displayname_safe = vB_String::htmlSpecialCharsUni($displayname);
+
+		if ($infractedNode)
+		{
+			if ($infractedNode['nodeid'] == $infractedNode['starter'])
+			{
+				$infractedNodeTitle = $infractedNode['title'];
+			}
+			else
+			{
+				$infractedNodeTitle = $infractedNode['startertitle'];
+			}
+
+			return sprintf($this->getPhrase($phraseprefix . '_for_x_y_in_topic_z'), $displayname_safe, $title, $infractedNodeTitle);
+		}
+		else
+		{
+			return sprintf($this->getPhrase($phraseprefix . '_for_x_y'), $displayname_safe, $title);
+		}
+	}
+
+	/**
+	 * Get pagetext for the infraction node
+	 *
+	 * @param	array	The infraction data
+	 * @param	array	The (to be) infracted node information
+	 * @param	array	The (to be) infracted user information
+	 * @param	array	The information for this infraction level (or custom infraction as it may be)
+	 *
+	 * @return	string	The page text for the infraction node
+	 */
+	protected function getInfractionPagetext(array $data, array $infractedNode, array $infractedUserInfo, array $infractionLevelInfo)
+	{
+		$infracted_displayname_safe = vB_String::htmlSpecialCharsUni($infractedUserInfo['displayname']);
+		// set pagetext
+		if ($infractedNode)
+		{
+			// post infraction
+			return sprintf(
+				$this->getPhrase('infraction_topic_post'),
+				// link to infracted node
+				vB5_Route::buildUrl($infractedNode['routeid'] . '|fullurl', [
+					'nodeid' => $infractedNode['nodeid'],
+					'title' => $infractedNode['title']],
+					['p' => $infractedNode['nodeid']]
+				) . '#post' . $infractedNode['nodeid'],
+				// infracted topic title
+				($infractedNode['nodeid'] == $infractedNode['starter'] ? $infractedNode['title'] : $infractedNode['startertitle']),
+				// infracted user link
+				vB5_Route::buildUrl('profile|fullurl', ['userid' => $infractedUserInfo['userid']]),
+				// infracted user name
+				$infracted_displayname_safe,
+				// infraction title
+				$infractionLevelInfo['title'],
+				// infraction points
+				$infractionLevelInfo['points'],
+				// administrative note
+				$data['note'],
+				// message to user
+				$data['message'],
+				// original post (infracted node)
+				$infractedNode['rawtext'],
+				// reputation penalty
+				$infractionLevelInfo['reputation_penalty'],
+				// The infraction phrases use URL tags instead of usermention tags, and there's no way to
+				// hook up the namecard for this ATM.
+				// infracted userid
+				//$infractedUserInfo['userid'],
+			);
+		}
+		else
+		{
+			// profile infraction
+			return sprintf(
+				$this->getPhrase('infraction_topic_profile'),
+				// infracted user link
+				vB5_Route::buildUrl('profile|fullurl', ['userid' => $infractedUserInfo['userid']]),
+				// infracted user name
+				$infracted_displayname_safe,
+				// infraction title
+				$infractionLevelInfo['title'],
+				// infraction points
+				$infractionLevelInfo['points'],
+				// administrative note
+				$data['note'],
+				// message to user
+				$data['message'],
+				// reputation penalty
+				$infractionLevelInfo['reputation_penalty'],
+				// infracted userid
+				//$infractedUserInfo['userid'],
+			);
+		}
+	}
+
+	/**
+	 * Sends a PM to the infracted user
+	 *
+	 * @param	array	The infraction data
+	 * @param	array	The (to be) infracted node information
+	 * @param	array	The (to be) infracted user information
+	 * @param	array	The information for this infraction level (or custom infraction as it may be)
+	 * @param	bool	Whether or not this is a warning
+	 * @param	mixed	if is an array the user will be banned if is false user won't be banned with this infraction, used to determine to send pm or email
+	 *
+	 * @return	(int|array)	The nodeid for the PM, or an array of information on error
+	 */
+	protected function sendPm(array $data, array $infractedNode, array $infractedUserInfo, array $infractionLevelInfo, $isWarning, $banToApply)
+	{
+		$vboptions = vB::getDatastore()->getValue('options');
+		$string = vB::getString();
+
+		$pmData = [
+			'sentto' => [$data['infracteduserid']], 'sender' => vB::getCurrentSession()->get('userid')
+		];
+
+		// set PM title
+		$pmData['title'] = sprintf($this->getPhrase(($isWarning ? 'warning' : 'infraction') . '_received_ginfraction'), $infractionLevelInfo['title']);
+
+		$infracted_displayname_safe = $string->htmlspecialchars($infractedUserInfo['displayname']);
+		$bbtitle_escaped = $string->htmlspecialchars($vboptions['bbtitle']);
+
+
+		// This is a bit of a mess, because the email text is apparently the same as the PM text..
+		// in testing, it seems like $data['message'] at this point is properly escaped for HTML
+		// & includes any bbcode parsed (e.g. bold) HTML properly, so escaping again would make this
+		// double-escaped.
+		$messageFromMod = $data['message'];
+		// We should probably separate out the email phrase vs the PM phrase, but testing indicates
+		// that the line breaks (<br />) added to the phrases below for email purposes get converted to newlines
+		// for PM text, so going with that for now.
+
+		// set PM text
+		if ($infractedNode)
+		{
+			// I'm not sure what pagetext is, this was just moved from the old code. I thought it was related to
+			// CMS, but paging logic seems to be done in PHP and not stored on the text table... instead, it seems
+			// to be used by some (but not all?) request PMs...
+			$infractedText = ($infractedNode['pagetext'] ? $infractedNode['pagetext'] : $infractedNode['rawtext']);
+			// For now, assuming that pagetext is also stored raw like rawtext
+			$infractedText_safe = $string->htmlspecialchars($infractedText);
+			// I don't think the p query AND the #post anchor are necessary, AFAIK the p query will
+			// also do that, but trying to limit scope creep atm.
+			$infractedNodeUrl = vB5_Route::buildUrl($infractedNode['routeid'] . '|fullurl',
+				['nodeid' => $infractedNode['nodeid'], 'title' => $infractedNode['title']],
+				['p' => $infractedNode['nodeid']],
+				'#post' . $infractedNode['nodeid']
+			);
+			if ($isWarning)
+			{
+				// post warning
+				$pmData['rawtext'] = sprintf(
+					$this->getPhrase('warning_received_post'),
+					$infracted_displayname_safe,
+					$bbtitle_escaped,
+					$infractionLevelInfo['title'],
+					$messageFromMod,
+					$infractedNodeUrl,
+					$infractedText_safe
+				);
+			}
+			else
+			{
+				// post infraction
+				$pmData['rawtext'] = sprintf(
+					$this->getPhrase('infraction_received_post'),
+					$infracted_displayname_safe,
+					$bbtitle_escaped,
+					$infractionLevelInfo['title'],
+					$messageFromMod,
+					$infractionLevelInfo['points'],
+					$infractedNodeUrl,
+					$infractedText_safe,
+					$infractionLevelInfo['reputation_penalty']
+				);
+			}
+		}
+		else
+		{
+			if ($isWarning)
+			{
+				// profile warning
+				$pmData['rawtext'] = sprintf(
+					$this->getPhrase('warning_received_profile'),
+					$infracted_displayname_safe,
+					$bbtitle_escaped,
+					$infractionLevelInfo['title'],
+					$messageFromMod
+				);
+			}
+			else
+			{
+				// profile infraction
+				$pmData['rawtext'] = sprintf(
+					$this->getPhrase('infraction_received_profile'),
+					$infracted_displayname_safe,
+					$bbtitle_escaped,
+					$infractionLevelInfo['title'],
+					$messageFromMod,
+					$infractionLevelInfo['points'],
+					$infractionLevelInfo['reputation_penalty']
+				);
+			}
+		}
+
+		$currentBan = $this->assertor->getRow('userban', ['userid' => $infractedUserInfo['userid']]);
+
+		if (// they currently have a permanent ban, so don't notify them at all
+			($currentBan AND $currentBan['liftdate'] == 0)
+			OR
+			// they are going to receive a permanent ban, don't notify them
+			(is_array($banToApply) AND isset($banToApply['liftdate']) AND $banToApply['liftdate'] == 0)
+		)
+		{
+			return false;
+		}
+
+		if ($vboptions['enablepms'] AND vB::getUserContext($infractedUserInfo['userid'])->getUsergroupLimit('pmquota'))
+		{
+			vB_Library::instance('Content_Privatemessage')->add($pmData, ['skipDupCheck' => true]);
+		}
+
+		if ($vboptions['enableemail'])
+		{
+			// This is a mod-action triggered email, so it's kind of borderline whether or not it should have the
+			// email unsubscribe links or if we should check the mail opt-out.. Given that this is kind of like an
+			// un-opt-outable admin/mod message that is common in many apps, skipping vbmailWithUnsubscribe() &
+			// isUserOptedOutOfEmail() for now. May revisit this based on feedback in the future.
+
+			// This case is a bit strange. the rawtext here is actually a rendered phrase which already has <br> tags
+			// baked into the phrase, so we don't push it through vB_Mail::getPostTextForEmail() here.
+			vB_Mail::vbmail2($infractedUserInfo['email'], $pmData['title'], $pmData['rawtext'], true);
+		}
+
+		return true;
+	}
+
+	/**
+	 * Updates the user record with infractions, warnings, and ipoints
+	 *
+	 * @param	int	User id
+	 */
+	protected function updateDenormalizedUserData($userid)
+	{
+		$userInfractions = $this->getUserInfractions($userid, 0, 1);
+
+		$data = [
+			'infractions' => ($userInfractions ? intval($userInfractions['statistics']['total_infractions']) : 0),
+			'warnings'    => ($userInfractions ? intval($userInfractions['statistics']['total_warnings']) : 0),
+			'ipoints'     => ($userInfractions ? intval($userInfractions['statistics']['points']) : 0),
+		];
+
+		$conditions = ['userid' => $userid];
+
+		$changed = $this->assertor->update('user', $data, $conditions);
+
+		vB_Cache::allCacheEvent('userChg_' . $userid);
+
+		return ($changed == 1);
+	}
+
+	/**
+	 * Get a phrase
+	 *
+	 * @param	string	The varname of the phrase
+	 *
+	 * @return	string	The phrase
+	 */
+	protected function getPhrase($varname)
+	{
+		//we should use the phraseApi->renderPhrases function instead of using sprintf/construct phrase etc
+		//and pulling stuff here.
+		return isset($this->phrases[$varname]) ? $this->phrases[$varname] : '~~' . $varname . '~~';
+	}
+
+	public function clearInfractionGroupCache()
+	{
+		$this->cachedInfractionGroups = [];
+		$this->infractionGroupsCachedForSession = false;
+	}
+
+	// this->cachedInfractionGroups replaces what used to be a static var. The static
+	// var did not work well with unit tests etc and needed to be removed.
+	// I think this was cached so that being called in bulk from the cron will not
+	// incur redundant queries... so for now I'm assuming there's good reason to cache
+	// this and just switching it to an instance property instead of removing it,
+	// so that at least it gets cleared when tests unset the library instance/clearCache,
+	// and so that we can clear them properly when they change via API methods. We
+	// usually we don't change infraction groups AND use them within the same request,
+	// so this problem probably would not have surfaced in the wild and the latter point
+	// is probably less critical outside of tests.
+	private function cacheInfractionGroups()
+	{
+		// since NO infraction groups is a valid state, just checking for empty($this->cachedInfractionGroups)
+		// isn't enough to know if we've already processed this or not.
+		if ($this->infractionGroupsCachedForSession)
+		{
+			return;
+		}
+
+		// Todo: consolidate with getInfractionGroups()...
+		// This code is simple copy pasted from buildInfractionGroupIds() with
+		// static vars converted to instance properties, and I'm limiting my changes
+		// as to avoid regressions, but we shouldn't need multiple versions of a
+		// "get me infraction groups" function.
+
+		$this->cachedInfractionGroups = [];
+
+		$groups = $this->assertor->assertQuery('infractiongroup', [], 'pointlevel');
+		foreach ($groups AS $group)
+		{
+			$this->cachedInfractionGroups[$group['usergroupid']][$group['pointlevel']][] = [
+				'orusergroupid' => $group['orusergroupid'],
+				'override'      => $group['override'],
+			];
+		}
+
+		$this->infractionGroupsCachedForSession = true;
+	}
+
+	/**
+	 * Builds infraction groups for users. Also called from the cron script
+	 *
+	 * @param	array	User IDs to build
+	 *
+	 */
+	public function buildInfractionGroupIds(array $userids)
+	{
+		$users = $this->assertor->assertQuery('user', ['userid' => $userids]);
+		foreach ($users AS $user)
+		{
+			$infractioninfo = $this->fetchInfractionGroups($user['ipoints'], $user['usergroupid']);
+			if (($groupids = implode(',', $infractioninfo['infractiongroupids'])) != $user['infractiongroupids'] OR $infractioninfo['infractiongroupid'] != $user['infractiongroupid'])
+			{
+				$userdata = new vB_DataManager_User(vB_DataManager_Constants::ERRTYPE_STANDARD);
+				$userdata->set_existing($user);
+				$userdata->set('infractiongroupids', $groupids);
+				$userdata->set('infractiongroupid', $infractioninfo['infractiongroupid']);
+				$userdata->save();
+			}
+		}
+	}
+
+
+	/**
+	 * Determines if this infraction triggers an automatic ban, and if so, returns the automatic ban information
+	 *
+	 * @param	array	User Info for the user to ban
+	 * @param	array	Data for the infraction that's being given
+	 * @param	array	Infraction level infrmation for the infraction that's being given
+	 * @param	bool	Is this a warning?
+	 */
+	protected function getAutomaticBanToApply(array $userInfo, array $data, array $infractionLevelInfo, $isWarning)
+	{
+		if ($isWarning OR $infractionLevelInfo['points'] < 1)
+		{
+			// warnings don't change points or number of infractions and thus can't trigger a ban
+			return false;
+		}
+
+		require_once(DIR . '/includes/adminfunctions.php');
+		if (is_unalterable_user($userInfo['userid']))
+		{
+			return false;
+		}
+
+		$userInfractions = $this->getUserInfractions($userInfo['userid']);
+
+		// number of active & expired infractions for an infraction-based ban
+		$currentUserInfractions = $userInfractions['statistics']['total'] ?? 0;
+		// number of active infraction points for a points-based ban
+		$currentUserPoints = $userInfractions['statistics']['points'] ?? 0;
+
+		// find the longest available ban
+		$banList = $this->getAutomaticBanList();
+		$banToApply = false;
+		foreach ($banList AS $ban)
+		{
+			if ($ban['usergroup'] != -1 AND $ban['usergroup'] != $userInfo['usergroup'])
+			{
+				continue;
+			}
+
+			if (
+					(
+						$ban['method'] == 'points'
+						AND
+						($currentUserPoints + $infractionLevelInfo['points']) >= $ban['amount']
+					)
+					OR
+					(
+						$ban['method'] == 'infractions'
+						AND
+						($currentUserInfractions + 1) >= $ban['amount']
+					)
+			)
+			{
+				if ($ban['liftdate'] == 0)
+				{
+					// stop at the first non-expiring ban
+					$banToApply = $ban;
+					break;
+				}
+				else if (empty($banToApply['liftdate']) OR $ban['liftdate'] > $banToApply['liftdate'])
+				{
+					// find the longest ban
+					$banToApply = $ban;
+				}
+			}
+		}
+
+		if (!$banToApply)
+		{
+			// no applicable ban found, nothing to do
+			return false;
+		}
+
+		$currentBan = $this->assertor->getRow('userban', ['userid' => $userInfo['userid']]);
+
+		if (
+				$currentBan
+				AND
+				(
+					$currentBan['liftdate'] == 0 // permanent ban
+					OR
+					(
+						$currentBan['liftdate'] > $banToApply['liftdate']
+						AND
+						$banToApply['liftdate'] != 0
+					)
+				)
+		)
+		{
+			// user is already banned longer than we would ban them for
+			return false;
+		}
+
+		// we have a ban to apply, but no reason was specified
+		if (empty($data['banreason']))
+		{
+			throw new vB_Exception_Api('invalid_banreason');
+		}
+		return $banToApply;
+	}
+
+	/**
+	 * Applies the automatic ban to the user
+	 *
+	 * @param	array	User Info for the user to ban
+	 * @param	array	Data for the automatic ban to apply (returned from getAutomaticBanToApply)
+	 * @param	array	Data for the infraction that's being given
+	 */
+	protected function applyAutomaticBan(array $userInfo, array $banToApply, array $data)
+	{
+		$currentBan = $this->assertor->getRow('userban', ['userid' => $userInfo['userid']]);
+		$user = vB::getCurrentSession()->fetch_userinfo();
+
+		// Drop the ban hammer
+		if ($currentBan)
+		{
+			if (
+					($banToApply['liftdate'] == 0 OR $currentBan['liftdate'] < $banToApply['liftdate'])
+					AND
+					$currentBan['liftdate'] != 0
+			)
+			{
+				// there is already a record - just update this record
+				$this->assertor->update('userban', [
+					'bandate' => vB::getRequest()->getTimeNow(),
+					'liftdate' => $banToApply['liftdate'],
+					'adminid' => $user['userid'],
+					'reason' => $data['banreason'],
+				], ['userid' => $userInfo['userid']]);
+			}
+		}
+		else
+		{
+			// insert a record into the userban table
+			/*insert query*/
+			$this->assertor->insert('userban', [
+				'userid' => $userInfo['userid'],
+				'usergroupid' => $userInfo['usergroupid'],
+				'displaygroupid' => $userInfo['displaygroupid'],
+				'customtitle' => $userInfo['customtitle'],
+				'usertitle' => $userInfo['usertitle'],
+				'bandate' => vB::getRequest()->getTimeNow(),
+				'liftdate' => $banToApply['liftdate'],
+				'adminid' => $user['userid'],
+				'reason' => $data['banreason'],
+			]);
+		}
+
+		//$existingUserInfo = $this->assertor->getRow('user', ['userid' => $userInfo['userid']]);
+		$existingUserInfo = vB_User::fetchUserinfo($userInfo['userid']);
+
+		// update the user record
+		$userdata = new vB_DataManager_User(vB_DataManager_Constants::ERRTYPE_SILENT);
+		$userdata->set_existing($existingUserInfo);
+		$userdata->set('usergroupid', $banToApply['banusergroupid']);
+		$userdata->set('displaygroupid', 0);
+		$userdata->set('status', ''); // clear status, VBV-15853
+
+		// update the user's title if they've specified a special user title for the banned group
+		$bannedUserGroups = vB_Api::instanceInternal('usergroup')->fetchBannedUsergroups();
+		if ($bannedUserGroups[$banToApply['banusergroupid']]['usertitle'] != '')
+		{
+			$userdata->set('usertitle', $bannedUserGroups[$banToApply['banusergroupid']]['usertitle']);
+			$userdata->set('customtitle', 0);
+		}
+
+		$userdata->save();
+		unset($userdata);
+	}
+
+	/**
+	 * Determines if the logged-in user can infract the (author of) the given node
+	 *
+	 * @param	int	Node ID
+	 * @param	array	Node record, if you have it
+	 *
+	 * @return	bool	The node (user) can be infracted by current user (or not)
+	 */
+	public function canInfractNode($nodeid, ?array $node = null)
+	{
+		$nodeid = (int) $nodeid;
+		$infractionContentTypeId = null;
+
+		if ($infractionContentTypeId === null)
+		{
+			$infractionContentTypeId = vB_Types::instance()->getContentTypeID('vBForum_Infraction');
+		}
+		if ($node === null OR !is_array($node))
+		{
+			// needs getNodeFullContent to pull the node[infraction] field
+			$nodeBare = vB_Library::instance('node')->getNodeBare($nodeid);
+			$node = vB_Library_Content::getContentLib($nodeBare['contenttypeid'])->getBareContent($nodeid);
+			$node = array_pop($node);
+		}
+
+		return (
+			// Cannot infract a post that already has an infraction
+			empty($node['infraction'])
+			// Cannot infract an infraction
+			AND $node['contenttypeid'] != $infractionContentTypeId
+			// Can the post author be infracted?
+			AND $this->canInfractUser($node['userid'])
+		);
+	}
+
+	/**
+	 * Determines if the logged-in user can infract the given user
+	 *
+	 * @param	int	User ID
+	 *
+	 * @return	bool	The user can be infracted by current user (or not)
+	 */
+	public function canInfractUser($userid)
+	{
+		$userid = (int) $userid;
+
+		$currentUserId = vB::getCurrentSession()->get('userid');
+
+		return (
+			// Must have 'cangiveinfraction' permission. Branch dies right here majority of the time
+			vB::getUserContext()->hasPermission('genericpermissions', 'cangiveinfraction')
+			// Can not give yourself an infraction
+			AND $userid != $currentUserId
+			// Can not give an admin an infraction
+			AND !(vB::getUserContext($userid)->hasPermission('adminpermissions', 'cancontrolpanel'))
+			// Only Admins can give a supermod an infraction
+			AND (
+				!(vB::getUserContext($userid)->hasPermission('adminpermissions', 'ismoderator'))
+				OR vB::getUserContext()->hasPermission('adminpermissions', 'cancontrolpanel')
+			)
+			// Can not give guests infractions
+			AND $userid
+		);
+	}
+
+	/**
+	 * Determines if the logged-in user can view any infractions on the given node
+	 *
+	 * @param	int	Node ID
+	 * @param	array	Node record, if you have it
+	 *
+	 * @return	bool	The current user can view any infractions on this node (or not)
+	 */
+	public function canViewNodeInfraction($nodeid, ?array $node = null)
+	{
+		$nodeid = (int) $nodeid;
+		$currentUserId = vB::getCurrentSession()->get('userid');
+
+		if ($node === null OR !is_array($node))
+		{
+			try
+			{
+				// does not need getNodeFullContent because we only use node[userid]
+				$node = vB_Library::instance('node')->getNode($nodeid);
+			}
+			catch (vB_Exception_Api $e)
+			{
+				return false; // if we can't get the node, we can't see it
+			}
+		}
+
+		return (
+			// is the node author
+			$node['userid'] == $currentUserId
+			// has the 'canseeinfraction' permission
+			OR vB::getUserContext()->hasPermission('genericpermissions', 'canseeinfraction')
+			// has the 'canreverseinfraction' permission
+			OR vB::getUserContext()->hasPermission('genericpermissions', 'canreverseinfraction')
+			// has the 'cangiveinfraction' permission
+			OR vB::getUserContext()->hasPermission('genericpermissions', 'cangiveinfraction')
+		);
+	}
+}
+
+/*=========================================================================*\
+|| #######################################################################
+|| # Downloaded: 12:50, Tue Dec 24th 2024
+|| # CVS: $RCSfile$ - $Revision: 117557 $
+|| #######################################################################
+\*=========================================================================*/
